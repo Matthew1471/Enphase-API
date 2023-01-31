@@ -65,7 +65,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 === Documentation
 
-Copyright (c)  2023  Matthew1471.
+Copyright (C)  2023  Matthew1471.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3

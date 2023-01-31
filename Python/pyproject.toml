@@ -28,7 +28,7 @@ description = "An unofficial Enphase® API that predominantly focuses on the loc
 #
 # This field corresponds to the "Description" metadata field:
 # https://packaging.python.org/specifications/core-metadata/#description-optional
-readme = "PyPi Readme.md" # Optional
+readme = "PyPi-Readme.md" # Optional
 
 # Specify which Python versions you support.
 # In contrast to the 'Programming Language' classifiers above, 'pip install' will check this and refuse to install the project if the version does not match.
@@ -128,7 +128,7 @@ dev = ["pillow", "unicorn_hat_sim"]
 [project.urls]  # Optional
 "Homepage" = "https://github.com/Matthew1471/Enphase-API/"
 "Bug Reports" = "https://github.com/Matthew1471/Enphase-API/issues"
-"Documentation" = "https://github.com/Matthew1471/Enphase-API/tree/master/Documentation"
+"Documentation" = "https://github.com/Matthew1471/Enphase-API/tree/main/Documentation"
 "Say Thanks!" = "https://Matthew1471.co.uk/Contact.php"
 "Source" = "https://github.com/Matthew1471/Enphase-API/"
 

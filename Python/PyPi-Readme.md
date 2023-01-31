@@ -4,7 +4,8 @@ Enphase-API is an unofficial project providing an API wrapper and the documentat
 
 This project is focusing primarily on the Enphase® "IQ Gateway" (formerly "IQ Envoy") system, the gateway for Enphase®'s IQ7 and IQ8 Microinverters used on solar panels to convert Direct Current (DC) to Alternating Current (AC) to be directly consumed by the home.
 
-WARNING: This project currently predominantly consumes the same local API that the local Gateway web administration portal consumes and Enphase® may choose to change it in subsequent updates without warning.
+> **Warning**
+> This project currently predominantly consumes the same local API that the local Gateway web administration portal consumes and Enphase® may choose to change it in subsequent updates without warning.
 
 ## Installing Enphase-API
 
@@ -16,13 +17,13 @@ $ python -m pip install Enphase_API
 
 ## Documentation
 
-The documentation for the wrapper and the API itself is at [Enphase-API Documentation GitHub](https://github.com/Matthew1471/Enphase-API/Documentation/README.adoc)
+The documentation for the wrapper and the API itself is at [Enphase-API Documentation GitHub](https://github.com/Matthew1471/Enphase-API/tree/main/Documentation/README.adoc)
 
 ## Copyright and License
 
 ### Code
 
-Copyright (C) 2023  Matthew1471
+Copyright ©️ 2023  Matthew1471
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,13 +40,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ### Documentation
 
-Copyright (c)  2023  Matthew1471.
+Copyright ©️  2023  Matthew1471.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3
 or any later version published by the Free Software Foundation;
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-A copy of the license is included in the file [Enphase-API Documentation License](https://github.com/Matthew1471/Enphase-API/Documentation/LICENSE.md).
+A copy of the license is included in the file [Enphase-API Documentation License](https://github.com/Matthew1471/Enphase-API/tree/main/Documentation/LICENSE.md).
 
 ## Authors
 
