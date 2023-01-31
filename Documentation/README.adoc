@@ -1,0 +1,63 @@
+= Documentation
+:toc:
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code examples will be in Python by default.
+:source-language: python
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../README.adoc[project's homepage].
+
+== API Wrapper
+
+Wrappers for the APIs are currently provided in the following languages:
+
+* link:Wrappers/Python/README.adoc[Python]
+
+== API Documentation
+
+=== Local API
+
+The following documentation is provided by this project:
+
+* link:IQ%20Gateway%20API/README.adoc[IQ Gateway API] 
+
+=== Cloud API
+
+This is mostly best documented by Enphase(R) themselves at their https://developer-v4.enphase.com/docs.html[developer documentation website]. The author of this documentation is not currently licensed to use the cloud based Developer API.
+
+With the introduction of tokens this project is required, however, to provide further information on the authentication API.
+
+The following are documented in this project:
+
+* Authentication API
+* Developer API (Limited)
+* Installer Portal API
+* Web API

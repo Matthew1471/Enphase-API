@@ -1,0 +1,118 @@
+= IQ Gateway API
+:toc:
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code examples will be in Python by default.
+:source-language: python
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../README.adoc[project's homepage].
+
+== Endpoints
+
+=== Authentication
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Auth/Check_JWT.adoc[Auth/Check_JWT]`
+|`/auth/check_jwt`
+|Checks a JSON Web Token is valid to login to the system and creates a session.
+
+|===
+
+=== Data Tables
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Datatab/Admin_DCC_Display_DT.adoc[Datatab/Admin_DCC_Display_DT]`
+|`/datatab/admin_dcc_display_dt`
+|Used by the JavaScript datatable to return records.
+
+|`link:Datatab/Event_DT.adoc[Datatab/Event_DT]`
+|`/datatab/event_dt`
+|Used by the JavaScript datatable to return event log records.
+
+|`link:Datatab/Inventory_DT.adoc[Datatab/Inventory_DT]`
+|`/datatab/inventory_dt`
+|Used by the JavaScript datatable to return records.
+
+|===
+
+=== General
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Home.adoc[Home]`
+|`/home.json`
+|Obtain a summary of the gateway status.
+
+|`link:Info.adoc[Info]`
+|`/info.json`
+|Obtain a summary of the gateway's software status.
+
+|`link:Inventory.adoc[Inventory]`
+|`/inventory.json`
+|
+
+|`link:Production.adoc[Production]`
+|`/production.json`
+|Obtain production data.
+
+|`link:Provision.adoc[Provision]`
+|`/provision.json`
+|
+
+|`link:Upload.adoc[Upload]`
+|`/upload.json`
+|
+
+|===
+
+=== Installer
+
+=== IVP
+
+=== Lib
+
+=== Streams
+
+=== V1

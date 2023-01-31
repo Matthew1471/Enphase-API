@@ -1,0 +1,87 @@
+= Enphase-API
+:toc:
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code examples will be in Python by default.
+:source-language: python
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+This project is focusing primarily on the Enphase(R) "IQ Gateway" (formerly "IQ Envoy") system, the gateway for Enphase(R)'s IQ7 and IQ8 Microinverters used on solar panels to convert Direct Current (DC) to Alternating Current (AC) to be directly consumed by the home.
+
+WARNING: This project currently predominantly consumes the same local API that the local Gateway web administration portal consumes and Enphase(R) may choose to change it in subsequent updates without warning.
+
+The official route for production applications is to use the https://developer-v4.enphase.com/[Enphase(R) developer cloud-based API]. The Enphase(R) IQ Gateway, however, only reports to the Enphase(R) Cloud either every 15 minutes (when connected via WiFi or Ethernet) or every 6 hours (when connected via a cellular modem) and its consumption is currently https://developer-v4.enphase.com/developer-plans[very expensive for hobbyist consumption] if data is required more than once an hour throughout the month or more detailed statistics or configuration is required.
+
+== Documentation
+
+The documentation for the wrapper and the API itself is at link:Documentation/README.adoc[Documentation/README.adoc]
+
+== Copyright and License
+
+=== Code
+
+Copyright (C) 2023  Matthew1471
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+=== Documentation
+
+Copyright (c)  2023  Matthew1471.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the file link:Documentation/License.md[Documentation/License.md].
+
+== Authors
+
+*Enphase-API* is led by https://github.com/Matthew1471[Matthew1471] and may have received contributions from {url-contributors}[other individuals] in GitHub's awesome community.
+The project was initiated in 2022 by https://github.com/Matthew1471[Matthew1471] after having his own solar installation and wanting to know when is the cheapest time to put on the dishwasher.
+
+== Trademarks
+
+Enphase(R), Envoy(R) are trademarks of Enphase Energy(R).
+
+All trademarks are the property of their respective owners.
+
+Any trademarks used in this project are used in a purely descriptive manner and to state compatability.

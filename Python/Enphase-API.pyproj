@@ -1,0 +1,51 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>6c2f2723-0e0b-45b2-bff9-a24ca1b75982</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>examples\gateway-unicorn-hat-hd.py</StartupFile>
+    <SearchPath>src</SearchPath>
+    <WorkingDirectory>examples\</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Enphase-API</Name>
+    <RootNamespace>Enphase-API</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>/EmulateHAT /Rotate 0</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <IsWindowsApplication>False</IsWindowsApplication>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="examples\gateway-console.py" />
+    <Compile Include="examples\gateway-unicorn-hat-hd.py" />
+    <Compile Include="src\enphase_api\cloud\__init__.py" />
+    <Compile Include="src\enphase_api\cloud\authentication.py" />
+    <Compile Include="src\enphase_api\local\__init__.py" />
+    <Compile Include="src\enphase_api\local\gateway.py" />
+    <Compile Include="src\enphase_api\local\ignoreHostnameAdapter.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="examples\" />
+    <Folder Include="src\" />
+    <Folder Include="src\enphase_api\" />
+    <Folder Include="src\enphase_api\cloud\" />
+    <Folder Include="src\enphase_api\local\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

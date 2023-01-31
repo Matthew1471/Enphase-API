@@ -1,0 +1,340 @@
+= Production
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code examples will be in Python by default.
+:source-language: python
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+A HTTP GET to `/production.json` can be used to get a JSON formatted object of the production data.
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../README.adoc[project's homepage].
+
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Request Querystring
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`details` (Optional)
+|Boolean
+|A boolean (e.g. `0` or `1`)
+|Specifies more detailed data should be provided. Currently this gives a further breakdown on each of the individual AC phases.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`production`
+|Array(Object)
+|Array of `Device`
+|An object that contains the production details for the request.
+
+|`consumption`
+|Array(Object)
+|Array of `Device`
+|An object that contains the consumption details for the request.
+
+|`storage`
+|Array(Object)
+|Array of `Device`
+|An object that contains the storage details for the request.
+
+|===
+
+=== `Device` Object
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`type`
+|String
+|`DeviceType` (e.g. `inverters`)
+|Specifies what type of device this is a response from. In the format `DeviceType`.
+
+|`activeCount`
+|Number
+|Number (> 0)
+|How many of these devices are active.
+
+|`measurementType` (Optional)
+|String
+|`production`, `net-consumption` or `total-consumption`
+|What type of measurement this is reporting. `production` is the energy produced from the inverters. `net-consumption` is load with solar production included whereas `total-consumption` is the load only. Only available with the `eim` device type.
+
+|`readingTime`
+|Number
+|Number (> 0)
+|The date and time in epoch format that the measurement was taken.
+
+|`wNow`
+|Number
+|Number
+|The number of watts currently being reported.
+
+|`whLifetime`
+|Number
+|Number
+|The total number of watt-hours (Wh) this device has seen.
+
+|`varhLeadLifetime` (Optional)
+|Number
+|Number
+|The total leading Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.
+
+|`varhLagLifetime` (Optional)
+|Number
+|Number
+|The total lagging Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.
+
+|`vahLifetime` (Optional)
+|Number
+|Number
+|The total Volt-Ampere hour this device has seen. Only available with the `eim` device type.
+
+|`rmsCurrent` (Optional)
+|Number
+|Number
+|The Root Mean Square current value. Only available with the `eim` device type.
+
+|`rmsVoltage` (Optional)
+|Number
+|Number
+|The Root Mean Square voltage value. Only available with the `eim` device type.
+
+|`reactPwr` (Optional)
+|Number
+|Number
+|The reactive power value. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes reactive (var). Only available with the `eim` device type.
+
+|`apprntPwr` (Optional)
+|Number
+|Number
+|The apparent power value. The combination of reactive and true power measurement in Volt-Amperes (VA). Only available with the `eim` device type.
+
+|`pwrFactor` (Optional)
+|Number
+|Number
+|The power factor value. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit. Only available with the `eim` device type.
+
+|`whToday` (Optional)
+|Number
+|Number
+|The total number of watt-hours seen today. Only available with the `eim` device type.
+
+|`whLastSevenDays` (Optional)
+|Number
+|Number
+|The total number of watt-hours seen in the last 7 days. Only available with the `eim` device type.
+
+|`vahToday` (Optional)
+|Number
+|Number
+|The total number of Volt-Ampere hours (vah) seen today. Only available with the `eim` device type.
+
+|`varhLeadToday` (Optional)
+|Number
+|Number
+|The total leading Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.
+
+|`varhLagToday` (Optional)
+|Number
+|Number
+|The total lagging Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.
+
+|`whNow` (Optional)
+|Number
+|Number
+|Unknown. Only available with the `acb` device type.
+
+|`state` (Optional)
+|String
+|`charging`, `discharging`, `full` or `idle`
+|The state the AC Battery device is currently in. Only available with the `acb` device type.
+
+|`lines` (Optional)
+|Array(Object)
+|Array of `Lines`
+|Provides a further breakdown for each of the phases. Only available if the querystring `details` is set to true in the request and with the `eim` device type.
+
+|===
+
+=== `DeviceType` Types
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Description
+
+|`inverters`
+|IQ Inverter
+|IQ Inverter(s).
+
+|`eim`
+|Envoy Integrated Meter
+|The built-in meter on the Gateway (formerly "Envoy").
+
+|`acb`
+|AC Battery
+|Encharge AC storage battery.
+
+|`rgm`?
+|Revenue Grade Meter
+|An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
+
+|`pmu`?
+|Power Meter
+|Another external meter?
+
+|===
+
+=== `Lines` Object
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`wNow`
+|Number
+|Number
+|The number of watts currently being reported on this phase.
+
+|`whLifetime`
+|Number
+|Number
+|The total number of watts this device has seen on this phase.
+
+|`varhLeadLifetime`
+|Number
+|Number
+|The total leading Volt-Ampere reactive hour (varh) this device has seen on this phase.
+
+|`varhLagLifetime`
+|Number
+|Number
+|The total lagging Volt-Ampere reactive hour (varh) this device has seen on this phase.
+
+|`vahLifetime`
+|Number
+|Number
+|The total Volt-Ampere hour (vah) this device has seen on this phase.
+
+|`rmsCurrent`
+|Number
+|Number
+|The Root Mean Square current value on this phase.
+
+|`rmsVoltage`
+|Number
+|Number
+|The Root Mean Square voltage value on this phase.
+
+|`reactPwr`
+|Number
+|Number
+|The reactive power value on this phase. The dissipated power resulting from inductive and capacitive loads measured in volt-amperes reactive (VAR).
+
+|`apprntPwr`
+|Number
+|Number
+|The apparent power value on this phase. The combination of reactive and true power measurement in volt-amperes (VA).
+
+|`pwrFactor`
+|Number
+|Number
+|The power factor value on this phase. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit.
+
+|`whToday`
+|Number
+|Number
+|The total number of watt-hours seen today on this phase.
+
+|`whLastSevenDays`
+|Number
+|Number
+|The total number of watt-hours seen on this phase in the last 7 days.
+
+|`vahToday`
+|Number
+|Number
+|The total number of Volt-Ampere hours (vah) seen today on this phase.
+
+|`varhLeadToday`
+|Number
+|Number
+|The total leading Volt-Ampere reactive hours (varh) seen today on this phase.
+
+|`varhLagToday`
+|Number
+|Number
+|The total lagging Volt-Ampere reactive hours (varh) seen today on this phase.
+
+|===
+
+== Examples
+
+=== Get Production Data
+.GET */production.json* Response
+[source,json]
+----
+{'production': [{'type': 'inverters', 'activeCount': 10, 'readingTime': 1672574917, 'wNow': 225, 'whLifetime': 22444}, {'type': 'eim', 'activeCount': 0, 'measurementType': 'production', 'readingTime': 1672575063, 'wNow': 63.302, 'whLifetime': 1513.493, 'varhLeadLifetime': 0.024, 'varhLagLifetime': 16902.01, 'vahLifetime': 23774.477, 'rmsCurrent': 2.154, 'rmsVoltage': 240.087, 'reactPwr': 453.423, 'apprntPwr': 517.896, 'pwrFactor': 0.13, 'whToday': 2.0, 'whLastSevenDays': 1520.0, 'vahToday': 5106.0, 'varhLeadToday': 0.0, 'varhLagToday': 3865.0}], 'consumption': [{'type': 'eim', 'activeCount': 0, 'measurementType': 'total-consumption', 'readingTime': 1672575063, 'wNow': 61.709, 'whLifetime': 1371.426, 'varhLeadLifetime': 0.205, 'varhLagLifetime': 16918.508, 'vahLifetime': 2593.65, 'rmsCurrent': 1.792, 'rmsVoltage': 243.568, 'reactPwr': -452.024, 'apprntPwr': 436.397, 'pwrFactor': 0.14, 'whToday': 0.0, 'whLastSevenDays': 1465.0, 'vahToday': 695.65, 'varhLeadToday': 0.205, 'varhLagToday': 3875.508}, {'type': 'eim', 'activeCount': 0, 'measurementType': 'net-consumption', 'readingTime': 1672575063, 'wNow': -1.592, 'whLifetime': 0.001, 'varhLeadLifetime': 0.181, 'varhLagLifetime': 16.498, 'vahLifetime': 2593.65, 'rmsCurrent': 0.363, 'rmsVoltage': 247.049, 'reactPwr': 1.398, 'apprntPwr': 61.047, 'pwrFactor': 0.0, 'whToday': 0, 'whLastSevenDays': 0, 'vahToday': 0, 'varhLeadToday': 0, 'varhLagToday': 0}], 'storage': [{'type': 'acb', 'activeCount': 0, 'readingTime': 0, 'wNow': 0, 'whNow': 0, 'state': 'idle'}]}
+----
+
+=== Get Production Data (with each individual phase's details)
+
+.GET */production.json?details=1* Response
+[source,json]
+----
+{'production': [{'type': 'inverters', 'activeCount': 10, 'readingTime': 1672575219, 'wNow': 227, 'whLifetime': 22463}, {'type': 'eim', 'activeCount': 0, 'measurementType': 'production', 'readingTime': 1672575474, 'wNow': 48.097, 'whLifetime': 1513.493, 'varhLeadLifetime': 0.024, 'varhLagLifetime': 16902.01, 'vahLifetime': 23774.477, 'rmsCurrent': 2.113, 'rmsVoltage': 241.829, 'reactPwr': 458.107, 'apprntPwr': 510.857, 'pwrFactor': 0.13, 'whToday': 2.0, 'whLastSevenDays': 1520.0, 'vahToday': 5106.0, 'varhLeadToday': 0.0, 'varhLagToday': 3865.0, 'lines': [{'wNow': 48.097, 'whLifetime': 1513.493, 'varhLeadLifetime': 0.024, 'varhLagLifetime': 16902.01, 'vahLifetime': 23774.477, 'rmsCurrent': 2.113, 'rmsVoltage': 241.829, 'reactPwr': 458.107, 'apprntPwr': 510.857, 'pwrFactor': 0.13, 'whToday': 0.493, 'whLastSevenDays': 1513.493, 'vahToday': 5006.477, 'varhLeadToday': 0.024, 'varhLagToday': 3869.01}]}], 'consumption': [{'type': 'eim', 'activeCount': 0, 'measurementType': 'total-consumption', 'readingTime': 1672575474, 'wNow': 46.301, 'whLifetime': 1371.426, 'varhLeadLifetime': 0.205, 'varhLagLifetime': 16918.508, 'vahLifetime': 2593.65, 'rmsCurrent': 1.751, 'rmsVoltage': 245.194, 'reactPwr': -458.107, 'apprntPwr': 429.215, 'pwrFactor': 0.11, 'whToday': 0.0, 'whLastSevenDays': 1465.0, 'vahToday': 695.65, 'varhLeadToday': 0.205, 'varhLagToday': 3875.508, 'lines': [{'wNow': 46.496, 'whLifetime': 1448.569, 'varhLeadLifetime': 0.158, 'varhLagLifetime': 16915.44, 'vahLifetime': 2562.177, 'rmsCurrent': 1.862, 'rmsVoltage': 241.825, 'reactPwr': -458.107, 'apprntPwr': 450.25, 'pwrFactor': 0.1, 'whToday': 0.0, 'whLastSevenDays': 1465.0, 'vahToday': 664.177, 'varhLeadToday': 0.158, 'varhLagToday': 3872.44}, {'wNow': -0.195, 'whLifetime': -67.68, 'varhLeadLifetime': 2.596, 'varhLagLifetime': 20.689, 'vahLifetime': 31.473, 'rmsCurrent': 1.994, 'rmsVoltage': 6.062, 'reactPwr': 0.0, 'apprntPwr': 12.088, 'pwrFactor': -0.02, 'whToday': 0.0, 'whLastSevenDays': 0.0, 'vahToday': 31.473, 'varhLeadToday': 2.596, 'varhLagToday': 20.689}]}, {'type': 'eim', 'activeCount': 0, 'measurementType': 'net-consumption', 'readingTime': 1672575474, 'wNow': -1.796, 'whLifetime': 0.001, 'varhLeadLifetime': 0.181, 'varhLagLifetime': 16.498, 'vahLifetime': 2593.65, 'rmsCurrent': 0.362, 'rmsVoltage': 248.559, 'reactPwr': 0.0, 'apprntPwr': 61.333, 'pwrFactor': 0.0, 'whToday': 0, 'whLastSevenDays': 0, 'vahToday': 0, 'varhLeadToday': 0, 'varhLagToday': 0, 'lines': [{'wNow': -1.601, 'whLifetime': 0.0, 'varhLeadLifetime': 0.134, 'varhLagLifetime': 13.431, 'vahLifetime': 2562.177, 'rmsCurrent': 0.251, 'rmsVoltage': 241.821, 'reactPwr': 0.0, 'apprntPwr': 60.583, 'pwrFactor': 0.0, 'whToday': 0, 'whLastSevenDays': 0, 'vahToday': 0, 'varhLeadToday': 0, 'varhLagToday': 0}, {'wNow': -0.195, 'whLifetime': 0.001, 'varhLeadLifetime': 0.047, 'varhLagLifetime': 3.068, 'vahLifetime': 31.473, 'rmsCurrent': 0.111, 'rmsVoltage': 6.739, 'reactPwr': -0.0, 'apprntPwr': 0.75, 'pwrFactor': 0.0, 'whToday': 0, 'whLastSevenDays': 0, 'vahToday': 0, 'varhLeadToday': 0, 'varhLagToday': 0}]}], 'storage': [{'type': 'acb', 'activeCount': 0, 'readingTime': 0, 'wNow': 0, 'whNow': 0, 'state': 'idle'}]}
+----

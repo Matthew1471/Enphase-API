@@ -1,0 +1,116 @@
+# cp EnphaseMonitoring.service /etc/systemd/system/
+# sudo systemctl daemon-reload
+# sudo systemctl enable EnphaseMonitoring
+# sudo systemctl start EnphaseMonitoring
+
+[Unit]
+
+# Short human readable title of the unit. User-visible label to identify the unit.
+Description=Enphase Monitoring
+
+# Reference to where the user can obtain more information about this service.
+Documentation=https://github.com/Matthew1471/Enphase-API/
+
+# This service will start once the network interfaces are ready for data.
+After=network-online.target
+Wants=network-online.target
+
+# Check that the Python script exists.
+ConditionPathExists=/home/pi/Enphase/gateway-unicorn-hat-hd.py
+
+[Service]
+
+# Runs the executable and if it is alive will assume the service is running.
+Type=simple
+
+# Apply user privilege restrictions.
+User=pi
+Group=pi
+
+# Delete the $PATH environment.
+ExecSearchPath=
+
+# The process to start.
+ExecStart=/usr/bin/python gateway-unicorn-hat-hd.py
+
+# The credentials file will need to be read based off the working directory.
+WorkingDirectory=/home/pi/Enphase/
+
+# When set to "invisible" processes owned by other users are hidden from /proc/.
+ProtectProc=invisible
+
+# Sent a SIGINT when shutting down which Python will see as a CTRL + C.
+KillSignal=SIGINT
+
+# This service does not currently spawn new processes and only uses one thread (the urllib one), for additional security we restrict them.
+TasksMax=2
+
+# Ensure that the service process and all its children can never gain new privileges through execve() (e.g. via setuid or setgid bits, or filesystem capabilities)
+NoNewPrivileges=True
+
+# Only allow read-only access to most of the file system.
+ReadOnlyPaths=/
+
+# But allow the script to write to its configuration folder.
+ReadWritePaths=/home/pi/Enphase/configuration/
+
+# Do not allow the script to run any new applications.
+NoExecPaths=/
+
+# Prevent the user from accessing anything other than "pi".
+PrivateUsers=True
+
+# Sets up a new UTS namespace for the executed processes. In addition, changing hostname or domainname is prevented.
+ProtectHostname=True
+
+# Writes to the hardware clock or system clock will be allowed (required by SPI).
+ProtectClock=False
+
+# Kernel variables accessible through /proc/sys/, /sys/, /proc/sysrq-trigger, /proc/latency_stats, /proc/acpi, /proc/timer_stats, /proc/fs and /proc/irq will be made read-only to all processes of the unit.
+ProtectKernelTunables=True
+
+# Explicit module loading will be denied.
+ProtectKernelModules=True
+
+# Access to the kernel log ring buffer will be denied.
+ProtectKernelLogs=True
+
+# The Linux Control Groups (cgroups(7)) hierarchies accessible through /sys/fs/cgroup/ will be made read-only to all processes of the unit.
+ProtectControlGroups=True
+
+# Restricts the set of socket address families accessible to the processes of this unit.
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+# Restricts access to Linux namespace functionality for the processes of this unit.
+RestrictNamespaces=True
+
+# Locks down the personality(2) system call so that the kernel execution domain may not be changed from the default or the personality selected with Personality= directive.
+LockPersonality=True
+
+# Attempts to create memory mappings that are writable and executable at the same time, or to change existing memory mappings to become executable, or mapping shared memory segments as executable, are prohibited.
+MemoryDenyWriteExecute=True
+
+# Any attempts to enable realtime scheduling in a process of the unit are refused.
+RestrictRealtime=True
+
+# Any attempts to set the set-user-ID (SUID) or set-group-ID (SGID) bits on files or directories will be denied.
+RestrictSUIDSGID=True
+
+# The processes of this unit will be run in their own private file system (mount) namespace with all mount propagation from the processes towards the host's main file system namespace turned off.
+PrivateMounts=True
+
+# A new file system namespace is set up for executed processes, and a temporary file system is mounted on each mount point.
+TemporaryFileSystem=/home/pi/Enphase/ /usr/bin/:ro
+
+# Mount the following paths from the host into the temporary file system.
+BindReadOnlyPaths=/usr/bin/
+BindPaths=/home/pi/Enphase/
+
+# Redirect the StandardOutput and StandardError.
+StandardOutput=append:/home/pi/Enphase/Console.log
+StandardError=append:/home/pi/Enphase/Console.log
+
+[Install]
+
+# Runlevel 2, non graphical multi-user shell is ready.
+WantedBy=multi-user.target

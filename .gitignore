@@ -1,0 +1,21 @@
+# Visual Studio metadata.
+/Python/.vs/
+
+# Built releases (from python -m build)
+/Python/dist/
+
+# Files containing our sensitive credentials.
+/Python/examples/configuration/credentials.json
+/Python/examples/configuration/credentials_token.json
+/Python/examples/configuration/gateway.cer
+
+# Python pre-compiled cache.
+/Python/src/enphase_api/__pycache__/
+/Python/src/enphase_api/cloud/__pycache__/
+/Python/src/enphase_api/local/__pycache__/
+
+# Python packaging metadata.
+/Python/src/*.egg-info/
+
+# Folder for project research.
+/Research/

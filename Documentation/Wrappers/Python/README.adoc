@@ -1,0 +1,76 @@
+= Python API Wrapper Documentation
+:toc:
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code examples will be in Python by default.
+:source-language: python
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+== Introduction
+
+This unofficial API wrapper written in Python allows your applications to call the APIs and access information.
+
+More general details on the project are available from the link:../../../README.adoc[project's homepage].
+
+== Getting Started
+
+The wrapper uses 3 main third-party libraries. These can be installed by typing into your terminal:
+
+[source,bash]
+----
+pip install PyJWT
+pip install requests
+pip install requests-oauthlib
+----
+
+The main wrapper lives in the `enphase-api` folder and the other files in the parent directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and can be used as applications in their own right.
+
+For configuration the examples refer to files in the folder `configuration`, to make the examples work you will need to edit a file called `credentials_json.json` or `credentials.json` (depending on the file referenced in the example) to include your Enphase(R) credentials.
+
+Some examples use `credentials.json` as they are able to request a token to communicate with your gateway on their own, others are programmed to be run on embedded devices such as a Raspberry Pi where you may not wish to store your username and password.
+
+WARNING: A token behaves like a time limited version of your username and password and so reasonable effort should be taken to protect any obtained tokens as they will have access to your account and device.
+
+== Examples
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Filename
+|Config File
+|Notes
+|Description
+
+|`gateway-console.py`
+|`credentials.json`
+|Will attempt to refresh any expired tokens.
+|Displays production data on the console/terminal then exists.
+
+|`gateway-unicorn-hat-hd.py`
+|`credentials_token.json`
+|Requires an existing valid token, will not refresh it. Requires `pillow` and `unicornhathd` packages.
+|Displays production data on a https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD] running on a https://www.raspberrypi.com/products/[Raspberry Pi].
+
+|===
