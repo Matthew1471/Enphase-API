@@ -56,13 +56,18 @@ if not credentials['Token']:
     if not authentication.authenticate(credentials['EnphaseUsername'], credentials['EnphasePassword']):
         raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
 
-    print(authentication.get_site('Matthew1471'))
+    #print(authentication.get_site('Matthew1471'))
 
 # Download and store the certificate from the gateway so all future requests are secure.
 if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
 
-# Get an instance of the Gateway API wrapper object.
-gateway = Gateway()
+# Did the user override the library default hostname to the Gateway?
+if credentials['Host']:
+    # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
+    gateway = Gateway(credentials['Host'])
+else:
+    # Get an instance of the Gateway API wrapper object (using the library default hostname).
+    gateway = Gateway()
 
 # Are we able to login to the gateway?
 if gateway.login(credentials['Token']):

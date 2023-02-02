@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>6c2f2723-0e0b-45b2-bff9-a24ca1b75982</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>examples\gateway-unicorn-hat-hd.py</StartupFile>
+    <StartupFile>examples\gateway-console.py</StartupFile>
     <SearchPath>src</SearchPath>
     <WorkingDirectory>examples\</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -25,6 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="examples\gateway-console.py" />
+    <Compile Include="examples\gateway-pyplot-meters.py" />
     <Compile Include="examples\gateway-unicorn-hat-hd.py" />
     <Compile Include="src\enphase_api\cloud\__init__.py" />
     <Compile Include="src\enphase_api\cloud\authentication.py" />

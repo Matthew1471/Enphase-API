@@ -87,7 +87,7 @@ display_group.add_argument('/Rotate', '-Rotate', '--Rotate', dest='rotate', type
 
 # Arguments to control how the program generally behaves.
 general_group = parser.add_argument_group('General')
-general_group.add_argument('/Host', '-Host', '--Host', dest='host', help='The Enphase® Gateway URL (defaults to https://envoy.local).')
+general_group.add_argument('/Host', '-Host', '--Host', dest='host', help='The Enphase® Gateway URL (defaults to config or https://envoy.local).')
 general_group.add_argument('/MaxWattsPerPanel', '-MaxWattsPerPanel', '--MaxWattsPerPanel', dest='maximum_watts_per_panel', type=int, default=460, help='How many watts maximum can each panel generate (defaults to 460 which is the limit of an IQ7A).')
 
 # Arguments that can overide default behaviour when testing this program.
@@ -117,12 +117,15 @@ if not credentials['Token'] and not Authentication.check_token_valid(credentials
     # It is not valid so clear it.
     raise ValueError('No or expired token.')
 
-# Did the user override the library default hostname to the Gateway?
+# Did the user override the config or library default hostname to the Gateway?
 if args.host:
-    # Get an instance of the Gateway API wrapper object.
+    # Get an instance of the Gateway API wrapper object (using the argument hostname).
     gateway = Gateway(args.host)
+elif credentials['Host']:
+    # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
+    gateway = Gateway(credentials['Host'])
 else:
-    # Get an instance of the Gateway API wrapper object.
+    # Get an instance of the Gateway API wrapper object (using the library default hostname).
     gateway = Gateway()
 
 # Are we able to login to the gateway?
