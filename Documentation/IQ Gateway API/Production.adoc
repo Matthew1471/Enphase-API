@@ -8,8 +8,8 @@ Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 :idprefix:
 :idseparator: -
 
-// Any code examples will be in Python by default.
-:source-language: python
+// Any code blocks will be in JSON by default.
+:source-language: json
 
 ifndef::env-github[:icons: font]
 
@@ -273,22 +273,22 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`rmsCurrent`
 |Number
 |Number
-|The Root Mean Square current value on this phase.
+|The Root Mean Square current value in Amps on this phase.
 
 |`rmsVoltage`
 |Number
 |Number
-|The Root Mean Square voltage value on this phase.
+|The Root Mean Square voltage value in Vrms on this phase.
 
 |`reactPwr`
 |Number
 |Number
-|The reactive power value on this phase. The dissipated power resulting from inductive and capacitive loads measured in volt-amperes reactive (VAR).
+|The reactive power value on this phase. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes Reactive (VAR).
 
 |`apprntPwr`
 |Number
 |Number
-|The apparent power value on this phase. The combination of reactive and true power measurement in volt-amperes (VA).
+|The apparent power value on this phase. The combination of reactive and true power measurement in Volt-Amperes (VA).
 
 |`pwrFactor`
 |Number

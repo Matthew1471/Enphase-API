@@ -72,13 +72,13 @@ else:
 # Are we able to login to the gateway?
 if gateway.login(credentials['Token']):
     # We can force the gateway to poll the inverters early (by default it only does this automatically every 5 minutes).
-    #gateway.apiCall('/installer/pcu_comm_check')
+    #gateway.api_call('/installer/pcu_comm_check')
 
     # Get gateway production, consumption and storage status.
-    productionStatistics = gateway.apiCall('/production.json')
+    productionStatistics = gateway.api_call('/production.json')
 
     # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
-    metersStatus = gateway.apiCall('/ivp/meters')
+    metersStatus = gateway.api_call('/ivp/meters')
 
     # The Production meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
     eimProductionWNow = None
@@ -129,7 +129,7 @@ if gateway.login(credentials['Token']):
     mostRecentInverterData = None
 
     # Get Inverters status.
-    invertersStatistics = gateway.apiCall('/api/v1/production/inverters')
+    invertersStatistics = gateway.api_call('/api/v1/production/inverters')
 
     # Get panel by panel status.
     for inverterStatistic in invertersStatistics:

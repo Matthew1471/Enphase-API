@@ -34,7 +34,7 @@ def animate(i):
     # Sometimes a request will intermittently fail and in this event we retry.
     try:
         # Get gateway production, consumption and storage status.
-        productionStatistics = gateway.apiCall('/production.json')
+        productionStatistics = gateway.api_call('/production.json')
     # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
     except requests.exceptions.ConnectionError as exception:
         # Log this error.
@@ -92,32 +92,31 @@ def animate(i):
     # Clear the chart ready for redrawing.
     axes.cla()
 
-    # Plot the data.
-    axes.plot(timestampData, productionData, c='#EC5E29', label='Production')
-    axes.plot(timestampData, consumptionData, c='#1787AD', label='Consumption')
-    axes.axhline(linewidth=0.3, color='k')
-
     # Annotate the axes.
     axes.set_title('Enphase Gateway Meters\n')
     axes.set_xlabel('Time')
     axes.set_ylabel('Watts')
 
+    # Plot the data.
+    axes.plot(timestampData, productionData, c='#EC5E29', label='Production')
+    axes.plot(timestampData, consumptionData, c='#1787AD', label='Consumption')
+    axes.axhline(linewidth=0.3, color='k')
+
+    # Add a scatter point at the end.
     axes.scatter(timestampData[-1], productionData[-1], c='#EC5E29')
     axes.scatter(timestampData[-1], consumptionData[-1], c='#1787AD')
 
-    axes.text(timestampData[-1], productionData[-1] + 10, str(productionData[-1]) + ' W')
-    axes.text(timestampData[-1], consumptionData[-1] + 10, str(consumptionData[-1]) + ' W')
+    # Label the most recent result (at the end).
+    axes.annotate(str(productionData[-1]) + ' W', xy=(timestampData[-1], productionData[-1]), xytext=(0, 5), textcoords='offset points')
+    axes.annotate(str(consumptionData[-1]) + ' W', xy=(timestampData[-1], consumptionData[-1]), xytext=(0, 5), textcoords='offset points')
 
+    # Display the legend.
     axes.legend()
 
     # Remove spines.
     axes.spines[['left','right','top']].set_visible(False)
 
-    # Need to set xlimit range for text to render.
-    if len(timestampData) > 1: axes.set_xlim([timestampData[0], timestampData[-1] + datetime.timedelta(0,1)])
-
     # Configure the axes' grid.
-    axes.set_axisbelow(True)
     axes.yaxis.grid(linestyle='dashed', alpha=0.8)
 
 # Load credentials.
@@ -143,7 +142,7 @@ else:
 # Are we able to login to the gateway?
 if gateway.login(credentials['Token']):
     # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
-    metersStatus = gateway.apiCall('/ivp/meters')
+    metersStatus = gateway.api_call('/ivp/meters')
 
     # The lists which will hold the data.
     timestampData = []
@@ -153,7 +152,7 @@ if gateway.login(credentials['Token']):
     # The figure.
     figure = plt.figure('Enphase Gateway Meters', figsize=(12,6), facecolor='#DEDEDE')
 
-    # The axes or chart.
+    # The axes (or chart).
     axes = figure.subplots()
     axes.set_facecolor('#DEDEDE')
 

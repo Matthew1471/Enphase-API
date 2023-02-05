@@ -115,4 +115,20 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === Streams
 
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Stream/Meter.adoc[Stream/Meter]`
+|`/stream/meter`
+|Obtain a continuous stream of meter readings.
+
+|`link:Stream/PSD.adoc[Stream/PSD]`
+|`/stream/psd`
+|Obtain a continuous stream of Power-Spectral-Density analysis of the Power-Line Communication (PLC).
+
+|===
+
 === V1

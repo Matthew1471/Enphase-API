@@ -158,7 +158,7 @@ if gateway.login(credentials['Token']):
             # Sometimes a request will intermittently fail and in this event we retry.
             try:
                 # Get Gateway status.
-                production_json = gateway.apiCall('/production.json')
+                production_json = gateway.api_call('/production.json')
 
                 # We generate text colours for production thresholds within the HSV scale based off the number of microinverter devices (which should correspond to overall system size).
                 number_of_microinverters = production_json['production'][0]['activeCount']

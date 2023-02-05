@@ -87,5 +87,8 @@ class Gateway:
         # Check the response is positive.
         return response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
 
-    def apiCall(self, path):
+    def api_call(self, path):
         return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS).json()
+    
+    def api_call_stream(self, path):
+        return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)
