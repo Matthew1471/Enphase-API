@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-A HTTP GET to `/stream/meter` can be used to get 22 "https://en.wikipedia.org/wiki/Server-sent_events[Server-Sent Events (SSE)]" (MIME type `text/event-stream`) formatted objects of the meter data every 22 seconds. This is presumably due to the Gateway polling every second but buffering the data. This can be consumed by the `EventSource` JavaScript API.
+A HTTP GET to `/stream/meter` can be used to get 22 "https://en.wikipedia.org/wiki/Server-sent_events[Server-Sent Events (SSE)]" (MIME type `text/event-stream`) formatted objects of the meter data every 22 seconds. This is presumably due to the Gateway polling every second but buffering the data (potentially a 16 KB = 16384 byte buffer?). This can be consumed by the `EventSource` JavaScript API.
 
 == Introduction
 

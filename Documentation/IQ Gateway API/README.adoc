@@ -81,27 +81,27 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Home.adoc[Home]`
+|`link:General/Home.adoc[Home]`
 |`/home.json`
 |Obtain a summary of the gateway status.
 
-|`link:Info.adoc[Info]`
+|`link:General/Info.adoc[Info]`
 |`/info.json`
 |Obtain a summary of the gateway's software status.
 
-|`link:Inventory.adoc[Inventory]`
+|`link:General/Inventory.adoc[Inventory]`
 |`/inventory.json`
 |
 
-|`link:Production.adoc[Production]`
+|`link:General/Production.adoc[Production]`
 |`/production.json`
 |Obtain production data.
 
-|`link:Provision.adoc[Provision]`
+|`link:General/Provision.adoc[Provision]`
 |`/provision.json`
 |
 
-|`link:Upload.adoc[Upload]`
+|`link:General/Upload.adoc[Upload]`
 |`/upload.json`
 |
 
@@ -109,9 +109,81 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === Installer
 
+==== Advanced Grid Functionality (AGF)
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Installer/AGF/Details.adoc[AGF/Details]`
+|`/installer/agf/`
+|???
+
+|`link:Installer/AGF/Index.adoc[AGF/Index]`
+|`/installer/agf/`
+|???
+
+|`link:Installer/AGF/Inverters_Phase.adoc[AGF/Inverters_Phase]`
+|`/installer/agf/`
+|???
+
+|`link:Installer/AGF/Inverters_Status.adoc[AGF/Inverters_Status]`
+|`/installer/agf/`
+|???
+
+|`link:Installer/AGF/Set_Profile.adoc[AGF/Set_Profile]`
+|`/installer/agf/set_profile.json`
+|Set the Advanced Grid Functionality (AGF) profile.
+
+|`link:Installer/AGF/Upload_Profile_Package.adoc[AGF/Upload_Profile_Package]`
+|`/installer/agf/`
+|???
+
+|===
+
+==== Installer General
+
+[cols="1,1,2", options="header"] 
+|===
+|Name
+|URI
+|Description
+
+|`link:Installer/PCU_Comm_Check.adoc[PCU_Comm_Check]`
+|`/installer/`
+|???
+
+|`link:Installer/SSH_Revoke_List.adoc[SSH_Revoke_List]`
+|`/installer/`
+|???
+
+|`link:Installer/Upgrade_Start.adoc[Upgrade_Start]`
+|`/installer/`
+|???
+
+|`link:Installer/Upgrade_Status.adoc[Upgrade_Status]`
+|`/installer/`
+|???
+
+|`link:Installer/Upload.adoc[Upload]`
+|`/installer/`
+|???
+
+|`link:Installer/xapi.adoc[xapi]`
+|`/installer/`
+|???
+
+|===
+
 === IVP
 
+To be completed.
+
 === Lib
+
+To be completed.
 
 === Streams
 
@@ -132,3 +204,5 @@ More details on the project are available from the link:../../README.adoc[projec
 |===
 
 === V1
+
+To be completed.

@@ -1,0 +1,93 @@
+= Installer/AGF/Set_Profile
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+A HTTP PUT to `/installer/agf/set_profile.json` with JSON content (sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`) can be used to set an Advanced Grid Functionality (AGF) profile.
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../README.adoc[project's homepage].
+
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Request Content
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`selected_profile`
+|String
+|Profile
+|The selected Advanced Grid Functionality (AGF) profile to set.
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"] 
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`message`
+|String
+|String
+|A string containing the response for the request.
+
+|===
+
+== Examples
+
+=== Put AGF Profile Example
+
+.PUT */installer/agf/set_profile.json* Request
+[source,json,subs="+quotes"]
+----
+{"selected_profile":"G99-1-6:2020 UK:1.2.10"}
+----
+
+.PUT */installer/agf/set_profile.json* Response
+[source,json,subs="+quotes"]
+----
+{
+  "message": "/ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10  'selected_profile': 'G99-1-6:2020 UK:1.2.10' accepted."
+}
+----
