@@ -37,9 +37,57 @@ More details on the project are available from the link:../../README.adoc[projec
 
 == Endpoints
 
+=== Admin
+
+==== Admin - Lib
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:Admin/Lib/ACB_Config.adoc[ACB_Config]`
+|`/admin/lib/acb_config.json`
+|Get/Set/Cancel AC Battery(/Batteries) Sleep Mode.
+
+|`link:Admin/Lib/Admin_DCC_Display.adoc[Admin_DCC_Display]`
+|`/admin/lib/admin_dcc_display.json`
+|Clear a Ground Fault Interrupt (GFI).
+
+|`link:Admin/Lib/Admin_PMU_Display.adoc[Admin_PMU_Display]`
+|`/admin/lib/admin_pmu_display.json`
+|Add or read a Power Meter Unit (PMU).
+
+|`link:Admin/Lib/Date_Time_Display.adoc[Date_Time_Display]`
+|`/admin/lib/date_time_display.json`
+|Get or set date, time and timezone.
+
+|`link:Admin/Lib/DBA.adoc[DBA]`
+|`/admin/lib/dba.json`
+|Get or set the Enphase De-Bug Access tunnel state.
+
+|`link:Admin/Lib/Network_Display.adoc[Network_Display]`
+|`/admin/lib/network_display.json`
+|Get/Set network information.
+
+|`link:Admin/Lib/Security_Display.adoc[Security_Display]`
+|`/admin/lib/security_display.json`
+|Change password (legacy).
+
+|`link:Admin/Lib/Tariff.adoc[Tariff]`
+|`/admin/lib/tariff.json`
+|Get or set the tariff settings.
+
+|`link:Admin/Lib/Wireless_Display.adoc[Wireless_Display]`
+|`/admin/lib/wireless_display.json`
+|Get or set the wireless settings.
+
+|===
+
 === Authentication
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -53,7 +101,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === Data Tables
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -75,7 +123,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === General
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -109,9 +157,9 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === Installer
 
-==== Advanced Grid Functionality (AGF)
+==== Installer - Advanced Grid Functionality (AGF)
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -143,9 +191,9 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== Installer General
+==== Installer - General
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -179,15 +227,149 @@ More details on the project are available from the link:../../README.adoc[projec
 
 === IVP
 
-To be completed.
+==== IVP - ADC
 
-=== Lib
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
 
-To be completed.
+|===
+
+==== IVP - ARF
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - EH
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Ensemble
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Firmware Manager
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - General
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Grest
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Live Data
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Meters
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Mod
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - Power Electronics Blocks
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - SS
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - TPM
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
+
+==== IVP - ZigBee
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|===
 
 === Streams
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |URI
@@ -205,4 +387,14 @@ To be completed.
 
 === V1
 
-To be completed.
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:V1/Production/Inverters.adoc[V1/Production/Inverters]`
+|`/api/v1/production/inverters`
+|Obtain the micro-inverter energy production information.
+
+|===
