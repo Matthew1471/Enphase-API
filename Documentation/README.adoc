@@ -49,6 +49,8 @@ The following documentation is provided by this project:
 
 * link:IQ%20Gateway%20API/README.adoc[IQ Gateway API] 
 
+Enphase(R) also have a brief document on the local API at link:https://enphase.com/download/accessing-iq-gateway-local-apis-or-local-ui-token-based-authentication[Accessing IQ Gateway local APIs or local UI with token-based authentication] but not all of the API or any of the fields are described.
+
 === Cloud API
 
 This is mostly best documented by Enphase(R) themselves at their https://developer-v4.enphase.com/docs.html[developer documentation website]. The author of this documentation is not currently licensed to use the cloud based Developer API.

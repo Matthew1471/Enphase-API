@@ -93,7 +93,7 @@ def animate(i):
     axes.cla()
 
     # Annotate the axes.
-    axes.set_title('Enphase Gateway Meters\n')
+    axes.set_title('Enphase® Gateway Meters\n')
     axes.set_xlabel('Time')
     axes.set_ylabel('Watts')
 
@@ -124,7 +124,7 @@ with open('configuration\\credentials_token.json', 'r') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-if not credentials['Token'] and not Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber']):
+if not (credentials.get('Token') or Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
     # It is not valid so clear it.
     raise ValueError('No or expired token.')
 
@@ -132,7 +132,7 @@ if not credentials['Token'] and not Authentication.check_token_valid(credentials
 if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
 
 # Did the user override the library default hostname to the Gateway?
-if credentials['Host']:
+if credentials.get('Host'):
     # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
     gateway = Gateway(credentials['Host'])
 else:
@@ -150,7 +150,7 @@ if gateway.login(credentials['Token']):
     consumptionData = []
 
     # The figure.
-    figure = plt.figure('Enphase Gateway Meters', figsize=(12,6), facecolor='#DEDEDE')
+    figure = plt.figure('Enphase® Gateway Meters', figsize=(12,6), facecolor='#DEDEDE')
 
     # The axes (or chart).
     axes = figure.subplots()
@@ -164,4 +164,4 @@ if gateway.login(credentials['Token']):
 
 else:
     # Let the user know why the program is exiting.
-    print('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+    raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')

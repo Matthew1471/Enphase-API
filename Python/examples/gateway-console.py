@@ -41,28 +41,33 @@ with open('configuration\\credentials.json', 'r') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-if credentials['Token']:
+if credentials.get('Token'):
     # Check if the JWT is valid.
     if not Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber']):
         # It is not valid so clear it.
         credentials['Token'] = None
 
 # Do we still not have a Token?
-if not credentials['Token']:
-    # Create a Authentication object.
-    authentication = Authentication()
+if not credentials.get('Token'):
+    # Do we have a way to obtain a token?
+    if credentials.get('EnphaseUsername') and credentials.get('EnphasePassword'):
+        # Create a Authentication object.
+        authentication = Authentication()
 
-    # Authenticate with Entrez (French for "Access").
-    if not authentication.authenticate(credentials['EnphaseUsername'], credentials['EnphasePassword']):
-        raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
+        # Authenticate with Entrez (French for "Access").
+        if not authentication.authenticate(credentials['EnphaseUsername'], credentials['EnphasePassword']):
+            raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
 
-    #print(authentication.get_site('Matthew1471'))
+        #print(authentication.get_site('Matthew1471'))
+    else:
+        # Let the user know why the program is exiting.
+        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
 # Download and store the certificate from the gateway so all future requests are secure.
 if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
 
 # Did the user override the library default hostname to the Gateway?
-if credentials['Host']:
+if credentials.get('Host'):
     # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
     gateway = Gateway(credentials['Host'])
 else:
@@ -182,4 +187,4 @@ if gateway.login(credentials['Token']):
 
 else:
     # Let the user know why the program is exiting.
-    print('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+    raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')

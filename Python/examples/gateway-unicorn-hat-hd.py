@@ -113,7 +113,7 @@ with open(os.path.join('configuration','credentials_token.json'), 'r') as json_f
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-if not credentials['Token'] and not Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber']):
+if not (credentials.get('Token') and Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
     # It is not valid so clear it.
     raise ValueError('No or expired token.')
 
@@ -121,7 +121,7 @@ if not credentials['Token'] and not Authentication.check_token_valid(credentials
 if args.host:
     # Get an instance of the Gateway API wrapper object (using the argument hostname).
     gateway = Gateway(args.host)
-elif credentials['Host']:
+elif credentials.get('Host'):
     # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
     gateway = Gateway(credentials['Host'])
 else:
@@ -192,19 +192,29 @@ if gateway.login(credentials['Token']):
                 w_now = 0
                 next_reading_time = time.time() + 60
                 line = 'Error'
-            # Sometimes the Gateway can fail to respond properly.
-            except http.client.RemoteDisconnected:
+            # This happens generally if there are wider issues on the network.
+            except requests.exceptions.ReadTimeout:
                 # Log this non-critial often transient error.
-                print('{} - The Gateway abruptly disconnected..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+                print('{} - Request timed out..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
 
                 # Set the variables to allow the program to continue drawing.
                 number_of_microinverters = 1
                 w_now = 0
                 next_reading_time = time.time() + 60
                 line = 'Error'
-            except json.JSONDecodeError:
+            except requests.exceptions.JSONDecodeError:
                 # Log this non-critial often transient error.
                 print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+
+                # Set the variables to allow the program to continue drawing.
+                number_of_microinverters = 1
+                w_now = 0
+                next_reading_time = time.time() + 60
+                line = 'Error'
+            # Sometimes the Gateway can fail to respond properly.
+            except http.client.RemoteDisconnected as exception:
+                # Log this non-critial often transient error.
+                print('{} - The Gateway abruptly disconnected..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
                 # Set the variables to allow the program to continue drawing.
                 number_of_microinverters = 1
@@ -266,4 +276,4 @@ if gateway.login(credentials['Token']):
 # Token is not valid and this program will not refresh it (this program is not given the Enphase® username and password).
 else:
     # Let the user know why the program is exiting.
-    print('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+    raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
