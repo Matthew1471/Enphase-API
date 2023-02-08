@@ -357,9 +357,9 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/ivp/ensemble/status`
 |Get Enphase(R) Energy System (formerly "Ensemble") status.
 
-|`link:IVP/Ensemble/Submod.adoc[Submod]`
+|`link:IVP/Ensemble/Submod.adoc[Submodules]`
 |`/ivp/ensemble/submod`
-|Get Enphase(R) Energy System (formerly "Ensemble") submod.
+|Get Enphase(R) Energy System (formerly "Ensemble") submodules.
 
 |===
 

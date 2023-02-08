@@ -105,7 +105,7 @@ if not args.emulate_HAT:
     # This program requires a Unicorn HAT HD (https://shop.pimoroni.com/products/unicorn-hat-hd)
     import unicornhathd
 else:
-    # Alternatively you simulate a Unicorn HAT HD ("pip install unicorn-hat-sim").
+    # Alternatively you can simulate a Unicorn HAT HD ("pip install unicorn-hat-sim").
     from unicorn_hat_sim import unicornhathd
 
 # Load credentials.

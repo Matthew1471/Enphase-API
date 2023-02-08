@@ -68,6 +68,16 @@ WARNING: A token behaves like a time limited version of your username and passwo
 |Will attempt to refresh any expired tokens.
 |Displays production data on the console/terminal then exists.
 
+|`gateway-database-meters.py`
+|`credentials_token.json`
+|Requires an existing valid token, will not refresh it. Requires `mysql.connector` package.
+|Obtains meter information and stores it in a MySQL database for consumption and statistics in other systems.
+
+|`gateway-pyplot-meters.py`
+|`credentials_token.json`
+|Requires an existing valid token, will not refresh it. Requires `matplotlib` package.
+|Displays production and consumption data in a chart using PyPlot.
+
 |`gateway-unicorn-hat-hd.py`
 |`credentials_token.json`
 |Requires an existing valid token, will not refresh it. Requires `pillow` and `unicornhathd` packages.
