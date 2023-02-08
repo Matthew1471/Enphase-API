@@ -224,7 +224,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |Upload a file to the gateway or Energy Management Unit (EMU).
 
 |`link:Installer/xapi.adoc[xapi]`
-|`/installer/xapi`
+|`+++<s>+++/installer/xapi+++</s>+++`
 |Legacy API providing `api_version`, `upgrade_init`, `upgrade_status`, `restart_page_process`, `auxup` (start file upload server), `upgrade_start` (start an upgrade), `upgrade_resume` (resume an upgrade), `update_profile_key`, `upload` (upload a file).
 
 |===
@@ -290,16 +290,8 @@ More details on the project are available from the link:../../README.adoc[projec
 |IQ System Controller (formerly "Enpower") and IQ Battery (formerly "Encharge Storage") communication check.
 
 |`link:IVP/Ensemble/DataRaw.adoc[Data Raw]`
-|`/ivp/ensemble/dataraw/{serial_number}`
-|Get IQ Battery (formerly "Encharge Storage") raw data.
-
-|`link:IVP/Ensemble/DataRaw.adoc[Data Raw]`
-|`/ivp/ensemble/dataraw/{id}`
-|Get Enphase(R) Energy System (formerly "Ensemble") raw data.
-
-|`link:IVP/Ensemble/DataRaw.adoc[Data Raw]`
-|`/ivp/ensemble/dataraw/{id}`
-|Get IQ System Controller (formerly "Enpower") manual override status.
+|`/ivp/ensemble/dataraw/{EID}`
+|Get Enphase(R) Energy System (formerly "Ensemble") raw data, IQ Battery (formerly "Encharge Storage") raw data or IQ System Controller (formerly "Enpower") manual override status.
 
 |`link:IVP/Ensemble/Decommission.adoc[Decommission]`
 |`/ivp/ensemble/decommission`
@@ -307,7 +299,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Ensemble/Device_List.adoc[Device List]`
 |`/ivp/ensemble/device_list`
-|Get Enphase® Energy System (formerly "Ensemble") CAN device status.
+|Get Enphase(R) Energy System (formerly "Ensemble") CAN device status.
 
 |`link:IVP/Ensemble/Device_Provision.adoc[Device Provision]`
 |`/ivp/ensemble/device_provision`
@@ -411,7 +403,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters.adoc[Meters]`
 |`/ivp/meters`
-|Get internal meter information.
+|Get or set internal meter configuration.
 
 |===
 
@@ -451,7 +443,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - Meters
+==== IVP - Meters - CTS
 
 [cols="1,1,2", options="header"]
 |===
@@ -459,9 +451,62 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|
-|`/ivp/meters/cts/EID`
-|Update specific meter (EID)'s current CT clamp configuration.
+|`link:IVP/Meters/CTS/EID.adoc[Update EID]`
+|`/ivp/meters/cts/{EID}`
+|Update specific meter's (by EID) current CT clamp configuration.
+
+|===
+
+==== IVP - Meters - General
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/Meters/CTReversal.adoc[CT Reversal]`
+|`/ivp/meters/ctreversal/{EID}`
+|Get or set specific meter's (by EID) current CT clamp reverse polarity configuration.
+
+|`link:IVP/Meters/CTS.adoc[CT Settings]`
+|`/ivp/meters/cts`
+|Get internal meter's current CT clamp settings.
+
+|`link:IVP/Meters/EID.adoc[Meter Settings]`
+|`/ivp/meters/{EID}`
+|Get or set a specific meter's (by EID) configuration.
+
+|`link:IVP/Meters/Readings.adoc[Readings]`
+|`/ivp/meters/readings`
+|Get meter's readings.
+
+|`link:IVP/Meters/Reports.adoc[Meter Readings]`
+|`/ivp/meters/reports/`
+|Returns meter reading information (may be legacy).
+
+|`link:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
+|`/ivp/meters/storage_setting`
+|Get or set storage CT status.
+
+|===
+
+
+==== IVP - Meters - Reports
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Meter Reading]`
+|`/ivp/meters/reports/consumption`
+|Returns consumption meter reading information (may be legacy).
+
+|`link:IVP/Meters/Reports/Production.adoc[Production Meter Reading]`
+|`/ivp/meters/reports/production`
+|Returns production meter reading information (may be legacy).
 
 |===
 
@@ -473,6 +518,10 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
+|`link:IVP/Mod/Power.adoc[Power Mode]`
+|`/ivp/mod/{EID}/mode/power`
+|Get or set the power production power state for this `envoyDevId` (where EID appears hardcoded as 603980032).
+
 |===
 
 ==== IVP - Power Electronics Blocks (PEB)
@@ -482,6 +531,18 @@ More details on the project are available from the link:../../README.adoc[projec
 |Name
 |URI
 |Description
+
+|`link:IVP/PEB/DevStatus.adoc[Device Status]`
+|`/ivp/peb/devstatus`
+|Get device status.
+
+|`link:IVP/PEB/NewScan.adoc[New Scan]`
+|`/ivp/peb/newscan`
+|Start, stop or get the results of a new scan for devices.
+
+|`link:IVP/PEB/ReportSettings.adoc[Report Settings]`
+|`/ivp/peb/reportsettings`
+|Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten Cloud").
 
 |===
 
@@ -493,6 +554,10 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
+|`link:IVP/SC/Sched.adoc[Sched]`
+|`/ivp/sc/sched`
+|Set Encharge charging/discharging status.
+
 |===
 
 ==== IVP - Smart Switch (SS)
@@ -503,9 +568,76 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|Distributed Energy Resource (DER) Settings
-|
-|
+|`link:IVP/SS/DER_Settings.adoc[Distributed Energy Resource (DER) Settings]`
+|`/ivp/ss/der_settings`
+|Get or set Distributed Energy Resource (DER) settings.
+
+|`link:IVP/SS/dpel.adoc[dpel]`
+|`+++<s>+++/ivp/ss/dpel+++</s>+++`
+|Get or set Device Power Export Limits (PEL) settings (Legacy, replaced by AGF).
+
+|`link:IVP/SS/Dry_Contact_Settings.adoc[Dry Contact Settings]`
+|`/ivp/ss/dry_contact_settings`
+|Get or set dry contact settings.
+
+|`link:IVP/SS/ENC_Settings.adoc[ENC Settings]`
+|`/ivp/ss/enc_settings`
+|Update limit power output.
+
+|`link:IVP/SS/Gen_Config.adoc[Generator Configuration]`
+|`/ivp/ss/gen_config`
+|Get or set generator configuration.
+
+
+|`link:IVP/SS/Gen_Delete.adoc[Generator Delete]`
+|`/ivp/ss/gen_delete`
+|Delete generator.
+
+|`link:IVP/SS/Gen_Mode.adoc[Generator Mode]`
+|`ivp/ss/gen_mode`
+|Get or set generator's status for toggle switch.
+
+|`link:IVP/SS/Gen_Profile.adoc[Generator Profile]`
+|`/ivp/ss/gen_profile`
+|Get or set generator's profile.
+
+|`link:IVP/SS/Gen_Schedule.adoc[Generator Schedule]`
+|`/ivp/ss/gen_schedule`
+|Get or set generator schedule.
+
+|`link:IVP/SS/Generator_Meter_Enable.adoc[Generator Meter Enable]`
+|`/ivp/ss/generator_meter_enable`
+|Set generator meter state.
+
+|`link:IVP/SS/Load_Control.adoc[Load Control]`
+|`/ivp/ss/load_control`
+|Add load control kits.
+
+|`link:IVP/SS/PCS_Settings.adoc[Power Control System (PCS) Settings]`
+|`/ivp/ss/pcs_settings`
+|Get or set Power Control System (PCS) details.
+
+|`link:IVP/SS/PEL_Settings.adoc[Power Export Limits (PEL) Settings]`
+|`/ivp/ss/pel_settings`
+|Get Power Export Limits (PEL) data.
+
+|`link:IVP/SS/Sys_Phase_Balance.adoc[System Phase Balance]`
+|`/ivp/ss/sys_phase_balance`
+|Send phase information.
+
+|===
+
+==== IVP - Smart Switch (SS) - Third Party (Legacy)
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/SS/Third%20Party/PV.adoc[PV]`
+|`+++<s>+++/ivp/ss/third_party/pv+++</s>+++`
+|Get, set or delete third-party PV information.
 
 |===
 
@@ -517,6 +649,22 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
+|`link:IVP/TPM/Capability.adoc[Capability]`
+|`+++<s>+++/ivp/tpm/capability+++</s>+++`
+|Trip Point Management (TPM) capability.
+
+|`link:IVP/TPM/Parameters.adoc[Parameters]`
+|`+++<s>+++/ivp/tpm/parameters+++</s>+++`
+|Trip Point Management (TPM) parameters.
+
+|`link:IVP/TPM/Select.adoc[Select]`
+|`+++<s>+++/ivp/tpm/select+++</s>+++`
+|Trip Point Management (TPM) select.
+
+|`link:IVP/TPM/TPMStatus.adoc[TPM Status]`
+|`+++<s>+++/ivp/tpm/tpmstatus+++</s>+++`
+|Trip Point Management (TPM) status.
+
 |===
 
 ==== IVP - ZigBee
@@ -526,6 +674,26 @@ More details on the project are available from the link:../../README.adoc[projec
 |Name
 |URI
 |Description
+
+|`link:IVP/ZB/Pairing_Status.adoc[Pairing Status]`
+|`/ivp/zb/pairing_status`
+|Get Enphase(R) Energy System (formerly "Ensemble") pairing status.
+
+|`link:IVP/ZB/Provision.adoc[Provision]`
+|`/ivp/zb/provision`
+|Set or delete Enphase(R) Energy System (formerly "Ensemble") devices.
+
+|`link:IVP/ZB/Reset_Device.adoc[Reset Device]`
+|`/ivp/zb/reset_device`
+|Reset device for "IQ System Controller" (formerly "Enpower") manual override.
+
+|`link:IVP/ZB/Set_Phase.adoc[Set Phase]`
+|`/ivp/zb/set_phase`
+|Update IQ Battery (formerly "Encharge Storage") phase.
+
+|`link:IVP/ZB/Status.adoc[Status]`
+|`/ivp/zb/status`
+|Get ZigBee status.
 
 |===
 
