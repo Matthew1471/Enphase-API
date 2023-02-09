@@ -16,10 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import datetime # We timestamp any errors.
-import json     # This script makes heavy use of JSON parsing.
-import os.path  # We check whether a file exists.
-import sys      # We write to stderr.
+import datetime    # We timestamp any errors.
+import http.client # We handle a RemoteDisconnected exception.
+import json        # This script makes heavy use of JSON parsing.
+import os.path     # We check whether a file exists.
+import sys         # We write to stderr.
 
 import matplotlib.pyplot as plt          # Third party library; "pip install matplotlib"
 import matplotlib.animation as animation # We use matplotlib animations for live data.
@@ -30,7 +31,7 @@ import requests.exceptions               # We handle some of the exceptions we m
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
-def animate(i):
+def animate(_):
     # Sometimes a request will intermittently fail and in this event we retry.
     try:
         # Get gateway production, consumption and storage status.
@@ -120,7 +121,7 @@ def animate(i):
     axes.yaxis.grid(linestyle='dashed', alpha=0.8)
 
 # Load credentials.
-with open('configuration\\credentials_token.json', 'r') as json_file:
+with open('configuration\\credentials_token.json', mode='r', encoding='utf-8') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?

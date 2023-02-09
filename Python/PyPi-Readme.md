@@ -17,7 +17,7 @@ $ python -m pip install Enphase_API
 
 ## Documentation
 
-The documentation for the wrapper and the API itself is at [Enphase-API Documentation GitHub](https://github.com/Matthew1471/Enphase-API/tree/main/Documentation/README.adoc)
+The documentation for the wrapper and the API itself is at [Enphase-API Documentation GitHub](https://github.com/Matthew1471/Enphase-API/blob/main/Documentation/README.adoc)
 
 ## Copyright and License
 
@@ -46,7 +46,7 @@ Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3
 or any later version published by the Free Software Foundation;
 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-A copy of the license is included in the file [Enphase-API Documentation License](https://github.com/Matthew1471/Enphase-API/tree/main/Documentation/LICENSE.md).
+A copy of the license is included in the file [Enphase-API Documentation License](https://github.com/Matthew1471/Enphase-API/blob/main/Documentation/LICENSE.md).
 
 ## Authors
 

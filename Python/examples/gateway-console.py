@@ -37,7 +37,7 @@ def get_human_readable_power(watts, inHours = False):
         return '{} kW{}'.format(round(watts / 1000, 2), 'h' if inHours else '')
 
 # Load credentials.
-with open('configuration\\credentials.json', 'r') as json_file:
+with open('configuration\\credentials.json', mode='r', encoding='utf-8') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -128,7 +128,7 @@ if gateway.login(credentials['Token']):
     productionStatisticsInverters = [productionStatistic for productionStatistic in productionStatistics['production'] if productionStatistic['type'] == 'inverters'][0]
 
     # Generate the status (with emojis if runtime is utf-8 capable).
-    status  = u'\n{} Inverters {} ({} Inverters)'.format(stringNames['Production'], get_human_readable_power(productionStatisticsInverters['wNow']), productionStatisticsInverters['activeCount'])
+    status  = '\n{} Inverters {} ({} Inverters)'.format(stringNames['Production'], get_human_readable_power(productionStatisticsInverters['wNow']), productionStatisticsInverters['activeCount'])
 
     # Used to calculate the microinverter automatic polling interval (gateway polls microinverters automatically every 5 minutes).
     mostRecentInverterData = None
@@ -138,35 +138,35 @@ if gateway.login(credentials['Token']):
 
     # Get panel by panel status.
     for inverterStatistic in invertersStatistics:
-        status += u'\n  {} {} W (Serial: {}, Last Seen: {})'.format(stringNames['Microinverter'], inverterStatistic['lastReportWatts'], inverterStatistic['serialNumber'], datetime.datetime.fromtimestamp(inverterStatistic['lastReportDate']))
+        status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(stringNames['Microinverter'], inverterStatistic['lastReportWatts'], inverterStatistic['serialNumber'], datetime.datetime.fromtimestamp(inverterStatistic['lastReportDate']))
 
         # Used to calculate the microinverter polling interval (gateway polls microinverters every 5 minutes).
         if not mostRecentInverterData or mostRecentInverterData < datetime.datetime.fromtimestamp(inverterStatistic['lastReportDate']): mostRecentInverterData = datetime.datetime.fromtimestamp(inverterStatistic['lastReportDate'])
 
     # This will always be present (even without a production meter).
-    status += u'\n{} Total Generated {}'.format(stringNames['Lifetime'], get_human_readable_power(productionStatisticsInverters['whLifetime'], True))
+    status += '\n{} Total Generated {}'.format(stringNames['Lifetime'], get_human_readable_power(productionStatisticsInverters['whLifetime'], True))
 
     # This requires a configured Production meter.
     if eimProductionWNow != None:
 
         # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
-        status += u'\n\n{} Current Production {}'.format(stringNames['Meter'], get_human_readable_power(max(0, eimProductionWNow)).rjust(9, ' '))
+        status += '\n\n{} Current Production {}'.format(stringNames['Meter'], get_human_readable_power(max(0, eimProductionWNow)).rjust(9, ' '))
 
         # The production meter needs to have been running for at least a day for this to be non-zero.
         if eimProductionWhToday:
-            status += u' ({} Today'.format(get_human_readable_power(eimProductionWhToday, True))
+            status += ' ({} Today'.format(get_human_readable_power(eimProductionWhToday, True))
 
             # The production meter has to have been running for at least 7 days for this to be non-zero.
-            if eimProductionWhLast7Days: status += u' / {} Last 7 Days'.format(get_human_readable_power(eimProductionWhLast7Days, True))
+            if eimProductionWhLast7Days: status += ' / {} Last 7 Days'.format(get_human_readable_power(eimProductionWhLast7Days, True))
 
-            status += u')'
+            status += ')'
 
     # This requires a configured Consumption meter.
     if eimConsumptionWNow:
-        status += u'\n{} Current Consumption {}'.format(stringNames['Meter'], get_human_readable_power(eimConsumptionWNow).rjust(8, ' '))
+        status += '\n{} Current Consumption {}'.format(stringNames['Meter'], get_human_readable_power(eimConsumptionWNow).rjust(8, ' '))
 
         # The consumption meter needs to have been running for at least a day for this to be non-zero.
-        if eimConsumptionWhToday: status += u' ({} today)'.format(get_human_readable_power(eimConsumptionWhToday, True))
+        if eimConsumptionWhToday: status += ' ({} today)'.format(get_human_readable_power(eimConsumptionWhToday, True))
 
     # This was when the poll of all the microinverters had completed.
     invertersReadingTime = productionStatisticsInverters['readingTime']
@@ -177,10 +177,10 @@ if gateway.login(credentials['Token']):
         nextRefreshTime = datetime.datetime.fromtimestamp(invertersReadingTime) + datetime.timedelta(minutes=5)
 
         # Print when the next update will be available.
-        status += u'\n\n{}Data Will Next Be Refreshed At {}'.format(stringNames['Details'], nextRefreshTime.time())
+        status += '\n\n{}Data Will Next Be Refreshed At {}'.format(stringNames['Details'], nextRefreshTime.time())
     else:
         # Print when the last microinverter reported back to the gateway.
-        status += u'\n\n{}The Last Microinverter Reported At {}'.format(stringNames['Details'], mostRecentInverterData)
+        status += '\n\n{}The Last Microinverter Reported At {}'.format(stringNames['Details'], mostRecentInverterData)
 
     # Output to the console.
     print(status)

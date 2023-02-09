@@ -16,9 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# We use JSON to parse tokens and our token file storage.
-import json
-
 # We check if a file exists.
 import os
 
@@ -76,7 +73,7 @@ class Gateway:
         if not os.path.exists('configuration\\'): os.makedirs('configuration\\')
 
         # Save the Gateway's public certificate to disk.
-        with open('configuration\\gateway.cer', 'w') as file:
+        with open('configuration\\gateway.cer', mode='w', encoding='utf-8') as file:
             # Download the certificate from the host.
             file.write(ssl.get_server_certificate(addr=(parsed_host.hostname, parsed_host.port or 443)))
 

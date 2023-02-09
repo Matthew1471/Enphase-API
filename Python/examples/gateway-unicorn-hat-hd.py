@@ -109,7 +109,7 @@ else:
     from unicorn_hat_sim import unicornhathd
 
 # Load credentials.
-with open(os.path.join('configuration','credentials_token.json'), 'r') as json_file:
+with open(os.path.join('configuration','credentials_token.json'), mode='r', encoding='utf-8') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -214,7 +214,7 @@ if gateway.login(credentials['Token']):
             # Sometimes the Gateway can fail to respond properly.
             except http.client.RemoteDisconnected as exception:
                 # Log this non-critial often transient error.
-                print('{} - The Gateway abruptly disconnected..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+                print('{} - The Gateway abruptly disconnected..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
                 # Set the variables to allow the program to continue drawing.
                 number_of_microinverters = 1

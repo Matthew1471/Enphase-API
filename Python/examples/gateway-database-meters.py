@@ -17,7 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse # We support command line arguments.
-import datetime # We timestamp any errors.
+import datetime # We interpret and manipulate dates and times of readings.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
 import queue    # We use a queue as the response is buffered with no timestamps.
@@ -101,7 +101,7 @@ def main():
     args = parser.parse_args()
 
     # Load credentials.
-    with open('configuration\\credentials_token.json', 'r') as json_file:
+    with open('configuration\\credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -227,5 +227,5 @@ def main():
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
 
 # Launch the main method if invoked directly.
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
