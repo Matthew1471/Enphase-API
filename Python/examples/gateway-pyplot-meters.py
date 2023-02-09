@@ -42,16 +42,16 @@ def animate(i):
 
         # No point continuing this function.
         return
+    except requests.exceptions.JSONDecodeError:
+        # Log this non-critial often transient error.
+        print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+
+        # No point continuing this function.
+        return
     # Sometimes the Gateway can fail to respond properly.
     except http.client.RemoteDisconnected:
         # Log this non-critial often transient error.
         print('{} - The Gateway abruptly disconnected..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
-
-        # No point continuing this function.
-        return
-    except json.JSONDecodeError:
-        # Log this non-critial often transient error.
-        print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
 
         # No point continuing this function.
         return

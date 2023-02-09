@@ -25,6 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="examples\gateway-console.py" />
+    <Compile Include="examples\gateway-database-meters.py" />
     <Compile Include="examples\gateway-pyplot-meters.py" />
     <Compile Include="examples\gateway-unicorn-hat-hd.py" />
     <Compile Include="src\enphase_api\cloud\__init__.py" />
