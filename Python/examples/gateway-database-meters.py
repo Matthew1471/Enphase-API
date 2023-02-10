@@ -128,7 +128,7 @@ def main():
         # Connect to the MySQL/MariaDB database.
         database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database)
 
-        # Get a reference to a database cursor.
+        # Get references to 2 database cursors (that will prepare duplicate SQL statements).
         database_cursor_meter_reading = database_connection.cursor(prepared=True)
         database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
