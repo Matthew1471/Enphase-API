@@ -37,7 +37,7 @@ def get_human_readable_power(watts, inHours = False):
         return '{} kW{}'.format(round(watts / 1000, 2), 'h' if inHours else '')
 
 # Load credentials.
-with open('configuration\\credentials.json', mode='r', encoding='utf-8') as json_file:
+with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -64,7 +64,7 @@ if not credentials.get('Token'):
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
 # Download and store the certificate from the gateway so all future requests are secure.
-if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
+if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
 
 # Did the user override the library default hostname to the Gateway?
 if credentials.get('Host'):

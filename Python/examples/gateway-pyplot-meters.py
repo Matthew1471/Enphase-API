@@ -121,7 +121,7 @@ def animate(_):
     axes.yaxis.grid(linestyle='dashed', alpha=0.8)
 
 # Load credentials.
-with open('configuration\\credentials_token.json', mode='r', encoding='utf-8') as json_file:
+with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
     credentials = json.load(json_file)
 
 # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -130,7 +130,7 @@ if not (credentials.get('Token') or Authentication.check_token_valid(credentials
     raise ValueError('No or expired token.')
 
 # Download and store the certificate from the gateway so all future requests are secure.
-if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
+if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
 
 # Did the user override the library default hostname to the Gateway?
 if credentials.get('Host'):

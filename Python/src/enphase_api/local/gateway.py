@@ -50,10 +50,10 @@ class Gateway:
         self.session = requests.Session()
 
         # If there is a Gateway.cer file already available then we implement certificate pinning.
-        if os.path.exists('configuration\\gateway.cer'):
+        if os.path.exists('configuration/gateway.cer'):
 
             # Make the session verify all HTTPS requests with trust for this certficiate.
-            self.session.verify = 'configuration\\gateway.cer'
+            self.session.verify = 'configuration/gateway.cer'
 
             # Requests to this host will ignore the hostname in the certificate being incorrect.
             self.session.mount(self.host, enphase_api.local.ignoreHostnameAdapter.IgnoreHostnameAdapter())
@@ -73,7 +73,7 @@ class Gateway:
         if not os.path.exists('configuration\\'): os.makedirs('configuration\\')
 
         # Save the Gateway's public certificate to disk.
-        with open('configuration\\gateway.cer', mode='w', encoding='utf-8') as file:
+        with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
             # Download the certificate from the host.
             file.write(ssl.get_server_certificate(addr=(parsed_host.hostname, parsed_host.port or 443)))
 
@@ -86,6 +86,6 @@ class Gateway:
 
     def api_call(self, path):
         return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS).json()
-    
+
     def api_call_stream(self, path):
         return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)

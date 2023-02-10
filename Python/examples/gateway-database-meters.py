@@ -101,7 +101,7 @@ def main():
     args = parser.parse_args()
 
     # Load credentials.
-    with open('configuration\\credentials_token.json', mode='r', encoding='utf-8') as json_file:
+    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -110,7 +110,7 @@ def main():
         raise ValueError('No or expired token.')
 
     # Download and store the certificate from the gateway so all future requests are secure.
-    if not os.path.exists('configuration\\gateway.cer'): Gateway.trust_gateway()
+    if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
 
     # Did the user override the config or library default hostname to the Gateway?
     if args.host:

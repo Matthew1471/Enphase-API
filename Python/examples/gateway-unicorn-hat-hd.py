@@ -183,7 +183,7 @@ def main():
         from unicorn_hat_sim import unicornhathd
 
     # Load credentials.
-    with open(os.path.join('configuration','credentials_token.json'), mode='r', encoding='utf-8') as json_file:
+    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
@@ -220,7 +220,7 @@ def main():
             font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
         else:
             # https://ftp.gnu.org/gnu/freefont/
-            font_path = os.path.join('resources','FreeSansBold.ttf')
+            font_path = 'resources/FreeSansBold.ttf'
 
         # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
         # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
