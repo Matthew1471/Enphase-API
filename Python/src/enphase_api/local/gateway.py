@@ -70,7 +70,7 @@ class Gateway:
         parsed_host = urllib3.util.parse_url(host)
 
         # Create the configuration folder if it does not already exist.
-        if not os.path.exists('configuration\\'): os.makedirs('configuration\\')
+        if not os.path.exists('configuration/'): os.makedirs('configuration/')
 
         # Save the Gateway's public certificate to disk.
         with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
