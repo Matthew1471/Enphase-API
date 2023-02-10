@@ -55,7 +55,7 @@ from enphase_api.local.gateway import Gateway
 
 def get_human_readable_power(watts, inHours = False):
     # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
-    if abs(watts) < 1000:
+    if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
         return '{} W{}'.format(round(watts), 'h' if inHours else '')
     else:
@@ -77,58 +77,34 @@ def restricted_float(number):
     return number
 
 def get_production_text(gateway, maximum_watts_per_panel):
-    # Sometimes a request will intermittently fail and in this event we return error text.
-    try:
-        # Get Gateway status.
-        production_json = gateway.api_call('/production.json')
+    # Get Gateway status.
+    production_json = gateway.api_call('/production.json')
 
-        # We generate text colours for production thresholds within the HSV scale based off the number of microinverter devices (which should correspond to overall system size).
-        number_of_microinverters = production_json['production'][0]['activeCount']
+    # We generate text colours for production thresholds within the HSV scale based off the number of microinverter devices (which should correspond to overall system size).
+    number_of_microinverters = production_json['production'][0]['activeCount']
 
-        # Get a reference to just the inverters bit of the Production JSON.
-        inverters_json = production_json['production'][0]
+    # Get a reference to just the inverters bit of the Production JSON.
+    inverters_json = production_json['production'][0]
 
-        # Get the watts being generated now by the inverters.
-        w_now = inverters_json['wNow']
+    # Get the watts being generated now by the inverters.
+    w_now = inverters_json['wNow']
 
-        # The line of text we want to write on the screen.
-        line = get_human_readable_power(w_now)
+    # Calculate the colour of the text based off the production wattage.
+    color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
 
-        # Calculate the colour of the text based off the production wattage.
-        color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
+    # The inverters are polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
+    if inverters_json['readingTime'] != 0:
+        # Take the reading time and add 5 minutes (300 seconds).
+        next_reading_time = inverters_json['readingTime'] + 300
 
-        # The inverters are polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
-        if inverters_json['readingTime'] != 0:
-            # Take the reading time and add 5 minutes (300 seconds).
-            next_reading_time = inverters_json['readingTime'] + 300
+        # If the data is already stale try again in 60 seconds.
+        if next_reading_time <= time.time(): next_reading_time = time.time() + 60
+    else:
+        # We should try in 60 seconds.
+        next_reading_time = time.time() + 60
 
-            # If the data is already stale try again in 60 seconds.
-            if next_reading_time <= time.time(): next_reading_time = time.time() + 60
-        else:
-            # We should try in 60 seconds.
-            next_reading_time = time.time() + 60
-
-        # Return the response.
-        return line, color, next_reading_time
-
-    # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
-    except requests.exceptions.ConnectionError as exception:
-        # Log this error.
-        print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
-    # This happens generally if there are wider issues on the network.
-    except requests.exceptions.ReadTimeout:
-        # Log this non-critial often transient error.
-        print('{} - Request timed out..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
-    except requests.exceptions.JSONDecodeError:
-        # Log this non-critial often transient error.
-        print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
-    # Sometimes the Gateway can fail to respond properly.
-    except http.client.RemoteDisconnected as exception:
-        # Log this non-critial often transient error.
-        print('{} - The Gateway abruptly disconnected..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
-
-    # Return a red error response (with a suggested retry time of 60 seconds).
-    return 'Error', (255, 0, 0), time.time() + 60
+    # Return the response.
+    return w_now, color, next_reading_time
 
 def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed, end_time):
     # Calculate the width and height of the text when rendered by the font.
@@ -253,11 +229,51 @@ def main():
         try:
             # Repeat forever unless the user presses CTRL + C.
             while True:
-                # Get the text to display.
-                line, color, end_time = get_production_text(gateway=gateway, maximum_watts_per_panel=args.maximum_watts_per_panel)
+                # Sometimes a request will intermittently fail and in this event we return error text.
+                try:
+                    # Get the text to display.
+                    w_now, color, end_time = get_production_text(gateway=gateway, maximum_watts_per_panel=args.maximum_watts_per_panel)
 
-                # Display and scroll the production text on screen (until the end time).
-                draw_scrolling_text(unicornhathd=unicornhathd, line=line, color=color, font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=end_time)
+                    # Is there any power being generated?
+                    if w_now != 0:
+                        # The line of text we want to write on the screen is a wattage number to be formatted.
+                        line = get_human_readable_power(w_now)
+
+                        # Display and scroll the production text on screen (until the end time).
+                        draw_scrolling_text(unicornhathd=unicornhathd, line=line, color=color, font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=end_time)
+                    else:
+                        # Turn off the screen.
+                        unicornhathd.off()
+
+                        # Wait for 60 seconds before re-trying.
+                        time.sleep(60)
+                # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
+                except requests.exceptions.ConnectionError as exception:
+                    # Log this error.
+                    print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+
+                    # Display and scroll the red error text on screen for 60 seconds.
+                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                # This happens generally if there are wider issues on the network.
+                except requests.exceptions.ReadTimeout:
+                    # Log this non-critial often transient error.
+                    print('{} - Request timed out..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+
+                    # Display and scroll the red error text on screen for 60 seconds.
+                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                except requests.exceptions.JSONDecodeError:
+                    # Log this non-critial often transient error.
+                    print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+
+                    # Display and scroll the red error text on screen for 60 seconds.
+                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                # Sometimes the Gateway can fail to respond properly.
+                except http.client.RemoteDisconnected as exception:
+                    # Log this non-critial often transient error.
+                    print('{} - The Gateway abruptly disconnected..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+
+                    # Display and scroll the red error text on screen for 60 seconds.
+                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
         # Did the user press CTRL + C to attempt to quit this application?
         except KeyboardInterrupt:
             # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.

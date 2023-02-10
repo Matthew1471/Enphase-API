@@ -29,7 +29,7 @@ from enphase_api.local.gateway import Gateway
 
 def get_human_readable_power(watts, inHours = False):
     # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
-    if abs(watts) < 1000:
+    if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
         return '{} W{}'.format(round(watts), 'h' if inHours else '')
     else:
