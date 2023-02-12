@@ -9,11 +9,11 @@ CREATE TABLE `MeterReading_Result` (
  `ResultID` INT          UNSIGNED NOT NULL AUTO_INCREMENT,
  `p`        DECIMAL(9,3)          NOT NULL COMMENT 'wNow',
  `q`        DECIMAL(9,3)          NOT NULL COMMENT 'reactPwr',
- `s`        DECIMAL(9,3) UNSIGNED NOT NULL COMMENT 'apprntPwr',
+ `s`        DECIMAL(9,3)          NOT NULL COMMENT 'apprntPwr',
  `v`        DECIMAL(6,3) UNSIGNED NOT NULL COMMENT 'rmsVoltage',
- `i`        DECIMAL(5,3) UNSIGNED NOT NULL COMMENT 'rmsCurrent',
+ `i`        DECIMAL(5,3)          NOT NULL COMMENT 'rmsCurrent',
  `pf`       DECIMAL(3,2)          NOT NULL COMMENT 'pwrFactor',
- `f`        DECIMAL(5,2) UNSIGNED NOT NULL COMMENT 'frequency',
+ `f`        DECIMAL(4,2) UNSIGNED NOT NULL COMMENT 'frequency',
  PRIMARY KEY (`ResultID`)
 );
 
@@ -134,7 +134,8 @@ LEFT JOIN MeterReading_Result NetConsumption_Phase_C ON MeterReading.NetConsumpt
 
 LEFT JOIN MeterReading_Result TotalConsumption_Phase_A ON MeterReading.TotalConsumption_Phase_A_ID = TotalConsumption_Phase_A.ResultID
 LEFT JOIN MeterReading_Result TotalConsumption_Phase_B ON MeterReading.TotalConsumption_Phase_B_ID = TotalConsumption_Phase_B.ResultID
-LEFT JOIN MeterReading_Result TotalConsumption_Phase_C ON MeterReading.TotalConsumption_Phase_C_ID = TotalConsumption_Phase_C.ResultID;
+LEFT JOIN MeterReading_Result TotalConsumption_Phase_C ON MeterReading.TotalConsumption_Phase_C_ID = TotalConsumption_Phase_C.ResultID
+ORDER BY ReadingID DESC;
 
 CREATE
 SQL SECURITY INVOKER
@@ -170,4 +171,5 @@ SELECT
 FROM MeterReading
 LEFT JOIN MeterReading_Result Production_Phase_A       ON MeterReading.Production_Phase_A_ID = Production_Phase_A.ResultID
 LEFT JOIN MeterReading_Result NetConsumption_Phase_A   ON MeterReading.NetConsumption_Phase_A_ID = NetConsumption_Phase_A.ResultID
-LEFT JOIN MeterReading_Result TotalConsumption_Phase_A ON MeterReading.TotalConsumption_Phase_A_ID = TotalConsumption_Phase_A.ResultID;
+LEFT JOIN MeterReading_Result TotalConsumption_Phase_A ON MeterReading.TotalConsumption_Phase_A_ID = TotalConsumption_Phase_A.ResultID
+ORDER BY ReadingID DESC;

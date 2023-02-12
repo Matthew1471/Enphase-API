@@ -8,8 +8,8 @@ Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 :idprefix:
 :idseparator: -
 
-// Any code blocks will be in JSON by default.
-:source-language: json
+// Any code blocks will be in JSON5 by default.
+:source-language: json5
 
 ifndef::env-github[:icons: font]
 
@@ -79,13 +79,13 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 === Set AGF Profile Example
 
 .PUT */installer/agf/set_profile.json* Request
-[source,json,subs="+quotes"]
+[source,json5,subs="+quotes"]
 ----
 {"selected_profile":"G99-1-6:2020 UK:1.2.10"}
 ----
 
 .PUT */installer/agf/set_profile.json* Response
-[source,json,subs="+quotes"]
+[source,json5,subs="+quotes"]
 ----
 {
   "message": "/ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10  'selected_profile': 'G99-1-6:2020 UK:1.2.10' accepted."

@@ -50,8 +50,12 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
             # Skip empty phases.
             if all(value == 0 for value in meter_reading_result.values()): continue
 
-            # Add to the database the meter reading(s) (specifying a dictionary prevented the query from being prepared).
-            database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
+            try:
+                # Add to the database the meter reading(s) (specifying a dictionary instead of a tuple prevented the query from being prepared - possibly a MySQL Connector bug).
+                database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
+            except mysql.connector.errors.DataError:
+                print(json_object)
+                raise
 
             # Get the result ID for this phase insert.
             if meter_phase == 'ph-a':
@@ -176,7 +180,7 @@ def main():
                                     add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
 
                                     # Output the reading time of the chunk and a value for debugging.
-                                    print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
+                                    #print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
 
                                     # The queue has no reliable method for determining queue size.
                                     counter+=1
@@ -206,8 +210,12 @@ def main():
                             # Update the chunk first received time.
                             chunk_first_received = now
 
-                        # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
-                        queued_chunks.put(json.loads(chunk[6:]))
+                        try:
+                            # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
+                            queued_chunks.put(json.loads(chunk[6:]))
+                        except:
+                            print(chunk)
+                            raise
 
                         # Gather statistics.
                         stats_count += 1

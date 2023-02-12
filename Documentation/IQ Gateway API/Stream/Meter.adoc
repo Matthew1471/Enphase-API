@@ -8,8 +8,8 @@ Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 :idprefix:
 :idseparator: -
 
-// Any code blocks will be in JSON by default.
-:source-language: json
+// Any code blocks will be in JSON5 by default.
+:source-language: json5
 
 ifndef::env-github[:icons: font]
 
@@ -145,7 +145,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Get Meter Data
 .GET */stream/meter* Response
-[source,json,subs="+quotes"]
+[source,json5,subs="+quotes"]
 ----
 data: {"production":{"ph-a":{"p":-0.0,"q":175.922,"s":182.78,"v":239.055,"i":0.764,"pf":0.0,"f":49.94},"ph-b":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0},"ph-c":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0}},"net-consumption":{"ph-a":{"p":447.973,"q":-710.332,"s":907.001,"v":239.302,"i":3.787,"pf":0.48,"f":49.94},"ph-b":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0},"ph-c":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0}},"total-consumption":{"ph-a":{"p":447.973,"q":-886.254,"s":1088.562,"v":239.178,"i":4.551,"pf":0.41,"f":49.94},"ph-b":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0},"ph-c":{"p":0.0,"q":0.0,"s":0.0,"v":0.0,"i":0.0,"pf":0.0,"f":0.0}}}
 
