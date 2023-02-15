@@ -17,7 +17,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import datetime    # We timestamp any errors.
-import http.client # We handle a RemoteDisconnected exception.
 import json        # This script makes heavy use of JSON parsing.
 import os.path     # We check whether a file exists.
 import sys         # We write to stderr.
@@ -43,16 +42,9 @@ def animate(_):
 
         # No point continuing this function.
         return
-    except requests.exceptions.JSONDecodeError:
+    except requests.exceptions.JSONDecodeError as exception:
         # Log this non-critial often transient error.
-        print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
-
-        # No point continuing this function.
-        return
-    # Sometimes the Gateway can fail to respond properly.
-    except http.client.RemoteDisconnected:
-        # Log this non-critial often transient error.
-        print('{} - The Gateway abruptly disconnected..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+        print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
         # No point continuing this function.
         return

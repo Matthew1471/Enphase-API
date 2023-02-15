@@ -453,7 +453,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters/CTS/EID.adoc[Update EID]`
 |`/ivp/meters/cts/{EID}`
-|Update specific meter's (by EID) current CT clamp configuration.
+|Update specific meter's (by EID) Current Transformer (CT) clamp configuration.
 
 |===
 
@@ -467,11 +467,11 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters/CTReversal.adoc[CT Reversal]`
 |`/ivp/meters/ctreversal/{EID}`
-|Get or set specific meter's (by EID) current CT clamp reverse polarity configuration.
+|Get or set specific meter's (by EID) Current Transformer (CT) clamp reverse polarity configuration.
 
-|`link:IVP/Meters/CTS.adoc[CT Settings]`
+|`link:IVP/Meters/CTS.adoc[Current Transformer (CT) Settings]`
 |`/ivp/meters/cts`
-|Get internal meter's current CT clamp settings.
+|Get internal meter's Current Transformer (CT) clamp settings.
 
 |`link:IVP/Meters/EID.adoc[Meter Settings]`
 |`/ivp/meters/{EID}`
@@ -487,7 +487,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
 |`/ivp/meters/storage_setting`
-|Get or set storage CT status.
+|Get or set storage Current Transformer (CT) clamp status.
 
 |===
 

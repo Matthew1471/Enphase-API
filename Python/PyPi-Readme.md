@@ -2,7 +2,7 @@
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase®'s products and services.
 
-This project is focusing primarily on the Enphase® "IQ Gateway" (formerly "IQ Envoy") system, the gateway for Enphase®'s IQ7 and IQ8 Microinverters used on solar panels to convert Direct Current (DC) to Alternating Current (AC) to be directly consumed by the home.
+This project is focusing primarily on the Enphase® "IQ Gateway" (formerly "IQ Envoy") system, the gateway for Enphase®'s IQ6, IQ7 and IQ8 Microinverters used on solar panels to convert Direct Current (DC) to Alternating Current (AC) to be directly consumed by the home.
 
 > **Warning**
 > This project currently predominantly consumes the same local API that the local Gateway web administration portal consumes and Enphase® may choose to change it in subsequent updates without warning.

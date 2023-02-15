@@ -40,7 +40,7 @@ class Gateway:
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
 
     def __init__(self, host='https://envoy.local'):
-        # The Gateway host (or if the network supports MDNS, "https://envoy.local").
+        # The Gateway host (or if the network supports mDNS, "https://envoy.local").
         self.host = host
 
         # We use a proper OAuth2 library (rather than just appending the Authorization header on ourselves) in case the device uses more OAuth features in future.
@@ -82,10 +82,18 @@ class Gateway:
         response = self.session.post(self.host + '/auth/check_jwt', headers=Gateway.STEALTHY_HEADERS, auth=requests_oauthlib.oauth2_auth.OAuth2(client=self.client, token={'access_token': token}))
 
         # Check the response is positive.
-        return response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
+        return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
 
     def api_call(self, path):
-        return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS).json()
+        # Call the Gateway API endpoint.
+        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS)
+
+        # Has the session expired?
+        if response.status_code == 401:
+            raise ValueError(response.reason)
+
+        # Return the JSON response.
+        return response.json()
 
     def api_call_stream(self, path):
         return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)

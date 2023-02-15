@@ -58,7 +58,7 @@ class Authentication:
     @staticmethod
     def check_token_valid(token, serial):
 
-        # An installer is always allowed to access any Gateway Serial Number.
+        # An installer is always allowed to access any Gateway serial number.
         if serial:
             calculated_audience = [serial, 'un-commissioned']
         else:

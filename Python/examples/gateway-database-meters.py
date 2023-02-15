@@ -152,81 +152,103 @@ def main():
                 # We calculate each meeter reading time based off when the chunk batches come in (we initially add on a bit of latency).
                 chunk_first_received = None
 
+                # The start and end strings for each chunk.
+                start_needle = 'data: '
+                end_needle = '}\r\n\r\n'
+
                 # Chunks are received when the gateway flushes its buffer.
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                    # Take a reference of the received date/time.
+                    # Take a reference of the chunk received date/time.
                     now = datetime.datetime.now()
 
-                    # This is to be expected with Server-Sent Events (SSE).
-                    if chunk.startswith('data: '):
-                        if (chunk_first_received):
-                            # Was the previous chunk first recieved over 10 seconds ago (we add on an allowance of 10 seconds for network latency)?
-                            if (chunk_first_received and chunk_first_received + datetime.timedelta(seconds=10) < now):
-                                # Preserve the count of seconds to add on to the oldest reading.
-                                counter = 0
+                    # Have we received a chunk already?
+                    if (chunk_first_received):
+                        # Was the previous chunk first recieved over 10 seconds ago so the buffer has just been flushed (we add on an allowance of 10 seconds for network latency)?
+                        if (chunk_first_received + datetime.timedelta(seconds=10) < now):
+                            # Preserve the count of seconds to add on to the oldest reading.
+                            counter = 0
 
-                                # Flush the queue now we know how many were received in this batch.
-                                while not queued_chunks.empty():
-                                    # Get the first chunk from the queue.
-                                    json_object = queued_chunks.get()
+                            # Flush the queue now we know how many were received in this batch.
+                            while not queued_chunks.empty():
+                                # Get the first chunk from the queue.
+                                json_object = queued_chunks.get()
 
-                                    # We calculate the timestamp of the meter reading off the time the chunks were received (and add a network delay).
-                                    if stats_delay:
-                                        timestamp = chunk_first_received + datetime.timedelta(seconds=counter + stats_delay.total_seconds())
-                                    else:
-                                        timestamp = chunk_first_received + datetime.timedelta(seconds=counter)
-
-                                    # Add this record to the database.
-                                    add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
-
-                                    # Output the reading time of the chunk and a value for debugging.
-                                    #print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
-
-                                    # The queue has no reliable method for determining queue size.
-                                    counter+=1
-
-                                # Print statistics.
-                                print(str(datetime.datetime.now()) + ' - Length:' + str(stats_length) + ',Count:' + str(stats_count) + ',Min:' + str(stats_min) + ',Max:' + str(stats_max) + ',Latency:' + str(stats_delay.total_seconds()))
-
-                                # Clear statistics.
-                                stats_count = 0
-                                stats_length = 0
-                                stats_min = None
-                                stats_max = None
-                                stats_delay = None
-
-                                # Update the chunk first received time if it is significantly different.
-                                chunk_first_received = now
-                            else:
-
-                                # Calculate the delay between this and the previous packet.
-                                delay = now - chunk_last_received
-
+                                # We calculate the timestamp of the meter reading off the time the chunks were received (and add a network delay).
                                 if stats_delay:
-                                    stats_delay += delay
+                                    timestamp = chunk_first_received + datetime.timedelta(seconds=counter + stats_delay.total_seconds())
                                 else:
-                                    stats_delay = delay
-                        else:
-                            # Update the chunk first received time.
+                                    timestamp = chunk_first_received + datetime.timedelta(seconds=counter)
+
+                                # Add this record to the database.
+                                add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
+
+                                # Output the reading time of the chunk and a value for debugging.
+                                #print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
+
+                                # The queue has no reliable method for determining queue size.
+                                counter+=1
+
+                            # Print statistics.
+                            print(str(datetime.datetime.now()) + ' - Length:' + str(stats_length) + ',Count:' + str(stats_count) + ',Min:' + str(stats_min) + ',Max:' + str(stats_max) + ',Latency:' + str(stats_delay.total_seconds()))
+
+                            # Clear statistics.
+                            stats_count = 0
+                            stats_length = 0
+                            stats_min = None
+                            stats_max = None
+                            stats_delay = None
+
+                            # Update the chunk first received time if it is significantly different.
                             chunk_first_received = now
+                        # We have received a chunk recently, so calculate the delay between them.
+                        else:
+                            # Calculate the delay between this and the previous packet.
+                            delay = now - chunk_last_received
 
-                        try:
-                            # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
-                            queued_chunks.put(json.loads(chunk[6:]))
-                        except:
-                            print(chunk)
-                            raise
-
-                        # Gather statistics.
-                        stats_count += 1
-                        stats_length += len(chunk) + 4 + len(hex(len(chunk)))
-                        if not stats_min or len(chunk) < stats_min: stats_min = len(chunk)
-                        if not stats_max or len(chunk) > stats_max: stats_max = len(chunk)
-
-                        # Update the last received time.
-                        chunk_last_received = now
+                            if stats_delay:
+                                stats_delay += delay
+                            else:
+                                stats_delay = delay
+                    # This is the first chunk we have received since the last buffer flush.
                     else:
-                        raise ValueError('Bad line returned from meter stream (' + chunk + ').')
+                        # Update the chunk first received time.
+                        chunk_first_received = now
+
+                    # Where in the chunk to start reading from.
+                    start_position = 0
+
+                    # Repeat while there is an end-position.
+                    while start_position < len(chunk):
+                        # This is to be expected with Server-Sent Events (SSE).
+                        if chunk.find(start_needle, start_position) == 0:
+                            # Start after the 'data: '.
+                            start_position += len(start_needle)
+
+                            # Can the end_needle be found?
+                            end_position = chunk.find(end_needle, start_position)
+
+                            # Was the end_position found?
+                            if end_position != 1:
+                                # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
+                                queued_chunks.put(json.loads(chunk[start_position:end_position+1]))
+
+                                # Gather statistics.
+                                part_length = (end_position+1) - start_position
+                                stats_count += 1
+                                stats_length += part_length
+                                if not stats_min or part_length < stats_min: stats_min = part_length
+                                if not stats_max or part_length > stats_max: stats_max = part_length
+                            else:
+                                # Can happen when the connection is closed and the remaining data is flushed.
+                                raise ValueError('Bad or incomplete chunk : ' + chunk[start_position:])
+
+                            # The next start_position is after this current substring.
+                            start_position = end_position + len(end_needle)
+                        else:
+                            raise ValueError('Bad line returned from meter stream (' + chunk[start_position:] + ').')
+
+                    # Update the last received time.
+                    chunk_last_received = now
         finally:
             # Close the database connection.
             database_connection.close()
