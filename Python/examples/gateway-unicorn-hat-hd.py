@@ -193,7 +193,7 @@ def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_he
 def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
     today = datetime.datetime.today().strftime('%Y-%m-%d')
     response = requests.get('https://api.open-meteo.com/v1/forecast?latitude=' + str(latitude) + '&longitude=' + str(longitude) + '&current_weather=true&daily=sunrise,sunset&start_date=' + today + '&end_date=' + today + '&timezone=' + timezone + '&timeformat=unixtime', headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}).json()
-    return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset']
+    return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
 def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
     # Windy.
@@ -307,6 +307,13 @@ def main():
         # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
         font = ImageFont.truetype(font_path, 20)
 
+        # Cache the weather.
+        weather_code = 100
+        wind_speed = 0
+        sunrise = 0
+        sunset = 0
+        weather_last_updated = None
+
         try:
             # Repeat forever unless the user presses CTRL + C.
             while True:
@@ -314,14 +321,22 @@ def main():
                 try:
                     # Should we display the weather?
                     if credentials.get('Latitude') and credentials.get('Longitude') and os.path.exists('resources/icons/'):
-                        # Get the weather.
-                        weather_code, wind_speed, sunrise, sunset = get_weather_details(latitude=credentials['Latitude'], longitude=credentials['Longitude'])
+                        # If the weather has not been loaded yet, or it was loaded over 30 minutes ago.
+                        if not weather_last_updated or weather_last_updated + 1800 < time.time():
+                            # Get the latest weather.
+                            weather_code, wind_speed, sunrise, sunset = get_weather_details(latitude=credentials['Latitude'], longitude=credentials['Longitude'])
 
-                        # We convert the weather_code into a PNG filename.
+                            # Set the weather_last_updated date/time.
+                            weather_last_updated = time.time()
+
+                        # We convert the weather_code, wind_speed, sunrise and sunset into a PNG filename.
                         weather_filename = get_weather_filename(weather_code=weather_code, wind_speed=wind_speed, sunrise=sunrise, sunset=sunset)
 
                         # Draw the weather.
                         draw_animation(unicornhathd=unicornhathd, filename=weather_filename, screen_width=screen_width, screen_height=screen_height)
+
+                        # Clear while the next process runs.
+                        unicornhathd.off()
 
                     # Get the production details.
                     w_now, number_of_microinverters, end_time = get_production_details(gateway=gateway, readingType='Meter')
