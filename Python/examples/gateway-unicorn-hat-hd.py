@@ -25,16 +25,13 @@ import colorsys
 # We timestamp any errors.
 import datetime
 
-# We handle a RemoteDisconnected exception.
-import http.client
-
 # We count forwards then backwards.
 import itertools
 
 # This script makes heavy use of JSON parsing.
 import json
 
-# We check what operating system we are running on and we check whether a file exists (and build OS independent paths).
+# We check what operating system we are running on and we check whether a file exists.
 import os
 
 # We write to stderr.
@@ -45,6 +42,9 @@ import time
 
 # Unicorn HAT HD uses pillow to generate images to then draw on the LEDs of the Unicorn HAT HD ("pip install pillow" if getting import errors).
 from PIL import Image, ImageDraw, ImageFont
+
+# We look-up the weather.
+import requests
 
 # We handle some of the exceptions we might get back.
 import requests.exceptions
@@ -76,37 +76,78 @@ def restricted_float(number):
     # This should otherwise be an acceptable value.
     return number
 
-def get_production_text(gateway, maximum_watts_per_panel):
+def get_production_details(gateway, readingType='Meter'):
     # Get Gateway status.
     production_json = gateway.api_call('/production.json')
 
     # We generate text colours for production thresholds within the HSV scale based off the number of microinverter devices (which should correspond to overall system size).
     number_of_microinverters = production_json['production'][0]['activeCount']
 
-    # Get a reference to just the inverters bit of the Production JSON.
-    inverters_json = production_json['production'][0]
+    # Where to get the reading from.
+    if readingType == 'Inverters':
+        # Get a reference to just the inverters bit of the Production JSON.
+        reading_json = production_json['production'][0]
+    elif readingType == 'Meter':
+        # Get a reference to just the production meter bit of the Production JSON.
+        reading_json = production_json['production'][1]
+    else:
+        # Requested type not implemented.
+        raise ValueError('Invalid readingType specified for get_production_details().')
 
     # Get the watts being generated now by the inverters.
-    w_now = inverters_json['wNow']
+    w_now = reading_json['wNow']
 
-    # Calculate the colour of the text based off the production wattage.
-    color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
-
-    # The inverters are polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
-    if inverters_json['readingTime'] != 0:
+    # The inverters are only polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
+    if readingType == 'Inverters' and reading_json['readingTime'] != 0:
         # Take the reading time and add 5 minutes (300 seconds).
-        next_reading_time = inverters_json['readingTime'] + 300
+        next_reading_time = reading_json['readingTime'] + 300
 
-        # If the data is already stale try again in 60 seconds.
+        # If the data is already stale (happens in low light) try again in 60 seconds.
         if next_reading_time <= time.time(): next_reading_time = time.time() + 60
     else:
         # We should try in 60 seconds.
         next_reading_time = time.time() + 60
 
     # Return the response.
-    return w_now, color, next_reading_time
+    return w_now, number_of_microinverters, next_reading_time
 
-def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed, end_time):
+def draw_animation(unicornhathd, filename, screen_width, screen_height, speed=0.25):
+    # Open the requested image (and ignore any transparency values).
+    image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
+
+    # The images are left-to-right.
+    unicornhathd.rotation(unicornhathd.get_rotation() + 90)
+
+    # Get the image width and height.
+    image_width, image_height = image.size
+
+    # Take each of the frame x positions in the image.
+    for frame_x in range(int(image_width / screen_width)):
+        # Take each of the frame y positions in the image.
+        for frame_y in range(int(image_height / screen_height)):
+            # Take each of the pixels of the screen's x axis.
+            for x in range(screen_width):
+                # Take each of the pixels of the screen's y axis for this position on the x axis.
+                for y in range(screen_height):
+                    # Get what the pixel should be according to the Pillow in memory image followed by the x axis frame offset.
+                    pixel = image.getpixel(((frame_x * screen_width) + y, (frame_y * screen_height) + x))
+
+                    # Get the Red, Green, Blue values for this pixel.
+                    r, g, b = [int(n) for n in pixel]
+
+                    # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
+                    unicornhathd.set_pixel(x, y, r, g, b)
+
+            # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user will not watch it re-drawing).
+            unicornhathd.show()
+
+            # Pause before attempting to draw the next scrolling frame.
+            time.sleep(speed)
+
+    # Restore rotation.
+    unicornhathd.rotation(unicornhathd.get_rotation() - 90)
+
+def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed=0.05, end_time=time.time() + 60):
     # Calculate the width and height of the text when rendered by the font.
     _, font_upper, font_width, font_height = font.getbbox(line)
 
@@ -148,6 +189,46 @@ def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_he
 
         # Have we been asked to stop scrolling?
         if end_time <= time.time(): break
+
+def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    response = requests.get('https://api.open-meteo.com/v1/forecast?latitude=' + str(latitude) + '&longitude=' + str(longitude) + '&current_weather=true&daily=sunrise,sunset&start_date=' + today + '&end_date=' + today + '&timezone=' + timezone + '&timeformat=unixtime', headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}).json()
+    return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset']
+
+def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
+    # Windy.
+    if wind_speed > 38:
+        return 'wind' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Clear sky.
+    elif weather_code == 0:
+        return 'clear-day' if sunrise <= time.time() >= sunset else 'clear-night'
+    # Mainly clear and Partly cloudy.
+    elif weather_code >= 1 and weather_code <= 2:
+        return 'partly-cloudy-day' if sunrise <= time.time() >= sunset else 'partly-cloudy-night'
+    # Overcast.
+    elif weather_code == 3:
+        return 'cloudy'
+    # Fog and depositing rime fog.
+    elif weather_code >= 45 and weather_code <= 48:
+        return 'fog'
+    # Drizzle: Light, moderate, and dense intensity, Freezing Drizzle: Light and dense intensity, Rain: Slight, moderate and heavy intensity and Freezing Rain: Light and heavy intensity.
+    elif weather_code >= 51 and weather_code <= 67:
+        return 'rain' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Snow fall: Slight, moderate, and heavy intensity and Snow grains.
+    elif weather_code >= 71 and weather_code <= 77:
+        return 'snow' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Rain showers: Slight, moderate, and violent.
+    elif weather_code >= 80 and weather_code <= 82:
+        return 'rain' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Snow showers slight and heavy.
+    elif weather_code >= 85 and weather_code <= 86:
+        return 'snow' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Thunderstorm: Slight or moderate, Thunderstorm with slight and heavy hail.
+    elif weather_code >= 95 and weather_code <= 99:
+        return 'cloudy' if sunrise <= time.time() >= sunset else 'cloudy'
+    # Unknown weather_code.
+    else:
+        return 'error'
 
 def main():
     # Create an instance of argparse to handle any command line arguments.
@@ -231,13 +312,27 @@ def main():
             while True:
                 # Sometimes a request will intermittently fail and in this event we return error text.
                 try:
-                    # Get the text to display.
-                    w_now, color, end_time = get_production_text(gateway=gateway, maximum_watts_per_panel=args.maximum_watts_per_panel)
+                    # Should we display the weather?
+                    if credentials.get('Latitude') and credentials.get('Longitude') and os.path.exists('resources/icons/'):
+                        # Get the weather.
+                        weather_code, wind_speed, sunrise, sunset = get_weather_details(latitude=credentials['Latitude'], longitude=credentials['Longitude'])
+
+                        # We convert the weather_code into a PNG filename.
+                        weather_filename = get_weather_filename(weather_code=weather_code, wind_speed=wind_speed, sunrise=sunrise, sunset=sunset)
+
+                        # Draw the weather.
+                        draw_animation(unicornhathd=unicornhathd, filename=weather_filename, screen_width=screen_width, screen_height=screen_height)
+
+                    # Get the production details.
+                    w_now, number_of_microinverters, end_time = get_production_details(gateway=gateway, readingType='Meter')
 
                     # Is there any power being generated?
-                    if w_now != 0:
+                    if w_now > 0:
                         # The line of text we want to write on the screen is a wattage number to be formatted.
                         line = get_human_readable_power(w_now)
+
+                        # Calculate the colour of the text based off the production wattage.
+                        color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / args.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
 
                         # Display and scroll the production text on screen (until the end time).
                         draw_scrolling_text(unicornhathd=unicornhathd, line=line, color=color, font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=end_time)
@@ -261,16 +356,9 @@ def main():
 
                     # Display and scroll the red error text on screen for 60 seconds.
                     draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
-                except requests.exceptions.JSONDecodeError:
+                except requests.exceptions.JSONDecodeError as exception:
                     # Log this non-critial often transient error.
-                    print('{} - The Gateway returned bad JSON..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
-                # Sometimes the Gateway can fail to respond properly.
-                except http.client.RemoteDisconnected as exception:
-                    # Log this non-critial often transient error.
-                    print('{} - The Gateway abruptly disconnected..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+                    print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
                     draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
