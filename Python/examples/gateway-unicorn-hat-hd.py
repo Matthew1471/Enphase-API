@@ -197,35 +197,35 @@ def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
 
 def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
     # Windy.
-    if wind_speed > 38:
-        return 'wind' if sunrise <= time.time() >= sunset else 'cloudy'
+    if wind_speed > 25:
+        return 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
     # Clear sky.
     elif weather_code == 0:
-        return 'clear-day' if sunrise <= time.time() >= sunset else 'clear-night'
+        return 'clear-day' if sunrise <= time.time() <= sunset else 'clear-night'
     # Mainly clear and Partly cloudy.
-    elif weather_code >= 1 and weather_code <= 2:
-        return 'partly-cloudy-day' if sunrise <= time.time() >= sunset else 'partly-cloudy-night'
+    elif 1 <= weather_code <= 2:
+        return 'partly-cloudy-day' if sunrise <= time.time() <= sunset else 'partly-cloudy-night'
     # Overcast.
     elif weather_code == 3:
         return 'cloudy'
     # Fog and depositing rime fog.
-    elif weather_code >= 45 and weather_code <= 48:
+    elif 45 <= weather_code <= 48:
         return 'fog'
     # Drizzle: Light, moderate, and dense intensity, Freezing Drizzle: Light and dense intensity, Rain: Slight, moderate and heavy intensity and Freezing Rain: Light and heavy intensity.
-    elif weather_code >= 51 and weather_code <= 67:
-        return 'rain' if sunrise <= time.time() >= sunset else 'cloudy'
+    elif 51 <= weather_code <= 67:
+        return 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
     # Snow fall: Slight, moderate, and heavy intensity and Snow grains.
-    elif weather_code >= 71 and weather_code <= 77:
-        return 'snow' if sunrise <= time.time() >= sunset else 'cloudy'
+    elif 71 <= weather_code <= 77:
+        return 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
     # Rain showers: Slight, moderate, and violent.
-    elif weather_code >= 80 and weather_code <= 82:
-        return 'rain' if sunrise <= time.time() >= sunset else 'cloudy'
+    elif 80 <= weather_code <= 82:
+        return 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
     # Snow showers slight and heavy.
-    elif weather_code >= 85 and weather_code <= 86:
-        return 'snow' if sunrise <= time.time() >= sunset else 'cloudy'
+    elif 85 <= weather_code <= 86:
+        return 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
     # Thunderstorm: Slight or moderate, Thunderstorm with slight and heavy hail.
-    elif weather_code >= 95 and weather_code <= 99:
-        return 'cloudy' if sunrise <= time.time() >= sunset else 'cloudy'
+    elif 95 <= weather_code <= 99:
+        return 'cloudy' if sunrise <= time.time() <= sunset else 'cloudy'
     # Unknown weather_code.
     else:
         return 'error'
