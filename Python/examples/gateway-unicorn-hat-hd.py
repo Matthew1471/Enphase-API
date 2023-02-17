@@ -243,7 +243,7 @@ def main():
     # Arguments to control how the program generally behaves.
     general_group = parser.add_argument_group('General')
     general_group.add_argument('/Host', '-Host', '--Host', dest='host', help='The Enphase® Gateway URL (defaults to config or https://envoy.local).')
-    general_group.add_argument('/MaxWattsPerPanel', '-MaxWattsPerPanel', '--MaxWattsPerPanel', dest='maximum_watts_per_panel', type=int, default=460, help='How many watts maximum can each panel generate (defaults to 460 which is the limit of an IQ7A).')
+    general_group.add_argument('/MaxWattsPerPanel', '-MaxWattsPerPanel', '--MaxWattsPerPanel', dest='maximum_watts_per_panel', type=int, default=384, help='How many watts maximum can each panel generate (defaults to 384 which is the limit of an IQ8H).')
 
     # Arguments that can overide default behaviour when testing this program.
     testing_group = parser.add_argument_group('Testing')

@@ -156,6 +156,9 @@ def main():
                 start_needle = 'data: '
                 end_needle = '}\r\n\r\n'
 
+                # We allow partial chunks.
+                partial_chunk = None
+
                 # Chunks are received when the gateway flushes its buffer.
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
                     # Take a reference of the chunk received date/time.
@@ -217,6 +220,9 @@ def main():
                     # Where in the chunk to start reading from.
                     start_position = 0
 
+                    # Add on any previous partially complete chunks.
+                    if partial_chunk: chunk = partial_chunk + chunk
+
                     # Repeat while there is an end-position.
                     while start_position < len(chunk):
                         # This is to be expected with Server-Sent Events (SSE).
@@ -238,14 +244,22 @@ def main():
                                 stats_length += part_length
                                 if not stats_min or part_length < stats_min: stats_min = part_length
                                 if not stats_max or part_length > stats_max: stats_max = part_length
-                            else:
-                                # Can happen when the connection is closed and the remaining data is flushed.
-                                raise ValueError('Bad or incomplete chunk : ' + chunk[start_position:])
 
-                            # The next start_position is after this current substring.
-                            start_position = end_position + len(end_needle)
+                                # The next start_position is after this current substring.
+                                start_position = end_position + len(end_needle)
+                            # Can happen when the connection is closed and the remaining data is flushed.
+                            else:
+                                # Store a reference to this ready to be consumed by the next chunk.
+                                partial_chunk = chunk[start_position:]
+
+                                # Notify the user.
+                                print(str(datetime.datetime.now()) + ' - Incomplete chunk : "' + partial_chunk + '"')
+
+                                # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
+                                break
                         else:
-                            raise ValueError('Bad line returned from meter stream (' + chunk[start_position:] + ').')
+                            # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
+                            raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
 
                     # Update the last received time.
                     chunk_last_received = now
