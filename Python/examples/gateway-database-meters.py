@@ -217,16 +217,16 @@ def main():
                         # Update the chunk first received time.
                         chunk_first_received = now
 
-                    # Where in the chunk to start reading from.
-                    start_position = 0
-
                     # Add on any previous partially complete chunks.
                     if partial_chunk: chunk = partial_chunk + chunk
+
+                    # Where in the chunk to start reading from.
+                    start_position = 0
 
                     # Repeat while there is an end-position.
                     while start_position < len(chunk):
                         # This is to be expected with Server-Sent Events (SSE).
-                        if chunk.find(start_needle, start_position) == 0:
+                        if chunk.startswith(start_needle, start_position):
                             # Start after the 'data: '.
                             start_position += len(start_needle)
 
@@ -234,7 +234,7 @@ def main():
                             end_position = chunk.find(end_needle, start_position)
 
                             # Was the end_position found?
-                            if end_position != 1:
+                            if end_position != -1:
                                 # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
                                 queued_chunks.put(json.loads(chunk[start_position:end_position+1]))
 
