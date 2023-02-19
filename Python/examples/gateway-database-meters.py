@@ -132,12 +132,12 @@ def main():
         # Connect to the MySQL/MariaDB database.
         database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database)
 
-        # Get references to 2 database cursors (that will prepare duplicate SQL statements).
+        # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
         database_cursor_meter_reading = database_connection.cursor(prepared=True)
         database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
         try:
-            # On a single phase system this returns every 21 - 23 seconds, returning 21 - 23 results in multiple >= 712 bytes and <= 737 bytes chunks (potentially a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
+            # On a single phase system this returns every 21 - 23 seconds, returning 21 - 23 results in multiple >= 701 bytes and <= 723 bytes chunks (potentially a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
             with gateway.api_call_stream('/stream/meter') as stream:
                 # We use a queue as it is FIFO.
                 queued_chunks = queue.Queue()
@@ -147,10 +147,10 @@ def main():
                 stats_length = 0
                 stats_min = None
                 stats_max = None
-                stats_delay = None
 
-                # We calculate each meeter reading time based off when the chunk batches come in (we initially add on a bit of latency).
+                # We calculate each meter reading time based off when the chunk batches come in.
                 chunk_first_received = None
+                chunk_delay = None
 
                 # The start and end strings for each chunk.
                 start_needle = 'data: '
@@ -177,41 +177,43 @@ def main():
                                 json_object = queued_chunks.get()
 
                                 # We calculate the timestamp of the meter reading off the time the chunks were received (and add a network delay).
-                                if stats_delay:
-                                    timestamp = chunk_first_received + datetime.timedelta(seconds=counter + stats_delay.total_seconds())
+                                if chunk_delay:
+                                    timestamp = chunk_first_received + datetime.timedelta(seconds=counter + chunk_delay.total_seconds())
                                 else:
                                     timestamp = chunk_first_received + datetime.timedelta(seconds=counter)
 
                                 # Add this record to the database.
                                 add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
 
-                                # Output the reading time of the chunk and a value for debugging.
+                                # Output the reading time of the chunk and a value for timestamp debugging.
                                 #print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
 
                                 # The queue has no reliable method for determining queue size.
                                 counter+=1
 
                             # Print statistics.
-                            print(str(datetime.datetime.now()) + ' - Length:' + str(stats_length) + ',Count:' + str(stats_count) + ',Min:' + str(stats_min) + ',Max:' + str(stats_max) + ',Latency:' + str(stats_delay.total_seconds()))
+                            print(str(datetime.datetime.now()) + ' - Length:' + str(stats_length) + ',Count:' + str(stats_count) + ',Min:' + str(stats_min) + ',Max:' + str(stats_max) + ',Latency:' + str(chunk_delay.total_seconds()))
+
+                            # Clear chunk latency calculations.
+                            chunk_delay = None
 
                             # Clear statistics.
                             stats_count = 0
                             stats_length = 0
                             stats_min = None
                             stats_max = None
-                            stats_delay = None
 
-                            # Update the chunk first received time if it is significantly different.
+                            # Update the chunk first received time.
                             chunk_first_received = now
                         # We have received a chunk recently, so calculate the delay between them.
                         else:
                             # Calculate the delay between this and the previous packet.
                             delay = now - chunk_last_received
 
-                            if stats_delay:
-                                stats_delay += delay
+                            if chunk_delay:
+                                chunk_delay += delay
                             else:
-                                stats_delay = delay
+                                chunk_delay = delay
                     # This is the first chunk we have received since the last buffer flush.
                     else:
                         # Update the chunk first received time.
@@ -227,19 +229,19 @@ def main():
                     while start_position < len(chunk):
                         # This is to be expected with Server-Sent Events (SSE).
                         if chunk.startswith(start_needle, start_position):
-                            # Start after the 'data: '.
-                            start_position += len(start_needle)
-
                             # Can the end_needle be found?
                             end_position = chunk.find(end_needle, start_position)
 
                             # Was the end_position found?
                             if end_position != -1:
+                                # Start after the 'data: '.
+                                start_position += len(start_needle)
+
                                 # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
                                 queued_chunks.put(json.loads(chunk[start_position:end_position+1]))
 
                                 # Gather statistics.
-                                part_length = (end_position+1) - start_position
+                                part_length = (end_position + 1) - start_position
                                 stats_count += 1
                                 stats_length += part_length
                                 if not stats_min or part_length < stats_min: stats_min = part_length
