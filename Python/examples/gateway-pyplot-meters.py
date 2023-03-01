@@ -45,7 +45,7 @@ legend_map = {}
 # Store a count of the number of inverters for calculating system limits.
 number_of_inverters = 0
 
-def add_result_from_gateway(): 
+def add_result_from_gateway():
     # Sometimes a request will intermittently fail and in this event we retry.
     try:
         # Get gateway production, consumption and storage status.
@@ -147,7 +147,7 @@ def setup_plot():
     production_plot, = axes.plot(timestamp_data, production_data, c='#EC5E29', label='Production', marker='o', markevery=[-1])
     consumption_total_plot, = axes.plot(timestamp_data, consumption_total_data, c='#29B7EC', label='Consumption', marker='o', markevery=[-1])
     consumption_net_plot, = axes.plot(timestamp_data, consumption_net_data, c='#29EC5E', label='Export/Import', marker='o', markevery=[-1], visible=False)
-        
+
     # Draw a horizontal line at 0 indicating import/export threshold.
     axes.axhline(linewidth=0.3, color='k')
 
@@ -199,10 +199,10 @@ def update_axes():
     # Update the annotations.
     production_annotation.xy = (timestamp_data[-1], production_data[-1])
     production_annotation.set_text(str(production_data[-1]) + ' W')
-    
+
     consumption_total_annotation.xy = (timestamp_data[-1], consumption_total_data[-1])
     consumption_total_annotation.set_text(str(consumption_total_data[-1]) + ' W')
-    
+
     consumption_net_annotation.xy = (timestamp_data[-1], consumption_net_data[-1])
     consumption_net_annotation.set_text(str(consumption_net_data[-1]) + ' W')
 
@@ -218,20 +218,24 @@ def animate(_):
         # Get current zoom.
         old_x_lim = axes.get_xlim()
         old_y_lim = axes.get_ylim()
-    
-        # Check whether the current zoom includes the current end datapoint.
-        restore_lim = not (old_x_lim[0] <= matplotlib.dates.date2num(most_recent_timestamp) <= old_x_lim[1])
+
+        # Check whether the current zoom included the old end datapoint (i.e. user appeared deliberately interested in fresh data).
+        user_viewing_recent_data = (old_x_lim[0] <= matplotlib.dates.date2num(most_recent_timestamp) <= old_x_lim[1])
+
+        # Check whether the newest added data would now fall out of the old zoom view.
+        new_data_visible_in_old_view = (old_x_lim[0] <= matplotlib.dates.date2num(timestamp_data[-1]) <= old_x_lim[1])
 
         # Ensure the axis are auto-scaled after adding new data.
         axes.relim()
         axes.autoscale()
-    
-        # Update the toolbar memory.
+
+        # Update the toolbar memory to the new zoomed out axis limits.
         figure.canvas.toolbar.update()
         figure.canvas.toolbar.push_current()
 
-        # Restore zoom (if end datapoint was not in range).
-        if restore_lim:
+        # Was the user looking at old data before we added more data or were they looking at fresh data that now wil be outside of their view.
+        if not user_viewing_recent_data or (user_viewing_recent_data and new_data_visible_in_old_view):
+            # Restore old axis zoom (recent datapoint was never in zoom range anyway or zoom range still covers the new data).
             axes.set_xlim(old_x_lim)
             axes.set_ylim(old_y_lim)
 
