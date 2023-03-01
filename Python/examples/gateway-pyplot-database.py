@@ -16,16 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import datetime    # We timestamp any errors.
-import json        # This script makes heavy use of JSON parsing.
-import os.path     # We check whether a file exists.
-import sys         # We write to stderr.
-import time        # We delay.
+import argparse # We support command line arguments.
+import datetime # We convert datetimes to timestamps.
 
 import matplotlib.pyplot as plt          # Third party library; "pip install matplotlib"
 import matplotlib.animation as animation # We use matplotlib animations for live data.
 import matplotlib.dates                  # We use matplotlib date functions for comparisons.
 
+import mysql.connector                   # Third party library; "pip install mysql-connector-python"
 import requests.exceptions               # We handle some of the exceptions we might get back.
 
 # All the shared Enphase® functions are in these packages.
@@ -42,71 +40,43 @@ consumption_total_data = []
 # Will map legend lines to artists.
 legend_map = {}
 
-# Store a count of the number of inverters for calculating system limits.
-number_of_inverters = 0
+# The last seen database ReadingID.
+last_seen_reading_id = 0
 
-def add_result_from_gateway(): 
-    # Sometimes a request will intermittently fail and in this event we retry.
-    try:
-        # Get gateway production, consumption and storage status.
-        production_statistics = gateway.api_call('/production.json')
-    # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
-    except requests.exceptions.ConnectionError as exception:
-        # Log this error.
-        print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+# SQL statement.
+get_meter_readings_sql = ('SELECT ReadingID, Timestamp, Production_P, NetConsumption_P, TotalConsumption_P '
+                          'FROM MeterReading_SinglePhase_View '
+                          'WHERE ReadingID > %s '
+                          'ORDER BY ReadingID ASC')
 
-        # No point continuing this function.
-        return False
-    except requests.exceptions.JSONDecodeError as exception:
-        # Log this non-critial often transient error.
-        print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+def add_results_from_database():    
+    global last_seen_reading_id
 
-        # No point continuing this function.
-        return False
+    # Get the meter readings.
+    database_cursor.execute(get_meter_readings_sql, (last_seen_reading_id,))
 
-    # Add the current date/time to the sample for the x-axis.
-    timestamp_data.append(datetime.datetime.now())
+    # A flag to determine if there were any new records added.
+    found_records = False
 
-    # Obtain the number of micro-inverters.
-    production_statistics_production = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'inverters'][0]
-    global number_of_inverters
-    number_of_inverters = production_statistics_production['activeCount']
-
-    # The Production meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
-    meter_statistics_production = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'production'][0]
-    if (meter_statistics_production['state'] == 'enabled'):
-        # Get the Production section of the Production Statistics JSON that matches the configured meter mode.
-        production_statistics_production_EIM = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
+    # Take each of the new records and add them to the lists.
+    for (reading_id, timestamp, production_p, net_consumption_p, total_consumption_p) in database_cursor:
+        # Add the current date/time to the sample for the x-axis.
+        timestamp_data.append(timestamp)
 
         # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
-        production_data.append(max(0, production_statistics_production_EIM['wNow']) if production_statistics_production_EIM['activeCount'] > 0 else 0)
-    else:
-        production_data.append(0)
+        production_data.append(max(0, production_p))
 
-    # The Consumption meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
-    meter_statistics_consumption = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'net-consumption' or meter_status['measurementType'] == 'total-consumption'][0]
-    if (meter_statistics_consumption['state'] == 'enabled'):
-        # Get the Consumption section for each meter of the Production Statistics JSON.
-        for production_statistics_consumption in production_statistics['consumption']:
+        # Consumption statistics.
+        consumption_net_data.append(0-net_consumption_p)
+        consumption_total_data.append(0-total_consumption_p)
+        
+        # We have seen at least one record.
+        found_records = True
 
-            if production_statistics_consumption['type'] == 'eim':
-                # Which meter is this stats for?
-                if production_statistics_consumption['measurementType'] == 'net-consumption':
-                    # Net consumption statistics.
-                    consumption_net_data.append(0-production_statistics_consumption['wNow'] if production_statistics_consumption['activeCount'] > 0 else 0)
-                elif production_statistics_consumption['measurementType'] == 'total-consumption':
-                    # Total consumption statistics.
-                    consumption_total_data.append(0-production_statistics_consumption['wNow'] if production_statistics_consumption['activeCount'] > 0 else 0)
-                else:
-                    raise ValueError('Unknown measurementType : ' + production_statistic['measurementType'])
-            else:
-                print('Warning : Ignoring unknown consumption type: ' + production_statistics_consumption['type'])
-    else:
-        consumption_net_data.append(0)
-        consumption_total_data.append(0)
+        # Update the last seen ID.
+        last_seen_reading_id = reading_id
 
-    # We have updated data.
-    return True
+    return found_records
 
 def on_pick(event):
     # On the pick event, take the line in the legend.
@@ -151,9 +121,9 @@ def setup_plot():
     # Draw a horizontal line at 0 indicating import/export threshold.
     axes.axhline(linewidth=0.3, color='k')
 
-    # Add the peak and continuous wattage limit lines of the IQ 7A micro-inverters.
-    axes.axhline(y=number_of_inverters * 366, linewidth=1, color='r')
-    axes.axhline(y=number_of_inverters * 349, linewidth=1, color='y')
+    # Add the optional peak and continuous wattage limit lines of the micro-inverters.
+    if args.peak: axes.axhline(y=args.peak, linewidth=1, color='r')
+    if args.continuous: axes.axhline(y=args.continuous, linewidth=1, color='y')
 
     # Label the most recent result (at the end).
     global production_annotation, consumption_total_annotation, consumption_net_annotation
@@ -211,7 +181,7 @@ def animate(_):
     most_recent_timestamp = timestamp_data[-1]
 
     # If there are no new meter readings to add then we skip re-drawing.
-    if add_result_from_gateway():
+    if add_results_from_database():
         # Update the axes.
         update_axes()
 
@@ -236,48 +206,59 @@ def animate(_):
             axes.set_ylim(old_y_lim)
 
 def main():
-    # Load credentials.
-    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
-        credentials = json.load(json_file)
+    # Create an instance of argparse to handle any command line arguments.
+    parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an MySQL/MariaDB® database and plots the meter values graphically.')
 
-    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('Token') or Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
-        # It is not valid so clear it.
-        raise ValueError('No or expired token.')
+    # Arguments to control the database connection.
+    database_group = parser.add_argument_group('Database')
+    database_group.add_argument('/DBHost', '-DBHost', '--DBHost', dest='database_host', default='127.0.0.1', help='The database server host (defaults to "127.0.0.1").')
+    database_group.add_argument('/DBUsername', '-DBUsername', '--DBUsername', dest='database_username', default='root', help='The database username (defaults to "root").')
+    database_group.add_argument('/DBPassword', '-DBPassword', '--DBPassword', dest='database_password', default='', help='The database password (defaults to blank).')
+    database_group.add_argument('/DBDatabase', '-DBDatabase', '--DBDatabase', dest='database_database', default='Enphase', help='The database schema (defaults to "Enphase").')
 
-    # Download and store the certificate from the gateway so all future requests are secure.
-    if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+    # Arguments to control how the program generally behaves.
+    general_group = parser.add_argument_group('General')
+    general_group.add_argument('/Animate', '-Animate', '--Animate', action='store_true', dest='animate', help='Allow chart to refresh every 10 seconds.')
+    general_group.add_argument('/From', '-From', '--From', type=int, dest='start_from', help='The earliest ReadingID to read from.')
+    general_group.add_argument('/Peak', '-Peak', '--Peak', type=int, dest='peak', help='The peak wattage from array (num of inverters * 366 for IQ 7A) before clipping.')
+    general_group.add_argument('/Continuous', '-Continuous', '--Continuous', type=int, dest='continuous', help='The maximum continuous wattage from array (num of inverters * 349 for IQ 7A) before clipping.')
 
-    # Did the user override the library default hostname to the Gateway?
-    global gateway
-    if credentials.get('Host'):
-        # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
-        gateway = Gateway(credentials['Host'])
-    else:
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
+    # We want this to appear last in the argument usage list.
+    general_group.add_argument('/?', '/Help', '/help', '-h','--help','-help', action='help', help='Show this help message and exit.')
 
-    # Are we able to login to the gateway?
-    if gateway.login(credentials['Token']):
-        # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
-        global meters_status
-        meters_status = gateway.api_call('/ivp/meters')
+    # Handle any command line arguments.
+    global args
+    args = parser.parse_args()
 
-        # Get the first result.
-        add_result_from_gateway()
+    # Connect to the MySQL/MariaDB database.
+    database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database, autocommit=True)
+
+    try:
+        # Get reference to the database cursor (that will PREPARE duplicate SQL statements).
+        global database_cursor
+        database_cursor = database_connection.cursor(prepared=True)
+
+        # Allow the user to change the start from timestamp.
+        global last_seen_reading_id
+        if args.start_from: last_seen_reading_id = args.start_from
+
+        # Add the inital batch of records from the database to the lists.
+        print('Loading existing records in database (this may take a while).')
+        add_results_from_database()
+        print('Loaded existing records.')
 
         # Draw the initial plot.
         global figure
         figure = setup_plot()
 
-        # Set a timer to animate the chart every 1 second.
-        function_animation = animation.FuncAnimation(figure, animate, interval=1000)
+        # Set a timer to animate the chart every 15 seconds.
+        if args.animate: function_animation = animation.FuncAnimation(figure, animate, interval=5000)
 
         # Show the plot screen.
         plt.show()
-    else:
-        # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+    finally:
+        # Close the database connection.
+        database_connection.close()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':

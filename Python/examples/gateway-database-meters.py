@@ -137,7 +137,7 @@ def main():
         database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
         try:
-            # On a single phase system this returns every 21 - 23 seconds, returning 21 - 23 results in multiple >= 701 bytes and <= 723 bytes chunks (potentially a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
+            # On a single phase system this returns almost every 21 - 23 seconds (occasionally 45 seconds), returning typically 21 - 23 results in multiple >= 701 bytes and <= 725 bytes chunks (likely a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
             with gateway.api_call_stream('/stream/meter') as stream:
                 # We use a queue as it is FIFO.
                 queued_chunks = queue.Queue()
@@ -220,7 +220,15 @@ def main():
                         chunk_first_received = now
 
                     # Add on any previous partially complete chunks.
-                    if partial_chunk: chunk = partial_chunk + chunk
+                    if partial_chunk:
+                        # Append the previous partial_chunk to this chunk.
+                        chunk = partial_chunk + chunk
+
+                        # Notify the user.
+                        print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.')
+
+                        # This partial is now consumed.
+                        partial_chunk = None
 
                     # Where in the chunk to start reading from.
                     start_position = 0
@@ -255,7 +263,7 @@ def main():
                                 partial_chunk = chunk[start_position:]
 
                                 # Notify the user.
-                                print(str(datetime.datetime.now()) + ' - Incomplete chunk : "' + partial_chunk + '"')
+                                print(str(datetime.datetime.now()) + ' - Incomplete chunk.')
 
                                 # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
                                 break
