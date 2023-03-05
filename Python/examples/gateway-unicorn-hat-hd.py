@@ -268,7 +268,7 @@ def main():
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('Token') and Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
         # It is not valid so clear it.
         raise ValueError('No or expired token.')
 
@@ -276,15 +276,15 @@ def main():
     if args.host:
         # Get an instance of the Gateway API wrapper object (using the argument hostname).
         gateway = Gateway(args.host)
-    elif credentials.get('Host'):
+    elif credentials.get('host'):
         # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
-        gateway = Gateway(credentials['Host'])
+        gateway = Gateway(credentials['host'])
     else:
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
     # Are we able to login to the gateway?
-    if gateway.login(credentials['Token']):
+    if gateway.login(credentials['token']):
 
         # Rotate the image (e.g. if the screen is on its side).
         if args.rotate: unicornhathd.rotation(args.rotate)
@@ -320,11 +320,11 @@ def main():
                 # Sometimes a request will intermittently fail and in this event we return error text.
                 try:
                     # Should we display the weather?
-                    if credentials.get('Latitude') and credentials.get('Longitude') and os.path.exists('resources/icons/'):
+                    if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
                         # If the weather has not been loaded yet, or it was loaded over 30 minutes ago.
                         if not weather_last_updated or weather_last_updated + 1800 < time.time():
                             # Get the latest weather.
-                            weather_code, wind_speed, sunrise, sunset = get_weather_details(latitude=credentials['Latitude'], longitude=credentials['Longitude'])
+                            weather_code, wind_speed, sunrise, sunset = get_weather_details(latitude=credentials['latitude'], longitude=credentials['longitude'])
 
                             # Set the weather_last_updated date/time.
                             weather_last_updated = time.time()

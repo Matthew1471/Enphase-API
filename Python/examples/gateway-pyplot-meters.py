@@ -245,24 +245,27 @@ def main():
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('Token') or Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
+    if not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
         # It is not valid so clear it.
         raise ValueError('No or expired token.')
 
-    # Download and store the certificate from the gateway so all future requests are secure.
-    if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
-
     # Did the user override the library default hostname to the Gateway?
     global gateway
-    if credentials.get('Host'):
+    if credentials.get('host'):
+        # Download and store the certificate from the gateway so all future requests are secure.
+        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+
         # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
-        gateway = Gateway(credentials['Host'])
+        gateway = Gateway(credentials['host'])
     else:
+        # Download and store the certificate from the gateway so all future requests are secure.
+        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
     # Are we able to login to the gateway?
-    if gateway.login(credentials['Token']):
+    if gateway.login(credentials['token']):
         # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
         global meters_status
         meters_status = gateway.api_call('/ivp/meters')

@@ -34,6 +34,33 @@ class Authentication:
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
     STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
+    @staticmethod
+    def _extract_token_from_response(response):
+        # The text that indicates the beginning of a token, if this changes a lot we may have to turn this into a regular expression.
+        start_needle = '<textarea name="accessToken" id="JWTToken" cols="30" rows="10" >'
+
+        # Look for the start token text.
+        start_position = response.find(start_needle)
+
+        # Check the response contains the expected start of a token result.
+        if start_position != -1:
+            # Skip past the start_needle.
+            start_position += len(start_needle)
+
+            # Look for the end of the token text.
+            end_position = response.find('</textarea>', start_position)
+
+            # Check the end_position can be found.
+            if end_position != -1:
+                # The token can be returned.
+                return response[start_position:end_position]
+            else:
+                # The token cannot be returned.
+                raise ValueError('Unable to find the end of the token in the Authentication Server repsonse (the response page may have changed).')
+        else:
+            # The token cannot be returned.
+            raise ValueError('Unable to find access token in Authentication Server response (the response page may have changed).')
+
     def authenticate(self, username, password):
         # Build the login request payload.
         payload = {'username':username, 'password':password}
@@ -51,16 +78,25 @@ class Authentication:
     def get_site(self, siteName):
         return requests.get(Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(siteName, safe=''), headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies).json()
 
-    def get_token(self):
-        #data = {'session_id': response_data['session_id'], 'serial_num': envoy_serial, 'username': user}
-        return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies).json()
+    def get_token_for_commissioned_gateway(self, gateway_serial_number):
+        # The actual website also seems to set "uncommissioned" to "on", but this is not necessary or correct for commissioned gateways. Site name also is passed but not required.
+        response = requests.post(Authentication.AUTHENTICATION_HOST + '/entrez_tokens', headers=Authentication.STEALTHY_HEADERS_FORM, cookies=self.session_cookies, data={'serialNum': gateway_serial_number})
+        return self._extract_token_from_response(response.text)
+
+    def get_token_for_uncommissioned_gateway(self):
+        # The actual website also sets an empty "Site" key, but this is not necessary for uncommissioned gateway access.
+        response = requests.post(Authentication.AUTHENTICATION_HOST + '/entrez_tokens', headers=Authentication.STEALTHY_HEADERS_FORM, cookies=self.session_cookies, data={'uncommissioned': 'true'})
+        return self._extract_token_from_response(response.text)
+
+    def get_token_from_enlighten_session_id(self, enlighten_session_id, gateway_serial_number, username):
+        # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
+        return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies, json={'session_id': enlighten_session_id, 'serial_num': serial_number, 'username': username}).content
 
     @staticmethod
-    def check_token_valid(token, serial):
-
-        # An installer is always allowed to access any Gateway serial number.
-        if serial:
-            calculated_audience = [serial, 'un-commissioned']
+    def check_token_valid(token, gateway_serial_number=None):
+        # An installer is always allowed to access any uncommissioned Gateway serial number (currently for a shorter time however).
+        if gateway_serial_number:
+            calculated_audience = [gateway_serial_number, 'un-commissioned']
         else:
             calculated_audience = ['un-commissioned']
 

@@ -109,26 +109,32 @@ def main():
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('Token') or Authentication.check_token_valid(credentials['Token'], credentials['GatewaySerialNumber'])):
+    if not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
         # It is not valid so clear it.
         raise ValueError('No or expired token.')
 
-    # Download and store the certificate from the gateway so all future requests are secure.
-    if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
-
     # Did the user override the config or library default hostname to the Gateway?
     if args.host:
+        # Download and store the certificate from the gateway so all future requests are secure.
+        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(args.host)
+
         # Get an instance of the Gateway API wrapper object (using the argument hostname).
         gateway = Gateway(args.host)
-    elif credentials.get('Host'):
+    elif credentials.get('host'):
+        # Download and store the certificate from the gateway so all future requests are secure.
+        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+
         # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
-        gateway = Gateway(credentials['Host'])
+        gateway = Gateway(credentials['host'])
     else:
+        # Download and store the certificate from the gateway so all future requests are secure.
+        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
     # Are we able to login to the gateway?
-    if gateway.login(credentials['Token']):
+    if gateway.login(credentials['token']):
         # Connect to the MySQL/MariaDB database.
         database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database)
 
