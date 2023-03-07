@@ -171,9 +171,9 @@ def main():
                     now = datetime.datetime.now()
 
                     # Have we received a chunk already?
-                    if (chunk_first_received):
+                    if chunk_first_received:
                         # Was the previous chunk first recieved over 10 seconds ago so the buffer has just been flushed (we add on an allowance of 10 seconds for network latency)?
-                        if (chunk_first_received + datetime.timedelta(seconds=10) < now):
+                        if chunk_first_received + datetime.timedelta(seconds=10) < now:
                             # Preserve the count of seconds to add on to the oldest reading.
                             counter = 0
 

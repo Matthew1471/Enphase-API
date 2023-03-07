@@ -20,7 +20,6 @@ import datetime    # We timestamp any errors.
 import json        # This script makes heavy use of JSON parsing.
 import os.path     # We check whether a file exists.
 import sys         # We write to stderr.
-import time        # We delay.
 
 import matplotlib.pyplot as plt          # Third party library; "pip install matplotlib"
 import matplotlib.animation as animation # We use matplotlib animations for live data.
@@ -33,11 +32,31 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 
-# The lists which will hold the data.
+# Contains the axes (or chart).
+axes = None
+
+# The matplotlib figure.
+figure = None
+
+# The reference to the Gateway wrapper itself.
+gateway = None
+
+# Information about the meters (whether they are enabled etc.)
+meters_status = None
+
+# The lists which will hold the underlying raw data.
 timestamp_data = []
 production_data = []
 consumption_net_data = []
 consumption_total_data = []
+
+# Reference to the plots and annotations.
+production_plot = None
+production_annotation = None
+consumption_net_plot = None
+consumption_net_annotation = None
+consumption_total_plot = None
+consumption_total_annotation = None
 
 # Will map legend lines to artists.
 legend_map = {}
@@ -74,18 +93,18 @@ def add_result_from_gateway():
 
     # The Production meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
     meter_statistics_production = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'production'][0]
-    if (meter_statistics_production['state'] == 'enabled'):
+    if meter_statistics_production['state'] == 'enabled':
         # Get the Production section of the Production Statistics JSON that matches the configured meter mode.
-        production_statistics_production_EIM = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
+        production_statistics_production_eim = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
 
         # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
-        production_data.append(max(0, production_statistics_production_EIM['wNow']) if production_statistics_production_EIM['activeCount'] > 0 else 0)
+        production_data.append(max(0, production_statistics_production_eim['wNow']) if production_statistics_production_eim['activeCount'] > 0 else 0)
     else:
         production_data.append(0)
 
     # The Consumption meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
     meter_statistics_consumption = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'net-consumption' or meter_status['measurementType'] == 'total-consumption'][0]
-    if (meter_statistics_consumption['state'] == 'enabled'):
+    if meter_statistics_consumption['state'] == 'enabled':
         # Get the Consumption section for each meter of the Production Statistics JSON.
         for production_statistics_consumption in production_statistics['consumption']:
 
@@ -98,7 +117,7 @@ def add_result_from_gateway():
                     # Total consumption statistics.
                     consumption_total_data.append(0-production_statistics_consumption['wNow'] if production_statistics_consumption['activeCount'] > 0 else 0)
                 else:
-                    raise ValueError('Unknown measurementType : ' + production_statistic['measurementType'])
+                    raise ValueError('Unknown measurementType : ' + production_statistics_consumption['measurementType'])
             else:
                 print('Warning : Ignoring unknown consumption type: ' + production_statistics_consumption['type'])
     else:
@@ -117,7 +136,7 @@ def on_pick(event):
     visible = not original_artist[0].get_visible()
 
     # Set the visibility on the plot and annotation.
-    [artist.set_visible(visible) for artist in original_artist]
+    _ = [artist.set_visible(visible) for artist in original_artist]
 
     # Change the alpha on the line in the legend, so we can see what lines have been toggled.
     legend_line.set_alpha(1.0 if visible else 0.2)
@@ -278,7 +297,7 @@ def main():
         figure = setup_plot()
 
         # Set a timer to animate the chart every 1 second.
-        function_animation = animation.FuncAnimation(figure, animate, interval=1000)
+        _ = animation.FuncAnimation(figure, animate, interval=1000)
 
         # Show the plot screen.
         plt.show()

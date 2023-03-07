@@ -34,6 +34,9 @@ class Authentication:
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
     STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
+    # Holds the session cookie which contains the session token.
+    session_cookies = None
+
     @staticmethod
     def _extract_token_from_response(response):
         # The text that indicates the beginning of a token, if this changes a lot we may have to turn this into a regular expression.
@@ -54,12 +57,12 @@ class Authentication:
             if end_position != -1:
                 # The token can be returned.
                 return response[start_position:end_position]
-            else:
-                # The token cannot be returned.
-                raise ValueError('Unable to find the end of the token in the Authentication Server repsonse (the response page may have changed).')
-        else:
+
             # The token cannot be returned.
-            raise ValueError('Unable to find access token in Authentication Server response (the response page may have changed).')
+            raise ValueError('Unable to find the end of the token in the Authentication Server repsonse (the response page may have changed).')
+
+        # The token cannot be returned.
+        raise ValueError('Unable to find access token in Authentication Server response (the response page may have changed).')
 
     def authenticate(self, username, password):
         # Build the login request payload.
@@ -73,10 +76,10 @@ class Authentication:
         self.session_cookies = {'SESSION': response.cookies.get('SESSION')}
 
         # Return a true/false on whether login was successful.
-        return (response.status_code == 200)
+        return response.status_code == 200
 
-    def get_site(self, siteName):
-        return requests.get(Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(siteName, safe=''), headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies).json()
+    def get_site(self, site_name):
+        return requests.get(Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(site_name, safe=''), headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies).json()
 
     def get_token_for_commissioned_gateway(self, gateway_serial_number):
         # The actual website also seems to set "uncommissioned" to "on", but this is not necessary or correct for commissioned gateways. Site name also is passed but not required.
@@ -90,7 +93,7 @@ class Authentication:
 
     def get_token_from_enlighten_session_id(self, enlighten_session_id, gateway_serial_number, username):
         # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
-        return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies, json={'session_id': enlighten_session_id, 'serial_num': serial_number, 'username': username}).content
+        return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies, json={'session_id': enlighten_session_id, 'serial_num': gateway_serial_number, 'username': username}).content
 
     @staticmethod
     def check_token_valid(token, gateway_serial_number=None):
@@ -126,4 +129,4 @@ class Authentication:
 
     def logout(self):
         response = requests.post(Authentication.AUTHENTICATION_HOST + '/logout', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies)
-        return (response.status_code == 200)
+        return response.status_code == 200

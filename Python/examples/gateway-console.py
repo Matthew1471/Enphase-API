@@ -27,14 +27,14 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 
-def get_human_readable_power(watts, inHours = False):
+def get_human_readable_power(watts, in_hours = False):
     # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
     if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
-        return '{} W{}'.format(round(watts), 'h' if inHours else '')
-    else:
-        # Divide the number by a thousand and report it in kW (to 2 decimal places).
-        return '{} kW{}'.format(round(watts / 1000, 2), 'h' if inHours else '')
+        return '{} W{}'.format(round(watts), 'h' if in_hours else '')
+
+    # Divide the number by a thousand and report it in kW (to 2 decimal places).
+    return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
 
 def main():
     # Load credentials.
@@ -60,7 +60,7 @@ def main():
                 raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
 
             # Does the user want to target a specific gateway or all uncommissioned ones?
-            if (credentials.get('gatewaySerialNumber')):
+            if credentials.get('gatewaySerialNumber'):
                 # Get a new gateway specific token (installer = short-life, owner = long-life).
                 credentials['token'] = authentication.get_token_for_commissioned_gateway(credentials['gatewaySerialNumber'])
             else:
@@ -105,7 +105,7 @@ def main():
         eim_production_wh_last_seven_days = None
 
         meter_statistics_production = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'production'][0]
-        if (meter_statistics_production['state'] == 'enabled'):
+        if meter_statistics_production['state'] == 'enabled':
             # Get the Production section of the Production Statistics JSON that matches the configured meter mode.
             production_statistics_production_eim = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
 
@@ -121,7 +121,7 @@ def main():
         eim_consumption_wh_today = None
 
         meter_statistics_consumption = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'net-consumption' or meter_status['measurementType'] == 'total-consumption'][0]
-        if (meter_statistics_consumption['state'] == 'enabled'):
+        if meter_statistics_consumption['state'] == 'enabled':
             # Get the Consumption section for the right meter of the Production Statistics JSON.
             production_statistics_consumption_eim = [production_statistic for production_statistic in production_statistics['consumption'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_consumption['measurementType']][0]
 
@@ -134,15 +134,15 @@ def main():
         # We support Unicode and ANSI modes of running this application.
         # Check the Windows® console can display UTF-8 characters.
         if sys.platform != 'win32' or (sys.version_info.major >= 3 and sys.version_info.minor >= 6) or locale.getpreferredencoding() == 'cp65001':
-            stringNames = {'Production': '⚡', 'Microinverter': '⬛', 'Meter': '✏️', 'Lifetime': '⛅', 'Details': '⏰ '}
+            string_names = {'Production': '⚡', 'Microinverter': '⬛', 'Meter': '✏️', 'Lifetime': '⛅', 'Details': '⏰ '}
         else:
-            stringNames = {'Production': 'Production:', 'Microinverter': '-', 'Meter': 'Meter:', 'Lifetime': 'Lifetime:', 'Details': ''}
+            string_names = {'Production': 'Production:', 'Microinverter': '-', 'Meter': 'Meter:', 'Lifetime': 'Lifetime:', 'Details': ''}
 
         # Get the Inverters section of the Production Statistics JSON.
         production_statistics_inverters = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'inverters'][0]
 
         # Generate the status (with emojis if runtime is utf-8 capable).
-        status  = '\n{} Inverters {} ({} Inverters)'.format(stringNames['Production'], get_human_readable_power(production_statistics_inverters['wNow']), production_statistics_inverters['activeCount'])
+        status  = '\n{} Inverters {} ({} Inverters)'.format(string_names['Production'], get_human_readable_power(production_statistics_inverters['wNow']), production_statistics_inverters['activeCount'])
 
         # Used to calculate the microinverter automatic polling interval (gateway polls microinverters automatically every 5 minutes).
         most_recent_inverter_data = None
@@ -152,19 +152,19 @@ def main():
 
         # Get panel by panel status.
         for inverter_statistic in inverters_statistics:
-            status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(stringNames['Microinverter'], inverter_statistic['lastReportWatts'], inverter_statistic['serialNumber'], datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']))
+            status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(string_names['Microinverter'], inverter_statistic['lastReportWatts'], inverter_statistic['serialNumber'], datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']))
 
             # Used to calculate the microinverter polling interval (gateway polls microinverters every 5 minutes).
             if not most_recent_inverter_data or most_recent_inverter_data < datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']): most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
 
         # This will always be present (even without a production meter).
-        status += '\n{} Total Generated {}'.format(stringNames['Lifetime'], get_human_readable_power(production_statistics_inverters['whLifetime'], True))
+        status += '\n{} Total Generated {}'.format(string_names['Lifetime'], get_human_readable_power(production_statistics_inverters['whLifetime'], True))
 
         # This requires a configured Production meter.
-        if eim_production_w_now != None:
+        if eim_production_w_now is not None:
 
             # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
-            status += '\n\n{} Current Production {}'.format(stringNames['Meter'], get_human_readable_power(max(0, eim_production_w_now)).rjust(9, ' '))
+            status += '\n\n{} Current Production {}'.format(string_names['Meter'], get_human_readable_power(max(0, eim_production_w_now)).rjust(9, ' '))
 
             # The production meter needs to have been running for at least a day for this to be non-zero.
             if eim_production_wh_today:
@@ -177,7 +177,7 @@ def main():
 
         # This requires a configured Consumption meter.
         if eim_consumption_w_now:
-            status += '\n{} Current Consumption {}'.format(stringNames['Meter'], get_human_readable_power(eim_consumption_w_now).rjust(8, ' '))
+            status += '\n{} Current Consumption {}'.format(string_names['Meter'], get_human_readable_power(eim_consumption_w_now).rjust(8, ' '))
 
             # The consumption meter needs to have been running for at least a day for this to be non-zero.
             if eim_consumption_wh_today: status += ' ({} today)'.format(get_human_readable_power(eim_consumption_wh_today, True))
@@ -191,10 +191,10 @@ def main():
             next_refresh_time = datetime.datetime.fromtimestamp(inverters_reading_time) + datetime.timedelta(minutes=5)
 
             # Print when the next update will be available.
-            status += '\n\n{}Data Will Next Be Refreshed At {}'.format(stringNames['Details'], next_refresh_time.time())
+            status += '\n\n{}Data Will Next Be Refreshed At {}'.format(string_names['Details'], next_refresh_time.time())
         else:
             # Print when the last microinverter reported back to the gateway.
-            status += '\n\n{}The Last Microinverter Reported At {}'.format(stringNames['Details'], most_recent_inverter_data)
+            status += '\n\n{}The Last Microinverter Reported At {}'.format(string_names['Details'], most_recent_inverter_data)
 
         # Output to the console.
         print(status)

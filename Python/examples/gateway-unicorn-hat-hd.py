@@ -53,14 +53,14 @@ import requests.exceptions
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
-def get_human_readable_power(watts, inHours = False):
+def get_human_readable_power(watts, in_hours = False):
     # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
     if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
-        return '{} W{}'.format(round(watts), 'h' if inHours else '')
-    else:
-        # Divide the number by a thousand and report it in kW (to 2 decimal places).
-        return '{} kW{}'.format(round(watts / 1000, 2), 'h' if inHours else '')
+        return '{} W{}'.format(round(watts), 'h' if in_hours else '')
+
+    # Divide the number by a thousand and report it in kW (to 2 decimal places).
+    return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
 
 def restricted_float(number):
     # Check this is a float.
@@ -76,7 +76,7 @@ def restricted_float(number):
     # This should otherwise be an acceptable value.
     return number
 
-def get_production_details(gateway, readingType='Meter'):
+def get_production_details(gateway, reading_type='Meter'):
     # Get Gateway status.
     production_json = gateway.api_call('/production.json')
 
@@ -84,21 +84,21 @@ def get_production_details(gateway, readingType='Meter'):
     number_of_microinverters = production_json['production'][0]['activeCount']
 
     # Where to get the reading from.
-    if readingType == 'Inverters':
+    if reading_type == 'Inverters':
         # Get a reference to just the inverters bit of the Production JSON.
         reading_json = production_json['production'][0]
-    elif readingType == 'Meter':
+    elif reading_type == 'Meter':
         # Get a reference to just the production meter bit of the Production JSON.
         reading_json = production_json['production'][1]
     else:
         # Requested type not implemented.
-        raise ValueError('Invalid readingType specified for get_production_details().')
+        raise ValueError('Invalid reading_type specified for get_production_details().')
 
     # Get the watts being generated now by the inverters.
     w_now = reading_json['wNow']
 
     # The inverters are only polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
-    if readingType == 'Inverters' and reading_json['readingTime'] != 0:
+    if reading_type == 'Inverters' and reading_json['readingTime'] != 0:
         # Take the reading time and add 5 minutes (300 seconds).
         next_reading_time = reading_json['readingTime'] + 300
 
@@ -133,10 +133,10 @@ def draw_animation(unicornhathd, filename, screen_width, screen_height, speed=0.
                     pixel = image.getpixel(((frame_x * screen_width) + y, (frame_y * screen_height) + x))
 
                     # Get the Red, Green, Blue values for this pixel.
-                    r, g, b = [int(n) for n in pixel]
+                    red, green, blue = [int(n) for n in pixel]
 
                     # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                    unicornhathd.set_pixel(x, y, r, g, b)
+                    unicornhathd.set_pixel(x, y, red, green, blue)
 
             # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user will not watch it re-drawing).
             unicornhathd.show()
@@ -149,7 +149,7 @@ def draw_animation(unicornhathd, filename, screen_width, screen_height, speed=0.
 
 def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed=0.05, end_time=time.time() + 60):
     # Calculate the width and height of the text when rendered by the font.
-    _, font_upper, font_width, font_height = font.getbbox(line)
+    _, font_upper, font_width, _ = font.getbbox(line)
 
     # Create a new image in memory that can fit all the text pixels (we scroll text wider than the screen, but there's no point storing a larger height).
     image = Image.new('RGB', (max(font_width, screen_width), screen_height), (0, 0, 0))
@@ -176,10 +176,10 @@ def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_he
                     pixel = image.getpixel((x + scroll_x_offset, y))
 
                     # Get the Red, Green, Blue values for this pixel.
-                    r, g, b = [int(n) for n in pixel]
+                    red, green, blue = [int(n) for n in pixel]
 
                     # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                    unicornhathd.set_pixel((screen_width - 1) - x, y, r, g, b)
+                    unicornhathd.set_pixel((screen_width - 1) - x, y, red, green, blue)
 
             # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user won't watch it re-drawing).
             unicornhathd.show()
@@ -198,37 +198,40 @@ def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
 def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
     # Windy.
     if wind_speed > 25:
-        return 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
     # Clear sky.
     elif weather_code == 0:
-        return 'clear-day' if sunrise <= time.time() <= sunset else 'clear-night'
+        filename = 'clear-day' if sunrise <= time.time() <= sunset else 'clear-night'
     # Mainly clear and Partly cloudy.
     elif 1 <= weather_code <= 2:
-        return 'partly-cloudy-day' if sunrise <= time.time() <= sunset else 'partly-cloudy-night'
+        filename = 'partly-cloudy-day' if sunrise <= time.time() <= sunset else 'partly-cloudy-night'
     # Overcast.
     elif weather_code == 3:
-        return 'cloudy'
+        filename = 'cloudy'
     # Fog and depositing rime fog.
     elif 45 <= weather_code <= 48:
-        return 'fog'
+        filename = 'fog'
     # Drizzle: Light, moderate, and dense intensity, Freezing Drizzle: Light and dense intensity, Rain: Slight, moderate and heavy intensity and Freezing Rain: Light and heavy intensity.
     elif 51 <= weather_code <= 67:
-        return 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
     # Snow fall: Slight, moderate, and heavy intensity and Snow grains.
     elif 71 <= weather_code <= 77:
-        return 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
     # Rain showers: Slight, moderate, and violent.
     elif 80 <= weather_code <= 82:
-        return 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
     # Snow showers slight and heavy.
     elif 85 <= weather_code <= 86:
-        return 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
     # Thunderstorm: Slight or moderate, Thunderstorm with slight and heavy hail.
     elif 95 <= weather_code <= 99:
-        return 'cloudy' if sunrise <= time.time() <= sunset else 'cloudy'
+        filename = 'cloudy' if sunrise <= time.time() <= sunset else 'cloudy'
     # Unknown weather_code.
     else:
-        return 'error'
+        filename = 'error'
+
+    # Return the calculated image filename.
+    return filename
 
 def main():
     # Create an instance of argparse to handle any command line arguments.
@@ -339,7 +342,7 @@ def main():
                         unicornhathd.off()
 
                     # Get the production details.
-                    w_now, number_of_microinverters, end_time = get_production_details(gateway=gateway, readingType='Meter')
+                    w_now, number_of_microinverters, end_time = get_production_details(gateway=gateway, reading_type='Meter')
 
                     # Is there any power being generated?
                     if w_now > 0:

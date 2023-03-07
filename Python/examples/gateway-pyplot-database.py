@@ -17,25 +17,41 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse # We support command line arguments.
-import datetime # We convert datetimes to timestamps.
 
 import matplotlib.pyplot as plt          # Third party library; "pip install matplotlib"
 import matplotlib.animation as animation # We use matplotlib animations for live data.
 import matplotlib.dates                  # We use matplotlib date functions for comparisons.
 
 import mysql.connector                   # Third party library; "pip install mysql-connector-python"
-import requests.exceptions               # We handle some of the exceptions we might get back.
 
-# All the shared Enphase® functions are in these packages.
-from enphase_api.cloud.authentication import Authentication
-from enphase_api.local.gateway import Gateway
+# Contains the program argument data.
+args = None
 
+# Contains the axes (or chart).
+axes = None
 
-# The lists which will hold the data.
+# The cursor for the database connection.
+database_cursor = None
+
+# The matplotlib figure.
+figure = None
+
+# The reference to the Gateway wrapper itself.
+gateway = None
+
+# The lists which will hold the underlying raw data.
 timestamp_data = []
 production_data = []
 consumption_net_data = []
 consumption_total_data = []
+
+# Reference to the plots and annotations.
+production_plot = None
+production_annotation = None
+consumption_net_plot = None
+consumption_net_annotation = None
+consumption_total_plot = None
+consumption_total_annotation = None
 
 # Will map legend lines to artists.
 legend_map = {}
@@ -87,7 +103,7 @@ def on_pick(event):
     visible = not original_artist[0].get_visible()
 
     # Set the visibility on the plot and annotation.
-    [artist.set_visible(visible) for artist in original_artist]
+    _ = [artist.set_visible(visible) for artist in original_artist]
 
     # Change the alpha on the line in the legend, so we can see what lines have been toggled.
     legend_line.set_alpha(1.0 if visible else 0.2)
@@ -256,7 +272,7 @@ def main():
         figure = setup_plot()
 
         # Set a timer to animate the chart every 15 seconds.
-        if args.animate: function_animation = animation.FuncAnimation(figure, animate, interval=5000)
+        if args.animate: _ = animation.FuncAnimation(figure, animate, interval=5000)
 
         # Show the plot screen.
         plt.show()
