@@ -197,7 +197,7 @@ def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
 
 def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
     # Windy.
-    if wind_speed > 25:
+    if wind_speed > 15:
         filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
     # Clear sky.
     elif weather_code == 0:

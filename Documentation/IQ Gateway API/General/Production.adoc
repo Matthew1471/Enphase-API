@@ -43,7 +43,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Request Querystring
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -61,7 +61,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Root
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -87,7 +87,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === `Device` Object
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -208,7 +208,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === `DeviceType` Types
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -238,7 +238,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === `Lines` Object
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type

@@ -242,7 +242,7 @@ def main():
                     # Repeat while there is an end-position.
                     while start_position < len(chunk):
                         # This is to be expected with Server-Sent Events (SSE).
-                        if chunk.startswith(start_needle, start_position):
+                        if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
                             # Can the end_needle be found?
                             end_position = chunk.find(end_needle, start_position)
 
