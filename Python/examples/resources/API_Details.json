@@ -1,0 +1,186 @@
+{
+    "AC_Battery_Configuration": {
+        "description": "Get, set or cancel an AC Battery’s (ACB) sleep mode.",
+        "documentation": "Admin/Lib/ACB_Config.adoc",
+        "methods": [
+            "PUT",
+            "GET",
+            "DELETE"
+        ],
+        "name": "AC Battery (ACB) Configuration",
+        "url": "/admin/lib/acb_config.json"
+    },
+    "Administer_Device_Conditions_and_Controls": {
+        "description": "Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).",
+        "documentation": "Admin/Lib/Admin_DCC_Display.adoc",
+        "methods": [
+            "POST"
+        ],
+        "name": "Administer Device Conditions and Controls (DCC)",
+        "url": "/admin/lib/admin_dcc_display.json"
+    },
+    "Administer_Power_Meter_Unit": {
+        "description": "Add or read a Power Meter Unit (PMU).",
+        "documentation": "Admin/Lib/Admin_PMU_Display.adoc",
+        "methods": [
+            "GET",
+            "POST"
+        ],
+        "name": "Administer Power Meter Unit (PMU)",
+        "url": "/admin/lib/admin_pmu_display.json"
+    },
+    "AgfProfileDetails": {
+        "url": "/installer/agf/details.json"
+    },
+    "AgfProfileIndex": {
+        "url": "/installer/agf/index.json?simplified=true"
+    },
+    "AgfProfileInverterStatus": {
+        "url": "/installer/agf/inverters_status.json"
+    },
+    "AgfProfileSetProfile": {
+        "url": "/installer/agf/set_profile.json"
+    },
+    "CellularConfig": {
+        "url": "/admin/lib/network_display.json?cellular=1"
+    },
+    "Debug_Access": {
+        "description": "Get or set the Enphase® De-Bug Access (DBA) tunnel state.",
+        "documentation": "Admin/Lib/DBA.adoc",
+        "methods": [
+            "GET",
+            "POST"
+        ],
+        "name": "De-Bug Access (DBA)",
+        "url": "/admin/lib/dba.json"
+    },
+    "DhcpGetNewIp": {
+        "url": "/admin/lib/network_display.json"
+    },
+    "DiagnosticNetworkCheck": {
+        "url": "/admin/lib/network_display.json"
+    },
+    "EnchargeCancelSleepMode": {
+        "url": "/ivp/ensemble/sleep"
+    },
+    "EnchargeGetSleepModeData": {
+        "url": "/ivp/ensemble/sleep"
+    },
+    "EnchargeRelay": {
+        "url": "/ivp/ensemble/relay"
+    },
+    "EnchargeSetSleepMode": {
+        "url": "/ivp/ensemble/sleep"
+    },
+    "EnsembleAgfProfileStatus": {
+        "url": "/ivp/ensemble/profile_status"
+    },
+    "EnsembleComm": {
+        "url": "/ivp/ensemble/comm_check"
+    },
+    "EnsembleDelete": {
+        "url": "/ivp/zb/provision"
+    },
+    "EnsembleInventory": {
+        "url": "/ivp/ensemble/inventory"
+    },
+    "EnsemblePut": {
+        "url": "/ivp/zb/provision"
+    },
+    "EthernetConfigGet": {
+        "url": "/admin/lib/network_display.json"
+    },
+    "EthernetConfigPut": {
+        "url": "/admin/lib/network_display.json"
+    },
+    "EventsGet": {
+        "url": "/datatab/event_dt.rb"
+    },
+    "GetInfo": {
+        "url": "/info.xml"
+    },
+    "GetTimezones": {
+        "url": "/admin/lib/date_time_display.json?tzlist=1"
+    },
+    "Home": {
+        "url": "/home.json"
+    },
+    "InternalMeterCurrentCTSettings": {
+        "url": "/ivp/meters/cts"
+    },
+    "InternalMeterInfo": {
+        "url": "/ivp/meters"
+    },
+    "InternalMeterReadings": {
+        "url": "/ivp/meters/readings"
+    },
+    "Inventory": {
+        "url": "/inventory.json?deleted=1"
+    },
+    "InverterComm": {
+        "url": "/installer/pcu_comm_check"
+    },
+    "InverterDelete": {
+        "url": "/prov"
+    },
+    "InverterProduction": {
+        "url": "/api/v1/production/inverters"
+    },
+    "InverterPut": {
+        "url": "/prov"
+    },
+    "NewScanGet": {
+        "url": "/ivp/peb/newscan"
+    },
+    "NewScanPD": {
+        "url": "/ivp/peb/newscan"
+    },
+    "PMUPost": {
+        "url": "/admin/lib/admin_pmu_display.json"
+    },
+    "PowerForcedModeGet": {
+        "url": "/ivp/mod/EID/mode/power"
+    },
+    "PowerForcedModePut": {
+        "url": "/ivp/mod/EID/mode/power"
+    },
+    "Production": {
+        "description": "Obtain production data.",
+        "documentation": "General/Production.adoc",
+        "methods": [
+            "GET"
+        ],
+        "name": "Production",
+        "url": "/production.json?details=1"
+    },
+    "RedeterminePhase": {
+        "url": "/ivp/grest/local/gs/redeterminephase"
+    },
+    "ReportSettingsGet": {
+        "url": "/ivp/peb/reportsettings"
+    },
+    "ReportSettingsPut": {
+        "url": "/ivp/peb/reportsettings"
+    },
+    "SetTimezone": {
+        "url": "/admin/lib/date_time_display.json"
+    },
+    "TariffSettingsGet": {
+        "url": "/admin/lib/tariff.json"
+    },
+    "TariffSettingsPut": {
+        "url": "/admin/lib/tariff.json"
+    },
+    "UpdateMeterConfig": {
+        "url": "/ivp/meters/EID"
+    },
+    "UpdateMeterCurrentCTConfig": {
+        "url": "/ivp/meters/cts/EID"
+    },
+    "WifiSettings": {
+        "url": "/admin/lib/wireless_display.json"
+    },
+    "WifiSettingsJoin": {
+        "url": "/admin/lib/wireless_display.json"
+    }
+}

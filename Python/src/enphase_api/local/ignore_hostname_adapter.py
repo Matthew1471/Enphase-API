@@ -23,4 +23,4 @@ class IgnoreHostnameAdapter(HTTPAdapter):
 
     def init_poolmanager(self, connections, maxsize, block=DEFAULT_POOLBLOCK, **pool_kwargs):
         pool_kwargs['assert_hostname'] = False
-        super(IgnoreHostnameAdapter, self).init_poolmanager(connections, maxsize, block=block, **pool_kwargs)
+        super(IgnoreHostnameAdapter, self).init_poolmanager(connections=connections, maxsize=maxsize, block=block, **pool_kwargs)

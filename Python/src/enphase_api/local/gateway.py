@@ -33,7 +33,7 @@ import oauthlib.oauth2
 import requests_oauthlib.oauth2_auth
 
 # We implement our own Requests adapter to amend TLS certificate hostname checking (Gateway is self-signed).
-import enphase_api.local.ignoreHostnameAdapter
+import enphase_api.local.ignore_hostname_adapter
 
 class Gateway:
     # This prevents the requests module from creating its own user-agent.
@@ -56,7 +56,7 @@ class Gateway:
             self.session.verify = 'configuration/gateway.cer'
 
             # Requests to this host will ignore the hostname in the certificate being incorrect.
-            self.session.mount(self.host, enphase_api.local.ignoreHostnameAdapter.IgnoreHostnameAdapter())
+            self.session.mount(self.host, enphase_api.local.ignore_hostname_adapter.IgnoreHostnameAdapter())
         else:
             # Disable the warnings about making an insecure request.
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
