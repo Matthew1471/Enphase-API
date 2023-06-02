@@ -8,7 +8,7 @@
             "DELETE"
         ],
         "name": "AC Battery (ACB) Configuration",
-        "url": "/admin/lib/acb_config.json"
+        "uri": "admin/lib/acb_config.json"
     },
     "Administer_Device_Conditions_and_Controls": {
         "description": "Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).",
@@ -17,7 +17,7 @@
             "POST"
         ],
         "name": "Administer Device Conditions and Controls (DCC)",
-        "url": "/admin/lib/admin_dcc_display.json"
+        "uri": "admin/lib/admin_dcc_display.json"
     },
     "Administer_Power_Meter_Unit": {
         "description": "Add or read a Power Meter Unit (PMU).",
@@ -27,22 +27,22 @@
             "POST"
         ],
         "name": "Administer Power Meter Unit (PMU)",
-        "url": "/admin/lib/admin_pmu_display.json"
+        "uri": "admin/lib/admin_pmu_display.json"
     },
     "AgfProfileDetails": {
-        "url": "/installer/agf/details.json"
+        "uri": "installer/agf/details.json"
     },
     "AgfProfileIndex": {
-        "url": "/installer/agf/index.json?simplified=true"
+        "uri": "installer/agf/index.json?simplified=true"
     },
     "AgfProfileInverterStatus": {
-        "url": "/installer/agf/inverters_status.json"
+        "uri": "installer/agf/inverters_status.json"
     },
     "AgfProfileSetProfile": {
-        "url": "/installer/agf/set_profile.json"
+        "uri": "installer/agf/set_profile.json"
     },
     "CellularConfig": {
-        "url": "/admin/lib/network_display.json?cellular=1"
+        "uri": "admin/lib/network_display.json?cellular=1"
     },
     "Debug_Access": {
         "description": "Get or set the Enphase® De-Bug Access (DBA) tunnel state.",
@@ -52,135 +52,223 @@
             "POST"
         ],
         "name": "De-Bug Access (DBA)",
-        "url": "/admin/lib/dba.json"
+        "uri": "admin/lib/dba.json"
     },
     "DhcpGetNewIp": {
-        "url": "/admin/lib/network_display.json"
+        "uri": "admin/lib/network_display.json"
     },
     "DiagnosticNetworkCheck": {
-        "url": "/admin/lib/network_display.json"
+        "uri": "admin/lib/network_display.json"
     },
     "EnchargeCancelSleepMode": {
-        "url": "/ivp/ensemble/sleep"
+        "uri": "ivp/ensemble/sleep"
     },
     "EnchargeGetSleepModeData": {
-        "url": "/ivp/ensemble/sleep"
+        "uri": "ivp/ensemble/sleep"
     },
     "EnchargeRelay": {
-        "url": "/ivp/ensemble/relay"
+        "uri": "ivp/ensemble/relay"
     },
     "EnchargeSetSleepMode": {
-        "url": "/ivp/ensemble/sleep"
+        "uri": "ivp/ensemble/sleep"
     },
     "EnsembleAgfProfileStatus": {
-        "url": "/ivp/ensemble/profile_status"
+        "uri": "ivp/ensemble/profile_status"
     },
     "EnsembleComm": {
-        "url": "/ivp/ensemble/comm_check"
+        "uri": "ivp/ensemble/comm_check"
     },
     "EnsembleDelete": {
-        "url": "/ivp/zb/provision"
+        "uri": "ivp/zb/provision"
     },
     "EnsembleInventory": {
-        "url": "/ivp/ensemble/inventory"
+        "uri": "ivp/ensemble/inventory"
     },
     "EnsemblePut": {
-        "url": "/ivp/zb/provision"
+        "uri": "ivp/zb/provision"
     },
     "EthernetConfigGet": {
-        "url": "/admin/lib/network_display.json"
+        "uri": "admin/lib/network_display.json"
     },
     "EthernetConfigPut": {
-        "url": "/admin/lib/network_display.json"
+        "uri": "admin/lib/network_display.json"
     },
     "EventsGet": {
-        "url": "/datatab/event_dt.rb"
+        "uri": "datatab/event_dt.rb"
     },
     "GetInfo": {
-        "url": "/info.xml"
+        "uri": "info.xml"
     },
     "GetTimezones": {
-        "url": "/admin/lib/date_time_display.json?tzlist=1"
+        "uri": "admin/lib/date_time_display.json?tzlist=1"
     },
     "Home": {
-        "url": "/home.json"
+        "uri": "home.json"
     },
     "InternalMeterCurrentCTSettings": {
-        "url": "/ivp/meters/cts"
+        "uri": "ivp/meters/cts"
     },
     "InternalMeterInfo": {
-        "url": "/ivp/meters"
+        "uri": "ivp/meters"
     },
     "InternalMeterReadings": {
-        "url": "/ivp/meters/readings"
+        "uri": "ivp/meters/readings"
     },
     "Inventory": {
-        "url": "/inventory.json?deleted=1"
+        "uri": "inventory.json?deleted=1"
     },
     "InverterComm": {
-        "url": "/installer/pcu_comm_check"
+        "uri": "installer/pcu_comm_check"
     },
     "InverterDelete": {
-        "url": "/prov"
+        "uri": "prov"
     },
     "InverterProduction": {
-        "url": "/api/v1/production/inverters"
+        "uri": "api/v1/production/inverters"
     },
     "InverterPut": {
-        "url": "/prov"
+        "uri": "prov"
     },
     "NewScanGet": {
-        "url": "/ivp/peb/newscan"
+        "uri": "ivp/peb/newscan"
     },
     "NewScanPD": {
-        "url": "/ivp/peb/newscan"
+        "uri": "ivp/peb/newscan"
     },
     "PMUPost": {
-        "url": "/admin/lib/admin_pmu_display.json"
+        "uri": "admin/lib/admin_pmu_display.json"
     },
     "PowerForcedModeGet": {
-        "url": "/ivp/mod/EID/mode/power"
+        "uri": "ivp/mod/EID/mode/power"
     },
     "PowerForcedModePut": {
-        "url": "/ivp/mod/EID/mode/power"
+        "uri": "ivp/mod/EID/mode/power"
     },
     "Production": {
-        "description": "Obtain production data.",
         "documentation": "General/Production.adoc",
-        "methods": [
-            "GET"
-        ],
+        "long_description": "a JSON formatted object of the production data",
         "name": "Production",
-        "url": "/production.json?details=1"
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Production Data"
+                },
+                {
+                    "name": "Get Production Data (with each individual phase's details)",
+                    "uri": "details=1"
+                }
+            ],
+            "methods": [
+                "GET"
+            ],
+            "query": [
+                {
+                    "description": "Specifies more detailed data should be provided. Currently this gives a further breakdown on each of the individual AC phases.",
+                    "name": "details",
+                    "optional": true,
+                    "type": "Boolean",
+                    "value": "A boolean (e.g. `0` or `1`)"
+                }
+            ]
+        },
+        "response": {
+            "map_description": {
+                "consumption": "An object that contains the consumption details for the request.",
+                "Device.activeCount": "How many of these devices are active.",
+                "Device.apprntPwr": "The apparent power value. The combination of reactive and true power measurement in Volt-Amperes (VA). Only available with the `eim` device type.",
+                "Device.measurementType": "What type of measurement this is reporting. `production` is the energy produced from the inverters. `net-consumption` is load with solar production included whereas `total-consumption` is the load only. Only available with the `eim` device type.",
+                "Device.pwrFactor": "The power factor value. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit. Only available with the `eim` device type.",
+                "Device.reactPwr": "The reactive power value. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes reactive (var). Only available with the `eim` device type.",
+                "Device.readingTime": "The date and time in epoch format that the measurement was taken.",
+                "Device.rmsCurrent": "The Root Mean Square current value. Only available with the `eim` device type.",
+                "Device.rmsVoltage": "The Root Mean Square voltage value. Only available with the `eim` device type.",
+                "Device.state": "The state the AC Battery device is currently in. Only available with the `acb` device type.",
+                "Device.type": "Specifies what type of device this is a response from. In the format `DeviceType`.",
+                "Device.vahLifetime": "The total Volt-Ampere hour this device has seen. Only available with the `eim` device type.",
+                "Device.vahToday": "The total number of Volt-Ampere hours (vah) seen today. Only available with the `eim` device type.",
+                "Device.varhLagLifetime": "The total lagging Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
+                "Device.varhLagToday": "The total lagging Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
+                "Device.varhLeadLifetime": "The total leading Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
+                "Device.varhLeadToday": "The total leading Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
+                "Device.whLastSevenDays": "The total number of watt-hours seen in the last 7 days. Only available with the `eim` device type.",
+                "Device.whLifetime": "The total number of watt-hours (Wh) this device has seen.",
+                "Device.whNow": "Unknown. Only available with the `acb` device type.",
+                "Device.whToday": "The total number of watt-hours seen today. Only available with the `eim` device type.",
+                "Device.wNow": "The number of watts currently being reported.",
+                "production": "An object that contains the production details for the request.",
+                "storage": "An object that contains the storage details for the request."
+            },
+            "map_object": {
+                "consumption": "Device",
+                "production": "Device",
+                "storage": "Device"
+            },
+            "map_value": {
+                "Device.type": [
+                    {
+                        "name": "DeviceType",
+                        "values": [
+                            {
+                                "description": "IQ Inverter(s).",
+                                "name": "inverters",
+                                "type": "IQ Inverter"
+                            },
+                            {
+                                "description": "The built-in meter on the Gateway (formerly \"Envoy\").",
+                                "name": "eim",
+                                "type": "Envoy Integrated Meter"
+                            },
+                            {
+                                "description": "Encharge AC storage battery.",
+                                "name": "acb",
+                                "type": "AC Battery"
+                            },
+                            {
+                                "description": "An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.",
+                                "name": "rgm?",
+                                "type": "Revenue Grade Meter"
+                            },
+                            {
+                                "description": "Another external meter?",
+                                "name": "pmu?",
+                                "type": "Power Meter"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "short_description": "Obtain production data.",
+        "uri": "production.json"
     },
     "RedeterminePhase": {
-        "url": "/ivp/grest/local/gs/redeterminephase"
+        "uri": "ivp/grest/local/gs/redeterminephase"
     },
     "ReportSettingsGet": {
-        "url": "/ivp/peb/reportsettings"
+        "uri": "ivp/peb/reportsettings"
     },
     "ReportSettingsPut": {
-        "url": "/ivp/peb/reportsettings"
+        "uri": "ivp/peb/reportsettings"
     },
     "SetTimezone": {
-        "url": "/admin/lib/date_time_display.json"
+        "uri": "admin/lib/date_time_display.json"
     },
     "TariffSettingsGet": {
-        "url": "/admin/lib/tariff.json"
+        "uri": "admin/lib/tariff.json"
     },
     "TariffSettingsPut": {
-        "url": "/admin/lib/tariff.json"
+        "uri": "admin/lib/tariff.json"
     },
     "UpdateMeterConfig": {
-        "url": "/ivp/meters/EID"
+        "uri": "ivp/meters/EID"
     },
     "UpdateMeterCurrentCTConfig": {
-        "url": "/ivp/meters/cts/EID"
+        "uri": "ivp/meters/cts/EID"
     },
     "WifiSettings": {
-        "url": "/admin/lib/wireless_display.json"
+        "uri": "admin/lib/wireless_display.json"
     },
     "WifiSettingsJoin": {
-        "url": "/admin/lib/wireless_display.json"
+        "uri": "admin/lib/wireless_display.json"
     }
 }
