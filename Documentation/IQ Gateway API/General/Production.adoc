@@ -206,6 +206,28 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |===
 
+=== `MeasurementType` Types
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|`net-consumption`
+|Net Consumption
+|Reporting the load with solar production included.
+
+|`total-consumption`
+|Total Consumption
+|Reporting the load only (solar production excluded).
+
+|===
+
 === `DeviceType` Types
 
 [cols="1,1,2", options="header"]
@@ -233,28 +255,6 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pmu`?
 |Power Meter
 |Another external meter?
-
-|===
-
-=== `MeasurementType` Types
-
-[cols="1,1,2", options="header"]
-|===
-|Value
-|Name
-|Description
-
-|`production`
-|Production
-|Reporting the energy produced from the inverters.
-
-|`net-consumption`
-|Net Consumption
-|Reporting the load with solar production included.
-
-|`total-consumption`
-|Total Consumption
-|Reporting the load only (solar production excluded).
 
 |===
 
