@@ -52,7 +52,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`details` (Optional)
 |Boolean
-|A boolean (e.g. `0` or `1`)
+|Boolean (e.g. `0` or `1`)
 |Specifies more detailed data should be provided. Currently this gives a further breakdown on each of the individual AC phases.
 
 |===
