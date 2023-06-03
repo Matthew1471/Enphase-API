@@ -104,14 +104,9 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Number (> 0)
 |How many of these devices are active.
 
-|`measurementType` (Optional)
-|String
-|`MeasurementType` (e.g. `production`)
-|What type of measurement this is reporting. Only available with the `eim` device type. In the format `MeasurementType`.
-
 |`readingTime`
 |Number
-|Number (> 0)
+|Number
 |The date and time in epoch format that the measurement was taken.
 
 |`wNow`
@@ -123,6 +118,11 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Number
 |Number
 |The total number of watt-hours (Wh) this device has seen.
+
+|`measurementType` (Optional)
+|String
+|`MeasurementType` (e.g. `production`)
+|What type of measurement this is reporting. Only available with the `eim` device type. In the format `MeasurementType`.
 
 |`varhLeadLifetime` (Optional)
 |Number
@@ -206,28 +206,6 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |===
 
-=== `MeasurementType` Types
-
-[cols="1,1,2", options="header"]
-|===
-|Value
-|Name
-|Description
-
-|`production`
-|Production
-|Reporting the energy produced from the inverters.
-
-|`net-consumption`
-|Net Consumption
-|Reporting the load with solar production included.
-
-|`total-consumption`
-|Total Consumption
-|Reporting the load only (solar production excluded).
-
-|===
-
 === `DeviceType` Types
 
 [cols="1,1,2", options="header"]
@@ -255,6 +233,28 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pmu`?
 |Power Meter
 |Another external meter?
+
+|===
+
+=== `MeasurementType` Types
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|`net-consumption`
+|Net Consumption
+|Reporting the load with solar production included.
+
+|`total-consumption`
+|Total Consumption
+|Reporting the load only (solar production excluded).
 
 |===
 

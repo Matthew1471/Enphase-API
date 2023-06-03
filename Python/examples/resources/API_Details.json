@@ -202,10 +202,7 @@
                     },
                     "pwrFactor": "The power factor value. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit. Only available with the `eim` device type.",
                     "reactPwr": "The reactive power value. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes reactive (var). Only available with the `eim` device type.",
-                    "readingTime": {
-                        "allow_negative": false,
-                        "description": "The date and time in epoch format that the measurement was taken."
-                    },
+                    "readingTime": "The date and time in epoch format that the measurement was taken.",
                     "rmsCurrent": "The Root Mean Square current value. Only available with the `eim` device type.",
                     "rmsVoltage": "The Root Mean Square voltage value. Only available with the `eim` device type.",
                     "state": {

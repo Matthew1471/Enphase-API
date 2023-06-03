@@ -240,7 +240,7 @@ def get_table_and_types_section(table_name, table, type_map):
     result += '|Description\n\n'
 
     # Any used custom types are collected then output after the table.
-    used_custom_types = set()
+    used_custom_types = []
 
     # Table Rows.
     for field_name, field_metadata in table.items():
@@ -289,8 +289,10 @@ def get_table_and_types_section(table_name, table, type_map):
                 # Update the description to mark the type.
                 result += ' In the format `' + field_value_name + '`.'
 
-                # Mark that we need to ouput this custom type after this table.
-                used_custom_types.add(field_value_name)
+                # We do not want to introduce duplicates.
+                if field_value_name not in used_custom_types:
+                    # Mark that we need to ouput this custom type after this table.
+                    used_custom_types.append(field_value_name)
         else:
             result += '???'
 
@@ -343,27 +345,42 @@ def get_example_section(uri, example_item, json_object):
 
     return result
 
-# Inspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries.
-def merge(a, b, path=None):
-    "merges b into a"
+def merge_dictionaries(a, b, path=None):
+    "Recursively merges dictionary b into a.\nInspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries"
+
+    # What path is currently being inspected.
     if path is None: path = []
+
+    # Take each of the keys in dictionary b.
     for key in b:
+        # Does the same key exist in a?
         if key in a:
+            # Are both dictionaries?
             if isinstance(a[key], dict) and isinstance(b[key], dict):
-                merge(a[key], b[key], path + [str(key)])
+                # Merge the child dictionaries by invoking this recursively.
+                merge_dictionaries(a[key], b[key], path + [str(key)])
+            # Are they otherwise the same values.
             elif a[key] == b[key]:
-                pass # same leaf value
+                pass # Same values do not require copying.
             # If a is a dictionary but b is a string then add the string to the dictionary as a description.
             elif isinstance(a[key], dict) and isinstance(b[key], str):
+                # Set the description in the a dictionary to include the b string.
                 a[key]['description'] = b[key]
             # If b is a dictionary but a is a string then add the string to the dictionary as a description.
             elif isinstance(b[key], dict) and isinstance(a[key], str):
+                # Set the description in the b dictionary to include the a string.
                 b[key]['description'] = a[key]
+                
+                # Replace the a value with the recently updated b dictionary.
                 a[key] = b[key]
+            # Do the types not otherwise match?
             else:
+                # Error as data loss could occur.
                 raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
+        # It doesn't, so just add it.
         else:
             a[key] = b[key]
+
     return a
 
 def main():
@@ -432,7 +449,7 @@ def main():
             json_schema = get_schema(json_object=json_object, field_map=endpoint_response.get('field_map'))
 
             # Merge the dictionaries with their nested values.
-            endpoint_response['field_map'] = merge(json_schema, endpoint_response['field_map'])
+            endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
 
             # Ouput all the response tables.
             output += '\n== Response\n'
