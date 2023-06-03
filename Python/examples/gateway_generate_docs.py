@@ -102,9 +102,18 @@ def get_request_section(request_json, auth_required=False, file_depth=0):
 
     # Table Rows.
     for query_item in request_json:
+        # Name (and whether it is optional).
         result += '|`' + query_item['name'] + '` ' + ('(Optional)' if 'optional' in query_item and query_item['optional'] else '') + '\n'
+
+        # Type.
         result += '|' + query_item['type'] + '\n'
-        result += '|' + query_item['value'] + '\n'
+
+        # Value (or Type if not known) and a suggested option.
+        result += '|' + (query_item['value'] if 'value' in query_item else query_item['type'])
+        if query_item['type'] == 'Boolean': result += ' (e.g. `0` or `1`)'
+        result += '\n'
+
+        # Description.
         result += '|' + query_item['description'] + '\n\n'
 
     # End of Table.
@@ -124,12 +133,17 @@ def get_type_string(json_value):
     else:
         return 'Unknown'
 
-def get_schema(json_object, table_name='', object_map=None):
+def get_schema(json_object, table_name='.', field_map=None):
     # The fields in the current table.
     current_table_fields = {}
 
     # Store any discovered nested tables in this dictionary.
     child_tables = {}
+
+    # A field_map contains all the table meta-data both static and dynamic.
+    if field_map:
+        # Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
+        current_table_field_map = field_map.get(table_name)
 
     # Take each key and value of the current table.
     for json_key, json_value in json_object.items():
@@ -137,10 +151,10 @@ def get_schema(json_object, table_name='', object_map=None):
         # Is this itself another object?
         if isinstance(json_value, dict):
             # Get a sensible name for this nested table (that preserves its scope).
-            child_table_name = (table_name + '.' if len(table_name) else '') + json_key.capitalize()
+            child_table_name = (table_name + '.' if len(table_name) > 0 and table_name != '.' else '') + json_key.capitalize()
 
             # Add the schema of this nested table to child_tables.
-            child_tables[child_table_name] = get_schema(json_value, table_name=child_table_name, object_map=object_map)
+            child_tables[child_table_name] = get_schema(json_object=json_value, table_name=child_table_name, field_map=field_map)
 
             # Add the type of this key.
             current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '`'}
@@ -151,19 +165,18 @@ def get_schema(json_object, table_name='', object_map=None):
             # Are there any values and is the first value an object?
             if len(json_value) > 0 and isinstance(json_value[0], dict):
 
-                # We can override some object names (and merge).
-                child_table_name_lower = (table_name + '.' if len(table_name) else '') + json_key
-                if child_table_name_lower in object_map:
+                # We can override some object names (and merge metadata).
+                if current_table_field_map and (value_name := current_table_field_map.get(json_key).get('value_name')):
                     # This name has been overridden.
-                    child_table_name = object_map[child_table_name_lower]
+                    child_table_name = value_name
                 else:
                     # Get a sensible default name for this nested table (that preserves its JSON scope).
-                    child_table_name = (table_name + '.' if len(table_name) else '') + json_key.capitalize()
+                    child_table_name = (table_name + '.' if len(table_name) and table_name != '.' else '') + json_key.capitalize()
 
                 # Take each of the items in the list and combine all the keys and their metadata.
                 new_list_items = {}
                 for list_item in json_value:
-                    new_list_items.update(get_schema(list_item, table_name=child_table_name, object_map=object_map)[child_table_name])
+                    new_list_items.update(get_schema(json_object=list_item, table_name=child_table_name, field_map=field_map)[child_table_name])
 
                 # If this has been mapped/merged to a duplicate table name then we will need to append the existing dictionary.
                 if child_table_name in child_tables:
@@ -214,9 +227,9 @@ def get_schema(json_object, table_name='', object_map=None):
 
     return tables
 
-def get_table_section(table_name, table, description_map=None):
+def get_table_and_types_section(table_name, table, type_map):
     # Heading.
-    result = '\n=== ' + ('`' + table_name + '` Object' if len(table_name) > 0 else 'Root') + '\n\n'
+    result = '\n=== ' + ('`' + table_name + '` Object' if len(table_name) > 0 and table_name != '.' else 'Root') + '\n\n'
 
     # Table Header.
     result += '[cols=\"1,1,1,2\", options=\"header\"]\n'
@@ -226,18 +239,94 @@ def get_table_section(table_name, table, description_map=None):
     result += '|Values\n'
     result += '|Description\n\n'
 
+    # Any used custom types are collected then output after the table.
+    used_custom_types = set()
+
     # Table Rows.
-    for name, metadata in table.items():
-        result += '|`' + name + '`' + (' (Optional)' if 'optional' in metadata and metadata['optional'] else '') + '\n'
-        result += '|' + metadata['type'] + '\n'
-        result += '|' + (metadata['value'] if 'value' in metadata else metadata['type']) + '\n'
+    for field_name, field_metadata in table.items():
+        # Field Name.
+        result += '|`' + field_name + '`' + (' (Optional)' if 'optional' in field_metadata and field_metadata['optional'] else '') + '\n'
 
-        full_name = (table_name + '.' if len(table_name) > 0 else '') + name
+        # Field Type.
+        if isinstance(field_metadata, dict) and 'type' in field_metadata:
+            field_type = (field_metadata['type'] if 'type' in field_metadata else 'Unknown')
+        else:
+            field_type = 'Unknown'
+        result += '|' + field_type + '\n'
 
-        result += '|' + (description_map[full_name] if description_map and full_name in description_map else '???') + '\n\n'
+        # Field Value.
+        result += '|'
+        if isinstance(field_metadata, dict) and 'value' in field_metadata:
+            result += field_metadata['value']
+        else:
+            # Did the user provide further details about this string field in the field map?
+            if field_type == 'String' and (value_name := field_metadata.get('value_name')):
+                result += '`' + value_name + '`'
+
+                # Add an example value if available.
+                if value_name in type_map and len(type_map[value_name]) > 0:
+                    result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
+            
+            else:
+                result += field_type
+
+                # Did the user provide further details about this number field in the field map?
+                if field_type == 'Number' and field_metadata.get('allow_negative') == False: result += ' (> 0)'
+
+        result += '\n'
+
+        # Field Description. Did the user provide further details about this field in the field map?
+        result += '|'
+
+        # Is "Description" one of the things the user has declared.
+        if 'description' in field_metadata:
+            # Add the description.
+            result += field_metadata['description']
+
+            # Is this a string or array that has a custom type?
+            if field_type == 'String' and (field_value_name:= field_metadata.get('value_name')):
+
+                # Update the description to mark the type.
+                result += ' In the format `' + field_value_name + '`.'
+
+                # Mark that we need to ouput this custom type after this table.
+                used_custom_types.add(field_value_name)
+        else:
+            result += '???'
+
+        result += '\n\n'
 
     # End of Table.
     result += '|===\n'
+
+    # Output any used custom types.
+    if type_map:
+        for used_custom_type in used_custom_types:
+            # Check the custom_type is defined.
+            if custom_type := type_map.get(used_custom_type):
+                # Type Heading.
+                result += '\n=== `' + used_custom_type + '` Types\n\n'
+
+                # Type Table Header.
+                result += '[cols=\"1,1,2\", options=\"header\"]\n'
+                result += '|===\n'
+                result += '|Value\n'
+                result += '|Name\n'
+                result += '|Description\n\n'
+
+                # Type Table Rows.
+                for current_field in custom_type:                    
+                    # Field Value.
+                    result += '|`' + current_field['value'] + '`' + ('?' if 'uncertain' in current_field else '') + '\n'
+
+                    # Field Name.
+                    result += '|' + current_field['name'] + '\n'
+
+                    # Field Description.
+                    result += '|' + current_field['description'] + '\n\n'
+
+                # End of Table.
+                result += '|===\n'
 
     return result
 
@@ -253,6 +342,29 @@ def get_example_section(uri, example_item, json_object):
     result += '----'
 
     return result
+
+# Inspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries.
+def merge(a, b, path=None):
+    "merges b into a"
+    if path is None: path = []
+    for key in b:
+        if key in a:
+            if isinstance(a[key], dict) and isinstance(b[key], dict):
+                merge(a[key], b[key], path + [str(key)])
+            elif a[key] == b[key]:
+                pass # same leaf value
+            # If a is a dictionary but b is a string then add the string to the dictionary as a description.
+            elif isinstance(a[key], dict) and isinstance(b[key], str):
+                a[key]['description'] = b[key]
+            # If b is a dictionary but a is a string then add the string to the dictionary as a description.
+            elif isinstance(b[key], dict) and isinstance(a[key], str):
+                b[key]['description'] = a[key]
+                a[key] = b[key]
+            else:
+                raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
+        else:
+            a[key] = b[key]
+    return a
 
 def main():
 
@@ -300,7 +412,7 @@ def main():
             file_depth = endpoint['documentation'].count('/')
 
             # Add the documentation header.
-            output = get_header_section(endpoint, file_depth=file_depth)
+            output = get_header_section(endpoint=endpoint, file_depth=file_depth)
 
             # Get a reference to the current endpoint's request details.
             endpoint_request = endpoint['request']
@@ -316,25 +428,18 @@ def main():
             # Get a reference to the current endpoint's response details.
             endpoint_response = endpoint['response']
 
-            # We can override some known types.
-            object_map = None
-            if 'map_object' in endpoint_response:
-                object_map = endpoint_response['map_object']
+            # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+            json_schema = get_schema(json_object=json_object, field_map=endpoint_response.get('field_map'))
 
-            # Get the schema recursively.
-            json_schema = get_schema(json_object, object_map=object_map)
+            # Merge the dictionaries with their nested values.
+            endpoint_response['field_map'] = merge(json_schema, endpoint_response['field_map'])
 
             # Ouput all the response tables.
             output += '\n== Response\n'
 
-            # We can map some known descriptions.
-            description_map = None
-            if 'map_description' in endpoint_response:
-                description_map = endpoint_response['map_description']
-
             # Add each of the tables from the derived json_schema.
-            for table_name, table in json_schema.items():
-                output += get_table_section(table_name, table, description_map)
+            for table_name, table in endpoint_response['field_map'].items():
+                output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
 
             # Add the examples.
             output += '\n'
@@ -347,7 +452,7 @@ def main():
                     json_object = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
 
                 # Take the obtained JSON as an example.
-                output += get_example_section(endpoint_request['uri'], example_item, json_object)
+                output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=json_object)
 
             # Generate a suitable filename to store our documentation in.
             filename = 'output/' + endpoint['documentation']

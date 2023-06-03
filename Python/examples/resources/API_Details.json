@@ -169,75 +169,133 @@
                     "description": "Specifies more detailed data should be provided. Currently this gives a further breakdown on each of the individual AC phases.",
                     "name": "details",
                     "optional": true,
-                    "type": "Boolean",
-                    "value": "Boolean (e.g. `0` or `1`)"
+                    "type": "Boolean"
                 }
             ],
             "uri": "production.json"
         },
         "response": {
-            "map_description": {
-                "consumption": "An object that contains the consumption details for the request.",
-                "Device.activeCount": "How many of these devices are active.",
-                "Device.apprntPwr": "The apparent power value. The combination of reactive and true power measurement in Volt-Amperes (VA). Only available with the `eim` device type.",
-                "Device.measurementType": "What type of measurement this is reporting. `production` is the energy produced from the inverters. `net-consumption` is load with solar production included whereas `total-consumption` is the load only. Only available with the `eim` device type.",
-                "Device.pwrFactor": "The power factor value. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit. Only available with the `eim` device type.",
-                "Device.reactPwr": "The reactive power value. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes reactive (var). Only available with the `eim` device type.",
-                "Device.readingTime": "The date and time in epoch format that the measurement was taken.",
-                "Device.rmsCurrent": "The Root Mean Square current value. Only available with the `eim` device type.",
-                "Device.rmsVoltage": "The Root Mean Square voltage value. Only available with the `eim` device type.",
-                "Device.state": "The state the AC Battery device is currently in. Only available with the `acb` device type.",
-                "Device.type": "Specifies what type of device this is a response from. In the format `DeviceType`.",
-                "Device.vahLifetime": "The total Volt-Ampere hour this device has seen. Only available with the `eim` device type.",
-                "Device.vahToday": "The total number of Volt-Ampere hours (vah) seen today. Only available with the `eim` device type.",
-                "Device.varhLagLifetime": "The total lagging Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
-                "Device.varhLagToday": "The total lagging Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
-                "Device.varhLeadLifetime": "The total leading Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
-                "Device.varhLeadToday": "The total leading Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
-                "Device.whLastSevenDays": "The total number of watt-hours seen in the last 7 days. Only available with the `eim` device type.",
-                "Device.whLifetime": "The total number of watt-hours (Wh) this device has seen.",
-                "Device.whNow": "Unknown. Only available with the `acb` device type.",
-                "Device.whToday": "The total number of watt-hours seen today. Only available with the `eim` device type.",
-                "Device.wNow": "The number of watts currently being reported.",
-                "production": "An object that contains the production details for the request.",
-                "storage": "An object that contains the storage details for the request."
+            "field_map": {
+                ".": {
+                    "consumption": {
+                        "description": "An object that contains the consumption details for the request.",
+                        "value_name": "Device"
+                    },
+                    "production": {
+                        "description": "An object that contains the production details for the request.",
+                        "value_name": "Device"
+                    },
+                    "storage": {
+                        "description": "An object that contains the storage details for the request.",
+                        "value_name": "Device"
+                    }
+                },
+                "Device": {
+                    "activeCount": {
+                        "allow_negative": false,
+                        "description": "How many of these devices are active."
+                    },
+                    "apprntPwr": "The apparent power value. The combination of reactive and true power measurement in Volt-Amperes (VA). Only available with the `eim` device type.",
+                    "measurementType": {
+                        "description": "What type of measurement this is reporting. Only available with the `eim` device type.",
+                        "value_name": "MeasurementType"
+                    },
+                    "pwrFactor": "The power factor value. The ratio of the real power absorbed by the load to the apparent power flowing in the circuit. Only available with the `eim` device type.",
+                    "reactPwr": "The reactive power value. The dissipated power resulting from inductive and capacitive loads measured in Volt-Amperes reactive (var). Only available with the `eim` device type.",
+                    "readingTime": {
+                        "allow_negative": false,
+                        "description": "The date and time in epoch format that the measurement was taken."
+                    },
+                    "rmsCurrent": "The Root Mean Square current value. Only available with the `eim` device type.",
+                    "rmsVoltage": "The Root Mean Square voltage value. Only available with the `eim` device type.",
+                    "state": {
+                        "description": "The state the AC Battery device is currently in. Only available with the `acb` device type.",
+                        "value_name": "ACBatteryState"
+                    },
+                    "type": {
+                        "description": "Specifies what type of device this is a response from.",
+                        "value_name": "DeviceType"
+                    },
+                    "vahLifetime": "The total Volt-Ampere hour this device has seen. Only available with the `eim` device type.",
+                    "vahToday": "The total number of Volt-Ampere hours (vah) seen today. Only available with the `eim` device type.",
+                    "varhLagLifetime": "The total lagging Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
+                    "varhLagToday": "The total lagging Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
+                    "varhLeadLifetime": "The total leading Volt-Ampere reactive hours (varh) this device has seen. Only available with the `eim` device type.",
+                    "varhLeadToday": "The total leading Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.",
+                    "whLastSevenDays": "The total number of watt-hours seen in the last 7 days. Only available with the `eim` device type.",
+                    "whLifetime": "The total number of watt-hours (Wh) this device has seen.",
+                    "whNow": "Unknown. Only available with the `acb` device type.",
+                    "whToday": "The total number of watt-hours seen today. Only available with the `eim` device type.",
+                    "wNow": "The number of watts currently being reported."
+                }
             },
-            "map_object": {
-                "consumption": "Device",
-                "production": "Device",
-                "storage": "Device"
-            },
-            "map_value": {
-                "Device.type": [
+            "type_map": {
+                "ACBatteryState": [
                     {
-                        "name": "DeviceType",
-                        "values": [
-                            {
-                                "description": "IQ Inverter(s).",
-                                "name": "inverters",
-                                "type": "IQ Inverter"
-                            },
-                            {
-                                "description": "The built-in meter on the Gateway (formerly \"Envoy\").",
-                                "name": "eim",
-                                "type": "Envoy Integrated Meter"
-                            },
-                            {
-                                "description": "Encharge AC storage battery.",
-                                "name": "acb",
-                                "type": "AC Battery"
-                            },
-                            {
-                                "description": "An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.",
-                                "name": "rgm?",
-                                "type": "Revenue Grade Meter"
-                            },
-                            {
-                                "description": "Another external meter?",
-                                "name": "pmu?",
-                                "type": "Power Meter"
-                            }
-                        ]
+                        "description": "The AC Battery is currently charging.",
+                        "name": "Charging",
+                        "value": "charging"
+                    },
+                    {
+                        "description": "The AC Battery is currently supplying power.",
+                        "name": "Discharging",
+                        "value": "discharging"
+                    },
+                    {
+                        "description": "The AC Battery is currently full.",
+                        "name": "Full",
+                        "value": "full"
+                    },
+                    {
+                        "description": "The AC Battery (if present) is currently not full but is also not actively doing anything.",
+                        "name": "Idle",
+                        "value": "idle"
+                    }
+                ],
+                "DeviceType": [
+                    {
+                        "description": "IQ Inverter(s).",
+                        "name": "IQ Inverter",
+                        "value": "inverters"
+                    },
+                    {
+                        "description": "The built-in meter on the Gateway (formerly \"Envoy\").",
+                        "name": "Envoy Integrated Meter",
+                        "value": "eim"
+                    },
+                    {
+                        "description": "Encharge AC storage battery.",
+                        "name": "AC Battery",
+                        "value": "acb"
+                    },
+                    {
+                        "description": "An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.",
+                        "name": "Revenue Grade Meter",
+                        "uncertain": true,
+                        "value": "rgm"
+                    },
+                    {
+                        "description": "Another external meter?",
+                        "name": "Power Meter",
+                        "uncertain": true,
+                        "value": "pmu"
+                    }
+                ],
+                "MeasurementType": [
+                    {
+                        "description": "Reporting the energy produced from the inverters.",
+                        "name": "Production",
+                        "value": "production"
+                    },
+                    {
+                        "description": "Reporting the load with solar production included.",
+                        "name": "Net Consumption",
+                        "value": "net-consumption"
+                    },
+                    {
+                        "description": "Reporting the load only (solar production excluded).",
+                        "name": "Total Consumption",
+                        "value": "total-consumption"
                     }
                 ]
             }
