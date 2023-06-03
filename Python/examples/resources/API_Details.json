@@ -145,8 +145,11 @@
         "uri": "ivp/mod/EID/mode/power"
     },
     "Production": {
+        "description": {
+            "long": "A HTTP GET to `/production.json` can be used to get a JSON formatted object of the production data.",
+            "short": "Obtain production data."
+        },
         "documentation": "General/Production.adoc",
-        "long_description": "a JSON formatted object of the production data",
         "name": "Production",
         "request": {
             "examples": [
@@ -167,9 +170,10 @@
                     "name": "details",
                     "optional": true,
                     "type": "Boolean",
-                    "value": "A boolean (e.g. `0` or `1`)"
+                    "value": "Boolean (e.g. `0` or `1`)"
                 }
-            ]
+            ],
+            "uri": "production.json"
         },
         "response": {
             "map_description": {
@@ -237,9 +241,7 @@
                     }
                 ]
             }
-        },
-        "short_description": "Obtain production data.",
-        "uri": "production.json"
+        }
     },
     "RedeterminePhase": {
         "uri": "ivp/grest/local/gs/redeterminephase"
