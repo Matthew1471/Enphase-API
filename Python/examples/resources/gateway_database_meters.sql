@@ -186,12 +186,12 @@ VIEW `MeterReading_Statistics_View`
 AS
 SELECT DATE(Timestamp) AS 'Date',
        ROUND(  ((SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Import (kWh)`,
-	   -- ROUND(((((SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000) * 32.79) / 100, 2) AS `Cost (£)`,
+       -- ROUND(((((SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000) * 32.79) / 100, 2) AS `Cost (£)`,
        ROUND(((SUM(Production_P) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Produced (kWh)`,
        ROUND(((SUM(TotalConsumption_P) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Consumed (kWh)`,
-	   ROUND(  (((SUM(TotalConsumption_P) - SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END)) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Self Consumed (kWh)`,
+       ROUND(  (((SUM(TotalConsumption_P) - SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END)) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Self Consumed (kWh)`,
        -- ROUND((((((SUM(TotalConsumption_P) - SUM(CASE WHEN NetConsumption_P >= 0 THEN NetConsumption_P ELSE 0 END)) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000) * 32.79) / 100, 2) AS `Saved (£)`,
-	   ROUND(((SUM(CASE WHEN NetConsumption_P < 0 THEN ABS(NetConsumption_P) ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Export (kWh)`,
+       ROUND(((SUM(CASE WHEN NetConsumption_P < 0 THEN ABS(NetConsumption_P) ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Export (kWh)`,
        ROUND(((SUM(NetConsumption_P) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp))) / 1000, 2) AS `Net Import/Export (kWh)`,
        -- ROUND((((SUM(CASE WHEN NetConsumption_P < 0 THEN ABS(NetConsumption_P) ELSE 0 END) / COUNT(*)) * COUNT(DISTINCT HOUR(Timestamp)) / 1000) * 12) / 100, 2) AS `SEG Value (£)`,
        TIME_FORMAT(SEC_TO_TIME(COUNT(*)),'%Hh %im') AS `Duration`
