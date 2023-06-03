@@ -8,8 +8,8 @@ Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 :idprefix:
 :idseparator: -
 
-// Any code blocks will be in JSON5 by default.
-:source-language: json5
+// Any code blocks will be in JSON by default.
+:source-language: json
 
 ifndef::env-github[:icons: font]
 
@@ -52,7 +52,7 @@ To be completed.
 === Get NewScan Example
 
 .PUT */ivp/peb/newscan* Response
-[source,json5,subs="+quotes"]
+[source,json,subs="+quotes"]
 ----
 { "newDeviceScan" : { "active" : false, "is-suspended" : false, "controlled" : false, "scan-is-done" : false, "in-exclusive-mode" : false, "duration-in-minutes" : 0, "remaining-minutes" : 0, "exclusive-minutes" : 0, "rem-minutes-exclusive" : 0, "inhibit-device-scan" : false, "rqst-opportunity-modulus" : 0, "curr-opportunity-modulus" : 0, "devices-to-be-discovered" : 10, "tot-devices-discovered" : 10, "curr-devices-discovered" : 10, "avg-rate-of-new-devices-discovered-per-min" : 10, "avg-num-of-new-devices-discovered-per-poll" : 10, "pcu": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "acb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "nsrb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "esub": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "pld": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "mins-until-next-cycle" : 5, "xdom-disabled-scan" : false, "polling-period-secs" : 900, "polling-is-off" : false,"forget-all-scan" : false }}
 ----

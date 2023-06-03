@@ -8,8 +8,8 @@ Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 :idprefix:
 :idseparator: -
 
-// Any code examples will be in JSON5 by default.
-:source-language: json5
+// Any code examples will be in JSON by default.
+:source-language: json
 
 ifndef::env-github[:icons: font]
 
