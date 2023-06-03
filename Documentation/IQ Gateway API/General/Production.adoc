@@ -106,8 +106,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`measurementType` (Optional)
 |String
-|`production`, `net-consumption` or `total-consumption`
-|What type of measurement this is reporting. `production` is the energy produced from the inverters. `net-consumption` is load with solar production included whereas `total-consumption` is the load only. Only available with the `eim` device type.
+|`MeasurementType` (e.g. `production`)
+|What type of measurement this is reporting. Only available with the `eim` device type. In the format `MeasurementType`.
 
 |`readingTime`
 |Number
@@ -196,8 +196,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`state` (Optional)
 |String
-|`charging`, `discharging`, `full` or `idle`
-|The state the AC Battery device is currently in. Only available with the `acb` device type.
+|`ACBatteryState` (e.g. `charging`)
+|The state the AC Battery device is currently in. Only available with the `acb` device type. In the format `ACBatteryState`.
 
 |`lines` (Optional)
 |Array(Object)
@@ -210,8 +210,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 [cols="1,1,2", options="header"]
 |===
+|Value
 |Name
-|Type
 |Description
 
 |`inverters`
@@ -233,6 +233,54 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pmu`?
 |Power Meter
 |Another external meter?
+
+|===
+
+=== `MeasurementType` Types
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|`net-consumption`
+|Net Consumption
+|Reporting the load with solar production included.
+
+|`total-consumption`
+|Total Consumption
+|Reporting the load only (solar production excluded).
+
+|===
+
+=== `ACBatteryState` Types
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`charging`
+|Charging
+|The AC Battery is currently charging.
+
+|`discharging`
+|Discharging
+|The AC Battery is currently supplying power.
+
+|`full`
+|Full
+|The AC Battery is currently full.
+
+|`idle`
+|Idle
+|The AC Battery (if present) is currently not full but is also not actively doing anything.
 
 |===
 
