@@ -1,0 +1,231 @@
+= Admin - Lib - Tariff Configuration
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+Get or set the tariff settings.
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../../../README.adoc[project's homepage].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`tariff`
+|Object
+|`Tariff`
+|???
+
+|`schedule`
+|Object
+|`Schedule`
+|???
+
+|===
+
+=== `Tariff` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`currency`
+|Object
+|`Tariff.Currency`
+|???
+
+|`logger`
+|String
+|String
+|???
+
+|`storage_settings`
+|Object
+|`Tariff.Storage_settings`
+|???
+
+|`single_rate`
+|Object
+|`Tariff.Single_rate`
+|???
+
+|`seasons`
+|Array(Unknown)
+|Array of Unknown
+|???
+
+|`seasons_sell`
+|Array(Unknown)
+|Array of Unknown
+|???
+
+|===
+
+=== `Tariff.Currency` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`code`
+|String
+|String
+|???
+
+|===
+
+=== `Tariff.Storage_settings` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`mode`
+|String
+|String
+|???
+
+|`operation_mode_sub_type`
+|String
+|String
+|???
+
+|`reserved_soc`
+|Number
+|Number
+|???
+
+|`very_low_soc`
+|Number
+|Number
+|???
+
+|`charge_from_grid`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|===
+
+=== `Tariff.Single_rate` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`rate`
+|Number
+|Number
+|???
+
+|`sell`
+|Number
+|Number
+|???
+
+|===
+
+=== `Schedule` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`source`
+|String
+|String
+|???
+
+|`date`
+|String
+|String
+|???
+
+|`version`
+|String
+|String
+|???
+
+|`reserved_soc`
+|Number
+|Number
+|???
+
+|`operation_mode_sub_type`
+|String
+|String
+|???
+
+|`very_low_soc`
+|Number
+|Number
+|???
+
+|`charge_from_grid`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|===
+
+== Examples
+
+=== Get Tariff Configuration
+
+.GET */admin/lib/tariff.json* Response
+[source,json,subs="+quotes"]
+----
+{"tariff": {"currency": {"code": "GBP"}, "logger": "mylogger", "storage_settings": {"mode": "self-consumption", "operation_mode_sub_type": "", "reserved_soc": 0.0, "very_low_soc": 5, "charge_from_grid": false}, "single_rate": {"rate": 0.3279, "sell": 0.12}, "seasons": [], "seasons_sell": []}, "schedule": {"source": "Tariff", "date": "2023-04-11 10:14:21 UTC", "version": "00.00.02", "reserved_soc": 0.0, "operation_mode_sub_type": "", "very_low_soc": 5, "charge_from_grid": false}}
+----

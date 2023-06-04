@@ -1,0 +1,451 @@
+= General - Home
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+Obtain a summary of the gateway status.
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../../README.adoc[project's homepage].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`software_build_epoch`
+|Number
+|Number
+|???
+
+|`is_nonvoy`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`db_size`
+|Number
+|Number
+|???
+
+|`db_percent_full`
+|String
+|String
+|???
+
+|`timezone`
+|String
+|String
+|???
+
+|`current_date`
+|String
+|String
+|???
+
+|`current_time`
+|String
+|String
+|???
+
+|`network`
+|Object
+|`Network`
+|???
+
+|`tariff`
+|String
+|String
+|???
+
+|`comm`
+|Object
+|`Comm`
+|???
+
+|`alerts`
+|Array(Unknown)
+|Array of Unknown
+|???
+
+|`update_status`
+|String
+|String
+|???
+
+|`wireless_connection`
+|Array(Object)
+|Array of `Wireless_connection`
+|???
+
+|`enpower`
+|Object
+|`Enpower`
+|???
+
+|===
+
+=== `Network` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`web_comm`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`ever_reported_to_enlighten`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`last_enlighten_report_time`
+|Number
+|Number
+|???
+
+|`primary_interface`
+|String
+|String
+|???
+
+|`interfaces`
+|Array(Object)
+|Array of `Network.Interfaces`
+|???
+
+|===
+
+=== `Network.Interfaces` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`type`
+|String
+|String
+|???
+
+|`interface`
+|String
+|String
+|???
+
+|`mac`
+|String
+|String
+|???
+
+|`dhcp`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`ip`
+|String
+|String
+|???
+
+|`signal_strength`
+|Number
+|Number
+|???
+
+|`signal_strength_max`
+|Number
+|Number
+|???
+
+|`carrier`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`supported` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`present` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`configured` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`status` (Optional)
+|String
+|String
+|???
+
+|===
+
+=== `Comm` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|`pcu`
+|Object
+|`Comm.Pcu`
+|???
+
+|`acb`
+|Object
+|`Comm.Acb`
+|???
+
+|`nsrb`
+|Object
+|`Comm.Nsrb`
+|???
+
+|`esub`
+|Object
+|`Comm.Esub`
+|???
+
+|`encharge`
+|Array(Object)
+|Array of `Comm.Encharge`
+|???
+
+|===
+
+=== `Comm.Pcu` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|===
+
+=== `Comm.Acb` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|===
+
+=== `Comm.Nsrb` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|===
+
+=== `Comm.Esub` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|===
+
+=== `Comm.Encharge` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|???
+
+|`level`
+|Number
+|Number
+|???
+
+|`level_24g`
+|Number
+|Number
+|???
+
+|`level_subg`
+|Number
+|Number
+|???
+
+|===
+
+=== `Wireless_connection` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`signal_strength`
+|Number
+|Number
+|???
+
+|`signal_strength_max`
+|Number
+|Number
+|???
+
+|`type`
+|String
+|String
+|???
+
+|`connected`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|===
+
+=== `Enpower` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`connected`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`grid_status`
+|String
+|String
+|???
+
+|===
+
+== Examples
+
+=== Get Gateway Status
+
+.GET */home.json* Response
+[source,json,subs="+quotes"]
+----
+{"software_build_epoch": 1642480978, "is_nonvoy": false, "db_size": 6168576, "db_percent_full": "  1.63", "timezone": "Europe/London", "current_date": "06/04/2023", "current_time": "14:13", "network": {"web_comm": true, "ever_reported_to_enlighten": true, "last_enlighten_report_time": 1685883908, "primary_interface": "wlan0", "interfaces": [{"type": "ethernet", "interface": "eth0", "mac": "00:11:22:33:44:55", "dhcp": true, "ip": "169.254.120.1", "signal_strength": 0, "signal_strength_max": 1, "carrier": false}, {"signal_strength": 2, "signal_strength_max": 5, "type": "wifi", "interface": "wlan0", "mac": "66:77:88:99:AA:BB", "dhcp": true, "ip": "192.168.0.100", "carrier": true, "supported": true, "present": true, "configured": true, "status": "connected"}]}, "tariff": "single_rate", "comm": {"num": 14, "level": 5, "pcu": {"num": 14, "level": 5}, "acb": {"num": 0, "level": 0}, "nsrb": {"num": 0, "level": 0}, "esub": {"num": 0, "level": 0}, "encharge": [{"num": 0, "level": 0, "level_24g": 0, "level_subg": 0}]}, "alerts": [], "update_status": "satisfied", "wireless_connection": [{"signal_strength": 0, "signal_strength_max": 0, "type": "zigbee", "connected": false}, {"signal_strength": 0, "signal_strength_max": 0, "type": "subghz", "connected": false}], "enpower": {"connected": false, "grid_status": "closed"}}
+----

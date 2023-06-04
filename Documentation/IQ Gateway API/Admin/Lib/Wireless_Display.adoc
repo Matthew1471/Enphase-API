@@ -1,0 +1,325 @@
+= Admin - Lib - Wireless Configuration
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+Get or set the wireless settings.
+
+== Introduction
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the link:../../../../README.adoc[project's homepage].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`supported`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`present`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`configured`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`up`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`carrier`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`current_network`
+|Object
+|`Current_network`
+|???
+
+|`device_info`
+|Object
+|`Device_info`
+|???
+
+|`ap_mode`
+|Object
+|`Ap_mode`
+|???
+
+|`selected_region`
+|String
+|String
+|???
+
+|`regions`
+|Array(Unknown)
+|Array of Unknown
+|???
+
+|`sites`
+|Array(Object)
+|Array of `Sites`
+|???
+
+|===
+
+=== `Current_network` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`ssid`
+|String
+|String
+|???
+
+|`status`
+|String
+|String
+|???
+
+|`ip_address`
+|String
+|String
+|???
+
+|`gateway_ip`
+|String
+|String
+|???
+
+|`security_mode`
+|String
+|String
+|???
+
+|`encryption_type`
+|String
+|String
+|???
+
+|`ap_bssid`
+|String
+|String
+|???
+
+|`channel`
+|String
+|String
+|???
+
+|`bars`
+|Number
+|Number
+|???
+
+|===
+
+=== `Device_info` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`vendor`
+|String
+|String
+|???
+
+|`device`
+|String
+|String
+|???
+
+|`vendor_id`
+|String
+|String
+|???
+
+|`device_id`
+|String
+|String
+|???
+
+|`manufacturer`
+|String
+|String
+|???
+
+|`model`
+|String
+|String
+|???
+
+|`serial`
+|String
+|String
+|???
+
+|`hw_version`
+|String
+|String
+|???
+
+|`usb_spec`
+|String
+|String
+|???
+
+|`usb_slot`
+|String
+|String
+|???
+
+|`driver`
+|String
+|String
+|???
+
+|`mac`
+|String
+|String
+|???
+
+|===
+
+=== `Ap_mode` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enabled`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`name`
+|String
+|String
+|???
+
+|===
+
+=== `Sites` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`is_current_ssid`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`mac`
+|String
+|String
+|???
+
+|`channel`
+|String
+|String
+|???
+
+|`ssid`
+|String
+|String
+|???
+
+|`bars`
+|Number
+|Number
+|???
+
+|`secured`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`wps`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`unsupported`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`security_mode`
+|String
+|String
+|???
+
+|`encryption_type`
+|String
+|String
+|???
+
+|===
+
+== Examples
+
+=== Get Wireless Configuration
+
+.GET */admin/lib/wireless_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"supported": true, "present": true, "configured": true, "up": true, "carrier": true, "current_network": {"ssid": "MyHome", "status": "connected", "ip_address": "192.168.0.100", "gateway_ip": "192.168.0.1", "security_mode": "WPA2-PSK", "encryption_type": "CCMP", "ap_bssid": "AA:BB:CC:DD:EE:FF", "channel": "36", "bars": 2}, "device_info": {"vendor": "Enphase", "device": "platform:wl18xx", "vendor_id": "", "device_id": "", "manufacturer": "Enphase", "model": "platform:wl18xx", "serial": "", "hw_version": "", "usb_spec": "", "usb_slot": "", "driver": "wl18xx_driver", "mac": "BB:BB:CC:DD:EE:FF"}, "ap_mode": {"enabled": false, "name": "ENVOY_099999"}, "selected_region": "GB", "regions": ["00", "AE", "AL", "AM", "AN", "AR", "AT", "AU", "AW", "AZ", "BA", "BB", "BD", "BE", "BG", "BH", "BL", "BN", "BO", "BR", "BY", "BZ", "CA", "CH", "CL", "CN", "CO", "CR", "CS", "CY", "CZ", "DE", "DK", "DO", "DZ", "EC", "EE", "EG", "ES", "FI", "FR", "GB", "GD", "GE", "GL", "GR", "GT", "GU", "HK", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IN", "IR", "IS", "IT", "JM", "JO", "JP", "KE", "KH", "KP", "KR", "KW", "KZ", "LB", "LI", "LK", "LT", "LU", "LV", "MA", "MC", "MK", "MO", "MT", "MX", "MY", "NL", "NO", "NP", "NZ", "OM", "PA", "PE", "PG", "PH", "PK", "PL", "PR", "PT", "QA", "RO", "RU", "SA", "SE", "SG", "SI", "SK", "SV", "SY", "TH", "TN", "TR", "TT", "TW", "UA", "US", "UY", "UZ", "VE", "VN", "YE", "ZA", "ZW"], "sites": [{"is_current_ssid": false, "mac": "ff:ff:ff:ff:ff:ff", "channel": "5180", "ssid": "SomeoneElse", "bars": 2, "secured": false, "wps": false, "unsupported": false, "security_mode": "Open/Unsecured", "encryption_type": "NONE"}, {"is_current_ssid": false, "mac": "ee:cc:bb:aa:bb:cc", "channel": "5180", "ssid": "SomeoneElse2", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "cc:cc:cc:dd:aa:cc", "channel": "5180", "ssid": "SomeoneElse3", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "bb:bb:bb:bb:bb:bb", "channel": "2462", "ssid": "SomeoneElse4", "bars": 3, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": true, "mac": "aa:bb:cc:dd:ee:ff", "channel": "5180", "ssid": "MyHome", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "ff:ff:dd:cc:aa:aa", "channel": "2412", "ssid": "SomeoneElse4", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "cc:cc:cc:cc:cc:cc", "channel": "2462", "ssid": "SomeoneElse5", "bars": 4, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "TKIP + CCMP"}, {"is_current_ssid": false, "mac": "aa:bb:cc:dd:ee:ff", "channel": "5260", "ssid": "SomeoneElse6", "bars": 1, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}]}
+----
