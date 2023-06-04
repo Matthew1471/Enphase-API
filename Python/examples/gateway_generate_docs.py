@@ -113,7 +113,8 @@ def get_request_section(request_json, auth_required=False, file_depth=0):
 
         # Value (or Type if not known) and a suggested option.
         result += '|' + (query_item['value'] if 'value' in query_item else query_item['type'])
-        if query_item['type'] == 'Boolean': result += ' (e.g. `0` or `1`)'
+        if query_item['type'] == 'Boolean':
+            result += ' (e.g. `0` or `1`)'
         result += '\n'
 
         # Description.
@@ -143,7 +144,7 @@ def get_schema(json_object, table_name='.', field_map=None):
 
     # Store any discovered nested tables in this dictionary.
     child_tables = {}
-    
+
     # A field_map contains all the table meta-data both static and dynamic. Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
     current_table_field_map = (field_map.get(table_name) if field_map else None)
 
@@ -151,8 +152,8 @@ def get_schema(json_object, table_name='.', field_map=None):
     for json_key, json_value in json_object.items():
         # Is this itself another object?
         if isinstance(json_value, dict):
-            # Get a sensible name for this nested table (that preserves its scope).
-            child_table_name = (table_name + '.' if len(table_name) > 0 and table_name != '.' else '') + json_key.capitalize()
+            # Get a sensible name for this nested table (that preserves its JSON scope).
+            child_table_name = (table_name + '.' if table_name and table_name != '.' else '') + json_key.capitalize()
 
             # This could return multiple tables if there are nested types.
             new_list_schema = get_schema(json_object=json_value, table_name=child_table_name, field_map=field_map)
@@ -175,7 +176,7 @@ def get_schema(json_object, table_name='.', field_map=None):
                     child_table_name = value_name
                 else:
                     # Get a sensible default name for this nested table (that preserves its JSON scope).
-                    child_table_name = (table_name + '.' if len(table_name) and table_name != '.' else '') + json_key.capitalize()
+                    child_table_name = (table_name + '.' if table_name and table_name != '.' else '') + json_key.capitalize()
 
                 # Take each of the items in the list and combine all the keys and their metadata.
                 new_list_items = {}
@@ -244,7 +245,7 @@ def get_schema(json_object, table_name='.', field_map=None):
 
 def get_table_and_types_section(table_name, table, type_map):
     # Heading.
-    result = '\n=== ' + ('`' + table_name + '` Object' if len(table_name) > 0 and table_name != '.' else 'Root') + '\n\n'
+    result = '\n=== ' + ('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root') + '\n\n'
 
     # Table Header.
     result += '[cols=\"1,1,1,2\", options=\"header\"]\n'
@@ -281,12 +282,15 @@ def get_table_and_types_section(table_name, table, type_map):
                 # Add an example value if available.
                 if value_name in type_map and len(type_map[value_name]) > 0:
                     result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
-
             else:
                 result += field_type
 
                 # Did the user provide further details about this number field in the field map?
-                if field_type == 'Number' and field_metadata.get('allow_negative') == False: result += ' (> 0)'
+                if field_type == 'Number' and field_metadata.get('allow_negative') == False:
+                    result += ' (> 0)'
+                # Booleans will always be 0 or 1.
+                elif field_type == 'Boolean':
+                    result += ' (e.g. `0` or `1`)'
 
         result += '\n'
 
@@ -300,7 +304,6 @@ def get_table_and_types_section(table_name, table, type_map):
 
             # Is this a string or array that has a custom type?
             if field_type == 'String' and (field_value_name:= field_metadata.get('value_name')):
-
                 # Update the description to mark the type.
                 result += ' In the format `' + field_value_name + '`.'
 
@@ -309,6 +312,7 @@ def get_table_and_types_section(table_name, table, type_map):
                     # Mark that we need to ouput this custom type after this table.
                     used_custom_types.append(field_value_name)
         else:
+            # This field is not currently documented.
             result += '???'
 
         result += '\n\n'
@@ -438,7 +442,6 @@ def main():
 
     # Are we able to login to the gateway?
     if TEST_ONLY or gateway.login(credentials['token']):
-
         # Load endpoints.
         with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
             endpoint_metadata = json.load(json_file)
@@ -460,7 +463,7 @@ def main():
             # Add the documentation header.
             output = get_header_section(endpoint=endpoint, file_depth=file_depth)
 
-            # Check this documentation file supports requests.
+            # Check this documentation file supports making requests to the endpoint.
             if 'request' in endpoint:
                 # Get a reference to the current endpoint's request details.
                 endpoint_request = endpoint['request']
@@ -487,7 +490,7 @@ def main():
                             # Perform a GET request on the resource.
                             print('Requesting example \'' + example_item['name'] + '\' for \'' + key + '\'.')
                             example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
-                            
+
                             # This variable can be inspected to hardcode a sample in API_Details.
                             debug_variable = json.dumps({ 'sample': json.dumps(example_item['response']) })[1:-1]
                             set_breakpoint_here = debug_variable
@@ -513,8 +516,9 @@ def main():
                     output += '\n'
                     output += '== Examples'
 
+                    # There can be multiple examples for the same endpoint.
                     for example_item in endpoint_request['examples']:
-                        # Not able to output an example without a response.
+                        # We cannot output an example without a response (either from querying the API earlier or hardcoding one).
                         if not 'response' in example_item:
                             print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' due to lack of response.')
                             continue
@@ -522,6 +526,7 @@ def main():
                         # Take the obtained JSON as an example.
                         output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=example_item['response'])
             else:
+                # Add placeholder text.
                 output += get_not_yet_documented()
 
             # Generate a suitable filename to store our documentation in.
@@ -533,7 +538,6 @@ def main():
             # Write the output to the file.
             with open(filename, mode='w', encoding='utf-8') as text_file:
                 text_file.write(output)
-
     else:
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
