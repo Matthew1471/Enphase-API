@@ -84,7 +84,7 @@ def get_header_section(endpoint, file_depth=0):
 
     return result
 
-def get_request_section(request_json, auth_required=False, file_depth=0):
+def get_request_section(request_json, auth_required=False, file_depth=0, type_map=None):
     # Heading.
     result = '\n== Request\n\n'
 
@@ -92,36 +92,50 @@ def get_request_section(request_json, auth_required=False, file_depth=0):
     if auth_required:
         result += 'As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:' + ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
 
-    # Sub Heading.
-    result += '\n=== Request Querystring\n\n'
+    # Any used custom types are collected then output after the tables.
+    used_custom_types = []
 
-    # Table Header.
-    result += '[cols="1,1,1,2", options="header"]\n'
-    result += '|===\n'
-    result += '|Name\n'
-    result += '|Type\n'
-    result += '|Values\n'
-    result += '|Description\n\n'
+    # Get the request querystring table.
+    if 'query' in request_json:
+        # Get the table section but also any used and referenced custom types.
+        table_section, used_custom_types = get_table_section('Request Querystring', request_json['query'], type_map)
 
-    # Table Rows.
-    for query_item in request_json:
-        # Name (and whether it is optional).
-        result += '|`' + query_item['name'] + '` ' + ('(Optional)' if 'optional' in query_item and query_item['optional'] else '') + '\n'
+        # Add the table section to the output.
+        result += table_section
 
-        # Type.
-        result += '|' + query_item['type'] + '\n'
+    return result, used_custom_types
 
-        # Value (or Type if not known) and a suggested option.
-        result += '|' + (query_item['value'] if 'value' in query_item else query_item['type'])
-        if query_item['type'] == 'Boolean':
-            result += ' (e.g. `0` or `1`)'
-        result += '\n'
+def get_type_section(used_custom_types, type_map):
+    # Heading.
+    result = '\n== Types\n'
 
-        # Description.
-        result += '|' + query_item['description'] + '\n\n'
+    # Take each used custom type.
+    for used_custom_type in used_custom_types:
+        # Check the custom_type is defined.
+        if custom_type := type_map.get(used_custom_type):
+            # Type Sub Heading.
+            result += '\n=== `' + used_custom_type + '` Type\n\n'
 
-    # End of Table.
-    result += '|===\n'
+            # Type Table Header.
+            result += '[cols=\"1,1,2\", options=\"header\"]\n'
+            result += '|===\n'
+            result += '|Value\n'
+            result += '|Name\n'
+            result += '|Description\n\n'
+
+            # Type Table Rows.
+            for current_field in custom_type:
+                # Field Value.
+                result += '|`' + current_field['value'] + '`' + ('?' if 'uncertain' in current_field else '') + '\n'
+
+                # Field Name.
+                result += '|' + current_field['name'] + '\n'
+
+                # Field Description.
+                result += '|' + current_field['description'] + '\n\n'
+
+            # End of Table.
+            result += '|===\n'
 
     return result
 
@@ -243,9 +257,65 @@ def get_schema(json_object, table_name='.', field_map=None):
 
     return tables
 
-def get_table_and_types_section(table_name, table, type_map):
-    # Heading.
-    result = '\n=== ' + ('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root') + '\n\n'
+def get_table_row(field_name, field_metadata=None, type_map=None):
+    # Field Name.
+    result = '|`' + field_name + '`' + (' (Optional)' if field_metadata and 'optional' in field_metadata and field_metadata['optional'] else '') + '\n'
+
+    # Field Type.
+    if isinstance(field_metadata, dict) and 'type' in field_metadata:
+        field_type = (field_metadata['type'] if 'type' in field_metadata else 'Unknown')
+    else:
+        field_type = 'Unknown'
+    result += '|' + field_type + '\n'
+
+    # Field Value.
+    result += '|'
+    if isinstance(field_metadata, dict) and 'value' in field_metadata:
+        result += field_metadata['value']
+    else:
+        # Did the user provide further details about this string field in the field map?
+        if field_type == 'String' and (value_name := field_metadata.get('value_name')):
+            result += '`' + value_name + '`'
+
+            # Add an example value if available.
+            if value_name in type_map and len(type_map[value_name]) > 0:
+                result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
+        else:
+            result += field_type
+
+            # Did the user provide further details about this number field in the field map?
+            if field_type == 'Number' and field_metadata.get('allow_negative') == False:
+                result += ' (> 0)'
+            # Booleans will always be 0 or 1.
+            elif field_type == 'Boolean':
+                result += ' (e.g. `0` or `1`)'
+
+    result += '\n'
+
+    # Field Description. Did the user provide further details about this field in the field map?
+    result += '|'
+
+    # Is "Description" one of the things the user has declared.
+    if field_metadata and 'description' in field_metadata:
+        # Add the description.
+        result += field_metadata['description']
+
+        # Is this a string or array that has a custom type?
+        if field_type == 'String' and (field_value_name:= field_metadata.get('value_name')):
+            # Update the description to mark the type.
+            result += ' In the format `' + field_value_name + '`.'
+    else:
+        # This field is not currently documented.
+        result += '???'
+
+    result += '\n\n'
+
+    # Return the result but also any custom types that we referenced.
+    return result
+
+def get_table_section(table_name, table, type_map):
+    # Sub Heading.
+    result = '\n=== ' + table_name + '\n\n'
 
     # Table Header.
     result += '[cols=\"1,1,1,2\", options=\"header\"]\n'
@@ -255,104 +325,28 @@ def get_table_and_types_section(table_name, table, type_map):
     result += '|Values\n'
     result += '|Description\n\n'
 
-    # Any used custom types are collected then output after the table.
+    # Any used custom types are collected then output after the tables.
     used_custom_types = []
 
-    # Table Rows.
+    # Table Rows (and collect any referenced custom types).
     for field_name, field_metadata in table.items():
-        # Field Name.
-        result += '|`' + field_name + '`' + (' (Optional)' if 'optional' in field_metadata and field_metadata['optional'] else '') + '\n'
+        # Add this row.
+        result += get_table_row(field_name=field_name, field_metadata=field_metadata, type_map=type_map)
 
-        # Field Type.
-        if isinstance(field_metadata, dict) and 'type' in field_metadata:
-            field_type = (field_metadata['type'] if 'type' in field_metadata else 'Unknown')
-        else:
-            field_type = 'Unknown'
-        result += '|' + field_type + '\n'
-
-        # Field Value.
-        result += '|'
-        if isinstance(field_metadata, dict) and 'value' in field_metadata:
-            result += field_metadata['value']
-        else:
-            # Did the user provide further details about this string field in the field map?
-            if field_type == 'String' and (value_name := field_metadata.get('value_name')):
-                result += '`' + value_name + '`'
-
-                # Add an example value if available.
-                if value_name in type_map and len(type_map[value_name]) > 0:
-                    result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
-            else:
-                result += field_type
-
-                # Did the user provide further details about this number field in the field map?
-                if field_type == 'Number' and field_metadata.get('allow_negative') == False:
-                    result += ' (> 0)'
-                # Booleans will always be 0 or 1.
-                elif field_type == 'Boolean':
-                    result += ' (e.g. `0` or `1`)'
-
-        result += '\n'
-
-        # Field Description. Did the user provide further details about this field in the field map?
-        result += '|'
-
-        # Is "Description" one of the things the user has declared.
-        if 'description' in field_metadata:
-            # Add the description.
-            result += field_metadata['description']
-
-            # Is this a string or array that has a custom type?
-            if field_type == 'String' and (field_value_name:= field_metadata.get('value_name')):
-                # Update the description to mark the type.
-                result += ' In the format `' + field_value_name + '`.'
-
-                # We do not want to introduce duplicates.
-                if field_value_name not in used_custom_types:
-                    # Mark that we need to ouput this custom type after this table.
-                    used_custom_types.append(field_value_name)
-        else:
-            # This field is not currently documented.
-            result += '???'
-
-        result += '\n\n'
+        # Was this a custom type?
+        if field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
+            # We do not want to collect duplicates.
+            if field_value_name not in used_custom_types:
+                # Mark that we need to ouput this custom type after this table.
+                used_custom_types.append(field_value_name)
 
     # End of Table.
     result += '|===\n'
 
-    # Output any used custom types.
-    if type_map:
-        for used_custom_type in used_custom_types:
-            # Check the custom_type is defined.
-            if custom_type := type_map.get(used_custom_type):
-                # Type Heading.
-                result += '\n=== `' + used_custom_type + '` Types\n\n'
-
-                # Type Table Header.
-                result += '[cols=\"1,1,2\", options=\"header\"]\n'
-                result += '|===\n'
-                result += '|Value\n'
-                result += '|Name\n'
-                result += '|Description\n\n'
-
-                # Type Table Rows.
-                for current_field in custom_type:
-                    # Field Value.
-                    result += '|`' + current_field['value'] + '`' + ('?' if 'uncertain' in current_field else '') + '\n'
-
-                    # Field Name.
-                    result += '|' + current_field['name'] + '\n'
-
-                    # Field Description.
-                    result += '|' + current_field['description'] + '\n\n'
-
-                # End of Table.
-                result += '|===\n'
-
-    return result
+    return result, used_custom_types
 
 def get_example_section(uri, example_item, json_object):
-    # Heading.
+    # Sub Heading.
     result = '\n\n=== ' + example_item['name'] + '\n\n'
 
     # Example.
@@ -463,6 +457,12 @@ def main():
             # Add the documentation header.
             output = get_header_section(endpoint=endpoint, file_depth=file_depth)
 
+            # We can specify the custom types of some values.
+            type_map = (endpoint['type_map'] if 'type_map' in endpoint else None)
+
+            # Any used custom types are collected then output after the tables.
+            used_custom_types = []
+
             # Check this documentation file supports making requests to the endpoint.
             if 'request' in endpoint:
                 # Get a reference to the current endpoint's request details.
@@ -470,7 +470,16 @@ def main():
 
                 # Does the endpoint support any request query strings?
                 if 'query' in endpoint_request:
-                    output += get_request_section(endpoint_request['query'], auth_required=True, file_depth=file_depth-1)
+                    # Get the request section but also any used and referenced custom types.
+                    request_section, table_used_custom_types = get_request_section(endpoint_request, auth_required=True, file_depth=file_depth-1, type_map=type_map)
+
+                    # Collect any used custom_types, ignoring any duplicates.
+                    for custom_type in table_used_custom_types:
+                        if custom_type not in used_custom_types:
+                            used_custom_types.append(custom_type)
+
+                    # Add the request section to the output.
+                    output += request_section
 
                 # Get a reference to the current endpoint's response details.
                 if 'response' in endpoint:
@@ -504,17 +513,32 @@ def main():
                     # Merge the dictionaries with their nested values.
                     endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
 
-                # Ouput all the response tables.
-                output += '\n== Response\n'
+                # Are there any results?
+                if len(endpoint_response['field_map']) > 0:
+                    # Ouput all the response tables.
+                    output += '\n== Response\n'
 
-                # Add each of the tables from the derived json_schema.
-                for table_name, table in endpoint_response['field_map'].items():
-                    output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
+                    # Add each of the tables from the derived json_schema.
+                    for table_name, table in endpoint_response['field_map'].items():
+                        # Get the table section but also any used and referenced custom types.
+                        table_section, table_used_custom_types = get_table_section(table_name=('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root'), table=table, type_map=type_map)
+
+                        # Collect any used custom_types, ignoring any duplicates.
+                        for custom_type in table_used_custom_types:
+                            if custom_type not in used_custom_types:
+                                used_custom_types.append(custom_type)
+
+                        # Add the table section to the output.
+                        output += table_section
+
+                # Output any used custom types.
+                if type_map and len(used_custom_types) > 0:
+                    # Ouput the custom type section.
+                    output += get_type_section(used_custom_types, type_map)
 
                 # Add the examples.
                 if 'examples' in endpoint_request:
-                    output += '\n'
-                    output += '== Examples'
+                    output += '\n== Examples'
 
                     # There can be multiple examples for the same endpoint.
                     for example_item in endpoint_request['examples']:

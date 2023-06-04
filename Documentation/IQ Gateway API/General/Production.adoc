@@ -206,84 +206,6 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |===
 
-=== `DeviceType` Types
-
-[cols="1,1,2", options="header"]
-|===
-|Value
-|Name
-|Description
-
-|`inverters`
-|IQ Inverter
-|IQ Inverter(s).
-
-|`eim`
-|Envoy Integrated Meter
-|The built-in meter on the Gateway (formerly "Envoy").
-
-|`acb`
-|AC Battery
-|Encharge AC storage battery.
-
-|`rgm`?
-|Revenue Grade Meter
-|An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
-
-|`pmu`?
-|Power Meter
-|Another external meter?
-
-|===
-
-=== `MeasurementType` Types
-
-[cols="1,1,2", options="header"]
-|===
-|Value
-|Name
-|Description
-
-|`production`
-|Production
-|Reporting the energy produced from the inverters.
-
-|`net-consumption`
-|Net Consumption
-|Reporting the load with solar production included.
-
-|`total-consumption`
-|Total Consumption
-|Reporting the load only (solar production excluded).
-
-|===
-
-=== `ACBatteryState` Types
-
-[cols="1,1,2", options="header"]
-|===
-|Value
-|Name
-|Description
-
-|`charging`
-|Charging
-|The AC Battery is currently charging.
-
-|`discharging`
-|Discharging
-|The AC Battery is currently supplying power.
-
-|`full`
-|Full
-|The AC Battery is currently full.
-
-|`idle`
-|Idle
-|The AC Battery (if present) is currently not full but is also not actively doing anything.
-
-|===
-
 === `Lines` Object
 
 [cols="1,1,1,2", options="header"]
@@ -367,6 +289,86 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Number
 |Number
 |The total lagging Volt-Ampere reactive hours (varh) seen today on this phase.
+
+|===
+
+== Types
+
+=== `DeviceType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`inverters`
+|IQ Inverter
+|IQ Inverter(s).
+
+|`eim`
+|Envoy Integrated Meter
+|The built-in meter on the Gateway (formerly "Envoy").
+
+|`acb`
+|AC Battery
+|Encharge AC storage battery.
+
+|`rgm`?
+|Revenue Grade Meter
+|An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
+
+|`pmu`?
+|Power Meter
+|Another external meter?
+
+|===
+
+=== `MeasurementType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|`net-consumption`
+|Net Consumption
+|Reporting the load with solar production included.
+
+|`total-consumption`
+|Total Consumption
+|Reporting the load only (solar production excluded).
+
+|===
+
+=== `ACBatteryState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`charging`
+|Charging
+|The AC Battery is currently charging.
+
+|`discharging`
+|Discharging
+|The AC Battery is currently supplying power.
+
+|`full`
+|Full
+|The AC Battery is currently full.
+
+|`idle`
+|Idle
+|The AC Battery (if present) is currently not full but is also not actively doing anything.
 
 |===
 

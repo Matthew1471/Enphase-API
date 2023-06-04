@@ -46,11 +46,11 @@ pip install requests
 pip install requests-oauthlib
 ----
 
-The main wrapper lives in the `enphase-api` folder and the other files in the parent directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and can be used as applications in their own right.
+The main wrapper lives in the `src\enphase_api` folder and the files in the `examples` directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and considered fairly protection ready, so they can be used as applications in their own right.
 
-For configuration the examples refer to files in the folder `configuration`, to make the examples work you will need to edit a file called `credentials_json.json` or `credentials.json` (depending on the file referenced in the example) to include your Enphase(R) credentials.
+For configuration, each example refers to one of the two credentials files in the folder `configuration`; to make the examples work you will need to edit either `credentials_json.json` or `credentials.json` (depending on the file referenced in the example) to include your Enphase(R) credentials.
 
-Some examples use `credentials.json` as they are able to request a token to communicate with your gateway on their own, others are programmed to be run on embedded devices such as a Raspberry Pi where you may not wish to store your username and password.
+Some examples use `credentials.json` as they are then able to repeatedly request a token to communicate with your gateway on their own, others are programmed to be run on embedded devices such as a Raspberry Pi where you may not wish to store your username and password.
 
 WARNING: A token behaves like a time limited version of your username and password and so reasonable effort should be taken to protect any obtained tokens as they will have access to your account and device.
 
@@ -63,22 +63,32 @@ WARNING: A token behaves like a time limited version of your username and passwo
 |Notes
 |Description
 
-|`gateway-console.py`
+|`gateway_console.py`
 |`credentials.json`
 |Will attempt to refresh any expired tokens.
-|Displays production data on the console/terminal then exists.
+|Displays production data on the console/terminal then exits.
 
-|`gateway-database-meters.py`
+|`gateway_database_meters.py`
 |`credentials_token.json`
 |Requires an existing valid token, will not refresh it. Requires `mysql.connector` package.
-|Obtains meter information and stores it in a MySQL database for consumption and statistics in other systems.
+|Obtains meter information and stores it in a MySQL/mariadb database (schema is in the resources folder) for consumption and statistics in other systems.
 
-|`gateway-pyplot-meters.py`
+|`gateway_generate_docs.py`
+|`credentials_token.json`
+|Requires an existing valid token, will not refresh it.
+|This is a project resource to semi-automatically generate the documentation files.
+
+|`gateway_pyplot_database.py`
+|None
+|Requires `mysql.connector` package. Also requires MySQL/mariadb connection details on the command line.
+|Displays production and consumption data in a chart using PyPlot.
+
+|`gateway_pyplot_meters.py`
 |`credentials_token.json`
 |Requires an existing valid token, will not refresh it. Requires `matplotlib` package.
 |Displays production and consumption data in a chart using PyPlot.
 
-|`gateway-unicorn-hat-hd.py`
+|`gateway_unicorn_hat_hd.py`
 |`credentials_token.json`
 |Requires an existing valid token, will not refresh it. Requires `pillow` and `unicornhathd` packages.
 |Displays production data on a https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD] running on a https://www.raspberrypi.com/products/[Raspberry Pi].
