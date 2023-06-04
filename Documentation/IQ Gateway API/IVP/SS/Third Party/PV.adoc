@@ -36,3 +36,7 @@ This endpoint and its purpose has not been fully documented yet.
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
 More details on the project are available from the link:../../../../../README.adoc[project's homepage].
+
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].

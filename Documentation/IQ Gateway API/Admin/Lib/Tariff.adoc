@@ -37,6 +37,10 @@ Enphase-API is an unofficial project providing an API wrapper and the documentat
 
 More details on the project are available from the link:../../../../README.adoc[project's homepage].
 
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
 == Response
 
 === Root
@@ -50,12 +54,12 @@ More details on the project are available from the link:../../../../README.adoc[
 
 |`tariff`
 |Object
-|`Tariff`
+|`Tariff` object
 |???
 
 |`schedule`
 |Object
-|`Schedule`
+|`Schedule` object
 |???
 
 |===
@@ -71,7 +75,7 @@ More details on the project are available from the link:../../../../README.adoc[
 
 |`currency`
 |Object
-|`Tariff.Currency`
+|`Tariff.Currency` object
 |???
 
 |`logger`
@@ -81,12 +85,12 @@ More details on the project are available from the link:../../../../README.adoc[
 
 |`storage_settings`
 |Object
-|`Tariff.Storage_settings`
+|`Tariff.Storage_settings` object
 |???
 
 |`single_rate`
 |Object
-|`Tariff.Single_rate`
+|`Tariff.Single_rate` object
 |???
 
 |`seasons`

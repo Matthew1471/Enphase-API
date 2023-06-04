@@ -37,6 +37,10 @@ Enphase-API is an unofficial project providing an API wrapper and the documentat
 
 More details on the project are available from the link:../../../README.adoc[project's homepage].
 
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
 == Response
 
 === Root
@@ -85,7 +89,7 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 |`network`
 |Object
-|`Network`
+|`Network` object
 |???
 
 |`tariff`
@@ -95,7 +99,7 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 |`comm`
 |Object
-|`Comm`
+|`Comm` object
 |???
 
 |`alerts`
@@ -115,7 +119,7 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 |`enpower`
 |Object
-|`Enpower`
+|`Enpower` object
 |???
 
 |===
@@ -248,22 +252,22 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 |`pcu`
 |Object
-|`Comm.Pcu`
+|`Comm.Pcu` object
 |???
 
 |`acb`
 |Object
-|`Comm.Acb`
+|`Comm.Acb` object
 |???
 
 |`nsrb`
 |Object
-|`Comm.Nsrb`
+|`Comm.Nsrb` object
 |???
 
 |`esub`
 |Object
-|`Comm.Esub`
+|`Comm.Esub` object
 |???
 
 |`encharge`

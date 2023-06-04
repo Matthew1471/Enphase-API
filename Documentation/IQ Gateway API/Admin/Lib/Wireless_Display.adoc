@@ -37,6 +37,10 @@ Enphase-API is an unofficial project providing an API wrapper and the documentat
 
 More details on the project are available from the link:../../../../README.adoc[project's homepage].
 
+== Request
+
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
 == Response
 
 === Root
@@ -75,17 +79,17 @@ More details on the project are available from the link:../../../../README.adoc[
 
 |`current_network`
 |Object
-|`Current_network`
+|`Current_network` object
 |???
 
 |`device_info`
 |Object
-|`Device_info`
+|`Device_info` object
 |???
 
 |`ap_mode`
 |Object
-|`Ap_mode`
+|`Ap_mode` object
 |???
 
 |`selected_region`
