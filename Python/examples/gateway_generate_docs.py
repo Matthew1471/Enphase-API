@@ -458,41 +458,48 @@ def main():
                     output += get_request_section(endpoint_request['query'], auth_required=True, file_depth=file_depth-1)
 
                 # Get a reference to the current endpoint's response details.
-                endpoint_response = endpoint['response']
+                if 'response' in endpoint:
+                    endpoint_response = endpoint['response']
 
-                # Take each of the examples to learn the schema.
-                json_schema = {}
-                for example_item in endpoint_request['examples']:
-                    # The user can supply the JSON to use instead of us directly querying for it.
-                    if 'sample' in example_item:
-                        # Extract the sample and use it as the response.
-                        example_item['response'] = json.loads(example_item['sample'])
-                    elif not test_only:
-                        # Perform a GET request on the resource.
-                        example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
-                    else:
-                        raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
+                    # Take each of the examples to learn the schema.
+                    if 'examples' in endpoint_request:
+                        json_schema = {}
+                        for example_item in endpoint_request['examples']:
+                            # The user can supply the JSON to use instead of us directly querying for it.
+                            if 'sample' in example_item:
+                                # Extract the sample and use it as the response.
+                                example_item['response'] = json.loads(example_item['sample'])
+                            elif not test_only:
+                                # Perform a GET request on the resource.
+                                example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
+                            else:
+                                raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
 
-                    # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                    json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
+                            # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+                            json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
 
-                # Merge the dictionaries with their nested values.
-                endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
+                        # Merge the dictionaries with their nested values.
+                        endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
 
-                # Ouput all the response tables.
-                output += '\n== Response\n'
+                    # Ouput all the response tables.
+                    output += '\n== Response\n'
 
-                # Add each of the tables from the derived json_schema.
-                for table_name, table in endpoint_response['field_map'].items():
-                    output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
+                    # Add each of the tables from the derived json_schema.
+                    for table_name, table in endpoint_response['field_map'].items():
+                        output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
 
                 # Add the examples.
-                output += '\n'
-                output += '== Examples'
+                if 'examples' in endpoint_request:
+                    output += '\n'
+                    output += '== Examples'
 
-                for example_item in endpoint_request['examples']:
-                    # Take the obtained JSON as an example.
-                    output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=example_item['response'])
+                    for example_item in endpoint_request['examples']:
+                        # Not able to output an example without a response.
+                        if not 'response' in example_item:
+                            continue
+
+                        # Take the obtained JSON as an example.
+                        output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=example_item['response'])
             else:
                 output += get_not_yet_documented()
 
