@@ -44,9 +44,9 @@ def get_header_section(endpoint, file_depth=0):
     result += ':idprefix:\n'
     result += ':idseparator: -\n\n'
 
-    # This project uses JSON5 code highlighting by default.
-    result += '// Any code blocks will be in JSON5 by default.\n'
-    result += ':source-language: json5\n\n'
+    # This project uses JSON code highlighting by default.
+    result += '// Any code blocks will be in JSON by default.\n'
+    result += ':source-language: json\n\n'
 
     # This will convert the admonitions to be icons rather than text (both on GitHub and outside of it).
     result += 'ifndef::env-github[:icons: font]\n\n'
@@ -147,7 +147,6 @@ def get_schema(json_object, table_name='.', field_map=None):
 
     # Take each key and value of the current table.
     for json_key, json_value in json_object.items():
-
         # Is this itself another object?
         if isinstance(json_value, dict):
             # Get a sensible name for this nested table (that preserves its scope).
@@ -161,12 +160,11 @@ def get_schema(json_object, table_name='.', field_map=None):
 
         # Is this a list of values?
         elif isinstance(json_value, list):
-
             # Are there any values and is the first value an object?
             if len(json_value) > 0 and isinstance(json_value[0], dict):
 
                 # We can override some object names (and merge metadata).
-                if current_table_field_map and (value_name := current_table_field_map.get(json_key).get('value_name')):
+                if current_table_field_map and (key_metadata := current_table_field_map.get(json_key)) and (value_name := key_metadata.get('value_name')):
                     # This name has been overridden.
                     child_table_name = value_name
                 else:
@@ -176,7 +174,16 @@ def get_schema(json_object, table_name='.', field_map=None):
                 # Take each of the items in the list and combine all the keys and their metadata.
                 new_list_items = {}
                 for list_item in json_value:
-                    new_list_items.update(get_schema(json_object=list_item, table_name=child_table_name, field_map=field_map)[child_table_name])
+                    # This could return multiple tables if there are nested types.
+                    new_list_schema = get_schema(json_object=list_item, table_name=child_table_name, field_map=field_map)
+
+                    for child_table_key, child_table_value in new_list_schema.items():
+                        # This is the current table we were updating.
+                        if child_table_key == child_table_name:
+                            new_list_items.update(new_list_schema[child_table_name])
+                        # This is an extra nested table that was discovered.
+                        else:
+                            child_tables[child_table_key] = child_table_value
 
                 # If this has been mapped/merged to a duplicate table name then we will need to append the existing dictionary.
                 if child_table_name in child_tables:
@@ -189,8 +196,9 @@ def get_schema(json_object, table_name='.', field_map=None):
                 for new_list_item_key, new_list_item_value in new_list_items.items():
                     # Is this new key not present in all of the new items or not present in the old list of item keys (if applicable)?
                     if any(new_list_item_key not in item for item in json_value) or (old_list_items and new_list_item_key not in old_list_items):
-                        # Mark this new key as optional.
-                        new_list_item_value['optional'] = True
+                        # Mark this new key as optional (if it isn't already).
+                        if not ('optional' in new_list_item_value and new_list_item_value['optional']):
+                            new_list_item_value['optional'] = True
 
                 # If this has been mapped to a duplicate then we will need to append the existing dictionary.
                 if old_list_items:
@@ -198,10 +206,11 @@ def get_schema(json_object, table_name='.', field_map=None):
                     for old_list_item_key, old_list_item_value in old_list_items.items():
                         # Is this old key not present in all of the new items?
                         if any(old_list_item_key not in item for item in json_value):
-                            # Mark this old key as optional.
-                            old_list_item_value['optional'] = True
+                            # Mark this old key as optional (if it isn't already).
+                            if not ('optional' in old_list_item_value and old_list_item_value['optional']):
+                                old_list_item_value['optional'] = True
 
-                    # Get the existing dictionary.
+                    # Merge the existing dictionary.
                     child_tables[child_table_name].update(new_list_items)
                 else:
                     # Add the schema of this list of nested tables to child_tables.
@@ -266,7 +275,7 @@ def get_table_and_types_section(table_name, table, type_map):
                 # Add an example value if available.
                 if value_name in type_map and len(type_map[value_name]) > 0:
                     result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
-            
+
             else:
                 result += field_type
 
@@ -317,7 +326,7 @@ def get_table_and_types_section(table_name, table, type_map):
                 result += '|Description\n\n'
 
                 # Type Table Rows.
-                for current_field in custom_type:                    
+                for current_field in custom_type:
                     # Field Value.
                     result += '|`' + current_field['value'] + '`' + ('?' if 'uncertain' in current_field else '') + '\n'
 
@@ -338,10 +347,19 @@ def get_example_section(uri, example_item, json_object):
 
     # Example.
     result += '.GET */' + uri + ('?' + example_item['uri'] if 'uri' in example_item else '') + '* Response\n'
-    result += '[source,json5,subs="+quotes"]\n'
+    result += '[source,json,subs="+quotes"]\n'
     result += '----\n'
-    result += str(json_object) + '\n'
+    result += json.dumps(json_object) + '\n'
     result += '----'
+
+    return result
+
+def get_not_yet_documented():
+    # Heading.
+    result = '\n== Request & Response\n\n'
+
+    # Placeholder Text.
+    result += 'This has not yet been documented. Please check back later.\n'
 
     return result
 
@@ -370,7 +388,7 @@ def merge_dictionaries(a, b, path=None):
             elif isinstance(b[key], dict) and isinstance(a[key], str):
                 # Set the description in the b dictionary to include the a string.
                 b[key]['description'] = a[key]
-                
+
                 # Replace the a value with the recently updated b dictionary.
                 a[key] = b[key]
             # Do the types not otherwise match?
@@ -384,7 +402,6 @@ def merge_dictionaries(a, b, path=None):
     return a
 
 def main():
-
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -415,12 +432,12 @@ def main():
         with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
             endpoint_metadata = json.load(json_file)
 
-        # Only load one endpoint for now (this script is still being developed).
-        if test_only:
-            endpoint_metadata = [ endpoint_metadata['Production'] ]
-
         # Take each endpoint in the metadata.
-        for endpoint in endpoint_metadata:
+        for key, endpoint in endpoint_metadata.items():
+
+            # Skip if the endpoint is not meant to be documented.
+            if not 'documentation' in endpoint:
+                continue
 
             # This script currently exclusively writes "IQ Gateway API" documents.
             endpoint['documentation'] = 'IQ Gateway API/' + endpoint['documentation']
@@ -431,45 +448,53 @@ def main():
             # Add the documentation header.
             output = get_header_section(endpoint=endpoint, file_depth=file_depth)
 
-            # Get a reference to the current endpoint's request details.
-            endpoint_request = endpoint['request']
+            # Check this documentation file supports requests.
+            if 'request' in endpoint:
+                # Get a reference to the current endpoint's request details.
+                endpoint_request = endpoint['request']
 
-            # Does the endpoint support any request query strings?
-            if 'query' in endpoint_request:
-                output += get_request_section(endpoint_request['query'], auth_required=True, file_depth=file_depth-1)
+                # Does the endpoint support any request query strings?
+                if 'query' in endpoint_request:
+                    output += get_request_section(endpoint_request['query'], auth_required=True, file_depth=file_depth-1)
 
-            # Perform a GET request on the resource.
-            #json_object = gateway.api_call('/' + endpoint_request['uri'])
-            json_object = json.loads('{"production":[{"type":"inverters","activeCount":10,"readingTime":0,"wNow":0,"whLifetime":314441},{"type":"eim","activeCount":1,"measurementType":"production","readingTime":1676757919,"wNow":-0.0,"whLifetime":276144.03,"varhLeadLifetime":0.024,"varhLagLifetime":205023.785,"vahLifetime":458229.78,"rmsCurrent":0.763,"rmsVoltage":239.037,"reactPwr":175.992,"apprntPwr":182.823,"pwrFactor":0.0,"whToday":3694.0,"whLastSevenDays":49814.0,"vahToday":7451.0,"varhLeadToday":2.0,"varhLagToday":3909.0}],"consumption":[{"type":"eim","activeCount":1,"measurementType":"total-consumption","readingTime":1676757919,"wNow":370.516,"whLifetime":781493.591,"varhLeadLifetime":765078.737,"varhLagLifetime":205039.176,"vahLifetime":1254065.428,"rmsCurrent":4.567,"rmsVoltage":239.146,"reactPwr":-938.239,"apprntPwr":1092.2,"pwrFactor":0.34,"whToday":15261.591,"whLastSevenDays":101733.591,"vahToday":21683.428,"varhLeadToday":14879.737,"varhLagToday":3905.176},{"type":"eim","activeCount":1,"measurementType":"net-consumption","readingTime":1676757919,"wNow":370.516,"whLifetime":646231.428,"varhLeadLifetime":765078.713,"varhLagLifetime":15.391,"vahLifetime":1254065.428,"rmsCurrent":3.804,"rmsVoltage":239.255,"reactPwr":-762.247,"apprntPwr":908.029,"pwrFactor":0.41,"whToday":0,"whLastSevenDays":0,"vahToday":0,"varhLeadToday":0,"varhLagToday":0}],"storage":[{"type":"acb","activeCount":0,"readingTime":0,"wNow":0,"whNow":0,"state":"idle"}]}')
+                # Get a reference to the current endpoint's response details.
+                endpoint_response = endpoint['response']
 
-            # Get a reference to the current endpoint's response details.
-            endpoint_response = endpoint['response']
+                # Take each of the examples to learn the schema.
+                json_schema = {}
+                for example_item in endpoint_request['examples']:
+                    # The user can supply the JSON to use instead of us directly querying for it.
+                    if 'sample' in example_item:
+                        # Extract the sample and use it as the response.
+                        example_item['response'] = json.loads(example_item['sample'])
+                    elif not test_only:
+                        # Perform a GET request on the resource.
+                        example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
+                    else:
+                        raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
 
-            # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-            json_schema = get_schema(json_object=json_object, field_map=endpoint_response.get('field_map'))
+                    # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+                    json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
 
-            # Merge the dictionaries with their nested values.
-            endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
+                # Merge the dictionaries with their nested values.
+                endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
 
-            # Ouput all the response tables.
-            output += '\n== Response\n'
+                # Ouput all the response tables.
+                output += '\n== Response\n'
 
-            # Add each of the tables from the derived json_schema.
-            for table_name, table in endpoint_response['field_map'].items():
-                output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
+                # Add each of the tables from the derived json_schema.
+                for table_name, table in endpoint_response['field_map'].items():
+                    output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
 
-            # Add the examples.
-            output += '\n'
-            output += '== Examples'
+                # Add the examples.
+                output += '\n'
+                output += '== Examples'
 
-            count = 1
-            for example_item in endpoint_request['examples']:
-                # We skip calling the first example as this has already been queried above.
-                if not test_only and count > 1:
-                    json_object = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
-
-                # Take the obtained JSON as an example.
-                output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=json_object)
+                for example_item in endpoint_request['examples']:
+                    # Take the obtained JSON as an example.
+                    output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=example_item['response'])
+            else:
+                output += get_not_yet_documented()
 
             # Generate a suitable filename to store our documentation in.
             filename = 'output/' + endpoint['documentation']
