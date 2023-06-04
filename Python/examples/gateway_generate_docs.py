@@ -24,7 +24,10 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 # Enable this mode to perform no actual requests.
-test_only = False
+TEST_ONLY = False
+
+# This script's version.
+VERSION = 0.1
 
 def get_header_section(endpoint, file_depth=0):
     # Heading.
@@ -122,11 +125,12 @@ def get_request_section(request_json, auth_required=False, file_depth=0):
     return result
 
 def get_type_string(json_value):
-    if isinstance(json_value, (int, float)):
+    if type(json_value) in (int, float):
         return 'Number'
-    elif isinstance(json_value, bool):
+    # In Python, a bool is a sub-class of int.
+    elif type(json_value) is bool:
         return 'Boolean'
-    elif isinstance(json_value, str):
+    elif type(json_value) is str:
         return 'String'
     elif json_value is None:
         return 'Null'
@@ -150,8 +154,12 @@ def get_schema(json_object, table_name='.', field_map=None):
             # Get a sensible name for this nested table (that preserves its scope).
             child_table_name = (table_name + '.' if len(table_name) > 0 and table_name != '.' else '') + json_key.capitalize()
 
-            # Add the schema of this nested table to child_tables.
-            child_tables[child_table_name] = get_schema(json_object=json_value, table_name=child_table_name, field_map=field_map)
+            # This could return multiple tables if there are nested types.
+            new_list_schema = get_schema(json_object=json_value, table_name=child_table_name, field_map=field_map)
+
+            # Add the schema of the nested tables to child_tables (flattening the hierarchy).
+            for child_table_key, child_table_value in new_list_schema.items():
+                    child_tables[child_table_key] = child_table_value
 
             # Add the type of this key.
             current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '`'}
@@ -400,12 +408,17 @@ def merge_dictionaries(a, b, path=None):
     return a
 
 def main():
+    # Output program banner.
+    banner = 'Gateway Generate Documentation V' + str(VERSION) + '\n'
+    hyphens = '-' * len(banner) + '\n'
+    print(hyphens + banner + hyphens)
+
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not test_only and not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
+    if not TEST_ONLY and not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
         # It is not valid so clear it.
         raise ValueError('No or expired token.')
 
@@ -424,7 +437,7 @@ def main():
         gateway = Gateway()
 
     # Are we able to login to the gateway?
-    if test_only or gateway.login(credentials['token']):
+    if TEST_ONLY or gateway.login(credentials['token']):
 
         # Load endpoints.
         with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
@@ -435,6 +448,7 @@ def main():
 
             # Skip if the endpoint is not meant to be documented.
             if not 'documentation' in endpoint:
+                print('Warning : Skipping \'' + key + '\' due to lack of \'documentation\' filepath.')
                 continue
 
             # This script currently exclusively writes "IQ Gateway API" documents.
@@ -469,11 +483,17 @@ def main():
                         if 'sample' in example_item:
                             # Extract the sample and use it as the response.
                             example_item['response'] = json.loads(example_item['sample'])
-                        elif not test_only:
+                        elif not TEST_ONLY:
                             # Perform a GET request on the resource.
+                            print('Requesting example \'' + example_item['name'] + '\' for \'' + key + '\'.')
                             example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
+                            
+                            # This variable can be inspected to hardcode a sample in API_Details.
+                            debug_variable = json.dumps({ 'sample': json.dumps(example_item['response']) })[1:-1]
+                            set_breakpoint_here = debug_variable
                         else:
-                            raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
+                            print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
+                            continue
 
                         # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
                         json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
@@ -496,6 +516,7 @@ def main():
                     for example_item in endpoint_request['examples']:
                         # Not able to output an example without a response.
                         if not 'response' in example_item:
+                            print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' due to lack of response.')
                             continue
 
                         # Take the obtained JSON as an example.
