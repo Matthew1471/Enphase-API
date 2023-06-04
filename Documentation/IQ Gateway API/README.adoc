@@ -594,7 +594,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |Delete generator.
 
 |`link:IVP/SS/Gen_Mode.adoc[Generator Mode]`
-|`ivp/ss/gen_mode`
+|`/ivp/ss/gen_mode`
 |Get or set generator's status for toggle switch.
 
 |`link:IVP/SS/Gen_Profile.adoc[Generator Profile]`

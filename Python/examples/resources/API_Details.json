@@ -1,158 +1,149 @@
 {
-    "AC_Battery_Configuration": {
+    "Admin - Lib - AC Battery (ACB) Configuration": {
         "description": {
             "long": "Get, set or cancel an AC Battery’s (ACB) sleep mode."
         },
         "documentation": "Admin/Lib/ACB_Config.adoc",
-        "methods": [
-            "PUT",
-            "GET",
-            "DELETE"
-        ],
         "name": "AC Battery (ACB) Configuration",
-        "uri": "admin/lib/acb_config.json"
+        "request": {
+            "methods": [
+                "GET",
+                "PUT",
+                "DELETE"
+            ],
+            "uri": "admin/lib/acb_config.json"
+        }
     },
-    "Administer_Device_Conditions_and_Controls": {
+    "Admin - Lib - Administer Device Conditions and Controls (DCC)": {
         "description": {
             "long": "Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI)."
         },
         "documentation": "Admin/Lib/Admin_DCC_Display.adoc",
-        "methods": [
-            "POST"
-        ],
         "name": "Administer Device Conditions and Controls (DCC)",
-        "uri": "admin/lib/admin_dcc_display.json"
+        "request": {
+            "methods": [
+                "POST"
+            ],
+            "uri": "admin/lib/admin_dcc_display.json"
+        }
     },
-    "Administer_Power_Meter_Unit": {
+    "Admin - Lib - Administer Power Meter Unit (PMU)": {
         "description": {
             "long": "Add or read a Power Meter Unit (PMU)."
         },
         "documentation": "Admin/Lib/Admin_PMU_Display.adoc",
-        "methods": [
-            "GET",
-            "POST"
-        ],
         "name": "Administer Power Meter Unit (PMU)",
-        "uri": "admin/lib/admin_pmu_display.json"
+        "request": {
+            "methods": [
+                "GET",
+                "POST"
+            ],
+            "uri": "admin/lib/admin_pmu_display.json"
+        }
     },
-    "AgfProfileDetails": {
-        "uri": "installer/agf/details.json"
+    "Admin - Lib - Date and Time Configuration": {
+        "description": {
+            "long": "Get or set date, time and timezone."
+        },
+        "documentation": "Admin/Lib/Date_Time_Display.adoc",
+        "name": "Date and Time Configuration",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Timezone Data",
+                    "uri": "tzlist=1"
+                }
+            ],
+            "uri": "admin/lib/date_time_display.json"
+        }
     },
-    "AgfProfileIndex": {
-        "uri": "installer/agf/index.json?simplified=true"
-    },
-    "AgfProfileInverterStatus": {
-        "uri": "installer/agf/inverters_status.json"
-    },
-    "AgfProfileSetProfile": {
-        "uri": "installer/agf/set_profile.json"
-    },
-    "CellularConfig": {
-        "uri": "admin/lib/network_display.json?cellular=1"
-    },
-    "Debug_Access": {
+    "Admin - Lib - De-Bug Access (DBA)": {
         "description": {
             "long": "Get or set the Enphase® De-Bug Access (DBA) tunnel state."
         },
         "documentation": "Admin/Lib/DBA.adoc",
-        "methods": [
-            "GET",
-            "POST"
-        ],
         "name": "De-Bug Access (DBA)",
-        "uri": "admin/lib/dba.json"
+        "request": {
+            "methods": [
+                "GET",
+                "POST"
+            ],
+            "uri": "admin/lib/dba.json"
+        }
     },
-    "DhcpGetNewIp": {
-        "uri": "admin/lib/network_display.json"
+    "Admin - Lib - Network Configuration": {
+        "request": {
+            "examples": [
+                {
+                },
+                {
+                    "uri": "cellular=1"
+                }
+            ],
+            "uri": "admin/lib/network_display.json"
+        }
     },
-    "DiagnosticNetworkCheck": {
-        "uri": "admin/lib/network_display.json"
+    "Admin - Lib - Security Configuration": {
+        "description": {
+            "long": "Change password (legacy)."
+        },
+        "documentation": "Admin/Lib/Security_Display.adoc",
+        "name": "Security Configuration",
+        "request": {
+            "uri": "admin/lib/security_display.json"
+        }
     },
-    "EnchargeCancelSleepMode": {
-        "uri": "ivp/ensemble/sleep"
+    "Admin - Lib - Tariff Configuration": {
+        "request": {
+            "uri": "admin/lib/tariff.json"
+        }
     },
-    "EnchargeGetSleepModeData": {
-        "uri": "ivp/ensemble/sleep"
+    "Admin - Lib - Wireless Configuration": {
+        "request": {
+            "uri": "admin/lib/wireless_display.json"
+        }
     },
-    "EnchargeRelay": {
-        "uri": "ivp/ensemble/relay"
+    "Authentication - Check JSON Web Token (JWT)": {
+        "request": {
+            "uri": "auth/check_jwt"
+        }
     },
-    "EnchargeSetSleepMode": {
-        "uri": "ivp/ensemble/sleep"
+    "Data Tables - Administer Device Conditions and Controls (DCC) DataTable": {
+        "request": {
+            "uri": "datatab/admin_dcc_display_dt"
+        }
     },
-    "EnsembleAgfProfileStatus": {
-        "uri": "ivp/ensemble/profile_status"
+    "Data Tables - Events DataTable": {
+        "request": {
+            "uri": "datatab/event_dt.rb"
+        }
     },
-    "EnsembleComm": {
-        "uri": "ivp/ensemble/comm_check"
+    "Data Tables - Inventory DataTable": {
+        "request": {
+            "uri": "datatab/inventory_dt"
+        }
     },
-    "EnsembleDelete": {
-        "uri": "ivp/zb/provision"
+    "General - Home": {
+        "request": {
+            "uri": "home.json"
+        }
     },
-    "EnsembleInventory": {
-        "uri": "ivp/ensemble/inventory"
+    "General - Information": {
+        "request": {
+            "uri": "info.xml"
+        }
     },
-    "EnsemblePut": {
-        "uri": "ivp/zb/provision"
+    "General - Inv": {
+        "request": {
+            "uri": "inv"
+        }
     },
-    "EthernetConfigGet": {
-        "uri": "admin/lib/network_display.json"
+    "General - Inventory": {
+        "request": {
+            "uri": "inventory.json?deleted=1"
+        }
     },
-    "EthernetConfigPut": {
-        "uri": "admin/lib/network_display.json"
-    },
-    "EventsGet": {
-        "uri": "datatab/event_dt.rb"
-    },
-    "GetInfo": {
-        "uri": "info.xml"
-    },
-    "GetTimezones": {
-        "uri": "admin/lib/date_time_display.json?tzlist=1"
-    },
-    "Home": {
-        "uri": "home.json"
-    },
-    "InternalMeterCurrentCTSettings": {
-        "uri": "ivp/meters/cts"
-    },
-    "InternalMeterInfo": {
-        "uri": "ivp/meters"
-    },
-    "InternalMeterReadings": {
-        "uri": "ivp/meters/readings"
-    },
-    "Inventory": {
-        "uri": "inventory.json?deleted=1"
-    },
-    "InverterComm": {
-        "uri": "installer/pcu_comm_check"
-    },
-    "InverterDelete": {
-        "uri": "prov"
-    },
-    "InverterProduction": {
-        "uri": "api/v1/production/inverters"
-    },
-    "InverterPut": {
-        "uri": "prov"
-    },
-    "NewScanGet": {
-        "uri": "ivp/peb/newscan"
-    },
-    "NewScanPD": {
-        "uri": "ivp/peb/newscan"
-    },
-    "PMUPost": {
-        "uri": "admin/lib/admin_pmu_display.json"
-    },
-    "PowerForcedModeGet": {
-        "uri": "ivp/mod/EID/mode/power"
-    },
-    "PowerForcedModePut": {
-        "uri": "ivp/mod/EID/mode/power"
-    },
-    "Production": {
+    "General - Production": {
         "description": {
             "long": "A HTTP GET to `/production.json` can be used to get a JSON formatted object of the production data.",
             "short": "Obtain production data."
@@ -329,34 +320,445 @@
             }
         }
     },
-    "RedeterminePhase": {
-        "uri": "ivp/grest/local/gs/redeterminephase"
+    "General - Provision": {
+        "request": {
+            "uri": "prov"
+        }
     },
-    "ReportSettingsGet": {
-        "uri": "ivp/peb/reportsettings"
+    "General - Upload": {
+        "request": {
+            "uri": "upload"
+        }
     },
-    "ReportSettingsPut": {
-        "uri": "ivp/peb/reportsettings"
+    "Installer - Advanced Grid Functionality (AGF) - Details": {
+        "request": {
+            "uri": "installer/agf/details.json"
+        }
     },
-    "SetTimezone": {
-        "uri": "admin/lib/date_time_display.json"
+    "Installer - Advanced Grid Functionality (AGF) - Index": {
+        "request": {
+            "uri": "installer/agf/index.json?simplified=true"
+        }
     },
-    "TariffSettingsGet": {
-        "uri": "admin/lib/tariff.json"
+    "Installer - Advanced Grid Functionality (AGF) - Inverters_Phase": {
+        "request": {
+            "uri": "installer/agf/inverters_phase.rb"
+        }
     },
-    "TariffSettingsPut": {
-        "uri": "admin/lib/tariff.json"
+    "Installer - Advanced Grid Functionality (AGF) - Inverters_Status": {
+        "request": {
+            "uri": "installer/agf/inverters_status.json",
+            "uri2": "installer/agf/inverters_status"
+        }
     },
-    "UpdateMeterConfig": {
-        "uri": "ivp/meters/EID"
+    "Installer - Advanced Grid Functionality (AGF) - Set Profile": {
+        "request": {
+            "uri": "installer/agf/set_profile.json"
+        }
     },
-    "UpdateMeterCurrentCTConfig": {
-        "uri": "ivp/meters/cts/EID"
+    "Installer - Advanced Grid Functionality (AGF) - Upload Profile Package": {
+        "request": {
+            "uri": "installer/agf/upload_profile_package"
+        }
     },
-    "WifiSettings": {
-        "uri": "admin/lib/wireless_display.json"
+    "Installer - General - Power Conditioning Unit (PCU) Communication Check": {
+        "request": {
+            "uri": "installer/pcu_comm_check"
+        }
     },
-    "WifiSettingsJoin": {
-        "uri": "admin/lib/wireless_display.json"
+    "Installer - General - Secure SHell (SSH) Revoke List": {
+        "request": {
+            "uri": "installer/ssh_revoke_list"
+        }
+    },
+    "Installer - General - Upgrade Start": {
+        "request": {
+            "uri": "installer/upgrade_start"
+        }
+    },
+    "Installer - General - Upgrade Status": {
+        "request": {
+            "uri": "installer/upgrade_status"
+        }
+    },
+    "Installer - General - Upload": {
+        "request": {
+            "uri": "installer/upload.json"
+        }
+    },
+    "Installer - General - xapi": {
+        "request": {
+            "uri": "installer/xapi"
+        }
+    },
+    "IVP - Analog-to-Digital Converter (ADC) - Relaxed Parameters - Add Relaxed Parameters": {
+        "request": {
+            "uri": "ivp/adc/relaxedparams/add"
+        }
+    },
+    "IVP - ARF - Profile - Multimode - Off Grid": {
+        "request": {
+            "uri": "ivp/arf/profile/multimode/off_grid"
+        }
+    },
+    "IVP - ARF - Profile - Multimode - On Grid": {
+        "request": {
+            "uri": "ivp/arf/profile/multimode/on_grid"
+        }
+    },
+    "IVP - EH": {
+        "request": {
+            "uri": "ivp/eh/devs"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Communication Check": {
+        "request": {
+            "uri": "ivp/ensemble/comm_check"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Data Raw": {
+        "request": {
+            "uri": "ivp/ensemble/dataraw/{EID}"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Decommission": {
+        "request": {
+            "uri": "ivp/ensemble/decommission"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Device List": {
+        "request": {
+            "uri": "ivp/ensemble/device_list"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Device Provision": {
+        "request": {
+            "uri": "ivp/ensemble/device_provision"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Device Status": {
+        "request": {
+            "uri": "ivp/ensemble/device_status"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Dry Contacts": {
+        "request": {
+            "uri": "ivp/ensemble/dry_contacts"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - ECL Wiring Test": {
+        "request": {
+            "uri": "ivp/ensemble/ec1_wiring_test"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Errors": {
+        "request": {
+            "uri": "ivp/ensemble/errors"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Generator Status": {
+        "request": {
+            "uri": "ivp/ensemble/generator"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
+        "request": {
+            "uri": "ivp/ensemble/gen_wiring_test"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Inventory": {
+        "request": {
+            "uri": "ivp/ensemble/inventory"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Profile Status": {
+        "request": {
+            "uri": "ivp/ensemble/profile_status"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Relay": {
+        "request": {
+            "uri": "ivp/ensemble/relay"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Reset Device": {
+        "request": {
+            "uri": "ivp/ensemble/reset_device/{serial_number}"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - SecCtrl": {
+        "request": {
+            "uri": "ivp/ensemble/secctrl"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Sleep": {
+        "request": {
+            "uri": "ivp/ensemble/sleep"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Status": {
+        "request": {
+            "uri": "ivp/ensemble/status"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Submodules": {
+        "request": {
+            "uri": "ivp/ensemble/submod"
+        }
+    },
+    "IVP - Firmware Manager - Config": {
+        "request": {
+            "uri": "ivp/firmware_manager/config"
+        }
+    },
+    "IVP - Firmware Manager - State": {
+        "request": {
+            "uri": "ivp/firmware_manager/state"
+        }
+    },
+    "IVP - Firmware Manager - Update All": {
+        "request": {
+            "uri": "ivp/firmware_manager/update_all"
+        }
+    },
+    "IVP - Firmware Manager - Update Single": {
+        "request": {
+            "uri": "ivp/firmware_manager/update_single"
+        }
+    },
+    "IVP - General - Cellular": {
+        "request": {
+            "uri": "ivp/cellular"
+        }
+    },
+    "IVP - General - Meters": {
+        "request": {
+            "uri": "ivp/meters"
+        }
+    },
+    "IVP - Grest - Profile": {
+        "request": {
+            "uri": "ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10"
+        }
+    },
+    "IVP - Grest - Redetermine Phase": {
+        "request": {
+            "uri": "ivp/grest/local/gs/redeterminephase"
+        }
+    },
+    "IVP - Live Data - Status": {
+        "request": {
+            "uri": "ivp/livedata/status"
+        }
+    },
+    "IVP - Live Data - Stream": {
+        "request": {
+            "uri": "ivp/livedata/stream"
+        }
+    },
+    "IVP - Meters - CTS - Update EID": {
+        "request": {
+            "uri": "ivp/meters/cts/EID"
+        }
+    },
+    "IVP - Meters - General - CT Reversal": {
+        "request": {
+            "uri": "ivp/meters/ctreversal/{EID}"
+        }
+    },
+    "IVP - Meters - General - Current Transformer (CT) Settings": {
+        "request": {
+            "uri": "ivp/meters/cts"
+        }
+    },
+    "IVP - Meters - General - Meter Readings": {
+        "request": {
+            "uri": "ivp/meters/reports/"
+        }
+    },
+    "IVP - Meters - General - Meter Settings": {
+        "request": {
+            "uri": "ivp/meters/EID"
+        }
+    },
+    "IVP - Meters - General - Readings": {
+        "request": {
+            "uri": "ivp/meters/readings"
+        }
+    },
+    "IVP - Meters - General - Storage Setting": {
+        "request": {
+            "uri": "ivp/meters/storage_setting"
+        }
+    },
+    "IVP - Meters - Reports - Consumption Meter Reading": {
+        "request": {
+            "uri": "ivp/meters/reports/consumption"
+        }
+    },
+    "IVP - Meters - Reports - Production Meter Reading": {
+        "request": {
+            "uri": "ivp/meters/reports/production"
+        }
+    },
+    "IVP - Mod - Power Mode": {
+        "request": {
+            "uri": "ivp/mod/{EID}/mode/power"
+        }
+    },
+    "IVP - Power Electronics Blocks (PEB) - Device Status": {
+        "request": {
+            "uri": "ivp/peb/devstatus"
+        }
+    },
+    "IVP - Power Electronics Blocks (PEB) - New Scan": {
+        "request": {
+            "uri": "ivp/peb/newscan"
+        }
+    },
+    "IVP - Power Electronics Blocks (PEB) - Report Settings": {
+        "request": {
+            "uri": "ivp/peb/reportsettings"
+        }
+    },
+    "IVP - SC - Sched": {
+        "request": {
+            "uri": "ivp/sc/sched"
+        }
+    },
+    "IVP - Smart Switch (SS) - Distributed Energy Resource (DER) Settings": {
+        "request": {
+            "uri": "ivp/ss/der_settings"
+        }
+    },
+    "IVP - Smart Switch (SS) - dpel": {
+        "request": {
+            "uri": "ivp/ss/dpel"
+        }
+    },
+    "IVP - Smart Switch (SS) - Dry Contact Settings": {
+        "request": {
+            "uri": "ivp/ss/dry_contact_settings"
+        }
+    },
+    "IVP - Smart Switch (SS) - ENC Settings": {
+        "request": {
+            "uri": "ivp/ss/enc_settings"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Configuration": {
+        "request": {
+            "uri": "ivp/ss/gen_config"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Delete": {
+        "request": {
+            "uri": "ivp/ss/gen_delete"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Meter Enable": {
+        "request": {
+            "uri": "ivp/ss/generator_meter_enable"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Mode": {
+        "request": {
+            "uri": "ivp/ss/gen_mode"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Profile": {
+        "request": {
+            "uri": "ivp/ss/gen_profile"
+        }
+    },
+    "IVP - Smart Switch (SS) - Generator Schedule": {
+        "request": {
+            "uri": "ivp/ss/gen_schedule"
+        }
+    },
+    "IVP - Smart Switch (SS) - Load Control": {
+        "request": {
+            "uri": "ivp/ss/load_control"
+        }
+    },
+    "IVP - Smart Switch (SS) - Power Control System (PCS) Settings": {
+        "request": {
+            "uri": "ivp/ss/pcs_settings"
+        }
+    },
+    "IVP - Smart Switch (SS) - Power Export Limits (PEL) Settings": {
+        "request": {
+            "uri": "ivp/ss/pel_settings"
+        }
+    },
+    "IVP - Smart Switch (SS) - System Phase Balance": {
+        "request": {
+            "uri": "ivp/ss/sys_phase_balance"
+        }
+    },
+    "IVP - Smart Switch (SS) - Third Party (Legacy) - PV": {
+        "request": {
+            "uri": "ivp/ss/third_party/pv"
+        }
+    },
+    "IVP - Trip Point Management (TPM) (Legacy) - Capability": {
+        "request": {
+            "uri": "ivp/tpm/capability"
+        }
+    },
+    "IVP - Trip Point Management (TPM) (Legacy) - Parameters": {
+        "request": {
+            "uri": "ivp/tpm/parameters"
+        }
+    },
+    "IVP - Trip Point Management (TPM) (Legacy) - Select": {
+        "request": {
+            "uri": "ivp/tpm/select"
+        }
+    },
+    "IVP - Trip Point Management (TPM) (Legacy) - TPM Status": {
+        "request": {
+            "uri": "ivp/tpm/tpmstatus"
+        }
+    },
+    "IVP - ZigBee - Pairing Status": {
+        "request": {
+            "uri": "ivp/zb/pairing_status"
+        }
+    },
+    "IVP - ZigBee - Provision": {
+        "request": {
+            "uri": "ivp/zb/provision"
+        }
+    },
+    "IVP - ZigBee - Reset Device": {
+        "request": {
+            "uri": "ivp/zb/reset_device"
+        }
+    },
+    "IVP - ZigBee - Set Phase": {
+        "request": {
+            "uri": "ivp/zb/set_phase"
+        }
+    },
+    "IVP - ZigBee - Status": {
+        "request": {
+            "uri": "ivp/zb/status"
+        }
+    },
+    "Streams - Meter": {
+        "request": {
+            "uri": "stream/meter"
+        }
+    },
+    "Streams - PSD": {
+        "request": {
+            "uri": "stream/psd"
+        }
+    },
+    "Version 1 API (Legacy) - Inverter(s) Production (Version 1 API)": {
+        "request": {
+            "uri": "api/v1/production/inverters"
+        }
     }
 }
