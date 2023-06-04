@@ -88,24 +88,29 @@ def get_header_section(name, endpoint, file_depth=0):
 
     return result
 
-def get_request_section(request_json, auth_required=False, file_depth=0, type_map=None):
-    # Heading.
-    result = '\n== Request\n\n'
-
-    # Some IQ Gateway API requests now require authorisation.
-    if auth_required:
-        result += 'As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:' + ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
-
+def get_request_section(request_json, file_depth=0, type_map=None):
     # Any used custom types are collected then output after the tables.
     used_custom_types = []
 
-    # Get the request querystring table.
-    if 'query' in request_json:
-        # Get the table section but also any used and referenced custom types.
-        table_section, used_custom_types = get_table_section(table_name='Request Querystring', table=request_json['query'], type_map=type_map, short_booleans=True)
+    # Check if there is anything to add to this section before printing the heading.
+    if 'query' in request_json or ('auth_required' not in request_json or request_json['auth_required'] != False):
+        # Heading.
+        result = '\n== Request\n\n'
 
-        # Add the table section to the output.
-        result += table_section
+        # Some IQ Gateway API requests now require authorisation.
+        if 'auth_required' not in request_json or request_json['auth_required'] != False:
+            result += 'As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:' + ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
+
+        # Get the request querystring table.
+        if 'query' in request_json:
+            # Get the table section but also any used and referenced custom types.
+            table_section, used_custom_types = get_table_section(table_name='Request Querystring', table=request_json['query'], type_map=type_map, short_booleans=True)
+
+            # Add the table section to the output.
+            result += table_section
+    else:
+        # Skip this section.
+        result = ''
 
     return result, used_custom_types
 
@@ -174,8 +179,13 @@ def get_schema(json_object, table_name='.', field_map=None):
     for json_key, json_value in json_object.items():
         # Is this itself another object?
         if isinstance(json_value, dict):
-            # Get a sensible name for this nested table (that preserves its JSON scope).
-            child_table_name = (table_name + '.' if table_name and table_name != '.' else '') + json_key.capitalize()
+            # We can override some object names (and merge metadata).
+            if current_table_field_map and (key_metadata := current_table_field_map.get(json_key)) and (value_name := key_metadata.get('value_name')):
+                # This name has been overridden.
+                child_table_name = value_name
+            else:
+                # Get a sensible default name for this nested table (that preserves its JSON scope).
+                child_table_name = (table_name + '.' if table_name and table_name != '.' else '') + json_key.capitalize()
 
             # This could return multiple tables if there are nested types.
             new_list_schema = get_schema(json_object=json_value, table_name=child_table_name, field_map=field_map)
@@ -185,7 +195,7 @@ def get_schema(json_object, table_name='.', field_map=None):
                 child_tables[child_table_key] = child_table_value
 
             # Add the type of this key.
-            current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '`'}
+            current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '` object'}
 
         # Is this a list of values?
         elif isinstance(json_value, list):
@@ -475,18 +485,16 @@ def main():
                 # Get a reference to the current endpoint's request details.
                 endpoint_request = endpoint['request']
 
-                # Does the endpoint support any request query strings?
-                if 'query' in endpoint_request:
-                    # Get the request section but also any used and referenced custom types.
-                    request_section, table_used_custom_types = get_request_section(endpoint_request, auth_required=True, file_depth=file_depth-1, type_map=type_map)
+                # Get the request section but also any used and referenced custom types.
+                request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
 
-                    # Collect any used custom_types, ignoring any duplicates.
-                    for custom_type in table_used_custom_types:
-                        if custom_type not in used_custom_types:
-                            used_custom_types.append(custom_type)
+                # Collect any used custom_types, ignoring any duplicates.
+                for custom_type in table_used_custom_types:
+                    if custom_type not in used_custom_types:
+                        used_custom_types.append(custom_type)
 
-                    # Add the request section to the output.
-                    output += request_section
+                # Add the request section to the output.
+                output += request_section
 
                 # Get a reference to the current endpoint's response details.
                 if 'response' in endpoint:

@@ -149,6 +149,7 @@
         "documentation": "Auth/Check_JWT.adoc",
         "name": "Check JSON Web Token (JWT)",
         "request": {
+			"auth_required": false,
             "uri": "auth/check_jwt"
         }
     },
@@ -457,6 +458,10 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Set Profile": {
+        "description": {
+            "long": "A HTTP PUT to `/installer/agf/set_profile.json` with JSON content (sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`) can be used to set an Advanced Grid Functionality (AGF) profile.",
+            "short": "Set the Advanced Grid Functionality (AGF) profile."
+        },
         "documentation": "Installer/AGF/Set_Profile.adoc",
         "name": "Set Profile",
         "request": {
@@ -821,6 +826,10 @@
         }
     },
     "IVP - Power Electronics Blocks (PEB) - New Scan": {
+        "description": {
+            "long": "A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for Power Electronics Blocks (PEB).",
+            "short": "Start, stop or get the results of a new scan for devices."
+        },
         "documentation": "IVP/PEB/NewScan.adoc",
         "name": "New Scan",
         "request": {
@@ -1010,10 +1019,55 @@
         }
     },
     "Stream - Meter": {
+        "description": {
+            "long": "A HTTP GET to `/stream/meter` can be used to get 21 - 23 \"https://en.wikipedia.org/wiki/Server-sent_events[Server-Sent Events (SSE)]\" (MIME type `text/event-stream`) formatted objects of the meter data every 21 - 23 seconds. This is presumably due to the Gateway polling every second but buffering the data (potentially a 16 KB = 16384 byte buffer?). This can be consumed by the `EventSource` JavaScript API.",
+            "short": "Obtain a continuous stream of meter readings."
+        },
         "documentation": "Stream/Meter.adoc",
         "name": "Meter",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Meter Data",
+                    "sample": "{\"production\":{\"ph-a\":{\"p\":-0.0,\"q\":176.936,\"s\":183.259,\"v\":239.054,\"i\":0.766,\"pf\":0.0,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}},\"net-consumption\":{\"ph-a\":{\"p\":430.686,\"q\":-711.485,\"s\":895.449,\"v\":239.2,\"i\":3.742,\"pf\":0.49,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}},\"total-consumption\":{\"ph-a\":{\"p\":430.686,\"q\":-888.422,\"s\":1078.128,\"v\":239.127,\"i\":4.509,\"pf\":0.4,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}}}"
+                }
+            ],
+            "methods": [
+                "GET"
+            ],
             "uri": "stream/meter"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "net-consumption": {
+                        "description": "An object that contains the consumption meter readings for systems with solar production included.",
+                        "value_name": "Phases"
+                    },
+                    "production": {
+                        "description": "An object that contains the production meter readings.",
+                        "value_name": "Phases"
+                    },
+                    "total-consumption": {
+                        "description": "An object that contains the consumption meter readings for systems measuring the load only.",
+                        "value_name": "Phases"
+                    }
+                },
+                "Phases": {
+                    "ph-a": {
+                        "description": "Information for Phase A (or Phase 1).",
+                        "value_name": "Phase"
+                    },
+                    "ph-b": {
+                        "description": "Information for Phase B (or Phase 2).",
+                        "value_name": "Phase"
+                    },
+                    "ph-c": {
+                        "description": "Information for Phase C (or Phase 3).",
+                        "value_name": "Phase"
+                    }
+                }
+            }
         }
     },
     "Stream - PSD": {
@@ -1034,7 +1088,7 @@
             "examples": [
                 {
                     "name": "Get Legacy Production Data",
-					"sample": "[{\"serialNumber\": \"123456789011\", \"lastReportDate\": 1685910322, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789012\", \"lastReportDate\": 1685910360, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789013\", \"lastReportDate\": 1685910295, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789014\", \"lastReportDate\": 1685910329, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789015\", \"lastReportDate\": 1685910367, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789016\", \"lastReportDate\": 1685910507, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789017\", \"lastReportDate\": 1685910512, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789018\", \"lastReportDate\": 1685910337, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789019\", \"lastReportDate\": 1685910518, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789021\", \"lastReportDate\": 1685910280, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789022\", \"lastReportDate\": 1685910282, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789023\", \"lastReportDate\": 1685910286, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789024\", \"lastReportDate\": 1685910285, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789025\", \"lastReportDate\": 1685910288, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}]"
+                    "sample": "[{\"serialNumber\": \"123456789011\", \"lastReportDate\": 1685910322, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789012\", \"lastReportDate\": 1685910360, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789013\", \"lastReportDate\": 1685910295, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789014\", \"lastReportDate\": 1685910329, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789015\", \"lastReportDate\": 1685910367, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789016\", \"lastReportDate\": 1685910507, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789017\", \"lastReportDate\": 1685910512, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789018\", \"lastReportDate\": 1685910337, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789019\", \"lastReportDate\": 1685910518, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789021\", \"lastReportDate\": 1685910280, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789022\", \"lastReportDate\": 1685910282, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789023\", \"lastReportDate\": 1685910286, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789024\", \"lastReportDate\": 1685910285, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789025\", \"lastReportDate\": 1685910288, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}]"
                 }
             ],
             "uri": "api/v1/production/inverters"
