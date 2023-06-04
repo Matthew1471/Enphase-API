@@ -177,11 +177,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/installer/agf/index.json`
 |List uploaded Advanced Grid Functionality (AGF) profile(s).
 
-|`link:Installer/AGF/Inverters_Phase.adoc[Inverters_Phase]`
+|`link:Installer/AGF/Inverters_Phase.adoc[Inverters Phase]`
 |`/installer/agf/inverters_phase.rb`
 |List each inverter installed by phase.
 
-|`link:Installer/AGF/Inverters_Status.adoc[Inverters_Status]`
+|`link:Installer/AGF/Inverters_Status.adoc[Inverters Status]`
 |`/installer/agf/inverters_status` and `/installer/agf/inverters_status.json`
 |Get the status of each inverter.
 
@@ -239,7 +239,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/ADC/RelaxedParams.adoc[Add Relaxed Parameters]`
+|`link:IVP/ADC/RelaxedParams/Add.adoc[Add Relaxed Parameters]`
 |`/ivp/adc/relaxedparams/add`
 |Overrides M-Series Parameters.
 
@@ -321,13 +321,13 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/ivp/ensemble/errors`
 |Get or set the IQ System Controller (formerly "Enpower") error state.
 
-|`link:IVP/Ensemble/Gen_Wiring_Test.adoc[Generator Wiring Test]`
-|`/ivp/ensemble/gen_wiring_test`
-|Start or get the results of the generator wiring test.
-
 |`link:IVP/Ensemble/Generator.adoc[Generator Status]`
 |`/ivp/ensemble/generator`
 |Get generator status.
+
+|`link:IVP/Ensemble/Gen_Wiring_Test.adoc[Generator Wiring Test]`
+|`/ivp/ensemble/gen_wiring_test`
+|Start or get the results of the generator wiring test.
 
 |`link:IVP/Ensemble/Inventory.adoc[Inventory]`
 |`/ivp/ensemble/inventory`
@@ -518,7 +518,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Mod/Power.adoc[Power Mode]`
+|`link:IVP/Mod/EID/Mode/Power.adoc[Power Mode]`
 |`/ivp/mod/{EID}/mode/power`
 |Get or set the power production power state for this `envoyDevId` (where EID appears hardcoded as 603980032).
 

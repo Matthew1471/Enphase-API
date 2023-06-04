@@ -29,9 +29,9 @@ TEST_ONLY = False
 # This script's version.
 VERSION = 0.1
 
-def get_header_section(endpoint, file_depth=0):
+def get_header_section(name, endpoint, file_depth=0):
     # Heading.
-    result = '= ' + endpoint['name'] + '\n'
+    result = '= ' + name + '\n'
 
     # Table of Contents.
     result += ':toc: preamble\n'
@@ -72,7 +72,11 @@ def get_header_section(endpoint, file_depth=0):
     result += ':url-contributors: {url-repo}/graphs/contributors\n\n'
 
     # Page Description.
-    result += endpoint['description']['long'] + '\n'
+    if 'description' in endpoint:
+        result += endpoint['description']['long'] + '\n'
+    else:
+        print('Warning : ' + endpoint['name'] + " does not have a description.")
+        result += 'This endpoint and its purpose has not been fully documented yet.\n'
 
     # Heading.
     result += '\n== Introduction\n\n'
@@ -98,7 +102,7 @@ def get_request_section(request_json, auth_required=False, file_depth=0, type_ma
     # Get the request querystring table.
     if 'query' in request_json:
         # Get the table section but also any used and referenced custom types.
-        table_section, used_custom_types = get_table_section('Request Querystring', request_json['query'], type_map)
+        table_section, used_custom_types = get_table_section(table_name='Request Querystring', table=request_json['query'], type_map=type_map, short_booleans=True)
 
         # Add the table section to the output.
         result += table_section
@@ -162,6 +166,10 @@ def get_schema(json_object, table_name='.', field_map=None):
     # A field_map contains all the table meta-data both static and dynamic. Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
     current_table_field_map = (field_map.get(table_name) if field_map else None)
 
+    # If there is no root element we must add one.
+    if isinstance(json_object, list):
+        json_object = { '.': json_object }
+
     # Take each key and value of the current table.
     for json_key, json_value in json_object.items():
         # Is this itself another object?
@@ -174,7 +182,7 @@ def get_schema(json_object, table_name='.', field_map=None):
 
             # Add the schema of the nested tables to child_tables (flattening the hierarchy).
             for child_table_key, child_table_value in new_list_schema.items():
-                    child_tables[child_table_key] = child_table_value
+                child_tables[child_table_key] = child_table_value
 
             # Add the type of this key.
             current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '`'}
@@ -206,12 +214,8 @@ def get_schema(json_object, table_name='.', field_map=None):
                         else:
                             child_tables[child_table_key] = child_table_value
 
-                # If this has been mapped/merged to a duplicate table name then we will need to append the existing dictionary.
-                if child_table_name in child_tables:
-                    # Get a reference to the existing list items.
-                    old_list_items = child_tables[child_table_name]
-                else:
-                    old_list_items = None
+                # If this has been mapped/merged to a duplicate table name, then we will need to append the existing dictionary.
+                old_list_items = child_tables.get(child_table_name)
 
                 # Take each of the new list item keys.
                 for new_list_item_key, new_list_item_value in new_list_items.items():
@@ -257,7 +261,7 @@ def get_schema(json_object, table_name='.', field_map=None):
 
     return tables
 
-def get_table_row(field_name, field_metadata=None, type_map=None):
+def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans=False):
     # Field Name.
     result = '|`' + field_name + '`' + (' (Optional)' if field_metadata and 'optional' in field_metadata and field_metadata['optional'] else '') + '\n'
 
@@ -284,11 +288,11 @@ def get_table_row(field_name, field_metadata=None, type_map=None):
             result += field_type
 
             # Did the user provide further details about this number field in the field map?
-            if field_type == 'Number' and field_metadata.get('allow_negative') == False:
+            if field_type == 'Number' and field_metadata.get('allow_negative') is False:
                 result += ' (> 0)'
             # Booleans will always be 0 or 1.
             elif field_type == 'Boolean':
-                result += ' (e.g. `0` or `1`)'
+                result += ' (e.g. `' + ('0` or `1' if short_booleans else 'true` or `false') + '`)'
 
     result += '\n'
 
@@ -313,7 +317,7 @@ def get_table_row(field_name, field_metadata=None, type_map=None):
     # Return the result but also any custom types that we referenced.
     return result
 
-def get_table_section(table_name, table, type_map):
+def get_table_section(table_name, table, type_map, short_booleans=False):
     # Sub Heading.
     result = '\n=== ' + table_name + '\n\n'
 
@@ -331,7 +335,7 @@ def get_table_section(table_name, table, type_map):
     # Table Rows (and collect any referenced custom types).
     for field_name, field_metadata in table.items():
         # Add this row.
-        result += get_table_row(field_name=field_name, field_metadata=field_metadata, type_map=type_map)
+        result += get_table_row(field_name=field_name, field_metadata=field_metadata, type_map=type_map, short_booleans=short_booleans)
 
         # Was this a custom type?
         if field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
@@ -371,7 +375,8 @@ def merge_dictionaries(a, b, path=None):
     "Recursively merges dictionary b into a.\nInspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries"
 
     # What path is currently being inspected.
-    if path is None: path = []
+    if path is None:
+        path = []
 
     # Take each of the keys in dictionary b.
     for key in b:
@@ -398,7 +403,7 @@ def merge_dictionaries(a, b, path=None):
             # Do the types not otherwise match?
             else:
                 # Error as data loss could occur.
-                raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
+                raise ValueError('Conflict at ' + ('.'.join(path + [str(key)])))
         # It doesn't, so just add it.
         else:
             a[key] = b[key]
@@ -423,13 +428,15 @@ def main():
     # Did the user override the config or library default hostname to the Gateway?
     if credentials.get('host'):
         # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+        if not os.path.exists('configuration/gateway.cer'):
+            Gateway.trust_gateway(credentials['host'])
 
         # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
         gateway = Gateway(credentials['host'])
     else:
         # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+        if not os.path.exists('configuration/gateway.cer'):
+            Gateway.trust_gateway()
 
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
@@ -455,7 +462,7 @@ def main():
             file_depth = endpoint['documentation'].count('/')
 
             # Add the documentation header.
-            output = get_header_section(endpoint=endpoint, file_depth=file_depth)
+            output = get_header_section(name=key, endpoint=endpoint, file_depth=file_depth)
 
             # We can specify the custom types of some values.
             type_map = (endpoint['type_map'] if 'type_map' in endpoint else None)
@@ -554,7 +561,7 @@ def main():
                 output += get_not_yet_documented()
 
             # Generate a suitable filename to store our documentation in.
-            filename = 'output/' + endpoint['documentation']
+            filename = '../../Documentation/' + endpoint['documentation']
 
             # Create any required sub-directories.
             os.makedirs(os.path.dirname(filename), exist_ok=True)

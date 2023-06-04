@@ -67,7 +67,7 @@
     },
     "Admin - Lib - De-Bug Access (DBA)": {
         "description": {
-            "long": "Get or set the Enphase® De-Bug Access (DBA) tunnel state."
+            "long": "Get or set the Enphase(R) De-Bug Access (DBA) tunnel state."
         },
         "documentation": "Admin/Lib/DBA.adoc",
         "name": "De-Bug Access (DBA)",
@@ -217,16 +217,22 @@
         }
     },
     "General - Information": {
+        "documentation": "General/Info.adoc",
+        "name": "Information",
         "request": {
             "uri": "info.xml"
         }
     },
     "General - Inv": {
+        "documentation": "General/Inv.adoc",
+        "name": "Inv",
         "request": {
             "uri": "inv"
         }
     },
     "General - Inventory": {
+        "documentation": "General/Inventory.adoc",
+        "name": "Inventory",
         "request": {
             "uri": "inventory.json?deleted=1"
         }
@@ -408,443 +414,629 @@
         }
     },
     "General - Provision": {
+        "documentation": "General/Prov.adoc",
+        "name": "Provision",
         "request": {
             "uri": "prov"
         }
     },
     "General - Upload": {
+        "documentation": "General/Upload.adoc",
+        "name": "Upload",
         "request": {
             "uri": "upload"
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Details": {
+        "documentation": "Installer/AGF/Details.adoc",
+        "name": "Details",
         "request": {
             "uri": "installer/agf/details.json"
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Index": {
+        "documentation": "Installer/AGF/Index.adoc",
+        "name": "Index",
         "request": {
             "uri": "installer/agf/index.json?simplified=true"
         }
     },
-    "Installer - Advanced Grid Functionality (AGF) - Inverters_Phase": {
+    "Installer - Advanced Grid Functionality (AGF) - Inverters Phase": {
+        "documentation": "Installer/AGF/Inverters_Phase.adoc",
+        "name": "Inverters_Phase",
         "request": {
             "uri": "installer/agf/inverters_phase.rb"
         }
     },
-    "Installer - Advanced Grid Functionality (AGF) - Inverters_Status": {
+    "Installer - Advanced Grid Functionality (AGF) - Inverters Status": {
+        "documentation": "Installer/AGF/Inverters_Status.adoc",
+        "name": "Inverters_Status",
         "request": {
             "uri": "installer/agf/inverters_status.json",
             "uri2": "installer/agf/inverters_status"
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Set Profile": {
+        "documentation": "Installer/AGF/Set_Profile.adoc",
+        "name": "Set Profile",
         "request": {
             "uri": "installer/agf/set_profile.json"
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Upload Profile Package": {
+        "documentation": "Installer/AGF/Upload_Profile_Package.adoc",
+        "name": "Upload Profile Package",
         "request": {
             "uri": "installer/agf/upload_profile_package"
         }
     },
     "Installer - General - Power Conditioning Unit (PCU) Communication Check": {
+        "documentation": "Installer/PCU_Comm_Check.adoc",
+        "name": "Power Conditioning Unit (PCU) Communication Check",
         "request": {
             "uri": "installer/pcu_comm_check"
         }
     },
     "Installer - General - Secure SHell (SSH) Revoke List": {
+        "documentation": "Installer/SSH_Revoke_List.adoc",
+        "name": "Secure SHell (SSH) Revoke List",
         "request": {
             "uri": "installer/ssh_revoke_list"
         }
     },
     "Installer - General - Upgrade Start": {
+        "documentation": "Installer/Upgrade_Start.adoc",
+        "name": "Upgrade Start",
         "request": {
             "uri": "installer/upgrade_start"
         }
     },
     "Installer - General - Upgrade Status": {
+        "documentation": "Installer/Upgrade_Status.adoc",
+        "name": "Upgrade Status",
         "request": {
             "uri": "installer/upgrade_status"
         }
     },
     "Installer - General - Upload": {
+        "documentation": "Installer/Upload.adoc",
+        "name": "Upload",
         "request": {
             "uri": "installer/upload.json"
         }
     },
     "Installer - General - xapi": {
+        "documentation": "Installer/xapi.adoc",
+        "name": "xapi",
         "request": {
             "uri": "installer/xapi"
         }
     },
     "IVP - Analog-to-Digital Converter (ADC) - Relaxed Parameters - Add Relaxed Parameters": {
+        "documentation": "IVP/ADC/RelaxedParams/Add.adoc",
+        "name": "Add Relaxed Parameters",
         "request": {
             "uri": "ivp/adc/relaxedparams/add"
         }
     },
     "IVP - ARF - Profile - Multimode - Off Grid": {
+        "documentation": "IVP/ARF/Profile/Multimode/Off_Grid.adoc",
+        "name": "Off Grid",
         "request": {
             "uri": "ivp/arf/profile/multimode/off_grid"
         }
     },
     "IVP - ARF - Profile - Multimode - On Grid": {
+        "documentation": "IVP/ARF/Profile/Multimode/On_Grid.adoc",
+        "name": "On Grid",
         "request": {
             "uri": "ivp/arf/profile/multimode/on_grid"
         }
     },
     "IVP - EH": {
+        "documentation": "IVP/EH/Devs.adoc",
+        "name": "Device Status",
         "request": {
             "uri": "ivp/eh/devs"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Communication Check": {
+        "documentation": "IVP/Ensemble/Comm_Check.adoc",
+        "name": "Communication Check",
         "request": {
             "uri": "ivp/ensemble/comm_check"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Data Raw": {
+        "documentation": "IVP/Ensemble/DataRaw.adoc",
+        "name": "Data Raw",
         "request": {
             "uri": "ivp/ensemble/dataraw/{EID}"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Decommission": {
+        "documentation": "IVP/Ensemble/Decommission.adoc",
+        "name": "Decommission",
         "request": {
             "uri": "ivp/ensemble/decommission"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device List": {
+        "documentation": "IVP/Ensemble/Device_List.adoc",
+        "name": "Device List",
         "request": {
             "uri": "ivp/ensemble/device_list"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device Provision": {
+        "documentation": "IVP/Ensemble/Device_Provision.adoc",
+        "name": "Device Provision",
         "request": {
             "uri": "ivp/ensemble/device_provision"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device Status": {
+        "documentation": "IVP/Ensemble/Device_Status.adoc",
+        "name": "Device Status",
         "request": {
             "uri": "ivp/ensemble/device_status"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Dry Contacts": {
+        "documentation": "IVP/Ensemble/Dry_Contacts.adoc",
+        "name": "Dry Contacts",
         "request": {
             "uri": "ivp/ensemble/dry_contacts"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - ECL Wiring Test": {
+        "documentation": "IVP/Ensemble/ECL_Wiring_Test.adoc",
+        "name": "ECL Wiring Test",
         "request": {
             "uri": "ivp/ensemble/ec1_wiring_test"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Errors": {
+        "documentation": "IVP/Ensemble/Errors.adoc",
+        "name": "Errors",
         "request": {
             "uri": "ivp/ensemble/errors"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Status": {
+        "documentation": "IVP/Ensemble/Generator.adoc",
+        "name": "Generator Status",
         "request": {
             "uri": "ivp/ensemble/generator"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
+        "documentation": "IVP/Ensemble/Gen_Wiring_Test.adoc",
+        "name": "Generator Wiring Test",
         "request": {
             "uri": "ivp/ensemble/gen_wiring_test"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Inventory": {
+        "documentation": "IVP/Ensemble/Inventory.adoc",
+        "name": "Inventory",
         "request": {
             "uri": "ivp/ensemble/inventory"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Profile Status": {
+        "documentation": "IVP/Ensemble/Profile_Status.adoc",
+        "name": "Profile Status",
         "request": {
             "uri": "ivp/ensemble/profile_status"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Relay": {
+        "documentation": "IVP/Ensemble/Relay.adoc",
+        "name": "Relay",
         "request": {
             "uri": "ivp/ensemble/relay"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Reset Device": {
+        "documentation": "IVP/Ensemble/Reset_Device.adoc",
+        "name": "Reset Device",
         "request": {
             "uri": "ivp/ensemble/reset_device/{serial_number}"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - SecCtrl": {
+        "documentation": "IVP/Ensemble/SecCtrl.adoc",
+        "name": "SecCtrl",
         "request": {
             "uri": "ivp/ensemble/secctrl"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Sleep": {
+        "documentation": "IVP/Ensemble/Sleep.adoc",
+        "name": "Sleep",
         "request": {
             "uri": "ivp/ensemble/sleep"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Status": {
+        "documentation": "IVP/Ensemble/Status.adoc",
+        "name": "Status",
         "request": {
             "uri": "ivp/ensemble/status"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Submodules": {
+        "documentation": "IVP/Ensemble/Submod.adoc",
+        "name": "Submodules",
         "request": {
             "uri": "ivp/ensemble/submod"
         }
     },
     "IVP - Firmware Manager - Config": {
+        "documentation": "IVP/FirmwareManager/Config.adoc",
+        "name": "Config",
         "request": {
             "uri": "ivp/firmware_manager/config"
         }
     },
     "IVP - Firmware Manager - State": {
+        "documentation": "IVP/FirmwareManager/State.adoc",
+        "name": "State",
         "request": {
             "uri": "ivp/firmware_manager/state"
         }
     },
     "IVP - Firmware Manager - Update All": {
+        "documentation": "IVP/FirmwareManager/Update_All.adoc",
+        "name": "Update All",
         "request": {
             "uri": "ivp/firmware_manager/update_all"
         }
     },
     "IVP - Firmware Manager - Update Single": {
+        "documentation": "IVP/FirmwareManager/Update_Single.adoc",
+        "name": "Update Single",
         "request": {
             "uri": "ivp/firmware_manager/update_single"
         }
     },
     "IVP - General - Cellular": {
+        "documentation": "IVP/Cellular.adoc",
+        "name": "Cellular",
         "request": {
             "uri": "ivp/cellular"
         }
     },
     "IVP - General - Meters": {
+        "documentation": "IVP/Meters.adoc",
+        "name": "Meters",
         "request": {
             "uri": "ivp/meters"
         }
     },
     "IVP - Grest - Profile": {
+        "documentation": "IVP/Grest/Profile.adoc",
+        "name": "Profile",
         "request": {
             "uri": "ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10"
         }
     },
     "IVP - Grest - Redetermine Phase": {
+        "documentation": "IVP/Grest/Local/GS/RedeterminePhase.adoc",
+        "name": "Redetermine Phase",
         "request": {
             "uri": "ivp/grest/local/gs/redeterminephase"
         }
     },
     "IVP - Live Data - Status": {
+        "documentation": "IVP/LiveData/Status.adoc",
+        "name": "Status",
         "request": {
             "uri": "ivp/livedata/status"
         }
     },
     "IVP - Live Data - Stream": {
+        "documentation": "IVP/LiveData/Stream.adoc",
+        "name": "Stream",
         "request": {
             "uri": "ivp/livedata/stream"
         }
     },
     "IVP - Meters - CTS - Update EID": {
+        "documentation": "IVP/Meters/CTS/EID.adoc",
+        "name": "Update EID",
         "request": {
-            "uri": "ivp/meters/cts/EID"
+            "uri": "ivp/meters/cts/{EID}"
         }
     },
     "IVP - Meters - General - CT Reversal": {
+        "documentation": "IVP/Meters/CTReversal.adoc",
+        "name": "CT Reversal",
         "request": {
             "uri": "ivp/meters/ctreversal/{EID}"
         }
     },
     "IVP - Meters - General - Current Transformer (CT) Settings": {
+        "documentation": "IVP/Meters/CTS.adoc",
+        "name": "Current Transformer (CT) Settings",
         "request": {
             "uri": "ivp/meters/cts"
         }
     },
     "IVP - Meters - General - Meter Readings": {
+        "documentation": "IVP/Meters/Reports.adoc",
+        "name": "Meter Readings",
         "request": {
             "uri": "ivp/meters/reports/"
         }
     },
     "IVP - Meters - General - Meter Settings": {
+        "documentation": "IVP/Meters/EID.adoc",
+        "name": "Meter Settings",
         "request": {
-            "uri": "ivp/meters/EID"
+            "uri": "ivp/meters/{EID}"
         }
     },
     "IVP - Meters - General - Readings": {
+        "documentation": "IVP/Meters/Readings.adoc",
+        "name": "Readings",
         "request": {
             "uri": "ivp/meters/readings"
         }
     },
     "IVP - Meters - General - Storage Setting": {
+        "documentation": "IVP/Meters/Storage_Setting.adoc",
+        "name": "Storage Setting",
         "request": {
             "uri": "ivp/meters/storage_setting"
         }
     },
     "IVP - Meters - Reports - Consumption Meter Reading": {
+        "documentation": "IVP/Meters/Reports/Consumption.adoc",
+        "name": "Consumption Meter Reading",
         "request": {
             "uri": "ivp/meters/reports/consumption"
         }
     },
     "IVP - Meters - Reports - Production Meter Reading": {
+        "documentation": "IVP/Meters/Reports/Production.adoc",
+        "name": "Production Meter Reading",
         "request": {
             "uri": "ivp/meters/reports/production"
         }
     },
     "IVP - Mod - Power Mode": {
+        "documentation": "IVP/Mod/EID/Mode/Power.adoc",
+        "name": "Power Mode",
         "request": {
             "uri": "ivp/mod/{EID}/mode/power"
         }
     },
     "IVP - Power Electronics Blocks (PEB) - Device Status": {
+        "documentation": "IVP/PEB/DevStatus.adoc",
+        "name": "Device Status",
         "request": {
             "uri": "ivp/peb/devstatus"
         }
     },
     "IVP - Power Electronics Blocks (PEB) - New Scan": {
+        "documentation": "IVP/PEB/NewScan.adoc",
+        "name": "New Scan",
         "request": {
             "uri": "ivp/peb/newscan"
         }
     },
     "IVP - Power Electronics Blocks (PEB) - Report Settings": {
+        "documentation": "IVP/PEB/ReportSettings.adoc",
+        "name": "Report Settings",
         "request": {
             "uri": "ivp/peb/reportsettings"
         }
     },
     "IVP - SC - Sched": {
+        "documentation": "IVP/SC/Sched.adoc",
+        "name": "Sched",
         "request": {
             "uri": "ivp/sc/sched"
         }
     },
     "IVP - Smart Switch (SS) - Distributed Energy Resource (DER) Settings": {
+        "documentation": "IVP/SS/DER_Settings.adoc",
+        "name": "Distributed Energy Resource (DER) Settings",
         "request": {
             "uri": "ivp/ss/der_settings"
         }
     },
     "IVP - Smart Switch (SS) - dpel": {
+        "documentation": "IVP/SS/dpel.adoc",
+        "name": "dpel",
         "request": {
             "uri": "ivp/ss/dpel"
         }
     },
     "IVP - Smart Switch (SS) - Dry Contact Settings": {
+        "documentation": "IVP/SS/Dry_Contact_Settings.adoc",
+        "name": "Dry Contact Settings",
         "request": {
             "uri": "ivp/ss/dry_contact_settings"
         }
     },
     "IVP - Smart Switch (SS) - ENC Settings": {
+        "documentation": "IVP/SS/ENC_Settings.adoc",
+        "name": "ENC Settings",
         "request": {
             "uri": "ivp/ss/enc_settings"
         }
     },
     "IVP - Smart Switch (SS) - Generator Configuration": {
+        "documentation": "IVP/SS/Gen_Config.adoc",
+        "name": "Generator Configuration",
         "request": {
             "uri": "ivp/ss/gen_config"
         }
     },
     "IVP - Smart Switch (SS) - Generator Delete": {
+        "documentation": "IVP/SS/Gen_Delete.adoc",
+        "name": "Generator Delete",
         "request": {
             "uri": "ivp/ss/gen_delete"
         }
     },
     "IVP - Smart Switch (SS) - Generator Meter Enable": {
+        "documentation": "IVP/SS/Generator_Meter_Enable.adoc",
+        "name": "Generator Meter Enable",
         "request": {
             "uri": "ivp/ss/generator_meter_enable"
         }
     },
     "IVP - Smart Switch (SS) - Generator Mode": {
+        "documentation": "IVP/SS/Gen_Mode.adoc",
+        "name": "Generator Mode",
         "request": {
             "uri": "ivp/ss/gen_mode"
         }
     },
     "IVP - Smart Switch (SS) - Generator Profile": {
+        "documentation": "IVP/SS/Gen_Profile.adoc",
+        "name": "Generator Profile",
         "request": {
             "uri": "ivp/ss/gen_profile"
         }
     },
     "IVP - Smart Switch (SS) - Generator Schedule": {
+        "documentation": "IVP/SS/Gen_Schedule.adoc",
+        "name": "Generator Schedule",
         "request": {
             "uri": "ivp/ss/gen_schedule"
         }
     },
     "IVP - Smart Switch (SS) - Load Control": {
+        "documentation": "IVP/SS/Load_Control.adoc",
+        "name": "Load Control",
         "request": {
             "uri": "ivp/ss/load_control"
         }
     },
     "IVP - Smart Switch (SS) - Power Control System (PCS) Settings": {
+        "documentation": "IVP/SS/PCS_Settings.adoc",
+        "name": "Power Control System (PCS) Settings",
         "request": {
             "uri": "ivp/ss/pcs_settings"
         }
     },
     "IVP - Smart Switch (SS) - Power Export Limits (PEL) Settings": {
+        "documentation": "IVP/SS/PEL_Settings.adoc",
+        "name": "Power Export Limits (PEL) Settings",
         "request": {
             "uri": "ivp/ss/pel_settings"
         }
     },
     "IVP - Smart Switch (SS) - System Phase Balance": {
+        "documentation": "IVP/SS/Sys_Phase_Balance.adoc",
+        "name": "System Phase Balance",
         "request": {
             "uri": "ivp/ss/sys_phase_balance"
         }
     },
     "IVP - Smart Switch (SS) - Third Party (Legacy) - PV": {
+        "documentation": "IVP/SS/Third Party/PV.adoc",
+        "name": "PV",
         "request": {
             "uri": "ivp/ss/third_party/pv"
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Capability": {
+        "documentation": "IVP/TPM/Capability.adoc",
+        "name": "Capability",
         "request": {
             "uri": "ivp/tpm/capability"
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Parameters": {
+        "documentation": "IVP/TPM/Parameters.adoc",
+        "name": "Parameters",
         "request": {
             "uri": "ivp/tpm/parameters"
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Select": {
+        "documentation": "IVP/TPM/Select.adoc",
+        "name": "Select",
         "request": {
             "uri": "ivp/tpm/select"
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - TPM Status": {
+        "documentation": "IVP/TPM/TPMStatus.adoc",
+        "name": "TPM Status",
         "request": {
             "uri": "ivp/tpm/tpmstatus"
         }
     },
     "IVP - ZigBee - Pairing Status": {
+        "documentation": "IVP/ZB/Pairing_Status.adoc",
+        "name": "Pairing Status",
         "request": {
             "uri": "ivp/zb/pairing_status"
         }
     },
     "IVP - ZigBee - Provision": {
+        "documentation": "IVP/ZB/Provision.adoc",
+        "name": "Provision",
         "request": {
             "uri": "ivp/zb/provision"
         }
     },
     "IVP - ZigBee - Reset Device": {
+        "documentation": "IVP/ZB/Reset_Device.adoc",
+        "name": "Reset Device",
         "request": {
             "uri": "ivp/zb/reset_device"
         }
     },
     "IVP - ZigBee - Set Phase": {
+        "documentation": "IVP/ZB/Set_Phase.adoc",
+        "name": "Set Phase",
         "request": {
             "uri": "ivp/zb/set_phase"
         }
     },
     "IVP - ZigBee - Status": {
+        "documentation": "IVP/ZB/Status.adoc",
+        "name": "Status",
         "request": {
             "uri": "ivp/zb/status"
         }
     },
-    "Streams - Meter": {
+    "Stream - Meter": {
+        "documentation": "Stream/Meter.adoc",
+        "name": "Meter",
         "request": {
             "uri": "stream/meter"
         }
     },
-    "Streams - PSD": {
+    "Stream - PSD": {
+        "documentation": "Stream/PSD.adoc",
+        "name": "PSD",
         "request": {
             "uri": "stream/psd"
         }
     },
     "Version 1 API (Legacy) - Inverter(s) Production (Version 1 API)": {
+        "description": {
+            "long": "Obtain the legacy micro-inverter energy production information.",
+            "short": "Obtain the legacy micro-inverter energy production information."
+        },
+        "documentation": "V1/Production/Inverters.adoc",
+        "name": "Inverter(s) Production (Version 1 API)",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Legacy Production Data",
+					"sample": "[{\"serialNumber\": \"123456789011\", \"lastReportDate\": 1685910322, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789012\", \"lastReportDate\": 1685910360, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789013\", \"lastReportDate\": 1685910295, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789014\", \"lastReportDate\": 1685910329, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789015\", \"lastReportDate\": 1685910367, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789016\", \"lastReportDate\": 1685910507, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789017\", \"lastReportDate\": 1685910512, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789018\", \"lastReportDate\": 1685910337, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789019\", \"lastReportDate\": 1685910518, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789021\", \"lastReportDate\": 1685910280, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789022\", \"lastReportDate\": 1685910282, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789023\", \"lastReportDate\": 1685910286, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789024\", \"lastReportDate\": 1685910285, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}, {\"serialNumber\": \"123456789025\", \"lastReportDate\": 1685910288, \"devType\": 1, \"lastReportWatts\": 0, \"maxReportWatts\": 367}]"
+                }
+            ],
             "uri": "api/v1/production/inverters"
         }
     }
