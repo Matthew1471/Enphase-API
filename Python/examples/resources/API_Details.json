@@ -1,11 +1,17 @@
 {
     "Admin - Lib - AC Battery (ACB) Configuration": {
         "description": {
-            "long": "Get, set or cancel an AC Battery’s (ACB) sleep mode."
+            "long": "Get, set or cancel an AC Battery’s (ACB) sleep mode.",
+            "short": "Get, set or cancel an AC Battery’s (ACB) sleep mode."
         },
         "documentation": "Admin/Lib/ACB_Config.adoc",
         "name": "AC Battery (ACB) Configuration",
         "request": {
+            "examples": [
+                {
+                    "name": "Get AC Battery Sleep Data"
+                }
+            ],
             "methods": [
                 "GET",
                 "PUT",
@@ -72,11 +78,18 @@
         }
     },
     "Admin - Lib - Network Configuration": {
+        "description": {
+            "long": "Get/Set network information and/or perform network diagnostics."
+        },
+        "documentation": "Admin/Lib/Network_Display.adoc",
+        "name": "Network Configuration",
         "request": {
             "examples": [
                 {
+                    "name": "Get Network Configuration"
                 },
                 {
+                    "name": "Get Cellular Configuration",
                     "uri": "cellular=1"
                 }
             ],
@@ -94,37 +107,102 @@
         }
     },
     "Admin - Lib - Tariff Configuration": {
+        "description": {
+            "long": "Get or set the tariff settings."
+        },
+        "documentation": "Admin/Lib/Tariff.adoc",
+        "name": "Tariff Configuration",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Tariff Configuration"
+                }
+            ],
             "uri": "admin/lib/tariff.json"
         }
     },
     "Admin - Lib - Wireless Configuration": {
+        "description": {
+            "long": "Get or set the wireless settings."
+        },
+        "documentation": "Admin/Lib/Wireless_Display.adoc",
+        "name": "Wireless Configuration",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Wireless Configuration"
+                }
+            ],
             "uri": "admin/lib/wireless_display.json"
         }
     },
     "Authentication - Check JSON Web Token (JWT)": {
+        "description": {
+            "long": "Checks a JSON Web Token is valid to login to the system and creates a session."
+        },
+        "documentation": "Auth/Check_JWT.adoc",
+        "name": "Check JSON Web Token (JWT)",
         "request": {
             "uri": "auth/check_jwt"
         }
     },
     "Data Tables - Administer Device Conditions and Controls (DCC) DataTable": {
+        "description": {
+            "long": "Used by the JavaScript datatable to return Device Conditions and Controls (DCC) records."
+        },
+        "documentation": "Datatab/Admin_DCC_Display_DT.adoc",
+        "name": "Administer Device Conditions and Controls (DCC) DataTable",
         "request": {
+            "examples": [
+                {
+                    "name": "Get DCC Events"
+                }
+            ],
             "uri": "datatab/admin_dcc_display_dt"
         }
     },
     "Data Tables - Events DataTable": {
+        "description": {
+            "long": "Used by the JavaScript datatable to return event log records."
+        },
+        "documentation": "Datatab/Event_DT.adoc",
+        "name": "Events DataTable",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Events"
+                }
+            ],
             "uri": "datatab/event_dt.rb"
         }
     },
     "Data Tables - Inventory DataTable": {
+        "description": {
+            "long": "Used by the JavaScript datatable to return inventory records."
+        },
+        "documentation": "Datatab/Inventory_DT.adoc",
+        "name": "Inventory DataTable",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Inventory"
+                }
+            ],
             "uri": "datatab/inventory_dt"
         }
     },
     "General - Home": {
+        "!documentation": "General/Home.adoc",
+        "description": {
+            "long": "Obtain a summary of the gateway status."
+        },
+        "name": "Home",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Gateway Status"
+                }
+            ],
             "uri": "home.json"
         }
     },

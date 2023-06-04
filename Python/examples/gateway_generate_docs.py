@@ -24,7 +24,7 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 # Enable this mode to perform no actual requests.
-test_only = True
+test_only = False
 
 def get_header_section(endpoint, file_depth=0):
     # Heading.
@@ -139,11 +139,9 @@ def get_schema(json_object, table_name='.', field_map=None):
 
     # Store any discovered nested tables in this dictionary.
     child_tables = {}
-
-    # A field_map contains all the table meta-data both static and dynamic.
-    if field_map:
-        # Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
-        current_table_field_map = field_map.get(table_name)
+    
+    # A field_map contains all the table meta-data both static and dynamic. Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
+    current_table_field_map = (field_map.get(table_name) if field_map else None)
 
     # Take each key and value of the current table.
     for json_key, json_value in json_object.items():
@@ -460,33 +458,35 @@ def main():
                 # Get a reference to the current endpoint's response details.
                 if 'response' in endpoint:
                     endpoint_response = endpoint['response']
+                else:
+                    endpoint_response = {'field_map' : {}}
 
-                    # Take each of the examples to learn the schema.
-                    if 'examples' in endpoint_request:
-                        json_schema = {}
-                        for example_item in endpoint_request['examples']:
-                            # The user can supply the JSON to use instead of us directly querying for it.
-                            if 'sample' in example_item:
-                                # Extract the sample and use it as the response.
-                                example_item['response'] = json.loads(example_item['sample'])
-                            elif not test_only:
-                                # Perform a GET request on the resource.
-                                example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
-                            else:
-                                raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
+                # Take each of the examples to learn the schema.
+                if 'examples' in endpoint_request:
+                    json_schema = {}
+                    for example_item in endpoint_request['examples']:
+                        # The user can supply the JSON to use instead of us directly querying for it.
+                        if 'sample' in example_item:
+                            # Extract the sample and use it as the response.
+                            example_item['response'] = json.loads(example_item['sample'])
+                        elif not test_only:
+                            # Perform a GET request on the resource.
+                            example_item['response'] = gateway.api_call('/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else ''))
+                        else:
+                            raise ValueError('No sample JSON defined for ' + example_item['name'] + ' and test_only is True.')
 
-                            # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                            json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
+                        # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+                        json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
 
-                        # Merge the dictionaries with their nested values.
-                        endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
+                    # Merge the dictionaries with their nested values.
+                    endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
 
-                    # Ouput all the response tables.
-                    output += '\n== Response\n'
+                # Ouput all the response tables.
+                output += '\n== Response\n'
 
-                    # Add each of the tables from the derived json_schema.
-                    for table_name, table in endpoint_response['field_map'].items():
-                        output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
+                # Add each of the tables from the derived json_schema.
+                for table_name, table in endpoint_response['field_map'].items():
+                    output += get_table_and_types_section(table_name=table_name, table=table, type_map=endpoint_response.get('type_map'))
 
                 # Add the examples.
                 if 'examples' in endpoint_request:
