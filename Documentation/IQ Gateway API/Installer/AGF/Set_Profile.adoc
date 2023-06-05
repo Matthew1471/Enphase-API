@@ -1,4 +1,4 @@
-= Installer/AGF/Set_Profile
+= Installer - Advanced Grid Functionality (AGF) - Set Profile
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -43,7 +43,9 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Request Content
 
-[cols="1,1,1,2", options="header"] 
+=== Root
+
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -52,15 +54,16 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`selected_profile`
 |String
-|Profile
+|String
 |The selected Advanced Grid Functionality (AGF) profile to set.
+
 |===
 
 == Response
 
 === Root
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,2", options="header"]
 |===
 |Name
 |Type
@@ -76,16 +79,15 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Set AGF Profile Example
+=== Set AGF Profile
 
 .PUT */installer/agf/set_profile.json* Request
 [source,json,subs="+quotes"]
 ----
-{"selected_profile":"G99-1-6:2020 UK:1.2.10"}
+{"selected_profile": "G99-1-6:2020 UK:1.2.10"}
 ----
-
 .PUT */installer/agf/set_profile.json* Response
-[source,json,subs="+quotes"]
+[listing]
 ----
 {
   "message": "/ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10  'selected_profile': 'G99-1-6:2020 UK:1.2.10' accepted."

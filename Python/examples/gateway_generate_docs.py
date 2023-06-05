@@ -93,7 +93,7 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     used_custom_types = []
 
     # Check if there is anything to add to this section before printing the heading.
-    if 'query' in request_json or ('auth_required' not in request_json or request_json['auth_required'] != False):
+    if ('query' in request_json or 'data' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] != False):
         # Heading.
         result = '\n== Request\n\n'
 
@@ -105,6 +105,24 @@ def get_request_section(request_json, file_depth=0, type_map=None):
         if 'query' in request_json:
             # Get the table section but also any used and referenced custom types.
             table_section, used_custom_types = get_table_section(table_name='Request Querystring', table=request_json['query'], type_map=type_map, short_booleans=True)
+
+            # Add the table section to the output.
+            result += table_section
+
+        # Get the request data table.
+        if (field_map := request_json.get('field_map')) and len(field_map) > 0:
+            # Ouput all the request content tables.
+            result += '\n=== Request Content\n'
+
+            # Add each of the tables from the derived json_schema.
+            for table_name, table in field_map.items():
+                # Get the table section but also any used and referenced custom types.
+                table_section, table_used_custom_types = get_table_section(table_name=('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root'), table=table, type_map=type_map, short_booleans=True)
+
+                # Collect any used custom_types, ignoring any duplicates.
+                for custom_type in table_used_custom_types:
+                    if custom_type not in used_custom_types:
+                        used_custom_types.append(custom_type)
 
             # Add the table section to the output.
             result += table_section
@@ -359,16 +377,38 @@ def get_table_section(table_name, table, type_map, short_booleans=False):
 
     return result, used_custom_types
 
-def get_example_section(uri, example_item, json_object):
+def get_example_section(uri, example_item):
     # Sub Heading.
-    result = '\n\n=== ' + example_item['name'] + '\n\n'
+    result = '\n\n=== ' + example_item['name'] + '\n'
 
-    # Example.
-    result += '.GET */' + uri + ('?' + example_item['uri'] if 'uri' in example_item else '') + '* Response\n'
-    result += '[source,json,subs="+quotes"]\n'
-    result += '----\n'
-    result += json.dumps(json_object) + '\n'
-    result += '----'
+    # We use a dictionary to store requests and/or responses for output as part of a loop.
+    example_output = {}
+
+    # Was there request details?
+    if 'data' in example_item:
+        example_output['Request'] = json.dumps(example_item['data'])
+
+    # Add the response.
+    if not 'raw' in example_item:
+        example_output['Response'] = json.dumps(example_item['response'])
+    else:
+        example_output['Response'] = example_item['raw']
+
+    # Add the example_output Request, Response or both.
+    for example_type, example_content in example_output.items():
+        # List the example request/response details.
+        result += '\n.' + (example_item['method'] if 'method' in example_item else 'GET') + ' */' + uri + ('?' + example_item['uri'] if 'uri' in example_item else '') + '* ' + example_type + '\n'
+
+        # We can override JSON responses and present raw text instead.
+        if example_type == 'Request' or 'raw' not in example_item:
+            result += '[source,json,subs="+quotes"]'
+        else:
+            result += '[listing]'
+
+        # Add the example content (JSON or raw).
+        result += '\n----\n'
+        result += example_content + '\n'
+        result += '----'
 
     return result
 
@@ -485,17 +525,6 @@ def main():
                 # Get a reference to the current endpoint's request details.
                 endpoint_request = endpoint['request']
 
-                # Get the request section but also any used and referenced custom types.
-                request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
-
-                # Collect any used custom_types, ignoring any duplicates.
-                for custom_type in table_used_custom_types:
-                    if custom_type not in used_custom_types:
-                        used_custom_types.append(custom_type)
-
-                # Add the request section to the output.
-                output += request_section
-
                 # Get a reference to the current endpoint's response details.
                 if 'response' in endpoint:
                     endpoint_response = endpoint['response']
@@ -504,7 +533,8 @@ def main():
 
                 # Take each of the examples to learn the schema.
                 if 'examples' in endpoint_request:
-                    json_schema = {}
+                    json_request_schema = {}
+                    json_response_schema = {}
                     for example_item in endpoint_request['examples']:
                         # The user can supply the JSON to use instead of us directly querying for it.
                         if 'sample' in example_item:
@@ -522,11 +552,32 @@ def main():
                             print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
                             continue
 
-                        # Get the schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                        json_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
+                        # Get the response schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+                        json_response_schema.update(get_schema(json_object=example_item['response'], field_map=endpoint_response.get('field_map')))
 
-                    # Merge the dictionaries with their nested values.
-                    endpoint_response['field_map'] = merge_dictionaries(json_schema, endpoint_response['field_map'])
+                        # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
+                        if 'data' in example_item:
+                            # Extract the sample and use it as the request.
+                            example_item['data'] = json.loads(example_item['data'])
+                            json_request_schema.update(get_schema(json_object=example_item['data'], field_map=endpoint_request.get('field_map')))
+
+                    # Merge the request field_map dictionary with any configured values.
+                    if len(json_request_schema) > 0:
+                        endpoint_request['field_map'] = (merge_dictionaries(json_request_schema, endpoint_request['field_map']) if 'field_map' in endpoint_request else json_request_schema)
+
+                    # Merge the response field_map dictionary with any configured values.
+                    endpoint_response['field_map'] = merge_dictionaries(json_response_schema, endpoint_response['field_map'])
+
+                # Get the request section but also any used and referenced custom types.
+                request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
+
+                # Collect any used custom_types, ignoring any duplicates.
+                for custom_type in table_used_custom_types:
+                    if custom_type not in used_custom_types:
+                        used_custom_types.append(custom_type)
+
+                # Add the request section to the output.
+                output += request_section
 
                 # Are there any results?
                 if len(endpoint_response['field_map']) > 0:
@@ -563,7 +614,7 @@ def main():
                             continue
 
                         # Take the obtained JSON as an example.
-                        output += get_example_section(uri=endpoint_request['uri'], example_item=example_item, json_object=example_item['response'])
+                        output += get_example_section(uri=endpoint_request['uri'], example_item=example_item)
             else:
                 # Add placeholder text.
                 output += get_not_yet_documented()

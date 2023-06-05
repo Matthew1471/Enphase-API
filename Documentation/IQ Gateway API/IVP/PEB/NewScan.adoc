@@ -1,4 +1,4 @@
-= IVP/PEB/NewScan
+= IVP - Power Electronics Blocks (PEB) - New Scan
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -35,7 +35,7 @@ A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for P
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../../README.adoc[project's homepage].
+More details on the project are available from the link:../../../../README.adoc[project's homepage].
 
 == Request
 
@@ -45,14 +45,216 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Root
 
-To be completed.
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`newDeviceScan`
+|Object
+|`NewDeviceScan` object
+|An object that contains the scan details for the request.
+
+|===
+
+=== `NewDeviceScan` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`active`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`is-suspended`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`controlled`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`scan-is-done`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`in-exclusive-mode`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`duration-in-minutes`
+|Number
+|Number
+|???
+
+|`remaining-minutes`
+|Number
+|Number
+|???
+
+|`exclusive-minutes`
+|Number
+|Number
+|???
+
+|`rem-minutes-exclusive`
+|Number
+|Number
+|???
+
+|`inhibit-device-scan`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`rqst-opportunity-modulus`
+|Number
+|Number
+|???
+
+|`curr-opportunity-modulus`
+|Number
+|Number
+|???
+
+|`devices-to-be-discovered`
+|Number
+|Number
+|???
+
+|`tot-devices-discovered`
+|Number
+|Number
+|???
+
+|`curr-devices-discovered`
+|Number
+|Number
+|???
+
+|`avg-rate-of-new-devices-discovered-per-min`
+|Number
+|Number
+|???
+
+|`avg-num-of-new-devices-discovered-per-poll`
+|Number
+|Number
+|???
+
+|`pcu`
+|Object
+|`DeviceScanResult` object
+|An object that contains the scan result for the PCU.
+
+|`acb`
+|Object
+|`DeviceScanResult` object
+|An object that contains the scan result for the AC Battery (ACB).
+
+|`nsrb`
+|Object
+|`DeviceScanResult` object
+|An object that contains the scan result for the NSRB.
+
+|`esub`
+|Object
+|`DeviceScanResult` object
+|An object that contains the scan result for the ESUB.
+
+|`pld`
+|Object
+|`DeviceScanResult` object
+|An object that contains the scan result for the PLD.
+
+|`mins-until-next-cycle`
+|Number
+|Number
+|???
+
+|`xdom-disabled-scan`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`polling-period-secs`
+|Number
+|Number
+|???
+
+|`polling-is-off`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|`forget-all-scan`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|???
+
+|===
+
+=== `DeviceScanResult` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`expected`
+|Number
+|Number
+|???
+
+|`discovered`
+|Number
+|Number
+|???
+
+|`this-scan`
+|Number
+|Number
+|???
+
+|`per-min`
+|Number
+|Number
+|???
+
+|`per-poll`
+|Number
+|Number
+|???
+
+|===
 
 == Examples
 
-=== Get NewScan Example
+=== Get Scan Details
+
+.GET */ivp/peb/newscan* Response
+[source,json,subs="+quotes"]
+----
+{"newDeviceScan": {"active": false, "is-suspended": false, "controlled": false, "scan-is-done": false, "in-exclusive-mode": false, "duration-in-minutes": 0, "remaining-minutes": 0, "exclusive-minutes": 0, "rem-minutes-exclusive": 0, "inhibit-device-scan": false, "rqst-opportunity-modulus": 0, "curr-opportunity-modulus": 0, "devices-to-be-discovered": 14, "tot-devices-discovered": 14, "curr-devices-discovered": 14, "avg-rate-of-new-devices-discovered-per-min": 14, "avg-num-of-new-devices-discovered-per-poll": 14, "pcu": {"expected": 14, "discovered": 14, "this-scan": 14, "per-min": 14, "per-poll": 14}, "acb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "nsrb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "esub": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "pld": {"expected": 14, "discovered": 14, "this-scan": 14, "per-min": 14, "per-poll": 14}, "mins-until-next-cycle": 8, "xdom-disabled-scan": false, "polling-period-secs": 900, "polling-is-off": false, "forget-all-scan": false}}
+----
+
+=== Start A New Scan
 
 .PUT */ivp/peb/newscan* Response
 [source,json,subs="+quotes"]
 ----
-{ "newDeviceScan" : { "active" : false, "is-suspended" : false, "controlled" : false, "scan-is-done" : false, "in-exclusive-mode" : false, "duration-in-minutes" : 0, "remaining-minutes" : 0, "exclusive-minutes" : 0, "rem-minutes-exclusive" : 0, "inhibit-device-scan" : false, "rqst-opportunity-modulus" : 0, "curr-opportunity-modulus" : 0, "devices-to-be-discovered" : 10, "tot-devices-discovered" : 10, "curr-devices-discovered" : 10, "avg-rate-of-new-devices-discovered-per-min" : 10, "avg-num-of-new-devices-discovered-per-poll" : 10, "pcu": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "acb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "nsrb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "esub": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "pld": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "mins-until-next-cycle" : 5, "xdom-disabled-scan" : false, "polling-period-secs" : 900, "polling-is-off" : false,"forget-all-scan" : false }}
+{"newDeviceScan": {"active": false, "is-suspended": false, "controlled": false, "scan-is-done": false, "in-exclusive-mode": false, "duration-in-minutes": 0, "remaining-minutes": 0, "exclusive-minutes": 0, "rem-minutes-exclusive": 0, "inhibit-device-scan": false, "rqst-opportunity-modulus": 0, "curr-opportunity-modulus": 0, "devices-to-be-discovered": 10, "tot-devices-discovered": 10, "curr-devices-discovered": 10, "avg-rate-of-new-devices-discovered-per-min": 10, "avg-num-of-new-devices-discovered-per-poll": 10, "pcu": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "acb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "nsrb": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "esub": {"expected": 0, "discovered": 0, "this-scan": 0, "per-min": 0, "per-poll": 0}, "pld": {"expected": 10, "discovered": 10, "this-scan": 10, "per-min": 10, "per-poll": 10}, "mins-until-next-cycle": 5, "xdom-disabled-scan": false, "polling-period-secs": 900, "polling-is-off": false, "forget-all-scan": false}}
 ----
