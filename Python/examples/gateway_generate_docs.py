@@ -93,12 +93,12 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     used_custom_types = []
 
     # Check if there is anything to add to this section before printing the heading.
-    if ('query' in request_json or 'data' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] != False):
+    if ('query' in request_json or 'data' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] is not False):
         # Heading.
         result = '\n== Request\n\n'
 
         # Some IQ Gateway API requests now require authorisation.
-        if 'auth_required' not in request_json or request_json['auth_required'] != False:
+        if 'auth_required' not in request_json or request_json['auth_required'] is not False:
             result += 'As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:' + ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
 
         # Get the request querystring table.
