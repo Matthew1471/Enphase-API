@@ -24,7 +24,7 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 # Enable this mode to perform no actual requests.
-TEST_ONLY = False
+TEST_ONLY = True
 
 # This script's version.
 VERSION = 0.1
@@ -45,98 +45,65 @@ class json_schema:
             return 'Unknown'
 
     @staticmethod
-    def get_table_name(table_field_map, table_name, json_key):
+    def get_table_name(table_field_map, original_table_name, json_key):
         # We can override some object names (and merge metadata).
         if table_field_map and (key_metadata := table_field_map.get(json_key)) and (value_name := key_metadata.get('value_name')):
             # This name has been overridden.
             table_name = value_name
         else:
             # Get a sensible default name for this table (that preserves its JSON scope).
-            table_name = (table_name + '.' if table_name and table_name != '.' else '') + str(json_key).capitalize()
+            table_name = (original_table_name + '.' if original_table_name and original_table_name != '.' else '') + str(json_key).capitalize()
 
         return table_name
 
-    @staticmethod
-    def process_list_items(tables, table_field_map, table_name, json_value):
-        # Take each of the items in the list and combine all the keys and their metadata.
-        new_list_items = {}
-        for list_item in json_value:
-            # This could return multiple tables if there are nested types.
-            new_list_schema = json_schema.get_schema(table_name=table_name, table_field_map=table_field_map, json_object=list_item)
-
-            # Take each of the returned tables (the parent and any children).
-            for child_table_key, child_table_value in new_list_schema.items():
-                # This is the current parent table we were updating.
-                if child_table_key == table_name:
-                    new_list_items.update(new_list_schema[table_name])
-                # This is an extra nested child table that was discovered.
-                else:
-                    # Add/Update this child table to the collection of tables.
-                    # ToDo: This does not update the "optional" field at present (could potentially be added to merge_dictionaries if required?).
-                    tables[child_table_key] = (json_schema.merge_dictionaries(tables[child_table_key], child_table_value) if child_table_key in tables else child_table_value)
-
-        # If this has been mapped/merged to a duplicate table name, then we will need to append the existing dictionary.
-        old_list_items = tables.get(table_name)
-
-        # Take each of the new list item keys.
-        for new_list_item_key, new_list_item_value in new_list_items.items():
-            # Is this new key not present in all of the new items or not present in the old list of item keys (if applicable)?
-            if any(new_list_item_key not in item for item in json_value) or (old_list_items and new_list_item_key not in old_list_items):
-                # Mark this new key as optional (if it isn't already).
-                if not ('optional' in new_list_item_value and new_list_item_value['optional']):
-                    new_list_item_value['optional'] = True
-
-        # If this has been mapped to a duplicate then we will need to append the existing dictionary.
-        if old_list_items:
-            # Take all the old list item keys.
-            for old_list_item_key, old_list_item_value in old_list_items.items():
-                # Is this old key not present in all of the new items?
-                if any(old_list_item_key not in item for item in json_value):
-                    # Mark this old key as optional (if it isn't already).
-                    if not ('optional' in old_list_item_value and old_list_item_value['optional']):
-                        old_list_item_value['optional'] = True
-
-            # Merge the existing dictionary.
-            tables[table_name].update(new_list_items)
-        else:
-            # Add the schema of this list of nested tables to child_tables.
-            tables[table_name] = new_list_items
-
-    def merge_dictionaries(a, b, path=None):
+    def merge_dictionaries(a, b, path=[], mark_optional_at_depth=None):
         "Recursively merges dictionary b into a.\nInspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries"
         # What path is currently being inspected.
         if path is None:
             path = []
 
-        # Take each of the keys in dictionary b.
+        # Take each of the keys in dictionary 'b'.
         for key in b:
-            # Does the same key exist in a?
+            # Does the same key exist in 'a'?
             if key in a:
                 # Are both dictionaries?
                 if isinstance(a[key], dict) and isinstance(b[key], dict):
                     # Merge the child dictionaries by invoking this recursively.
-                    json_schema.merge_dictionaries(a[key], b[key], path + [str(key)])
+                    json_schema.merge_dictionaries(a[key], b[key], path + [str(key)], mark_optional_at_depth)
                 # Are they otherwise the same values.
                 elif a[key] == b[key]:
-                    pass # Same values do not require copying.
-                # If a is a dictionary but b is a string then add the string to the dictionary as a description.
+                    # Same values do not require copying.
+                    pass
+                # If 'a' is a dictionary but 'b' is a string then add the string to the dictionary as a description.
                 elif isinstance(a[key], dict) and isinstance(b[key], str):
-                    # Set the description in the a dictionary to include the b string.
+                    # Set the description in the 'a' dictionary to include the 'b' string.
                     a[key]['description'] = b[key]
-                # If b is a dictionary but a is a string then add the string to the dictionary as a description.
+                # If 'b' is a dictionary but 'a' is a string then add the string to the dictionary as a description.
                 elif isinstance(b[key], dict) and isinstance(a[key], str):
-                    # Set the description in the b dictionary to include the a string.
+                    # Set the description in the 'b' dictionary to include the 'a' string.
                     b[key]['description'] = a[key]
 
-                    # Replace the a value with the recently updated b dictionary.
+                    # Replace the 'a' value with the recently updated 'b' dictionary.
                     a[key] = b[key]
                 # Do the types not otherwise match?
                 else:
                     # Error as data loss could occur.
                     raise ValueError('Conflict at ' + ('.'.join(path + [str(key)])))
-            # It doesn't, so just add it.
+            # It doesn't exist in 'a', so just add it.
             else:
+                # We can record where a value was optional.
+                if isinstance(b[key], dict) and len(path) == mark_optional_at_depth and 'type' in b[key]:
+                    b[key]['optional'] = True
+
                 a[key] = b[key]
+
+        # Do a sweeping check for keys that were in 'a' but not in 'b'.
+        if len(path) == mark_optional_at_depth:
+            # Take each of the keys in dictionary 'a'.
+            for key in a:
+                # Was this only in 'a' and not added as a result of a merge of 'b' (but a had a valid 'type' and was not just a description).
+                if key not in b and 'type' in a[key]:
+                    a[key]['optional'] = True
 
         return a
 
@@ -160,16 +127,13 @@ class json_schema:
             # Is this itself another object?
             if isinstance(json_value, dict):
                 # We can override some object names (and merge metadata).
-                child_table_name = json_schema.get_table_name(table_field_map=current_table_field_map, table_name=table_name, json_key=json_key)
+                child_table_name = json_schema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
 
                 # This could return multiple tables if there are nested types.
                 new_dict_schema = json_schema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=json_value)
 
-                # Add the schema of the nested tables to child_tables (flattening the hierarchy).
-                for child_table_key, child_table_value in new_dict_schema.items():
-                    # Usually child_table_key is unique due to JSON scope based table naming, however if this type has been merged there can be a clash and object definitions may differ.
-                    # ToDo: This does not update the "optional" field at present (could potentially be added to merge_dictionaries if required?).
-                    child_tables[child_table_key] = (json_schema.merge_dictionaries(child_tables[child_table_key], child_table_value) if child_table_key in child_tables else child_table_value)
+                # Merge this table list.
+                child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_dict_schema, mark_optional_at_depth=1)
 
                 # Add the type of this key.
                 current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '` object'}
@@ -179,10 +143,15 @@ class json_schema:
                 # Are there any values and is the first value an object?
                 if len(json_value) > 0 and isinstance(json_value[0], dict):
                     # We can override some object names (and merge metadata).
-                    child_table_name = json_schema.get_table_name(table_field_map=current_table_field_map, table_name=table_name, json_key=json_key)
+                    child_table_name = json_schema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
 
-                    # As this is a list each item could have different metadata.
-                    json_schema.process_list_items(tables=child_tables, table_field_map=table_field_map, table_name=child_table_name, json_value=json_value)
+                    # As this is a list each item could have different metadata; take each of the items in the list and combine all the keys and their metadata.
+                    for list_item in json_value:
+                        # This could return multiple tables if there are nested types.
+                        new_list_schema = json_schema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=list_item)
+
+                        # Merge this table list.
+                        child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1)
 
                     # Add the type of this key.
                     current_table_fields[json_key] = {'type':'Array(Object)', 'value':'Array of `' + child_table_name + '`'}
@@ -418,7 +387,7 @@ def get_table_section(table_name, table, type_map, short_booleans=False):
         result += get_table_row(field_name=field_name, field_metadata=field_metadata, type_map=type_map, short_booleans=short_booleans)
 
         # Was this a custom type?
-        if field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
+        if type(field_metadata) == dict and field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
             # We do not want to collect duplicates.
             if field_value_name not in used_custom_types:
                 # Mark that we need to ouput this custom type after this table.
@@ -538,10 +507,7 @@ def main():
                 endpoint_request = endpoint['request']
 
                 # Get a reference to the current endpoint's response details.
-                if 'response' in endpoint:
-                    endpoint_response = endpoint['response']
-                else:
-                    endpoint_response = {'field_map' : {}}
+                endpoint_response = endpoint['response'] if 'response' in endpoint else {'field_map' : {}}
 
                 # Take each of the examples to learn the schema.
                 if 'examples' in endpoint_request:
@@ -565,20 +531,20 @@ def main():
                             continue
 
                         # Get the response schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                        json_response_schema.update(json_schema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response']))
+                        json_response_schema = json_schema.merge_dictionaries(a=json_response_schema, b=json_schema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response']), mark_optional_at_depth=1)
 
                         # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
                         if 'data' in example_item:
                             # Extract the sample and use it as the request.
                             example_item['data'] = json.loads(example_item['data'])
-                            json_request_schema.update(json_schema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data']))
+                            json_request_schema = json_schema.merge_dictionaries(a=json_request_schema, b=json_schema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data']), mark_optional_at_depth=1)
 
                     # Merge the request field_map dictionary with any configured values.
                     if len(json_request_schema) > 0:
-                        endpoint_request['field_map'] = (json_schema.merge_dictionaries(json_request_schema, endpoint_request['field_map']) if 'field_map' in endpoint_request else json_request_schema)
+                        endpoint_request['field_map'] = (json_schema.merge_dictionaries(a=json_request_schema, b=endpoint_request['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_request else json_request_schema)
 
                     # Merge the response field_map dictionary with any configured values.
-                    endpoint_response['field_map'] = json_schema.merge_dictionaries(json_response_schema, endpoint_response['field_map'])
+                    endpoint_response['field_map'] = (json_schema.merge_dictionaries(a=json_response_schema, b=endpoint_response['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_response else json_response_schema)
 
                 # Get the request section but also any used and referenced custom types.
                 request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
@@ -620,6 +586,11 @@ def main():
 
                     # There can be multiple examples for the same endpoint.
                     for example_item in endpoint_request['examples']:
+                        # We cannot output an example without a response (either from querying the API earlier or hardcoding one).
+                        if not 'name' in example_item:
+                            print('Warning : Skipping example for \'' + key + '\' due to lack of example name.')
+                            continue
+
                         # We cannot output an example without a response (either from querying the API earlier or hardcoding one).
                         if not 'response' in example_item:
                             print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' due to lack of response.')
