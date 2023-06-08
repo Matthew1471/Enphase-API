@@ -92,7 +92,7 @@ class json_schema:
             # It doesn't exist in 'a', so just add it.
             else:
                 # We can record where a value was optional.
-                if isinstance(b[key], dict) and len(path) == mark_optional_at_depth and 'type' in b[key]:
+                if len(path) == mark_optional_at_depth and isinstance(b[key], dict) and 'type' in b[key]:
                     b[key]['optional'] = True
 
                 a[key] = b[key]
@@ -113,7 +113,7 @@ class json_schema:
         current_table_fields = {}
 
         # Store any discovered nested tables in this dictionary.
-        child_tables = {}
+        child_tables = None
 
         # A field_map contains all the table meta-data both static and dynamic. Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
         current_table_field_map = (table_field_map.get(table_name) if table_field_map else None)
@@ -133,7 +133,7 @@ class json_schema:
                 new_dict_schema = json_schema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=json_value)
 
                 # Merge this table list.
-                child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_dict_schema, mark_optional_at_depth=1)
+                child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_dict_schema, mark_optional_at_depth=1) if child_tables else new_dict_schema
 
                 # Add the type of this key.
                 current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '` object'}
@@ -151,7 +151,7 @@ class json_schema:
                         new_list_schema = json_schema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=list_item)
 
                         # Merge this table list.
-                        child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1)
+                        child_tables = json_schema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1) if child_tables else new_list_schema
 
                     # Add the type of this key.
                     current_table_fields[json_key] = {'type':'Array(Object)', 'value':'Array of `' + child_table_name + '`'}
@@ -169,7 +169,11 @@ class json_schema:
         # Prepend this parent table (all its fields have been explored for nested objects).
         tables = {}
         tables[table_name] = current_table_fields
-        tables.update(child_tables)
+
+        # Not all tables will have child tables.
+        if child_tables:
+            # Add any child tables to the list of tables.
+            tables.update(child_tables)
 
         return tables
 
@@ -254,7 +258,7 @@ def get_request_section(request_json, file_depth=0, type_map=None):
             result += table_section
 
         # Get the request data table.
-        if (field_map := request_json.get('field_map')) and len(field_map) > 0:
+        if (field_map := request_json.get('field_map')):
             # Ouput all the request content tables.
             result += '\n=== Request Content\n'
 
@@ -507,12 +511,13 @@ def main():
                 endpoint_request = endpoint['request']
 
                 # Get a reference to the current endpoint's response details.
-                endpoint_response = endpoint['response'] if 'response' in endpoint else {'field_map' : {}}
+                endpoint_response = endpoint['response'] if 'response' in endpoint else {}
 
                 # Take each of the examples to learn the schema.
                 if 'examples' in endpoint_request:
-                    json_request_schema = {}
-                    json_response_schema = {}
+                    json_request_schema = None
+                    json_response_schema = None
+
                     for example_item in endpoint_request['examples']:
                         # The user can supply the JSON to use instead of us directly querying for it.
                         if 'sample' in example_item:
@@ -530,21 +535,27 @@ def main():
                             print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
                             continue
 
+                        # Obtain the response schema for the current example_item.
+                        current_example_response_schema = json_schema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response'])
+
                         # Get the response schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                        json_response_schema = json_schema.merge_dictionaries(a=json_response_schema, b=json_schema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response']), mark_optional_at_depth=1)
+                        json_response_schema = json_schema.merge_dictionaries(a=json_response_schema, b=current_example_response_schema, mark_optional_at_depth=1) if json_response_schema else current_example_response_schema
 
                         # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
                         if 'data' in example_item:
                             # Extract the sample and use it as the request.
                             example_item['data'] = json.loads(example_item['data'])
-                            json_request_schema = json_schema.merge_dictionaries(a=json_request_schema, b=json_schema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data']), mark_optional_at_depth=1)
+
+                            current_example_request_schema = json_schema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data'])
+                            json_request_schema = json_schema.merge_dictionaries(a=json_request_schema, b=current_example_request_schema, mark_optional_at_depth=1) if json_request_schema else current_example_request_schema
 
                     # Merge the request field_map dictionary with any configured values.
-                    if len(json_request_schema) > 0:
-                        endpoint_request['field_map'] = (json_schema.merge_dictionaries(a=json_request_schema, b=endpoint_request['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_request else json_request_schema)
+                    if json_request_schema:
+                        endpoint_request['field_map'] = json_schema.merge_dictionaries(a=json_request_schema, b=endpoint_request['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_request else json_request_schema
 
                     # Merge the response field_map dictionary with any configured values.
-                    endpoint_response['field_map'] = (json_schema.merge_dictionaries(a=json_response_schema, b=endpoint_response['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_response else json_response_schema)
+                    if json_response_schema:
+                        endpoint_response['field_map'] = json_schema.merge_dictionaries(a=json_response_schema, b=endpoint_response['field_map'], mark_optional_at_depth=None) if 'field_map' in endpoint_response else json_response_schema
 
                 # Get the request section but also any used and referenced custom types.
                 request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
@@ -558,7 +569,7 @@ def main():
                 output += request_section
 
                 # Are there any results?
-                if len(endpoint_response['field_map']) > 0:
+                if 'field_map' in endpoint_response:
                     # Ouput all the response tables.
                     output += '\n== Response\n'
 
