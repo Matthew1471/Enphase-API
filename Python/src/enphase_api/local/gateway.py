@@ -84,9 +84,16 @@ class Gateway:
         # Check the response is positive.
         return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
 
-    def api_call(self, path):
+    def api_call(self, path, method='GET', json=None):
         # Call the Gateway API endpoint.
-        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS)
+        if method is None or method == 'GET':
+            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS)
+        elif method == 'PUT':
+            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
+        elif method == 'POST':
+            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
+        elif method == 'DELETE':
+            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
 
         # Has the session expired?
         if response.status_code == 401:
