@@ -39,9 +39,20 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 == Request
 
+
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get production data.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
-=== Request Querystring
+=== Querystring
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -189,11 +200,6 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Number
 |The total lagging Volt-Ampere reactive hours (varh) seen today. Only available with the `eim` device type.
 
-|`lines` (Optional)
-|Array(Object)
-|Array of `Lines`
-|Provides a further breakdown for each of the phases. Only available if the querystring `details` is set to true in the request and with the `eim` device type.
-
 |`whNow` (Optional)
 |Number
 |Number
@@ -203,6 +209,11 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |String
 |`ACBatteryState` (e.g. `charging`)
 |The state the AC Battery device is currently in. Only available with the `acb` device type. In the format `ACBatteryState`.
+
+|`lines` (Optional)
+|Array(Object)
+|Array of `Lines`
+|Provides a further breakdown for each of the phases. Only available if the querystring `details` is set to true in the request and with the `eim` device type.
 
 |===
 

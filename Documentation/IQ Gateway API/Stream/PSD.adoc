@@ -1,4 +1,4 @@
-= Stream - PSD
+= Stream - Power Spectral Density (PSD)
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

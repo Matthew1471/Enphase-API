@@ -39,7 +39,68 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`DELETE`
+|Cancel AC Battery Sleep Mode.
+
+|`GET`
+|Get AC Battery Sleep Mode Data.
+
+|`PUT`
+|Set AC Battery Sleep Mode Data.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Message Body
+
+==== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`acb_sleep`
+|Array(Object)
+|Array of `SleepData`
+|The sleep data for a list of specific AC Battery/Batteries (ACB).
+
+|===
+
+==== `SleepData` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_num`
+|Number
+|Number
+|The serial number of the AC Battery (ACB).
+
+|`sleep_min_soc`
+|Number
+|Number
+|The minimum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode.
+
+|`sleep_max_soc`
+|Number
+|Number
+|The maximum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode.
+
+|===
 
 == Response
 
@@ -52,10 +113,46 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Values
 |Description
 
-|`acb_sleep`
+|`acb_sleep` (Optional)
 |Array(Unknown)
 |Array of Unknown
-|???
+|The sleep data for each AC Battery (ACB).
+
+|`message` (Optional)
+|String
+|String
+|The error message.
+
+|`backtrace` (Optional)
+|String
+|String
+|The stack trace for the error.
+
+|===
+
+=== `SleepData` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_num` (Optional)
+|Unknown
+|Unknown
+|The serial number of the AC Battery (ACB).
+
+|`sleep_max_soc` (Optional)
+|Unknown
+|Unknown
+|The maximum State of Charge (SoC) the battery will charge or discharge to before entering sleep mode.
+
+|`sleep_min_soc` (Optional)
+|Unknown
+|Unknown
+|The minimum State of Charge (SoC) the battery will charge or discharge to before entering sleep mode.
 
 |===
 
@@ -67,4 +164,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 [source,json,subs="+quotes"]
 ----
 {"acb_sleep": []}
+----
+
+=== Set AC Battery Sleep Mode
+
+.PUT */admin/lib/acb_config.json* Request
+[source,json,subs="+quotes"]
+----
+{"acb_sleep": [{"serial_num": 12345, "sleep_min_soc": 0, "sleep_max_soc": 100}]}
 ----

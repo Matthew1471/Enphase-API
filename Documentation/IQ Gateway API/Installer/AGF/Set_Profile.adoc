@@ -41,9 +41,9 @@ More details on the project are available from the link:../../../../README.adoc[
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
-=== Request Content
+=== Message Body
 
-=== Root
+==== Root
 
 [cols="1,1,1,2", options="header"]
 |===

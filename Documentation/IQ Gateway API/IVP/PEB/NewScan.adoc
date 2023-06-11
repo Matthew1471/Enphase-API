@@ -39,6 +39,23 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`DELETE`
+|Stop a scan for new devices.
+
+|`GET`
+|Get scan details.
+
+|`PUT`
+|Start a scan for new devices.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
 == Response

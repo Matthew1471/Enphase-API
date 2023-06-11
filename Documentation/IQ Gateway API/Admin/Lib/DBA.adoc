@@ -39,4 +39,18 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get the Enphase(R) De-Bug Access (DBA) tunnel state.
+
+|`POST`
+|Set the Enphase(R) De-Bug Access (DBA) tunnel state.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
