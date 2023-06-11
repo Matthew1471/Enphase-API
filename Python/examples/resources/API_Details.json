@@ -1,7 +1,6 @@
 {
     "Admin - Lib - AC Battery (ACB) Configuration": {
         "description": {
-            "long": "Get, set or cancel an AC Battery’s (ACB) sleep mode.",
             "short": "Get, set or cancel an AC Battery’s (ACB) sleep mode."
         },
         "documentation": "Admin/Lib/ACB_Config.adoc",
@@ -11,46 +10,98 @@
                 {
                     "name": "Get AC Battery Sleep Data",
                     "sample": "{\"acb_sleep\": []}"
+                },
+                {
+                    "data": "{\"acb_sleep\": [{\"serial_num\":12345, \"sleep_min_soc\":0, \"sleep_max_soc\":100}]}",
+                    "method": "PUT",
+                    "name": "Set AC Battery Sleep Mode",
+                    "raw": null,
+                    "sample": "{\"message\": \"EXCEPTION: wrong number of arguments (0 for 1..2)\", \"backtrace\": \"[\\\"/opt/emu/httpd/rhtdocs/admin/lib/acb_config.rb:137:in `throw'\\\", \\\"/opt/emu/httpd/rhtdocs/admin/lib/acb_config.rb:137:in `put'\\\", \\\"/opt/emu/httpd/rhtdocs/envoy.rb:1027:in `generate_body'\\\", \\\"/opt/emu/httpd/rhtdocs/envoy.rb:1187:in `page'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:240:in `process_cgi_page'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:79:in `process'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:157:in `request_lifecycle'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:144:in `one_loop'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `block (2 levels) in listen'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `loop'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `block in listen'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:28:in `catch'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:28:in `listen'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:329:in `run'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:349:in `<main>'\\\"]\"}"
                 }
             ],
-            "methods": [
-                "GET",
-                "PUT",
-                "DELETE"
-            ],
+            "field_map": {
+                ".": {
+                    "acb_sleep": {
+                        "description": "The sleep data for a list of specific AC Battery/Batteries (ACB).",
+                        "value_name": "SleepData"
+                    }
+                },
+                "SleepData": {
+                    "serial_num": {
+                        "description": "The serial number of the AC Battery (ACB)."
+                    },
+                    "sleep_max_soc": {
+                        "description": "The maximum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode."
+                    },
+                    "sleep_min_soc": {
+                        "description": "The minimum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode."
+                    }
+                }
+            },
+            "methods": {
+                "DELETE": "Cancel AC Battery Sleep Mode.",
+                "GET": "Get AC Battery Sleep Mode Data.",
+                "PUT": "Set AC Battery Sleep Mode Data."
+            },
             "uri": "admin/lib/acb_config.json"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "acb_sleep": {
+                        "description": "The sleep data for each AC Battery (ACB).",
+                        "value_name": "SleepData"
+                    },
+                    "backtrace": "The stack trace for the error.",
+                    "message": "The error message."
+                },
+                "SleepData": {
+                    "serial_num": {
+                        "description": "The serial number of the AC Battery (ACB).",
+                        "optional": true
+                    },
+                    "sleep_max_soc": {
+                        "description": "The maximum State of Charge (SoC) the battery will charge or discharge to before entering sleep mode.",
+                        "optional": true
+                    },
+                    "sleep_min_soc": {
+                        "description": "The minimum State of Charge (SoC) the battery will charge or discharge to before entering sleep mode.",
+                        "optional": true
+                    }
+                }
+            }
         }
     },
     "Admin - Lib - Administer Device Conditions and Controls (DCC)": {
         "description": {
-            "long": "Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI)."
+            "short": "Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI)."
         },
         "documentation": "Admin/Lib/Admin_DCC_Display.adoc",
         "name": "Administer Device Conditions and Controls (DCC)",
         "request": {
-            "methods": [
-                "POST"
-            ],
+            "methods": {
+                "POST": "Send a DCC command."
+            },
             "uri": "admin/lib/admin_dcc_display.json"
         }
     },
     "Admin - Lib - Administer Power Meter Unit (PMU)": {
         "description": {
-            "long": "Add or read a Power Meter Unit (PMU)."
+            "short": "Add or read a Power Meter Unit (PMU)."
         },
         "documentation": "Admin/Lib/Admin_PMU_Display.adoc",
         "name": "Administer Power Meter Unit (PMU)",
         "request": {
-            "methods": [
-                "GET",
-                "POST"
-            ],
+            "methods": {
+                "GET": "Read a Power Meter Unit (PMU).",
+                "POST": "Add a Power Meter Unit (PMU)."
+            },
             "uri": "admin/lib/admin_pmu_display.json"
         }
     },
     "Admin - Lib - Date and Time Configuration": {
         "description": {
-            "long": "Get or set date, time and timezone."
+            "short": "Get or set date, time and timezone."
         },
         "documentation": "Admin/Lib/Date_Time_Display.adoc",
         "name": "Date and Time Configuration",
@@ -67,21 +118,21 @@
     },
     "Admin - Lib - De-Bug Access (DBA)": {
         "description": {
-            "long": "Get or set the Enphase(R) De-Bug Access (DBA) tunnel state."
+            "short": "Get or set the Enphase(R) De-Bug Access (DBA) tunnel state."
         },
         "documentation": "Admin/Lib/DBA.adoc",
         "name": "De-Bug Access (DBA)",
         "request": {
-            "methods": [
-                "GET",
-                "POST"
-            ],
+            "methods": {
+                "GET": "Get the Enphase(R) De-Bug Access (DBA) tunnel state.",
+                "POST": "Set the Enphase(R) De-Bug Access (DBA) tunnel state."
+            },
             "uri": "admin/lib/dba.json"
         }
     },
     "Admin - Lib - Network Configuration": {
         "description": {
-            "long": "Get/Set network information and/or perform network diagnostics."
+            "short": "Get/Set network information and/or perform network diagnostics."
         },
         "documentation": "Admin/Lib/Network_Display.adoc",
         "name": "Network Configuration",
@@ -102,7 +153,7 @@
     },
     "Admin - Lib - Security Configuration": {
         "description": {
-            "long": "Change password (legacy)."
+            "short": "Change password (legacy)."
         },
         "documentation": "Admin/Lib/Security_Display.adoc",
         "name": "Security Configuration",
@@ -112,7 +163,7 @@
     },
     "Admin - Lib - Tariff Configuration": {
         "description": {
-            "long": "Get or set the tariff settings."
+            "short": "Get or set the tariff settings."
         },
         "documentation": "Admin/Lib/Tariff.adoc",
         "name": "Tariff Configuration",
@@ -128,7 +179,7 @@
     },
     "Admin - Lib - Wireless Configuration": {
         "description": {
-            "long": "Get or set the wireless settings."
+            "short": "Get or set the wireless settings."
         },
         "documentation": "Admin/Lib/Wireless_Display.adoc",
         "name": "Wireless Configuration",
@@ -144,7 +195,7 @@
     },
     "Authentication - Check JSON Web Token (JWT)": {
         "description": {
-            "long": "Checks a JSON Web Token is valid to login to the system and creates a session."
+            "short": "Checks a JSON Web Token is valid to login to the system and creates a session."
         },
         "documentation": "Auth/Check_JWT.adoc",
         "name": "Check JSON Web Token (JWT)",
@@ -155,7 +206,7 @@
     },
     "Data Tables - Administer Device Conditions and Controls (DCC) DataTable": {
         "description": {
-            "long": "Used by the JavaScript datatable to return Device Conditions and Controls (DCC) records."
+            "short": "Used by the JavaScript datatable to return Device Conditions and Controls (DCC) records."
         },
         "documentation": "Datatab/Admin_DCC_Display_DT.adoc",
         "name": "Administer Device Conditions and Controls (DCC) DataTable",
@@ -171,7 +222,7 @@
     },
     "Data Tables - Events DataTable": {
         "description": {
-            "long": "Used by the JavaScript datatable to return event log records."
+            "short": "Used by the JavaScript datatable to return event log records."
         },
         "documentation": "Datatab/Event_DT.adoc",
         "name": "Events DataTable",
@@ -187,7 +238,7 @@
     },
     "Data Tables - Inventory DataTable": {
         "description": {
-            "long": "Used by the JavaScript datatable to return inventory records."
+            "short": "Used by the JavaScript datatable to return inventory records."
         },
         "documentation": "Datatab/Inventory_DT.adoc",
         "name": "Inventory DataTable",
@@ -203,7 +254,7 @@
     },
     "General - Home": {
         "description": {
-            "long": "Obtain a summary of the gateway status."
+            "short": "Obtain a summary of the gateway status."
         },
         "documentation": "General/Home.adoc",
         "name": "Home",
@@ -257,9 +308,9 @@
                     "uri": "details=1"
                 }
             ],
-            "methods": [
-                "GET"
-            ],
+            "methods": {
+                "GET": "Get production data."
+            },
             "query": {
                 "details": {
                     "description": "Specifies more detailed data should be provided. Currently this gives a further breakdown on each of the individual AC phases.",
@@ -649,6 +700,11 @@
         "documentation": "IVP/Ensemble/Inventory.adoc",
         "name": "Inventory",
         "request": {
+            "examples": [
+                {
+                    "sample": "[\n    {\n        \"type\": \"ENCHARGE\",\n        \"devices\": [\n            {\n                \"part_num\": \"830-00703-r67\",\n                \"installed\": 1621354342,\n                \"serial_num\": \"xxx\",\n                \"device_status\": [\n                    \"envoy.global.ok\",\n                    \"prop.done\"\n                ],\n                \"last_rpt_date\": 1621464675,\n                \"admin_state\": 6,\n                \"admin_state_str\": \"ENCHG_STATE_READY\",\n                \"created_date\": 1621354342,\n                \"img_load_date\": 1621354342,\n                \"img_pnum_running\": \"1.2.2883_release/20.34\",\n                \"zigbee_dongle_fw_version\": \"0x1009\",\n                \"operating\": true,\n                \"communicating\": true,\n                \"sleep_enabled\": false,\n                \"percentFull\": 98,\n                \"temperature\": 25,\n                \"maxCellTemp\": 26,\n                \"comm_level_sub_ghz\": 5,\n                \"comm_level_2_4_ghz\": 5,\n                \"led_status\": 13,\n                \"real_power_w\": 216,\n                \"dc_switch_off\": false,\n                \"encharge_rev\": 1,\n                \"encharge_capacity\": 3300\n            },\n            {\n                \"part_num\": \"830-00703-r67\",\n                \"installed\": 1621354473,\n                \"serial_num\": \"xxx\",\n                \"device_status\": [\n                    \"envoy.global.ok\",\n                    \"prop.done\"\n                ],\n                \"last_rpt_date\": 1621464696,\n                \"admin_state\": 6,\n                \"admin_state_str\": \"ENCHG_STATE_READY\",\n                \"created_date\": 1621354473,\n                \"img_load_date\": 1621354473,\n                \"img_pnum_running\": \"1.2.2883_release/20.34\",\n                \"zigbee_dongle_fw_version\": \"0x1009\",\n                \"operating\": true,\n                \"communicating\": true,\n                \"sleep_enabled\": false,\n                \"percentFull\": 97,\n                \"temperature\": 25,\n                \"maxCellTemp\": 26,\n                \"comm_level_sub_ghz\": 5,\n                \"comm_level_2_4_ghz\": 5,\n                \"led_status\": 13,\n                \"real_power_w\": 317,\n                \"dc_switch_off\": false,\n                \"encharge_rev\": 1,\n                \"encharge_capacity\": 3300\n            },\n            {\n                \"part_num\": \"830-00703-r67\",\n                \"installed\": 1621354587,\n                \"serial_num\": \"xxx\",\n                \"device_status\": [\n                    \"envoy.global.ok\",\n                    \"prop.done\"\n                ],\n                \"last_rpt_date\": 1621464802,\n                \"admin_state\": 6,\n                \"admin_state_str\": \"ENCHG_STATE_READY\",\n                \"created_date\": 1621354587,\n                \"img_load_date\": 1621354587,\n                \"img_pnum_running\": \"1.2.2883_release/20.34\",\n                \"zigbee_dongle_fw_version\": \"0x1009\",\n                \"operating\": true,\n                \"communicating\": true,\n                \"sleep_enabled\": false,\n                \"percentFull\": 97,\n                \"temperature\": 25,\n                \"maxCellTemp\": 25,\n                \"comm_level_sub_ghz\": 5,\n                \"comm_level_2_4_ghz\": 5,\n                \"led_status\": 13,\n                \"real_power_w\": -516,\n                \"dc_switch_off\": false,\n                \"encharge_rev\": 1,\n                \"encharge_capacity\": 3300\n            }\n        ]\n    },\n    {\n        \"type\": \"ENPOWER\",\n        \"devices\": [\n            {\n                \"part_num\": \"860-00276-r28\",\n                \"installed\": 1621354111,\n                \"serial_num\": \"xxx\",\n                \"device_status\": [\n                    \"envoy.global.ok\",\n                    \"prop.done\"\n                ],\n                \"last_rpt_date\": 1621464851,\n                \"admin_state\": 24,\n                \"admin_state_str\": \"ENPWR_STATE_OPER_CLOSED\",\n                \"created_date\": 1621354111,\n                \"img_load_date\": 1621354111,\n                \"img_pnum_running\": \"1.2.2064_release/20.34\",\n                \"zigbee_dongle_fw_version\": \"0x1009\",\n                \"operating\": true,\n                \"communicating\": true,\n                \"temperature\": 79,\n                \"comm_level_sub_ghz\": 5,\n                \"comm_level_2_4_ghz\": 5,\n                \"mains_admin_state\": \"closed\",\n                \"mains_oper_state\": \"closed\",\n                \"Enpwr_grid_mode\": \"multimode-ongrid\",\n                \"Enchg_grid_mode\": \"multimode-ongrid\",\n                \"Enpwr_relay_state_bm\": 496,\n                \"Enpwr_curr_state_id\": 16\n            }\n        ]\n    },\n    {\n        \"grid_profile_name\": \"IEEE 1547 default 2015\",\n        \"id\": \"91937832-159a-410a-9594-0a964372e096:0\",\n        \"grid_profile_version\": \"1.0.11\",\n        \"item_count\": 2997\n    }\n]"
+                }
+            ],
             "uri": "ivp/ensemble/inventory"
         }
     },
@@ -719,6 +775,18 @@
         "documentation": "IVP/FirmwareManager/Update_All.adoc",
         "name": "Update All",
         "request": {
+            "examples": [
+                {
+                    "data": "{\n\"force\":\"true\",\n\"broadcast\":\"false\",\n\"dont_retry_failed_files\":\"false\",\n\"overwrite_off_grid\":\"true\",\n\"overwrite_low_soc\":\"true\"\n}",
+                    "name": "Firmware Update (Forced)",
+                    "sample": "{\n\"Status\":\"Update firmware requested for all devices with overwrite.\",\n\"Command\":\"Unicast\",\n\"Offgrid-Check\":\"Ignoring off-grid checks for update to continue even if off-grid\",\n\"SOC-check\":\"Ignoring low SOC checks for BMU/PCU images\",\n\"commission_only\":\"false\"\n}"
+                },
+                {
+                    "data": "{\n\"force\":\"false\"\n}",
+                    "name": "Firmware Update (Not Forced)",
+                    "sample": "{\n\"Status\":\"Update firmware requested for all devices without overwrite.\",\n\"Command\":\"Unicast\",\n\"Offgrid-Check\":\"Off-grid checks enabled for update - update will abort if ever off-grid\",\n\"SOC-check\":\"Low SOC checks enabled for BMU/PCU images\",\n\"commission_only\":\"false\"\n}"
+                }
+            ],
             "uri": "ivp/firmware_manager/update_all"
         }
     },
@@ -761,6 +829,12 @@
         "documentation": "IVP/LiveData/Status.adoc",
         "name": "Status",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Live Data Status",
+                    "sample": "{\n    \"connection\": {\n        \"mqtt_state\": \"connected\",\n        \"prov_state\": \"configured\",\n        \"auth_state\": \"ok\",\n        \"sc_stream\": \"enabled\",\n        \"sc_debug\": \"disabled\"\n    },\n    \"meters\": {\n        \"last_update\": 1686081089,\n        \"soc\": 0,\n        \"main_relay_state\": 1,\n        \"gen_relay_state\": 5,\n        \"backup_bat_mode\": 1,\n        \"backup_soc\": 0,\n        \"pv\": {\n            \"agg_p_mw\": 29212,\n            \"agg_s_mva\": 248309\n        },\n        \"storage\": {\n            \"agg_p_mw\": 0,\n            \"agg_s_mva\": 0\n        },\n        \"grid\": {\n            \"agg_p_mw\": 340582,\n            \"agg_s_mva\": 934790\n        },\n        \"load\": {\n            \"agg_p_mw\": 369794,\n            \"agg_s_mva\": 1183099\n        },\n        \"generator\": {\n            \"agg_p_mw\": 0,\n            \"agg_s_mva\": 0\n        }\n    },\n    \"tasks\": {\n        \"task_id\": 1813978567,\n        \"timestamp\": 1685743309\n    },\n    \"counters\": {\n        \"main_CfgLoad\": 1,\n        \"main_CfgChanged\": 1,\n        \"main_taskUpdate\": 9,\n        \"MqttClient_publish\": 280675,\n        \"MqttClient_live_debug\": 653,\n        \"MqttClient_respond\": 805,\n        \"MqttClient_msgarrvd\": 822,\n        \"MqttClient_create\": 117899,\n        \"MqttClient_setCallbacks\": 117899,\n        \"MqttClient_connect\": 117899,\n        \"MqttClient_connect_err\": 115608,\n        \"MqttClient_connect_Err\": 115608,\n        \"MqttClient_subscribe\": 2291,\n        \"SSL_Keys_Create\": 117899,\n        \"sc_hdlDataPub\": 282509,\n        \"sc_SendStreamCtrl\": 1050,\n        \"rest_Status\": 71872\n    }\n}"
+                }
+            ],
             "uri": "ivp/livedata/status"
         }
     },
@@ -768,6 +842,20 @@
         "documentation": "IVP/LiveData/Stream.adoc",
         "name": "Stream",
         "request": {
+            "examples": [
+                {
+                    "data": "{\"enable\": 1}",
+                    "method": "POST",
+                    "name": "Enable Live Data Stream",
+                    "sample": "{\"sc_stream\": \"enabled\"}"
+                },
+                {
+                    "data": "{\"enable\": 1, \"mains_admin_state\": 1}",
+                    "method": "POST",
+                    "name": "Optional Extra Data?",
+                    "sample": "{\"sc_stream\": \"enabled\"}"
+                }
+            ],
             "uri": "ivp/livedata/stream"
         }
     },
@@ -867,11 +955,11 @@
                     "sample": "{\"newDeviceScan\" : { \"active\" : false, \"is-suspended\" : false, \"controlled\" : false, \"scan-is-done\" : false, \"in-exclusive-mode\" : false, \"duration-in-minutes\" : 0, \"remaining-minutes\" : 0, \"exclusive-minutes\" : 0, \"rem-minutes-exclusive\" : 0, \"inhibit-device-scan\" : false, \"rqst-opportunity-modulus\" : 0, \"curr-opportunity-modulus\" : 0, \"devices-to-be-discovered\" : 10, \"tot-devices-discovered\" : 10, \"curr-devices-discovered\" : 10, \"avg-rate-of-new-devices-discovered-per-min\" : 10, \"avg-num-of-new-devices-discovered-per-poll\" : 10, \"pcu\": {\"expected\": 10, \"discovered\": 10, \"this-scan\": 10, \"per-min\": 10, \"per-poll\": 10}, \"acb\": {\"expected\": 0, \"discovered\": 0, \"this-scan\": 0, \"per-min\": 0, \"per-poll\": 0}, \"nsrb\": {\"expected\": 0, \"discovered\": 0, \"this-scan\": 0, \"per-min\": 0, \"per-poll\": 0}, \"esub\": {\"expected\": 0, \"discovered\": 0, \"this-scan\": 0, \"per-min\": 0, \"per-poll\": 0}, \"pld\": {\"expected\": 10, \"discovered\": 10, \"this-scan\": 10, \"per-min\": 10, \"per-poll\": 10}, \"mins-until-next-cycle\" : 5, \"xdom-disabled-scan\" : false, \"polling-period-secs\" : 900, \"polling-is-off\" : false,\"forget-all-scan\" : false}}"
                 }
             ],
-            "methods": [
-                "GET",
-                "PUT",
-                "DELETE"
-            ],
+            "methods": {
+                "DELETE": "Stop a scan for new devices.",
+                "GET": "Get scan details.",
+                "PUT": "Start a scan for new devices."
+            },
             "uri": "ivp/peb/newscan"
         },
         "response": {
@@ -1104,9 +1192,9 @@
                     "sample": "{\"production\":{\"ph-a\":{\"p\":-0.0,\"q\":176.936,\"s\":183.259,\"v\":239.054,\"i\":0.766,\"pf\":0.0,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}},\"net-consumption\":{\"ph-a\":{\"p\":430.686,\"q\":-711.485,\"s\":895.449,\"v\":239.2,\"i\":3.742,\"pf\":0.49,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}},\"total-consumption\":{\"ph-a\":{\"p\":430.686,\"q\":-888.422,\"s\":1078.128,\"v\":239.127,\"i\":4.509,\"pf\":0.4,\"f\":49.94},\"ph-b\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0},\"ph-c\":{\"p\":0.0,\"q\":0.0,\"s\":0.0,\"v\":0.0,\"i\":0.0,\"pf\":0.0,\"f\":0.0}}}"
                 }
             ],
-            "methods": [
-                "GET"
-            ],
+            "methods": {
+                "GET": "Get meter data."
+            },
             "uri": "stream/meter"
         },
         "response": {
@@ -1151,16 +1239,16 @@
             }
         }
     },
-    "Stream - PSD": {
+    "Stream - Power Spectral Density (PSD)": {
         "documentation": "Stream/PSD.adoc",
-        "name": "PSD",
+        "name": "Power Spectral Density (PSD)",
+        "notes": "Idle data is returned if no extra data is provided in the body of the request two types of server-sent events are sent: 1. \"config\" event type: the data is JSON, e.g. {\"plc\": {\"f\": 103, \"bw\": 20}} where f is PLC frequency and bw is PLC bandwidth, both in kHz. 2. \"message\" (default) event type: the data is semicolon delimited pairs of (t,v) where t is in microseconds and v is in arbitrary units.",
         "request": {
             "uri": "stream/psd"
         }
     },
     "Version 1 API (Legacy) - Inverter(s) Production (Version 1 API)": {
         "description": {
-            "long": "Obtain the legacy micro-inverter energy production information.",
             "short": "Obtain the legacy micro-inverter energy production information."
         },
         "documentation": "V1/Production/Inverters.adoc",
