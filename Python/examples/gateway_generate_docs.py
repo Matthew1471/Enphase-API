@@ -587,8 +587,8 @@ def process_single_endpoint(gateway, key, endpoint):
 
         # Are there any examples?
         if 'examples' in endpoint_request:
-            json_request_schema = None
-            json_response_schema = None
+            previous_request_schema = None
+            previous_response_schema = None
 
             # Take each of the examples to learn the schema.
             for example_item in endpoint_request['examples']:
@@ -614,12 +614,12 @@ def process_single_endpoint(gateway, key, endpoint):
                 current_example_response_schema = JSONSchema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response'])
 
                 # Have we already obtained a response schema from a previous example?
-                if json_response_schema:
-                    # Merge the current_example_response_schema into the json_response_schema.
-                    json_response_schema = JSONSchema.merge_dictionaries(dictionary_a=json_response_schema, dictionary_b=current_example_response_schema, mark_optional_at_depth=1)
+                if previous_response_schema:
+                    # Merge the current_example_response_schema into the previous_response_schema.
+                    previous_response_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_response_schema, dictionary_b=current_example_response_schema, mark_optional_at_depth=1)
                 else:
-                    # Just take the current_example_response_schema as the json_response_schema.
-                    json_response_schema = current_example_response_schema
+                    # Just take the current_example_response_schema as the previous_response_schema.
+                    previous_response_schema = current_example_response_schema
 
                 # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
                 if 'data' in example_item:
@@ -631,28 +631,28 @@ def process_single_endpoint(gateway, key, endpoint):
                     current_example_request_schema = JSONSchema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data'])
 
                     # Have we already obtained a request schema from a previous example?
-                    if json_request_schema:
-                        # Merge the current_example_request_schema inot the json_request_schema.
-                        json_request_schema = JSONSchema.merge_dictionaries(dictionary_a=json_request_schema, dictionary_b=current_example_request_schema, mark_optional_at_depth=1)
+                    if previous_request_schema:
+                        # Merge the current_example_request_schema in to the previous_request_schema.
+                        previous_request_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_request_schema, dictionary_b=current_example_request_schema, mark_optional_at_depth=1)
                     else:
-                        # Just take the current_example_request_schema as the json_request_schema.
-                        json_request_schema = current_example_request_schema
+                        # Just take the current_example_request_schema as the previous_request_schema.
+                        previous_request_schema = current_example_request_schema
 
             # Is there a request schema to process?
-            if json_request_schema:
+            if previous_request_schema:
                 # Merge the request field_map dictionary with any configured values.
                 if 'field_map' in endpoint_request:
-                    json_request_schema = JSONSchema.merge_dictionaries(dictionary_a=json_request_schema, dictionary_b=endpoint_request['field_map'], mark_optional_at_depth=None)
+                    previous_request_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_request_schema, dictionary_b=endpoint_request['field_map'], mark_optional_at_depth=None)
 
-                endpoint_request['field_map'] = json_request_schema
+                endpoint_request['field_map'] = previous_request_schema
 
             # Is there a response schema to process?
-            if json_response_schema:
+            if previous_response_schema:
                 # Merge the response field_map dictionary with any configured values.
                 if 'field_map' in endpoint_response:
-                    json_response_schema = JSONSchema.merge_dictionaries(dictionary_a=json_response_schema, dictionary_b=endpoint_response['field_map'], mark_optional_at_depth=None)
+                    previous_response_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_response_schema, dictionary_b=endpoint_response['field_map'], mark_optional_at_depth=None)
 
-                endpoint_response['field_map'] = json_response_schema
+                endpoint_response['field_map'] = previous_response_schema
 
         # Get the request section but also any used and referenced custom types.
         request_section, table_used_custom_types = get_request_section(endpoint_request, file_depth=file_depth-1, type_map=type_map)
