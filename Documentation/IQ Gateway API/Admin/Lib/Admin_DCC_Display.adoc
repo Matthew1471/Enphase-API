@@ -31,6 +31,8 @@ endif::[]
 
 Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
 
+This function is not available to European gateways (`EU`) and will only be available to North-American Gateway devices (`NA` or `NA_COM`).
+
 == Introduction
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
@@ -39,6 +41,7 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+The `/admin/lib/admin_dcc_display.json` endpoint supports the following:
 
 === Methods
 [cols="1,2", options="header"]
@@ -51,3 +54,41 @@ More details on the project are available from the link:../../../../README.adoc[
 
 |===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`message`
+|String
+|String
+|The status the Gateway wishes to return.
+
+|`reason`
+|String
+|String
+|The reason the request failed.
+
+|===
+
+== Examples
+
+=== Clear A Ground Fault Interrupt (GFI)
+
+.POST */admin/lib/admin_dcc_display.json* Request
+[source,http]
+----
+fname=gfi&doset=1&chaneid=1111
+----
+.POST */admin/lib/admin_dcc_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"message": "Bad Request", "reason": "'gfi' not supported for non-NA Envoys"}
+----

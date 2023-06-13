@@ -39,6 +39,8 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/admin/lib/date_time_display.json` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
 == Response
@@ -54,12 +56,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`timezones`
 |Array(Object)
-|Array of `Timezones`
-|???
+|Array of `Timezone`
+|An array of all available timezones.
 
 |===
 
-=== `Timezones` Object
+=== `Timezone` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -71,12 +73,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`key`
 |String
 |String
-|???
+|The unique key of a specific timezone.
 
 |`value`
 |String
 |String
-|???
+|The display name for the timezone.
 
 |===
 

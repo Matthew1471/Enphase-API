@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Get Energy System (formerly "Ensemble") inventory.
 
 == Introduction
 
@@ -39,4 +39,240 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/ivp/ensemble/inventory` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`type` (Optional)
+|String
+|`DeviceType` (e.g. `ENCHARGE`)
+|The type of products this is a list for (this will exclude any AC Battery). In the format `DeviceType`.
+
+|`devices` (Optional)
+|Array(Object)
+|Array of `Devices`
+|The list of devices for this DeviceType category.
+
+|`grid_profile_name` (Optional)
+|String
+|String
+|The grid profile name for the whole energy system.
+
+|`id` (Optional)
+|String
+|String
+|The ID number for the grid profile.
+
+|`grid_profile_version` (Optional)
+|String
+|String
+|The version number of the grid profile.
+
+|`item_count` (Optional)
+|Number
+|Number
+|How many grid profiles are available.
+
+|===
+
+=== `Devices` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`part_num`
+|String
+|String
+|The Enphase(R) part number for this product.
+
+|`installed`
+|Number
+|Number
+|The unix epoch timestamp this device was installed.
+
+|`serial_num`
+|String
+|String
+|The serial number of this product.
+
+|`device_status`
+|Array(Unknown)
+|Array of Unknown
+|An array of states the device is currently in.
+
+|`last_rpt_date`
+|Number
+|Number
+|The unix epoch timestamp of when this device last reported to this Gateway.
+
+|`admin_state`
+|Number
+|Number
+|The numerical administrative state this device is in.
+
+|`admin_state_str`
+|String
+|String
+|The string representation of the administrative state this device is in.
+
+|`created_date`
+|Number
+|Number
+|The date this product was created.
+
+|`img_load_date`
+|Number
+|Number
+|The date the firmware image was loaded onto this device.
+
+|`img_pnum_running`
+|String
+|String
+|The software product number this is running.
+
+|`zigbee_dongle_fw_version`
+|String
+|String
+|The firmware version information for the Zigbee dongle this device has installed.
+
+|`operating`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether or not the product is operating.
+
+|`communicating`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether or not this product is currently communicating with the Gateway.
+
+|`sleep_enabled` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the device is currently in sleep mode.
+
+|`percentFull` (Optional)
+|Number
+|Number
+|How full in percent this device is charged.
+
+|`temperature`
+|Number
+|Number
+|The temperature of the overall device.
+
+|`maxCellTemp` (Optional)
+|Number
+|Number
+|The maximum cell temperature of the cells within this battery.
+
+|`comm_level_sub_ghz`
+|Number
+|Number
+|The sub-GHz (Zigbee is 915Mhz in the Americas and 868Mhz in Europe) signal level.
+
+|`comm_level_2_4_ghz`
+|Number
+|Number
+|The 2.4 GHz WiFi signal level.
+
+|`led_status` (Optional)
+|Number
+|Number
+|The status of the LEDs.
+
+|`real_power_w` (Optional)
+|Number
+|Number
+|The current power charging/discharging (in Watts).
+
+|`dc_switch_off` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the Direct Current (DC) switch is off.
+
+|`encharge_rev` (Optional)
+|Number
+|Number
+|The revision of the IQ Battery (formerly "Encharge Storage").
+
+|`encharge_capacity` (Optional)
+|Number
+|Number
+|The capacity of the IQ Battery (formerly "Encharge Storage").
+
+|`mains_admin_state` (Optional)
+|String
+|String
+|The administrative state of the mains relay.
+
+|`mains_oper_state` (Optional)
+|String
+|String
+|The operational state of the mains relay.
+
+|`Enpwr_grid_mode` (Optional)
+|String
+|String
+|The status of the grid on the IQ System Controller (formerly "Enpower").
+
+|`Enchg_grid_mode` (Optional)
+|String
+|String
+|The status of the microinverter on the IQ Battery (formerly "Encharge Storage").
+
+|`Enpwr_relay_state_bm` (Optional)
+|Number
+|Number
+|The IQ System Controller (formerly "Enpower") relay state `bm` value.
+
+|`Enpwr_curr_state_id` (Optional)
+|Number
+|Number
+|The IQ System Controller (formerly "Enpower") current state `id` value.
+
+|===
+
+== Types
+
+=== `DeviceType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`ENCHARGE`
+|IQ Battery
+|IQ Battery (formerly "Encharge Storage").
+
+|`ENPOWER`
+|IQ System Controller
+|IQ System Controller (formerly "Enpower").
+
+|===
+
+== Examples
+
+=== Get Energy System Inventory
+
+.GET */ivp/ensemble/inventory* Response
+[source,json,subs="+quotes"]
+----
+[{"type": "ENCHARGE", "devices": [{"part_num": "830-00703-r67", "installed": 1621354342, "serial_num": "xxx", "device_status": ["envoy.global.ok", "prop.done"], "last_rpt_date": 1621464675, "admin_state": 6, "admin_state_str": "ENCHG_STATE_READY", "created_date": 1621354342, "img_load_date": 1621354342, "img_pnum_running": "1.2.2883_release/20.34", "zigbee_dongle_fw_version": "0x1009", "operating": true, "communicating": true, "sleep_enabled": false, "percentFull": 98, "temperature": 25, "maxCellTemp": 26, "comm_level_sub_ghz": 5, "comm_level_2_4_ghz": 5, "led_status": 13, "real_power_w": 216, "dc_switch_off": false, "encharge_rev": 1, "encharge_capacity": 3300}, {"part_num": "830-00703-r67", "installed": 1621354473, "serial_num": "xxx", "device_status": ["envoy.global.ok", "prop.done"], "last_rpt_date": 1621464696, "admin_state": 6, "admin_state_str": "ENCHG_STATE_READY", "created_date": 1621354473, "img_load_date": 1621354473, "img_pnum_running": "1.2.2883_release/20.34", "zigbee_dongle_fw_version": "0x1009", "operating": true, "communicating": true, "sleep_enabled": false, "percentFull": 97, "temperature": 25, "maxCellTemp": 26, "comm_level_sub_ghz": 5, "comm_level_2_4_ghz": 5, "led_status": 13, "real_power_w": 317, "dc_switch_off": false, "encharge_rev": 1, "encharge_capacity": 3300}, {"part_num": "830-00703-r67", "installed": 1621354587, "serial_num": "xxx", "device_status": ["envoy.global.ok", "prop.done"], "last_rpt_date": 1621464802, "admin_state": 6, "admin_state_str": "ENCHG_STATE_READY", "created_date": 1621354587, "img_load_date": 1621354587, "img_pnum_running": "1.2.2883_release/20.34", "zigbee_dongle_fw_version": "0x1009", "operating": true, "communicating": true, "sleep_enabled": false, "percentFull": 97, "temperature": 25, "maxCellTemp": 25, "comm_level_sub_ghz": 5, "comm_level_2_4_ghz": 5, "led_status": 13, "real_power_w": -516, "dc_switch_off": false, "encharge_rev": 1, "encharge_capacity": 3300}]}, {"type": "ENPOWER", "devices": [{"part_num": "860-00276-r28", "installed": 1621354111, "serial_num": "xxx", "device_status": ["envoy.global.ok", "prop.done"], "last_rpt_date": 1621464851, "admin_state": 24, "admin_state_str": "ENPWR_STATE_OPER_CLOSED", "created_date": 1621354111, "img_load_date": 1621354111, "img_pnum_running": "1.2.2064_release/20.34", "zigbee_dongle_fw_version": "0x1009", "operating": true, "communicating": true, "temperature": 79, "comm_level_sub_ghz": 5, "comm_level_2_4_ghz": 5, "mains_admin_state": "closed", "mains_oper_state": "closed", "Enpwr_grid_mode": "multimode-ongrid", "Enchg_grid_mode": "multimode-ongrid", "Enpwr_relay_state_bm": 496, "Enpwr_curr_state_id": 16}]}, {"grid_profile_name": "IEEE 1547 default 2015", "id": "91937832-159a-410a-9594-0a964372e096:0", "grid_profile_version": "1.0.11", "item_count": 2997}]
+----
