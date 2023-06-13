@@ -18,7 +18,12 @@
 
 """
 Generates the Enphase-API documentation in AsciiDoc.
-This module takes each of the endpoints in the document, attempts to call any undocumented endpoints and determine its schema, then writes the documentation to disk.
+
+This module takes:
+- Each endpoint in the metadata document.
+- Attempts to call any undocumented endpoints.
+- Determines their schema.
+- Writes the documentation of the endpoint to disk.
 """
 
 import json     # This script makes heavy use of JSON parsing.
@@ -60,55 +65,78 @@ class JSONSchema:
     @staticmethod
     def get_table_name(table_field_map, original_table_name, json_key):
         """
-        This static method takes a table_field_map, what the table name was called originally and the current key and returns either the overriden table name,
-        or it generates one making use of the original_table_name and the key. Making use of the original_table_name ensures the scope is preserved.
+        This static method takes:
+
+        - A table_field_map.
+        - What the table name was called originally.
+        - The current key.
+
+        and returns either:
+
+        - The overriden table name as per the table_field_map.
+        or 
+        - It generates a table name making use of the original_table_name and the key.
+
+        Making use of the original_table_name ensures the scope is preserved.
         """
         # We can override some object names (and merge metadata).
         if table_field_map and (key_metadata := table_field_map.get(json_key)) and (value_name := key_metadata.get('value_name')):
             # This name has been overridden.
-            table_name = value_name
-        else:
-            # Get a sensible default name for this table (that preserves its JSON scope).
-            table_name = (original_table_name + '.' if original_table_name and original_table_name != '.' else '') + str(json_key).capitalize()
+            return value_name
 
-        return table_name
+        # Otherwise, is this not the root table?
+        if original_table_name and original_table_name != '.':
+            # Get a sensible default name for this table (that preserves its JSON scope).
+            return original_table_name + '.' + str(json_key).capitalize()
+        else:
+            # Return just the capitalised JSON key.
+            return str(json_key).capitalize()
 
     @staticmethod
-    def merge_dictionaries(dictionary_a, dictionary_b, path=None, mark_optional_at_depth=None):
+    # pylint: disable=unidiomatic-typecheck
+    # pylint: disable-next=invalid-name
+    def merge_dictionaries(a, b, path=None, mark_optional_at_depth=None):
         """
-        Recursively merges dictionary_b into dictionary_a and then returns dictionary_a.
-        If mark_optional_at_depth is set then any additions result in a "optional" key being set at that path.
-        If at a current path one side is a dictionary but the other is a string then the string is merged into the dictionary as a description.
+        Recursively merges 'b' into 'a' and then returns 'a'.
+
+        If mark_optional_at_depth is set then any additions,
+        result in a "optional" key being set at that path.
+
+        If at a current path one side is a dictionary but the other is a string,
+        then the string is merged into the dictionary as a description.
+
         If it is unsafe to merge a path it will return an error.
-        Inspired by https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
+
+        Inspired by:
+        https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
         """
         # What path is currently being inspected.
         if path is None:
             path = []
 
         # Take each of the keys in dictionary 'b'.
-        for key in dictionary_b:
+        for key in b:
             # Does the same key exist in 'a'?
-            if key in dictionary_a:
+            if key in a:
                 # Are both dictionaries?
-                if isinstance(dictionary_a[key], dict) and isinstance(dictionary_b[key], dict):
+                if type(a[key]) is dict and type(b[key]) is dict:
                     # Merge the child dictionaries by invoking this recursively.
-                    JSONSchema.merge_dictionaries(dictionary_a[key], dictionary_b[key], path + [str(key)], mark_optional_at_depth)
+                    JSONSchema.merge_dictionaries(a[key], b[key], path + [str(key)], mark_optional_at_depth)
                 # Are they otherwise the same values.
-                elif dictionary_a[key] == dictionary_b[key]:
+                elif a[key] == b[key]:
                     # Same values do not require copying.
                     pass
-                # If 'a' is a dictionary but 'b' is a string then add the string to the dictionary as a description.
-                elif isinstance(dictionary_a[key], dict) and isinstance(dictionary_b[key], str):
+                # If 'a' is a dictionary but 'b' is a string.
+                elif type(a[key]) is dict and type(b[key]) is str:
                     # Set the description in the 'a' dictionary to include the 'b' string.
-                    dictionary_a[key]['description'] = dictionary_b[key]
-                # If 'b' is a dictionary but 'a' is a string then add the string to the dictionary as a description.
-                elif isinstance(dictionary_b[key], dict) and isinstance(dictionary_a[key], str):
+                    a[key]['description'] = b[key]
+                # If 'b' is a dictionary but 'a' is a string.
+                elif type(b[key]) is dict and type(a[key]) is str:
                     # Set the description in the 'b' dictionary to include the 'a' string.
-                    dictionary_b[key]['description'] = dictionary_a[key]
+                    b[key]['description'] = a[key]
 
                     # Replace the 'a' value with the recently updated 'b' dictionary.
-                    dictionary_a[key] = dictionary_b[key]
+                    a[key] = b[key]
                 # Do the types not otherwise match?
                 else:
                     # Error as data loss could occur.
@@ -116,22 +144,25 @@ class JSONSchema:
             # It doesn't exist in 'a', so just add it.
             else:
                 # We can record where a value was optional.
-                if len(path) == mark_optional_at_depth and isinstance(dictionary_b[key], dict) and 'type' in dictionary_b[key]:
-                    dictionary_b[key]['optional'] = True
+                if len(path) == mark_optional_at_depth:
+                    if type(b[key]) is dict and 'type' in b[key]:
+                        b[key]['optional'] = True
 
-                dictionary_a[key] = dictionary_b[key]
+                a[key] = b[key]
 
         # Do a sweeping check for keys that were in 'a' but not in 'b'.
         if len(path) == mark_optional_at_depth:
             # Take each of the keys in dictionary 'a'.
-            for key in dictionary_a:
-                # Was this only in 'a' and not added as a result of a merge of 'b' (but a had a valid 'type' and was not just a description).
-                if key not in dictionary_b and 'type' in dictionary_a[key]:
-                    dictionary_a[key]['optional'] = True
+            for key in a:
+                # Was this only in 'a' and not added as a result of a merge of 'b'
+                # (but 'a' had a valid 'type' and was not just a description)?
+                if key not in b and 'type' in a[key]:
+                    a[key]['optional'] = True
 
-        return dictionary_a
+        return a
 
     @staticmethod
+    # pylint: disable=unidiomatic-typecheck
     def get_schema(json_object, table_name='.', table_field_map=None):
         """
         Recursively obtains the schema of the JSON from the specified json_object.
@@ -145,17 +176,19 @@ class JSONSchema:
         # Store any discovered nested tables in this dictionary.
         child_tables = None
 
-        # A field_map contains all the table meta-data both static and dynamic. Does this table already exist in the field map? Get a reference to just this table's field_map outside the loop.
+        # A field_map contains all the table metadata both static and learnt.
+        # Does this table already exist in the field map?
+        # Get a reference to just this table's field_map outside the loop.
         current_table_field_map = (table_field_map.get(table_name) if table_field_map else None)
 
         # If there is no root element (anonymous array) we must add one.
-        if isinstance(json_object, list):
+        if type(json_object) is list:
             json_object = { '.': json_object }
 
         # Take each key and value of the current table.
         for json_key, json_value in json_object.items():
             # Is this itself another object?
-            if isinstance(json_value, dict):
+            if type(json_value) is dict:
                 # We can override some object names (and merge metadata).
                 child_table_name = JSONSchema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
 
@@ -163,25 +196,33 @@ class JSONSchema:
                 new_dict_schema = JSONSchema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=json_value)
 
                 # Merge this table list.
-                child_tables = JSONSchema.merge_dictionaries(dictionary_a=child_tables, dictionary_b=new_dict_schema, mark_optional_at_depth=1) if child_tables else new_dict_schema
+                if child_tables:
+                    child_tables = JSONSchema.merge_dictionaries(a=child_tables, b=new_dict_schema, mark_optional_at_depth=1)
+                else:
+                    child_tables = new_dict_schema
 
                 # Add the type of this key.
                 current_table_fields[json_key] = {'type':'Object', 'value':'`' + child_table_name + '` object'}
 
             # Is this a list of values?
-            elif isinstance(json_value, list):
+            elif type(json_value) is list:
                 # Are there any values and is the first value an object?
-                if len(json_value) > 0 and isinstance(json_value[0], dict):
+                if len(json_value) > 0 and type(json_value[0]) is dict:
                     # We can override some object names (and merge metadata).
                     child_table_name = JSONSchema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
 
-                    # As this is a list each item could have different metadata; take each of the items in the list and combine all the keys and their metadata.
+                    # As this is a list each item could have different metadata;
+                    # take each of the items in the list
+                    # and combine all the keys and their metadata.
                     for list_item in json_value:
                         # This could return multiple tables if there are nested types.
                         new_list_schema = JSONSchema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=list_item)
 
                         # Merge this table list.
-                        child_tables = JSONSchema.merge_dictionaries(dictionary_a=child_tables, dictionary_b=new_list_schema, mark_optional_at_depth=1) if child_tables else new_list_schema
+                        if child_tables:
+                            child_tables = JSONSchema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1)
+                        else:
+                            child_tables = new_list_schema
 
                     # Add the type of this key.
                     current_table_fields[json_key] = {'type':'Array(Object)', 'value':'Array of `' + child_table_name + '`'}
@@ -189,7 +230,8 @@ class JSONSchema:
                 # This is just an array of standard JSON types.
                 else:
                     # Add the type of this key.
-                    current_table_fields[json_key] = {'type':'Array(' + JSONSchema.get_type_string(json_value) + ')', 'value': 'Array of ' + JSONSchema.get_type_string(json_value)}
+                    type_string = JSONSchema.get_type_string(json_value)
+                    current_table_fields[json_key] = {'type':'Array(' + type_string + ')', 'value': 'Array of ' + type_string}
 
             # This is just a standard JSON type.
             else:
@@ -209,7 +251,12 @@ class JSONSchema:
 
 def get_header_section(name, endpoint, file_depth=0):
     """
-    Returns a string with the AsciiDoc heading, from the provided name, endpoint and how many sub-directories deep the file will be stored in.
+    Returns a string with the AsciiDoc heading.
+
+    Takes:
+    - The provided name.
+    - An endpoint.
+    - How many sub-directories deep the file will be stored in.
     """
 
     # Heading.
@@ -225,7 +272,9 @@ def get_header_section(name, endpoint, file_depth=0):
     result += '// Document Settings:\n\n'
 
     # Set the autogenerated seciond IDs to be in GitHub format, so links work across both platforms.
-    result += '// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)\n'
+    result += '// Set the ID Prefix and ID Separators to be consistent with GitHub so links work '
+    result += 'irrespective of rendering platform.'
+    result += ' (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)\n'
     result += ':idprefix:\n'
     result += ':idseparator: -\n\n'
 
@@ -236,7 +285,8 @@ def get_header_section(name, endpoint, file_depth=0):
     # This will convert the admonitions to be icons rather than text (in and out of GitHub).
     result += 'ifndef::env-github[:icons: font]\n\n'
 
-    result += '// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).\n'
+    result += '// Set the admonitions to have icons (Github Emojis) if rendered on GitHub'
+    result += ' (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).\n'
     result += 'ifdef::env-github[]\n'
     result += ':status:\n'
     result += ':caution-caption: :fire:\n'
@@ -255,7 +305,8 @@ def get_header_section(name, endpoint, file_depth=0):
 
     # Page Description.
     if 'description' in endpoint:
-        result += (endpoint['description']['long'] if 'long' in endpoint['description'] else endpoint['description']['short']) + '\n'
+        description = endpoint['description']
+        result += (description['long'] if 'long' in description else description['short']) + '\n'
     else:
         print('Warning : ' + endpoint['name'] + " does not have a description.")
         result += 'This endpoint and its purpose has not been fully documented yet.\n'
@@ -264,15 +315,21 @@ def get_header_section(name, endpoint, file_depth=0):
     result += '\n== Introduction\n\n'
 
     # Introduction.
-    result += 'Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)\'s products and services.\n\n'
+    result += 'Enphase-API is an unofficial project providing an API wrapper and the documentation '
+    result += 'for Enphase(R)\'s products and services.\n\n'
 
-    result += 'More details on the project are available from the link:' + ('../' * (file_depth + 1)) + 'README.adoc[project\'s homepage].\n'
+    result += 'More details on the project are available from the link:'
+    result += ('../' * (file_depth + 1)) + 'README.adoc[project\'s homepage].\n'
 
     return result
 
 def get_request_section(request_json, file_depth=0, type_map=None):
     """
-    Returns a string with the AsciiDoc request section, from the provided request_json, how many sub-directories deep the file will be stored in and a type map listing the different types.
+    Returns a string with the AsciiDoc request section.
+    This takes:
+    - The provided request_json,
+    - How many sub-directories deep the file will be stored in 
+    - A type map listing the different types.
     """
 
     # Any used custom types are collected then output after the tables.
@@ -289,7 +346,9 @@ def get_request_section(request_json, file_depth=0, type_map=None):
 
         # Some IQ Gateway API requests now require authorisation.
         if 'auth_required' not in request_json or request_json['auth_required'] is not False:
-            result += 'As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:' + ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
+            result += 'As of recent Gateway software versions this request requires a valid '
+            result += '`sessionid` cookie obtained by link:'
+            result += ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
 
         # Get the request querystring table.
         if 'query' in request_json:
@@ -307,7 +366,10 @@ def get_request_section(request_json, file_depth=0, type_map=None):
             # Add each of the tables from the derived json_schema.
             for table_name, table in field_map.items():
                 # Format the table_name.
-                table_name = ('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root')
+                if table_name and table_name != '.':
+                    table_name = '`' + table_name + '` Object'
+                else:
+                    table_name = 'Root'
 
                 # Get the table section but also any used and referenced custom types.
                 table_section, table_used_custom_types = get_table_section(table_name=table_name, table=table, type_map=type_map, short_booleans=True, level=4)
@@ -355,7 +417,8 @@ def get_methods_section(methods):
 
 def get_type_section(used_custom_types, type_map):
     """
-    Returns a string with the AsciiDoc types section, from the provided dictionary of custom types referenced and the dictionary of custom types.
+    Returns a string with the AsciiDoc types section, from the provided dictionary of custom types 
+    referenced and the dictionary of custom types.
     """
 
     # Heading.
@@ -378,7 +441,10 @@ def get_type_section(used_custom_types, type_map):
             # Type Table Rows.
             for current_field in custom_type:
                 # Field Value.
-                result += '|`' + current_field['value'] + '`' + ('?' if 'uncertain' in current_field else '') + '\n'
+                result += '|`' + current_field['value'] + '`'
+                if 'uncertain' in current_field:
+                    result += '?'
+                result += '\n'
 
                 # Field Name.
                 result += '|' + current_field['name'] + '\n'
@@ -391,17 +457,27 @@ def get_type_section(used_custom_types, type_map):
 
     return result
 
+# pylint: disable=unidiomatic-typecheck
 def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans=False):
     """
-    Returns a string with a single AsciiDoc table row (Name, Type, Value, Description), from the provided field_name, dictionary of field_metadata, custom types map.
+    Returns a string with a single AsciiDoc table row (Name, Type, Value, Description).
+
+    Takes:
+    - The provided field_name.
+    - Dictionary of field_metadata.
+    - A custom types map.
+
     Optionally the examples can include 0 or 1 to represent booleans rather than True or False.
     """
 
     # Field Name.
-    result = '|`' + field_name + '`' + (' (Optional)' if field_metadata and 'optional' in field_metadata and field_metadata['optional'] else '') + '\n'
+    result = '|`' + field_name + '`'
+    if field_metadata and 'optional' in field_metadata and field_metadata['optional']:
+        result += ' (Optional)'
+    result += '\n'
 
     # Field Type.
-    if isinstance(field_metadata, dict) and 'type' in field_metadata:
+    if type(field_metadata) is dict and 'type' in field_metadata:
         field_type = (field_metadata['type'] if 'type' in field_metadata else 'Unknown')
     else:
         field_type = 'Unknown'
@@ -409,7 +485,7 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
 
     # Field Value.
     result += '|'
-    if isinstance(field_metadata, dict) and 'value' in field_metadata:
+    if type(field_metadata) is dict and 'value' in field_metadata:
         result += field_metadata['value']
     else:
         # Did the user provide further details about this string field in the field map?
@@ -454,10 +530,15 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
 
 def get_table_section(table_name, table, type_map, short_booleans=False, level=3):
     """
-    Returns a string and list, with a single AsciiDoc table (Name, Type, Values, Description) as the string, from the provided table_name, table, dictionary of custom types map.
+    Returns a string and list:
+    
+    With a single AsciiDoc table (Name, Type, Values, Description) as the string,
+    from the provided table_name, table, dictionary of custom types map.
+
     Optionally the examples can include 0 or 1 to represent booleans rather than True or False.
     The level parameter sets how deep the heading should be written.
-    Any used custom types are collected and returned in the list.
+
+    Any used custom types are collected and returned in the returned list.
     """
 
     # Sub Heading.
@@ -480,7 +561,7 @@ def get_table_section(table_name, table, type_map, short_booleans=False, level=3
         result += get_table_row(field_name=field_name, field_metadata=field_metadata, type_map=type_map, short_booleans=short_booleans)
 
         # Was this a custom type?
-        # pylint: disable=unidiomatic-typecheck
+        # pylint: disable-next=unidiomatic-typecheck
         if type(field_metadata) is dict and field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
             # We do not want to collect duplicates.
             if field_value_name not in used_custom_types:
@@ -518,7 +599,12 @@ def get_example_section(uri, example_item):
     # Add the example_output Request, Response or both.
     for example_type, example_content in example_output.items():
         # List the example request/response details.
-        result += '\n.' + (example_item['method'] if 'method' in example_item else 'GET') + ' */' + uri + ('?' + example_item['uri'] if 'uri' in example_item else '') + '* ' + example_type + '\n'
+        result += '\n.'
+        result += (example_item['method'] if 'method' in example_item else 'GET')
+        result += ' */' + uri
+        if 'uri' in example_item:
+            result += '?' + example_item['uri']
+        result += '* ' + example_type + '\n'
 
         # We can override JSON responses and present raw text instead.
         if example_type == 'Request' or 'raw' not in example_item:
@@ -551,7 +637,7 @@ def process_single_endpoint(gateway, key, endpoint):
     """
     Generates the Enphase-API documentation in AsciiDoc for a specific endpoint.
 
-    This takes :
+    This takes:
      - An instance of the gateway wrapper.
      - The metadata key.
      - A single endpoint to document.
@@ -591,58 +677,62 @@ def process_single_endpoint(gateway, key, endpoint):
             previous_response_schema = None
 
             # Take each of the examples to learn the schema.
-            for example_item in endpoint_request['examples']:
+            for example in endpoint_request['examples']:
                 # The user can supply the JSON to use instead of us directly querying for it.
-                if 'sample' in example_item:
+                if 'sample' in example:
                     # Extract the sample and use it as the response.
-                    example_item['response'] = json.loads(example_item['sample'])
+                    example['response'] = json.loads(example['sample'])
                 elif not TEST_ONLY:
                     # Perform a GET request on the resource.
-                    print('Requesting example \'' + example_item['name'] + '\' for \'' + key + '\'.')
-                    request_uri = '/' + endpoint_request['uri'] + ('?' + example_item['uri'] if 'uri' in example_item else '')
-                    example_item['response'] = gateway.api_call(path=request_uri, method=example_item.get('method'), json=json.loads(example_item.get('data')))
+                    print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
+                    request_uri = '/' + endpoint_request['uri']
+                    if 'uri' in example:
+                        request_uri += '?' + example['uri']
+                    example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), json=json.loads(example.get('data')))
 
                     # This variable can be inspected to hardcode a sample in API_Details.
-                    debug_variable = json.dumps({ 'sample': json.dumps(example_item['response']) })[1:-1]
+                    debug_variable = json.dumps({ 'sample': json.dumps(example['response']) })[1:-1]
                     set_breakpoint_here = debug_variable
                 else:
-                    print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
+                    print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
                     return False
 
-                # Obtain the response schema for the current example_item.
-                # Get the response schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                current_example_response_schema = JSONSchema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example_item['response'])
+                # Obtain the response schema for the current example.
+                # We can override some known types, provide known value criteria
+                # and descriptions using the field_map.
+                current_response_schema = JSONSchema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example['response'])
 
                 # Have we already obtained a response schema from a previous example?
                 if previous_response_schema:
                     # Merge the current_example_response_schema into the previous_response_schema.
-                    previous_response_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_response_schema, dictionary_b=current_example_response_schema, mark_optional_at_depth=1)
+                    previous_response_schema = JSONSchema.merge_dictionaries(a=previous_response_schema, b=current_response_schema, mark_optional_at_depth=1)
                 else:
                     # Just take the current_example_response_schema as the previous_response_schema.
-                    previous_response_schema = current_example_response_schema
+                    previous_response_schema = current_response_schema
 
-                # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                if 'data' in example_item:
+                # Is there request information?
+                if 'data' in example:
                     # Extract the sample and use it as the request.
-                    example_item['data'] = json.loads(example_item['data'])
+                    example['data'] = json.loads(example['data'])
 
-                    # Obtain the request schema for the current example_item.
-                    # Get the request schema recursively (we can override some known types, provide known value criteria and descriptions using the field_map).
-                    current_example_request_schema = JSONSchema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example_item['data'])
+                    # Obtain the request schema for the current example.
+                    # We can override some known types, provide known value criteria
+                    # and descriptions using the field_map.
+                    current_request_schema = JSONSchema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example['data'])
 
                     # Have we already obtained a request schema from a previous example?
                     if previous_request_schema:
-                        # Merge the current_example_request_schema in to the previous_request_schema.
-                        previous_request_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_request_schema, dictionary_b=current_example_request_schema, mark_optional_at_depth=1)
+                        # Merge the current_example_request_schema with the previous_request_schema.
+                        previous_request_schema = JSONSchema.merge_dictionaries(a=previous_request_schema, b=current_request_schema, mark_optional_at_depth=1)
                     else:
-                        # Just take the current_example_request_schema as the previous_request_schema.
-                        previous_request_schema = current_example_request_schema
+                        # Take the current_example_request_schema as the previous_request_schema.
+                        previous_request_schema = current_request_schema
 
             # Is there a request schema to process?
             if previous_request_schema:
                 # Merge the request field_map dictionary with any configured values.
                 if 'field_map' in endpoint_request:
-                    previous_request_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_request_schema, dictionary_b=endpoint_request['field_map'], mark_optional_at_depth=None)
+                    previous_request_schema = JSONSchema.merge_dictionaries(a=previous_request_schema, b=endpoint_request['field_map'], mark_optional_at_depth=None)
 
                 endpoint_request['field_map'] = previous_request_schema
 
@@ -650,7 +740,7 @@ def process_single_endpoint(gateway, key, endpoint):
             if previous_response_schema:
                 # Merge the response field_map dictionary with any configured values.
                 if 'field_map' in endpoint_response:
-                    previous_response_schema = JSONSchema.merge_dictionaries(dictionary_a=previous_response_schema, dictionary_b=endpoint_response['field_map'], mark_optional_at_depth=None)
+                    previous_response_schema = JSONSchema.merge_dictionaries(a=previous_response_schema, b=endpoint_response['field_map'], mark_optional_at_depth=None)
 
                 endpoint_response['field_map'] = previous_response_schema
 
@@ -673,7 +763,10 @@ def process_single_endpoint(gateway, key, endpoint):
             # Add each of the tables from the derived json_schema.
             for table_name, table in endpoint_response['field_map'].items():
                 # Format the table_name.
-                table_name = ('`' + table_name + '` Object' if table_name and table_name != '.' else 'Root')
+                if table_name and table_name != '.':
+                    table_name = '`' + table_name + '` Object'
+                else:
+                    table_name = 'Root'
 
                 # Get the table section but also any used and referenced custom types.
                 table_section, table_used_custom_types = get_table_section(table_name=table_name, table=table, type_map=type_map)
@@ -696,19 +789,20 @@ def process_single_endpoint(gateway, key, endpoint):
             output += '\n== Examples'
 
             # There can be multiple examples for the same endpoint.
-            for example_item in endpoint_request['examples']:
-                # We cannot output an example without a response (either from querying the API earlier or hardcoding one).
-                if not 'name' in example_item:
-                    print('Warning : Skipping example for \'' + key + '\' due to lack of example name.')
+            for example in endpoint_request['examples']:
+                # We cannot output an example without a name.
+                if not 'name' in example:
+                    print('Warning : Skipping a \'' + key + '\' example as missing example name.')
                     return False
 
-                # We cannot output an example without a response (either from querying the API earlier or hardcoding one).
-                if not 'response' in example_item:
-                    print('Warning : Skipping example \'' + example_item['name'] + '\' for \'' + key + '\' due to lack of response.')
+                # We cannot output an example without a response
+                # (either from querying the API earlier or hardcoding one).
+                if not 'response' in example:
+                    print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' due to lack of response.')
                     return False
 
                 # Take the obtained JSON as an example.
-                output += get_example_section(uri=endpoint_request['uri'], example_item=example_item)
+                output += get_example_section(uri=endpoint_request['uri'], example_item=example)
     else:
         # Add placeholder text.
         output += get_not_yet_documented()
@@ -728,7 +822,12 @@ def process_single_endpoint(gateway, key, endpoint):
 def main():
     """
     Generates the Enphase-API documentation in AsciiDoc.
-    This takes each endpoint in the document, attempts to call any undocumented and determines its schema.
+
+    This takes:
+    - Each endpoint in the metadata document.
+    - Attempts to call any undocumented endpoints.
+    - Determines their schema.
+    - Writes the documentation of the endpoint.
     """
 
     # Output program banner.
@@ -751,7 +850,7 @@ def main():
         if not os.path.exists('configuration/gateway.cer'):
             Gateway.trust_gateway(credentials['host'])
 
-        # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
+        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
         gateway = Gateway(credentials['host'])
     else:
         # Download and store the certificate from the gateway so all future requests are secure.
