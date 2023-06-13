@@ -39,4 +39,6 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/ivp/peb/devstatus` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].

@@ -39,6 +39,7 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+The `/admin/lib/admin_pmu_display.json` endpoint supports the following:
 
 === Methods
 [cols="1,2", options="header"]
