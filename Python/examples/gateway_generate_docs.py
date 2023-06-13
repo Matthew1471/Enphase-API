@@ -74,7 +74,7 @@ class JSONSchema:
         and returns either:
 
         - The overriden table name as per the table_field_map.
-        or 
+        or
         - It generates a table name making use of the original_table_name and the key.
 
         Making use of the original_table_name ensures the scope is preserved.
@@ -88,9 +88,9 @@ class JSONSchema:
         if original_table_name and original_table_name != '.':
             # Get a sensible default name for this table (that preserves its JSON scope).
             return original_table_name + '.' + str(json_key).capitalize()
-        else:
-            # Return just the capitalised JSON key.
-            return str(json_key).capitalize()
+
+        # Return just the capitalised JSON key.
+        return str(json_key).capitalize()
 
     @staticmethod
     # pylint: disable=unidiomatic-typecheck
@@ -328,7 +328,7 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     Returns a string with the AsciiDoc request section.
     This takes:
     - The provided request_json,
-    - How many sub-directories deep the file will be stored in 
+    - How many sub-directories deep the file will be stored in
     - A type map listing the different types.
     """
 
@@ -417,7 +417,7 @@ def get_methods_section(methods):
 
 def get_type_section(used_custom_types, type_map):
     """
-    Returns a string with the AsciiDoc types section, from the provided dictionary of custom types 
+    Returns a string with the AsciiDoc types section, from the provided dictionary of custom types
     referenced and the dictionary of custom types.
     """
 
@@ -531,7 +531,7 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
 def get_table_section(table_name, table, type_map, short_booleans=False, level=3):
     """
     Returns a string and list:
-    
+
     With a single AsciiDoc table (Name, Type, Values, Description) as the string,
     from the provided table_name, table, dictionary of custom types map.
 
