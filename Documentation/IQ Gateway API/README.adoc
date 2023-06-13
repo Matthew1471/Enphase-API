@@ -667,7 +667,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - ZigBee
+==== IVP - Zigbee
 
 [cols="1,1,2", options="header"]
 |===
@@ -693,7 +693,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/ZB/Status.adoc[Status]`
 |`/ivp/zb/status`
-|Get ZigBee status.
+|Get Zigbee status.
 
 |===
 

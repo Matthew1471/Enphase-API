@@ -571,7 +571,7 @@
                     "value": "acb"
                 },
                 {
-                    "description": "An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.",
+                    "description": "An external Zigbee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.",
                     "name": "Revenue Grade Meter",
                     "uncertain": true,
                     "value": "rgm"
@@ -1359,35 +1359,35 @@
             "uri": "ivp/tpm/tpmstatus"
         }
     },
-    "IVP - ZigBee - Pairing Status": {
+    "IVP - Zigbee - Pairing Status": {
         "documentation": "IVP/ZB/Pairing_Status.adoc",
         "name": "Pairing Status",
         "request": {
             "uri": "ivp/zb/pairing_status"
         }
     },
-    "IVP - ZigBee - Provision": {
+    "IVP - Zigbee - Provision": {
         "documentation": "IVP/ZB/Provision.adoc",
         "name": "Provision",
         "request": {
             "uri": "ivp/zb/provision"
         }
     },
-    "IVP - ZigBee - Reset Device": {
+    "IVP - Zigbee - Reset Device": {
         "documentation": "IVP/ZB/Reset_Device.adoc",
         "name": "Reset Device",
         "request": {
             "uri": "ivp/zb/reset_device"
         }
     },
-    "IVP - ZigBee - Set Phase": {
+    "IVP - Zigbee - Set Phase": {
         "documentation": "IVP/ZB/Set_Phase.adoc",
         "name": "Set Phase",
         "request": {
             "uri": "ivp/zb/set_phase"
         }
     },
-    "IVP - ZigBee - Status": {
+    "IVP - Zigbee - Status": {
         "documentation": "IVP/ZB/Status.adoc",
         "name": "Status",
         "request": {

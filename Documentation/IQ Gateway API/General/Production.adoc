@@ -328,7 +328,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`rgm`?
 |Revenue Grade Meter
-|An external ZigBee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
+|An external Zigbee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
 
 |`pmu`?
 |Power Meter
