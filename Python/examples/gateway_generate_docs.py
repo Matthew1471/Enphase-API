@@ -80,7 +80,7 @@ class JSONSchema:
         Making use of the original_table_name ensures the scope is preserved.
         """
         # We can override some object names (and merge metadata).
-        if table_field_map and (key_metadata := table_field_map.get(json_key)) and (value_name := key_metadata.get('value_name')):
+        if table_field_map and (key_metadata := table_field_map.get(json_key)) and type(key_metadata) == dict and (value_name := key_metadata.get('value_name')):
             # This name has been overridden.
             return value_name
 
@@ -336,13 +336,16 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     used_custom_types = []
 
     # Check if there is anything to add to this section before printing the heading.
-    if ('query' in request_json or 'data' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] is not False):
+    if ('query' in request_json or 'request_json' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] is not False):
         # Heading.
         result = '\n== Request\n\n'
 
         # List available methods.
         if 'methods' in request_json:
+            result += 'The `/' + request_json['uri'] + '` endpoint supports the following:\n'
             result += get_methods_section(request_json['methods'])
+        else:
+            result += 'A HTTP `GET` to the `/' + request_json['uri'] + '` endpoint provides the following response data.\n\n'
 
         # Some IQ Gateway API requests now require authorisation.
         if 'auth_required' not in request_json or request_json['auth_required'] is not False:
@@ -493,7 +496,7 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
             result += '`' + value_name + '`'
 
             # Add an example value if available.
-            if value_name in type_map and len(type_map[value_name]) > 0:
+            if type_map and value_name in type_map and len(type_map[value_name]) > 0:
                 result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
         else:
             result += field_type
@@ -585,16 +588,18 @@ def get_example_section(uri, example_item):
     example_output = {}
 
     # Was there request details?
-    if 'data' in example_item:
-        example_output['Request'] = json.dumps(example_item['data'])
+    if 'request_form' in example_item:
+        example_output['Request'] = example_item['request_form']
+    elif 'request_json' in example_item:
+        example_output['Request'] = json.dumps(example_item['request_json'])
 
     # Add the response.
-    if not 'raw' in example_item:
+    if not 'response_raw' in example_item:
         example_output['Response'] = json.dumps(example_item['response'])
     else:
         # We allow the raw value to opt-out of displaying anything.
-        if example_item['raw']:
-            example_output['Response'] = example_item['raw']
+        if example_item['response_raw']:
+            example_output['Response'] = example_item['response_raw']
 
     # Add the example_output Request, Response or both.
     for example_type, example_content in example_output.items():
@@ -607,10 +612,12 @@ def get_example_section(uri, example_item):
         result += '* ' + example_type + '\n'
 
         # We can override JSON responses and present raw text instead.
-        if example_type == 'Request' or 'raw' not in example_item:
-            result += '[source,json,subs="+quotes"]'
-        else:
+        if (example_type == 'Request' and 'request_form' in example_item):
+            result += '[source,http]'
+        elif (example_type == 'Response' and 'response_raw' in example_item):
             result += '[listing]'
+        else:
+            result += '[source,json,subs="+quotes"]'
 
         # Add the example content (JSON or raw).
         result += '\n----\n'
@@ -679,23 +686,36 @@ def process_single_endpoint(gateway, key, endpoint):
             # Take each of the examples to learn the schema.
             for example in endpoint_request['examples']:
                 # The user can supply the JSON to use instead of us directly querying for it.
-                if 'sample' in example:
+                if 'response_json' in example:
                     # Extract the sample and use it as the response.
-                    example['response'] = json.loads(example['sample'])
+                    example['response'] = json.loads(example['response_json'])
+                # The user can disable requesting data for a specific endpoint example.
+                elif 'disabled' in example:
+                    print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as example is disabled.')
+                    continue
                 elif not TEST_ONLY:
                     # Perform a GET request on the resource.
                     print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
                     request_uri = '/' + endpoint_request['uri']
                     if 'uri' in example:
                         request_uri += '?' + example['uri']
-                    example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), json=json.loads(example.get('data')))
+
+                    # The API supports a mixture of JSON and form payloads.
+                    if 'request_json' in example:
+                        data = example['request_json']
+                    elif 'request_form' in example:
+                        data = example['request_form']
+                    else:
+                        data = None
+
+                    example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), data=data)
 
                     # This variable can be inspected to hardcode a sample in API_Details.
-                    debug_variable = json.dumps({ 'sample': json.dumps(example['response']) })[1:-1]
+                    debug_variable = json.dumps({ 'response_json': json.dumps(example['response']) })[1:-1]
                     set_breakpoint_here = debug_variable
                 else:
                     print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
-                    return False
+                    continue
 
                 # Obtain the response schema for the current example.
                 # We can override some known types, provide known value criteria
@@ -710,15 +730,15 @@ def process_single_endpoint(gateway, key, endpoint):
                     # Just take the current_example_response_schema as the previous_response_schema.
                     previous_response_schema = current_response_schema
 
-                # Is there request information?
-                if 'data' in example:
+                # Is there JSON request information?
+                if 'request_json' in example:
                     # Extract the sample and use it as the request.
-                    example['data'] = json.loads(example['data'])
+                    example['request_json'] = json.loads(example['request_json'])
 
                     # Obtain the request schema for the current example.
                     # We can override some known types, provide known value criteria
                     # and descriptions using the field_map.
-                    current_request_schema = JSONSchema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example['data'])
+                    current_request_schema = JSONSchema.get_schema(table_field_map=endpoint_request.get('field_map'), json_object=example['request_json'])
 
                     # Have we already obtained a request schema from a previous example?
                     if previous_request_schema:
