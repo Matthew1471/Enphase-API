@@ -23,7 +23,8 @@ import jwt
 import requests
 
 class Authentication:
-    """A class to talk to Enphase®'s Cloud based Authentication Server, Entrez (French for "Access").
+    """
+    A class to talk to Enphase®'s Cloud based Authentication Server, Entrez (French for "Access").
     This server also supports granting tokens for local access to the Gateway.
     """
 

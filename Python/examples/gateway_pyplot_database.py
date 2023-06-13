@@ -138,8 +138,11 @@ def setup_plot():
     axes.axhline(linewidth=0.3, color='k')
 
     # Add the optional peak and continuous wattage limit lines of the micro-inverters.
-    if args.peak: axes.axhline(y=args.peak, linewidth=1, color='r')
-    if args.continuous: axes.axhline(y=args.continuous, linewidth=1, color='y')
+    if args.peak:
+        axes.axhline(y=args.peak, linewidth=1, color='r')
+
+    if args.continuous:
+        axes.axhline(y=args.continuous, linewidth=1, color='y')
 
     # Label the most recent result (at the end).
     global production_annotation, consumption_total_annotation, consumption_net_annotation
