@@ -280,7 +280,7 @@ def main():
         # Get an instance of the Gateway API wrapper object (using the argument hostname).
         gateway = Gateway(args.host)
     elif credentials.get('host'):
-        # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
+        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
         gateway = Gateway(credentials['host'])
     else:
         # Get an instance of the Gateway API wrapper object (using the library default hostname).

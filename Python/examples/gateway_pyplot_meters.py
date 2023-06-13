@@ -274,7 +274,7 @@ def main():
         # Download and store the certificate from the gateway so all future requests are secure.
         if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
 
-        # Get an instance of the Gateway API wrapper object (using the hostname specified in the config).
+        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
         gateway = Gateway(credentials['host'])
     else:
         # Download and store the certificate from the gateway so all future requests are secure.
