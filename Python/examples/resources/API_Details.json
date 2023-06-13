@@ -258,7 +258,8 @@
                     },
                     "entry": "The order of the route in the network routing table. This is only available when getting the network routing table data.",
                     "error": {
-                        "description": "The error that occurred."
+                        "description": "The error that occurred.",
+                        "optional": true
                     },
                     "flags": "The flags for the route in the network routing table. This is only available when getting the network routing table data.",
                     "gateway": "The default gateway for this interface, or if as part of the network routing table data, the gateway for this route.",

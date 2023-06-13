@@ -202,7 +202,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |String
 |The interface for the route in the network routing table. This is only available when getting the network routing table data.
 
-|`error`
+|`error` (Optional)
 |Unknown
 |Unknown
 |The error that occurred.
