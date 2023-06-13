@@ -39,6 +39,21 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+The `/admin/lib/network_display.json` endpoint supports the following:
+
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get Network Configuration.
+
+|`POST`
+|Set Network Configuration or Perform Network Diagnostics.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
 == Response
@@ -52,11 +67,151 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Values
 |Description
 
+|`ip` (Optional)
+|String
+|String
+|The IP address of the interface.
+
+|`netmask` (Optional)
+|String
+|String
+|The netmask for this interface.
+
+|`gateway` (Optional)
+|String
+|String
+|The default gateway for this interface, or if as part of the network routing table data, the gateway for this route.
+
+|`primary_dns` (Optional)
+|String
+|String
+|The primary DNS server for this interface.
+
+|`secondary_dns` (Optional)
+|String
+|String
+|The secondary DNS server for this interface.
+
+|`dhcp` (Optional)
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether or not DHCP is allowed to dynamically configure this interface.
+
+|`interface` (Optional)
+|String
+|String
+|The name of the interface.
+
+|`pingip` (Optional)
+|String
+|String
+|The IP address that was ICMP pinged.
+
+|`results` (Optional)
+|Array(Unknown)
+|Array of Unknown
+|The results of an ICMP ping.
+
+|`primary_interface` (Optional)
+|String
+|String
+|The interface primarily used for network connectivity. This is only available when performing a network connectivity check.
+
+|`connectivity_enlighten` (Optional)
+|String
+|String
+|Whether connectivity to Enlighten could be established. This is only available when performing a network connectivity check.
+
+|`connectivity_enphase` (Optional)
+|String
+|String
+|Whether connectivity to Enphase could be established. This is only available when performing a network connectivity check.
+
+|`enlighten_dns_lookup` (Optional)
+|String
+|String
+|Whether a DNS lookup for Enlighten could be performed. This is only available when performing a network connectivity check.
+
+|`enphase_dns_lookup` (Optional)
+|String
+|String
+|Whether a DNS lookup for Enphase could be performed. This is only available when performing a network connectivity check.
+
+|`google_dns_lookup` (Optional)
+|String
+|String
+|Whether a DNS lookup for Google(R) could be performed. This is only available when performing a network connectivity check.
+
+|`gateway_ping` (Optional)
+|String
+|String
+|The response time (or `fail`) of an ICMP ping of the default gateway. This is only available when performing a network connectivity check.
+
+|`primary_dns_ping` (Optional)
+|String
+|String
+|The response time (or `fail`) of an ICMP ping of the primary DNS server. This is only available when performing a network connectivity check.
+
+|`secondary_dns_ping` (Optional)
+|String
+|String
+|The response time (or `fail`) of an ICMP ping of the secondary DNS server. This is only available when performing a network connectivity check.
+
+|`google_ping` (Optional)
+|String
+|String
+|The response time (or `fail`) of an ICMP ping of the Google server. This is only available when performing a network connectivity check.
+
+|`entry` (Optional)
+|Number
+|Number
+|The order of the route in the network routing table. This is only available when getting the network routing table data.
+
+|`destination` (Optional)
+|String
+|String
+|The destination of the route in the network routing table. This is only available when getting the network routing table data.
+
+|`genmask` (Optional)
+|String
+|String
+|The generality (i.e. the netmask) of the route in the network routing table. This is only available when getting the network routing table data.
+
+|`flags` (Optional)
+|String
+|String
+|The flags for the route in the network routing table. This is only available when getting the network routing table data.
+
+|`metric` (Optional)
+|String
+|String
+|The metric for the route in the network routing table. This is only available when getting the network routing table data.
+
+|`ref` (Optional)
+|String
+|String
+|The number of references for the route in the network routing table, such as how many other routes (e.g. through gateways) rely on the presence of this route. This is only available when getting the network routing table data.
+
+|`use` (Optional)
+|String
+|String
+|The number of times the routing entry has been used for the route in the network routing table. This is only available when getting the network routing table data.
+
+|`iface` (Optional)
+|String
+|String
+|The interface for the route in the network routing table. This is only available when getting the network routing table data.
+
+|`error`
+|Unknown
+|Unknown
+|The error that occurred.
+
 |===
 
 == Examples
 
-=== Get Network Configuration
+=== Get Network Configuration - Ethernet
 
 .GET */admin/lib/network_display.json* Response
 [source,json,subs="+quotes"]
@@ -64,10 +219,62 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 {"ip": "169.254.120.1", "netmask": "255.255.0.0", "gateway": "0.0.0.0", "primary_dns": "", "secondary_dns": "", "dhcp": true, "interface": "eth0"}
 ----
 
-=== Get Cellular Configuration
+=== Get Network Configuration - Cellular
 
 .GET */admin/lib/network_display.json?cellular=1* Response
 [source,json,subs="+quotes"]
 ----
 {}
+----
+
+=== Set Network Configuration - Renew DHCP IP Address
+
+.POST */admin/lib/network_display.json* Request
+[source,http]
+----
+fname=getnewipaddr&interface=eth0
+----
+.POST */admin/lib/network_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"interface": "eth0", "ip": "169.254.120.1"}
+----
+
+=== Perform Network Diagnostics - Ping IP or URL
+
+.POST */admin/lib/network_display.json* Request
+[source,http]
+----
+fname=ping&pingip=192.168.0.1
+----
+.POST */admin/lib/network_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"interface": "wlan0", "pingip": "192.168.0.1", "results": ["PING 192.168.0.1 (192.168.0.1): 56 data bytes\n", "64 bytes from 192.168.0.1: seq=0 ttl=64 time=336.443 ms\n", "64 bytes from 192.168.0.1: seq=1 ttl=64 time=40.476 ms\n", "64 bytes from 192.168.0.1: seq=2 ttl=64 time=63.100 ms\n", "64 bytes from 192.168.0.1: seq=3 ttl=64 time=85.139 ms\n", "64 bytes from 192.168.0.1: seq=4 ttl=64 time=108.350 ms\n", "\n", "--- 192.168.0.1 ping statistics ---\n", "5 packets transmitted, 5 packets received, 0% packet loss\n", "round-trip min/avg/max = 40.476/126.701/336.443 ms\n"]}
+----
+
+=== Perform Network Diagnostics - Network Connectivity Check
+
+.POST */admin/lib/network_display.json* Request
+[source,http]
+----
+fname=connectivitycheck
+----
+.POST */admin/lib/network_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"primary_interface": "wlan0", "connectivity_enlighten": "pass", "connectivity_enphase": "pass", "enlighten_dns_lookup": "pass", "enphase_dns_lookup": "pass", "google_dns_lookup": "pass", "gateway_ping": "0.784 ms", "primary_dns_ping": "fail", "secondary_dns_ping": "fail", "google_ping": "61.755 ms"}
+----
+
+=== Perform Network Diagnostics - Get Routing Table
+
+.POST */admin/lib/network_display.json* Request
+[source,http]
+----
+fname=getroute
+----
+.POST */admin/lib/network_display.json* Response
+[source,json,subs="+quotes"]
+----
+[{"entry": 1, "destination": "0.0.0.0", "gateway": "192.168.0.254", "genmask": "0.0.0.0", "flags": "UG", "metric": "20", "ref": "0", "use": "0", "iface": "wlan0"}, {"entry": 2, "destination": "169.254.0.0", "gateway": "0.0.0.0", "genmask": "255.255.0.0", "flags": "U", "metric": "0", "ref": "0", "use": "0", "iface": "eth0"}, {"entry": 3, "destination": "192.168.0.0", "gateway": "0.0.0.0", "genmask": "255.255.255.0", "flags": "U", "metric": "0", "ref": "0", "use": "0", "iface": "wlan0"}]
 ----

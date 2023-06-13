@@ -184,11 +184,11 @@
         "request": {
             "examples": [
                 {
-                    "name": "Get Network Configuration",
+                    "name": "Get Network Configuration - Ethernet",
                     "response_json": "{\"ip\": \"169.254.120.1\", \"netmask\": \"255.255.0.0\", \"gateway\": \"0.0.0.0\", \"primary_dns\": \"\", \"secondary_dns\": \"\", \"dhcp\": true, \"interface\": \"eth0\"}"
                 },
                 {
-                    "name": "Get Network Configuration (Cellular)",
+                    "name": "Get Network Configuration - Cellular",
                     "response_json": "{}",
                     "uri": "cellular=1"
                 },
@@ -224,27 +224,65 @@
                 },
                 {
                     "method": "POST",
-                    "name": "Perform Network Diagnostics - Get Route",
+                    "name": "Perform Network Diagnostics - Get Routing Table",
                     "request_form": "fname=getroute",
                     "response_json": "[{\"entry\": 1, \"destination\": \"0.0.0.0\", \"gateway\": \"192.168.0.254\", \"genmask\": \"0.0.0.0\", \"flags\": \"UG\", \"metric\": \"20\", \"ref\": \"0\", \"use\": \"0\", \"iface\": \"wlan0\"}, {\"entry\": 2, \"destination\": \"169.254.0.0\", \"gateway\": \"0.0.0.0\", \"genmask\": \"255.255.0.0\", \"flags\": \"U\", \"metric\": \"0\", \"ref\": \"0\", \"use\": \"0\", \"iface\": \"eth0\"}, {\"entry\": 3, \"destination\": \"192.168.0.0\", \"gateway\": \"0.0.0.0\", \"genmask\": \"255.255.255.0\", \"flags\": \"U\", \"metric\": \"0\", \"ref\": \"0\", \"use\": \"0\", \"iface\": \"wlan0\"}]"
                 }
             ],
             "methods": {
-                "GET": "Get Network Configuration",
-                "POST": "Set Network Configuration or Perform Network Diagnostics"
+                "GET": "Get Network Configuration.",
+                "POST": "Set Network Configuration or Perform Network Diagnostics."
             },
             "uri": "admin/lib/network_display.json"
         },
         "response": {
             "field_map": {
                 ".": {
+                    "connectivity_enlighten": {
+                        "description": "Whether connectivity to Enlighten could be established. This is only available when performing a network connectivity check.",
+                        "type_name": "ConnectivityResult"
+                    },
+                    "connectivity_enphase": {
+                        "description": "Whether connectivity to Enphase could be established. This is only available when performing a network connectivity check.",
+                        "type_name": "ConnectivityResult"
+                    },
+                    "destination": "The destination of the route in the network routing table. This is only available when getting the network routing table data.",
                     "dhcp": "Whether or not DHCP is allowed to dynamically configure this interface.",
-                    "gateway": "The default gateway for this interface.",
+                    "enlighten_dns_lookup": {
+                        "description": "Whether a DNS lookup for Enlighten could be performed. This is only available when performing a network connectivity check.",
+                        "type_name": "ConnectivityResult"
+                    },
+                    "enphase_dns_lookup": {
+                        "description": "Whether a DNS lookup for Enphase could be performed. This is only available when performing a network connectivity check.",
+                        "type_name": "ConnectivityResult"
+                    },
+                    "entry": "The order of the route in the network routing table. This is only available when getting the network routing table data.",
+                    "error": {
+                        "description": "The error that occurred."
+                    },
+                    "flags": "The flags for the route in the network routing table. This is only available when getting the network routing table data.",
+                    "gateway": "The default gateway for this interface, or if as part of the network routing table data, the gateway for this route.",
+                    "gateway_ping": "The response time (or `fail`) of an ICMP ping of the default gateway. This is only available when performing a network connectivity check.",
+                    "genmask": "The generality (i.e. the netmask) of the route in the network routing table. This is only available when getting the network routing table data.",
+                    "google_dns_lookup": {
+                        "description": "Whether a DNS lookup for Google(R) could be performed. This is only available when performing a network connectivity check.",
+                        "type_name": "ConnectivityResult"
+                    },
+                    "google_ping": "The response time (or `fail`) of an ICMP ping of the Google server. This is only available when performing a network connectivity check.",
+                    "iface": "The interface for the route in the network routing table. This is only available when getting the network routing table data.",
                     "interface": "The name of the interface.",
                     "ip": "The IP address of the interface.",
+                    "metric": "The metric for the route in the network routing table. This is only available when getting the network routing table data.",
                     "netmask": "The netmask for this interface.",
+                    "pingip": "The IP address that was ICMP pinged.",
                     "primary_dns": "The primary DNS server for this interface.",
-                    "secondary_dns": "The secondary DNS server for this interface."
+                    "primary_dns_ping": "The response time (or `fail`) of an ICMP ping of the primary DNS server. This is only available when performing a network connectivity check.",
+                    "primary_interface": "The interface primarily used for network connectivity. This is only available when performing a network connectivity check.",
+                    "ref": "The number of references for the route in the network routing table, such as how many other routes (e.g. through gateways) rely on the presence of this route. This is only available when getting the network routing table data.",
+                    "results": "The results of an ICMP ping.",
+                    "secondary_dns": "The secondary DNS server for this interface.",
+                    "secondary_dns_ping": "The response time (or `fail`) of an ICMP ping of the secondary DNS server. This is only available when performing a network connectivity check.",
+                    "use": "The number of times the routing entry has been used for the route in the network routing table. This is only available when getting the network routing table data."
                 }
             }
         }

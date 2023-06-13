@@ -691,7 +691,7 @@ def process_single_endpoint(gateway, key, endpoint):
                     example['response'] = json.loads(example['response_json'])
                 # The user can disable requesting data for a specific endpoint example.
                 elif 'disabled' in example:
-                    print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as example is disabled.')
+                    print('Warning : Skipping disabled example \'' + example['name'] + '\' for \'' + key + '\'.')
                     continue
                 elif not TEST_ONLY:
                     # Perform a GET request on the resource.
@@ -813,13 +813,13 @@ def process_single_endpoint(gateway, key, endpoint):
                 # We cannot output an example without a name.
                 if not 'name' in example:
                     print('Warning : Skipping a \'' + key + '\' example as missing example name.')
-                    return False
+                    continue
 
                 # We cannot output an example without a response
                 # (either from querying the API earlier or hardcoding one).
                 if not 'response' in example:
                     print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' due to lack of response.')
-                    return False
+                    continue
 
                 # Take the obtained JSON as an example.
                 output += get_example_section(uri=endpoint_request['uri'], example_item=example)
