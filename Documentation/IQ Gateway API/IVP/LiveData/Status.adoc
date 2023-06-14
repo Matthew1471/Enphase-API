@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+This retrieves the information and status of the live status functionality. The MQTT client and meter states and the counters supporting it.
 
 == Introduction
 
@@ -39,4 +39,289 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/ivp/livedata/status` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`connection`
+|Object
+|`Connection` object
+|Details about the live data connection.
+
+|`meters`
+|Object
+|`Meters` object
+|Details about the meters.
+
+|`tasks`
+|Object
+|`Tasks` object
+|Details about the tasks.
+
+|`counters`
+|Object
+|`Counters` object
+|Details about a series of counters.
+
+|===
+
+=== `Connection` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`mqtt_state`
+|String
+|String
+|The MQTT broker state.
+
+|`prov_state`
+|String
+|String
+|The provisioning state.
+
+|`auth_state`
+|String
+|String
+|The authentication state.
+
+|`sc_stream`
+|String
+|String
+|Whether live data is being written to the stream currently.
+
+|`sc_debug`
+|String
+|String
+|Whether data is being written to the debug stream.
+
+|===
+
+=== `Meters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`last_update`
+|Number
+|Number
+|An epoch timestamp of when data was last collected from the meters.
+
+|`soc`
+|Number
+|Number
+|The State of Charge of any storage.
+
+|`main_relay_state`
+|Number
+|Number
+|The state of the main relay.
+
+|`gen_relay_state`
+|Number
+|Number
+|The generator relay state.
+
+|`backup_bat_mode`
+|Number
+|Number
+|The backup battery mode.
+
+|`backup_soc`
+|Number
+|Number
+|The State of Charge of the backup battery.
+
+|`pv`
+|Object
+|`MeterResult` object
+|The photovoltaic (PV) meter result.
+
+|`storage`
+|Object
+|`MeterResult` object
+|The battery storage meter result.
+
+|`grid`
+|Object
+|`MeterResult` object
+|The grid meter result.
+
+|`load`
+|Object
+|`MeterResult` object
+|The load meter result.
+
+|`generator`
+|Object
+|`MeterResult` object
+|The generator meter result.
+
+|===
+
+=== `MeterResult` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`agg_p_mw`
+|Number
+|Number
+|Aggregate Power in milliwatts (mW)
+
+|`agg_s_mva`
+|Number
+|Number
+|Aggregate apparent power in milli volt-amperes (mVA).
+
+|===
+
+=== `Tasks` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`task_id`
+|Number
+|Number
+|The ID number of the most recent task processed.
+
+|`timestamp`
+|Number
+|Number
+|The unix epoch timestamp of the last task processed.
+
+|===
+
+=== `Counters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`main_CfgLoad`
+|Number
+|Number
+|The number of times the configuration has been loaded.
+
+|`main_CfgChanged`
+|Number
+|Number
+|The number of times the configuration has been changed.
+
+|`main_taskUpdate`
+|Number
+|Number
+|The number of times a task has updated.
+
+|`MqttClient_publish`
+|Number
+|Number
+|The number of times the MQTT client has published a message.
+
+|`MqttClient_live_debug`
+|Number
+|Number
+|The number of times the MQTT client has published a debug message.
+
+|`MqttClient_respond`
+|Number
+|Number
+|The number of times the MQTT client has responded to a request.
+
+|`MqttClient_msgarrvd`
+|Number
+|Number
+|The number of messages that have been delievered to the MQTT client.
+
+|`MqttClient_create`
+|Number
+|Number
+|The number of times an instance of the MQTT client has been created.
+
+|`MqttClient_setCallbacks`
+|Number
+|Number
+|The number of times the callback has been set on the MQTT to process messages.
+
+|`MqttClient_connect`
+|Number
+|Number
+|The number of times a connection has been made with the MQTT client to the broker.
+
+|`MqttClient_connect_err`
+|Number
+|Number
+|The number of times the MQTT client has failed to connect.
+
+|`MqttClient_connect_Err`
+|Number
+|Number
+|Appears to be a duplicate of `MqttClient_connect_err`.
+
+|`MqttClient_subscribe`
+|Number
+|Number
+|The number of times the MQTT client has subscribed to a topic.
+
+|`SSL_Keys_Create`
+|Number
+|Number
+|The number of Secure Socket Layer (SSL) or Transport Layer Security (TLS) keys that have been created.
+
+|`sc_hdlDataPub`
+|Number
+|Number
+|The number of times the hardware description language (HDL) has been published?
+
+|`sc_SendStreamCtrl`
+|Number
+|Number
+|The number of times the send stream functionality has been controlled.
+
+|`rest_Status`
+|Number
+|Number
+|The number of API REST calls the Gateway has handled.
+
+|===
+
+== Examples
+
+=== Get Live Data Status
+
+.GET */ivp/livedata/status* Response
+[source,json,subs="+quotes"]
+----
+{"connection": {"mqtt_state": "connected", "prov_state": "configured", "auth_state": "ok", "sc_stream": "enabled", "sc_debug": "disabled"}, "meters": {"last_update": 1686081089, "soc": 0, "main_relay_state": 1, "gen_relay_state": 5, "backup_bat_mode": 1, "backup_soc": 0, "pv": {"agg_p_mw": 29212, "agg_s_mva": 248309}, "storage": {"agg_p_mw": 0, "agg_s_mva": 0}, "grid": {"agg_p_mw": 340582, "agg_s_mva": 934790}, "load": {"agg_p_mw": 369794, "agg_s_mva": 1183099}, "generator": {"agg_p_mw": 0, "agg_s_mva": 0}}, "tasks": {"task_id": 1813978567, "timestamp": 1685743309}, "counters": {"main_CfgLoad": 1, "main_CfgChanged": 1, "main_taskUpdate": 9, "MqttClient_publish": 280675, "MqttClient_live_debug": 653, "MqttClient_respond": 805, "MqttClient_msgarrvd": 822, "MqttClient_create": 117899, "MqttClient_setCallbacks": 117899, "MqttClient_connect": 117899, "MqttClient_connect_err": 115608, "MqttClient_connect_Err": 115608, "MqttClient_subscribe": 2291, "SSL_Keys_Create": 117899, "sc_hdlDataPub": 282509, "sc_SendStreamCtrl": 1050, "rest_Status": 71872}}
+----

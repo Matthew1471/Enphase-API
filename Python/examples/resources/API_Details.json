@@ -1043,6 +1043,10 @@
         }
     },
     "IVP - Live Data - Status": {
+        "description": {
+            "long": "This retrieves the information and status of the live status functionality. The MQTT client and meter states and the counters supporting it.",
+            "short": "Get live data streaming status."
+        },
         "documentation": "IVP/LiveData/Status.adoc",
         "name": "Status",
         "request": {
@@ -1053,6 +1057,78 @@
                 }
             ],
             "uri": "ivp/livedata/status"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "connection": "Details about the live data connection.",
+                    "counters": "Details about a series of counters.",
+                    "meters": "Details about the meters.",
+                    "tasks": "Details about the tasks."
+                },
+                "Connection": {
+                    "auth_state": "The authentication state.",
+                    "mqtt_state": "The MQTT broker state.",
+                    "prov_state": "The provisioning state.",
+                    "sc_debug": "Whether data is being written to the debug stream.",
+                    "sc_stream": "Whether live data is being written to the stream currently."
+                },
+                "Counters": {
+                    "main_CfgChanged": "The number of times the configuration has been changed.",
+                    "main_CfgLoad": "The number of times the configuration has been loaded.",
+                    "main_taskUpdate": "The number of times a task has updated.",
+                    "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
+                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
+                    "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
+                    "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
+                    "MqttClient_publish": "The number of times the MQTT client has published a message.",
+                    "MqttClient_respond": "The number of times the MQTT client has responded to a request.",
+                    "MqttClient_setCallbacks": "The number of times the callback has been set on the MQTT to process messages.",
+                    "MqttClient_subscribe": "The number of times the MQTT client has subscribed to a topic.",
+                    "rest_Status": "The number of API REST calls the Gateway has handled.",
+                    "sc_hdlDataPub": "The number of times the hardware description language (HDL) has been published?",
+                    "sc_SendStreamCtrl": "The number of times the send stream functionality has been controlled.",
+                    "SSL_Keys_Create": "The number of Secure Socket Layer (SSL) or Transport Layer Security (TLS) keys that have been created."
+                },
+                "MeterResult": {
+                    "agg_p_mw": "Aggregate Power in milliwatts (mW)",
+                    "agg_s_mva": "Aggregate apparent power in milli volt-amperes (mVA)."
+                },
+                "Meters": {
+                    "backup_bat_mode": "The backup battery mode.",
+                    "backup_soc": "The State of Charge of the backup battery.",
+                    "gen_relay_state": "The generator relay state.",
+                    "generator": {
+                        "description": "The generator meter result.",
+                        "value_name": "MeterResult"
+                    },
+                    "grid": {
+                        "description": "The grid meter result.",
+                        "value_name": "MeterResult"
+                    },
+                    "last_update": "An epoch timestamp of when data was last collected from the meters.",
+                    "load": {
+                        "description": "The load meter result.",
+                        "value_name": "MeterResult"
+                    },
+                    "main_relay_state": "The state of the main relay.",
+                    "pv": {
+                        "description": "The photovoltaic (PV) meter result.",
+                        "value_name": "MeterResult"
+                    },
+                    "soc": "The State of Charge of any storage.",
+                    "storage": {
+                        "description": "The battery storage meter result.",
+                        "value_name": "MeterResult"
+                    }
+                },
+                "Tasks": {
+                    "task_id": "The ID number of the most recent task processed.",
+                    "timestamp": "The unix epoch timestamp of the last task processed."
+                }
+            }
         }
     },
     "IVP - Live Data - Stream": {
