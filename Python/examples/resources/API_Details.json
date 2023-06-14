@@ -728,25 +728,190 @@
             "uri": "installer/xapi"
         }
     },
+    "IVP - Active Ripple Filter (ARF) - Profile - Multimode - Off Grid": {
+        "description": {
+            "long": "This endpoint obtains the Distributed Energy Resources (DER) parameters for the multi-mode inverter when it is running off-grid.",
+            "short": "Get or set the profile for the multi-mode inverter when running off-grid."
+        },
+        "documentation": "IVP/ARF/Profile/Multimode/Off_Grid.adoc",
+        "name": "Off Grid",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Off Grid Profile",
+                    "response_json": "{\"profile\": {\"profile_type\": \"Private profile\", \"name\": \"Multi Mode OffGrid Profile Parameters\", \"description\": \"Multi Mode Profile Parameters for OffGrid\", \"MultiModeProfileParameters\": {\"FRT\": {\"PTUF1\": {\"pattr\": {\"crvPts\": {\"objref\": \"FRT/PTUF1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 1000, \"y\": 50, \"z\": 0}, {\"x\": 30000, \"y\": 50, \"z\": 0}, {\"x\": 30000, \"y\": 56.4, \"z\": 0}, {\"x\": 600000, \"y\": 56.4, \"z\": 0}, {\"x\": 600000, \"y\": 57, \"z\": 0}]}}}, \"PTOF1\": {\"pattr\": {\"crvPts\": {\"objref\": \"FRT/PTOF1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 5000, \"y\": 65, \"z\": 0}, {\"x\": 30000, \"y\": 65, \"z\": 0}, {\"x\": 30000, \"y\": 63.4, \"z\": 0}, {\"x\": 600000, \"y\": 63.4, \"z\": 0}, {\"x\": 600000, \"y\": 63, \"z\": 0}]}}}}, \"VRT\": {\"PTUV1\": {\"pattr\": {\"crvPts\": {\"objref\": \"VRT/PTUV1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 100, \"y\": 50, \"z\": 0}, {\"x\": 500, \"y\": 50, \"z\": 0}, {\"x\": 500, \"y\": 60, \"z\": 0}, {\"x\": 1000, \"y\": 60, \"z\": 0}, {\"x\": 1000, \"y\": 70, \"z\": 0}, {\"x\": 20500, \"y\": 70, \"z\": 0}, {\"x\": 20500, \"y\": 88, \"z\": 0}]}, \"numPts\": {\"objref\": \"VRT/PTUV1.MD.numPts\", \"type\": \"::agf::model::BtInt16u\", \"value\": 7}}}, \"PTOV1\": {\"pattr\": {\"crvPts\": {\"objref\": \"VRT/PTOV1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 50, \"y\": 120, \"z\": 0}, {\"x\": 1000, \"y\": 120, \"z\": 0}, {\"x\": 1000, \"y\": 110, \"z\": 0}]}, \"numPts\": {\"objref\": \"VRT/PTOV1.MD.numPts\", \"type\": \"::agf::model::BtInt16u\", \"value\": 3}}}}}}}"
+                }
+            ],
+            "uri": "ivp/arf/profile/multimode/off_grid"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "profile": "An instance of an Active Ripple Filter (ARF) profile."
+                },
+                "CurveNumberOfPoints": {
+                    "objref": "The object reference.",
+                    "type": "The type of the value.",
+                    "value": "The value."
+                },
+                "CurvePoints": {
+                    "objref": "The object reference.",
+                    "type": "The type of the value.",
+                    "value": {
+                        "description": "The value.",
+                        "value_name": "CurvePointValue"
+                    }
+                },
+                "CurvePointValue": {
+                    "x": "The X value.",
+                    "y": "The Y value.",
+                    "z": "The Z value?"
+                },
+                "FRT": {
+                    "PTOF1": {
+                        "description": "Time Over-Frequency Protection.",
+                        "value_name": "PairAttributes"
+                    },
+                    "PTUF1": {
+                        "description": "Time Under-Frequency Protection.",
+                        "value_name": "PairAttributes"
+                    }
+                },
+                "MultiModeProfileParameters": {
+                    "FRT": {
+                        "description": "Frequency Ride-Through",
+                        "value_name": "FRT"
+                    },
+                    "VRT": {
+                        "description": "Voltage Ride-Through",
+                        "value_name": "VRT"
+                    }
+                },
+                "PairAttributes": {
+                    "pattr": "A pair of attributes value."
+                },
+                "PairAttributes.Pattr": {
+                    "crvPts": {
+                        "description": "Curve Points",
+                        "value_name": "CurvePoints"
+                    },
+                    "numPts": {
+                        "description": "Curve Number of Points",
+                        "value_name": "CurveNumberOfPoints"
+                    }
+                },
+                "Profile": {
+                    "description": "A description of the profile.",
+                    "MultiModeProfileParameters": {
+                        "description": "The parameters for this multi-mode DER profile.",
+                        "value_name": "MultiModeProfileParameters"
+                    },
+                    "name": "The name of the profile.",
+                    "profile_type": "The profile type."
+                },
+                "VRT": {
+                    "PTOV1": {
+                        "description": "Time Over-Voltage Protection",
+                        "value_name": "PairAttributes"
+                    },
+                    "PTUV1": {
+                        "description": "Time Under-Voltage Protection.",
+                        "value_name": "PairAttributes"
+                    }
+                }
+            }
+        }
+    },
+    "IVP - Active Ripple Filter (ARF) - Profile - Multimode - On Grid": {
+        "description": {
+            "long": "This endpoint obtains the Distributed Energy Resources (DER) parameters for the multi-mode inverter when it is running on-grid.",
+            "short": "Get or set the profile for the multi-mode inverter when running on-grid."
+        },
+        "documentation": "IVP/ARF/Profile/Multimode/On_Grid.adoc",
+        "name": "On Grid",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get On Grid Profile",
+                    "response_json": "{\"profile\": {\"profile_type\": \"Private profile\", \"name\": \"Multi Mode OnGrid Profile Parameters\", \"description\": \"Multi Mode Profile Parameters for OnGrid\", \"MultiModeProfileParameters\": {\"FRT\": {\"PTUF1\": {\"pattr\": {\"crvPts\": {\"objref\": \"FRT/PTUF1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 1160, \"y\": 56, \"z\": 0}, {\"x\": 60000, \"y\": 56, \"z\": 0}, {\"x\": 60000, \"y\": 57, \"z\": 0}]}}}, \"PTOF1\": {\"pattr\": {\"crvPts\": {\"objref\": \"FRT/PTOF1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 1160, \"y\": 64, \"z\": 0}, {\"x\": 60000, \"y\": 64, \"z\": 0}, {\"x\": 60000, \"y\": 63, \"z\": 0}]}}}}, \"VRT\": {\"PTUV1\": {\"pattr\": {\"crvPts\": {\"objref\": \"VRT/PTUV1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 2000, \"y\": 50, \"z\": 0}, {\"x\": 50000, \"y\": 50, \"z\": 0}, {\"x\": 50000, \"y\": 88, \"z\": 0}]}}}, \"PTOV1\": {\"pattr\": {\"crvPts\": {\"objref\": \"VRT/PTOV1.MD.crvPts\", \"type\": \"::agf::model::PointArr\", \"value\": [{\"x\": 160, \"y\": 120, \"z\": 0}, {\"x\": 14000, \"y\": 120, \"z\": 0}, {\"x\": 14000, \"y\": 110, \"z\": 0}]}}}}}}}"
+                }
+            ],
+            "uri": "ivp/arf/profile/multimode/on_grid"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "profile": "An instance of an Active Ripple Filter (ARF) profile."
+                },
+                "CurvePoints": {
+                    "objref": "The object reference.",
+                    "type": "The type of the value.",
+                    "value": {
+                        "description": "The value.",
+                        "value_name": "CurvePointValue"
+                    }
+                },
+                "CurvePointValue": {
+                    "x": "The X value.",
+                    "y": "The Y value.",
+                    "z": "The Z value?"
+                },
+                "FRT": {
+                    "PTOF1": {
+                        "description": "Time Over-Frequency Protection.",
+                        "value_name": "PairAttributes"
+                    },
+                    "PTUF1": {
+                        "description": "Time Under-Frequency Protection.",
+                        "value_name": "PairAttributes"
+                    }
+                },
+                "MultiModeProfileParameters": {
+                    "FRT": {
+                        "description": "Frequency Ride-Through",
+                        "value_name": "FRT"
+                    },
+                    "VRT": {
+                        "description": "Voltage Ride-Through",
+                        "value_name": "VRT"
+                    }
+                },
+                "PairAttributes": {
+                    "pattr": "A pair of attributes value."
+                },
+                "PairAttributes.Pattr": {
+                    "crvPts": {
+                        "description": "Curve Points",
+                        "value_name": "CurvePoints"
+                    }
+                },
+                "Profile": {
+                    "description": "A description of the profile.",
+                    "MultiModeProfileParameters": {
+                        "description": "The parameters for this multi-mode DER profile.",
+                        "value_name": "MultiModeProfileParameters"
+                    },
+                    "name": "The name of the profile.",
+                    "profile_type": "The profile type."
+                },
+                "VRT": {
+                    "PTOV1": {
+                        "description": "Time Over-Voltage Protection",
+                        "value_name": "PairAttributes"
+                    },
+                    "PTUV1": {
+                        "description": "Time Under-Voltage Protection.",
+                        "value_name": "PairAttributes"
+                    }
+                }
+            }
+        }
+    },
     "IVP - Analog-to-Digital Converter (ADC) - Relaxed Parameters - Add Relaxed Parameters": {
         "documentation": "IVP/ADC/RelaxedParams/Add.adoc",
         "name": "Add Relaxed Parameters",
         "request": {
             "uri": "ivp/adc/relaxedparams/add"
-        }
-    },
-    "IVP - ARF - Profile - Multimode - Off Grid": {
-        "documentation": "IVP/ARF/Profile/Multimode/Off_Grid.adoc",
-        "name": "Off Grid",
-        "request": {
-            "uri": "ivp/arf/profile/multimode/off_grid"
-        }
-    },
-    "IVP - ARF - Profile - Multimode - On Grid": {
-        "documentation": "IVP/ARF/Profile/Multimode/On_Grid.adoc",
-        "name": "On Grid",
-        "request": {
-            "uri": "ivp/arf/profile/multimode/on_grid"
         }
     },
     "IVP - EH": {
@@ -795,6 +960,13 @@
         "documentation": "IVP/Ensemble/Device_Status.adoc",
         "name": "Device Status",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Device Status",
+                    "response_json": "{\"12345\": {\"device_type\": 32733352}}",
+                    "uri": "serial_num=12345"
+                }
+            ],
             "uri": "ivp/ensemble/device_status"
         }
     },
@@ -816,6 +988,12 @@
         "documentation": "IVP/Ensemble/Errors.adoc",
         "name": "Errors",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Energy System Errors",
+                    "response_json": "{\"enpower_error_flags\": 0}"
+                }
+            ],
             "uri": "ivp/ensemble/errors"
         }
     },
@@ -823,6 +1001,12 @@
         "documentation": "IVP/Ensemble/Generator.adoc",
         "name": "Generator Status",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Generator Status",
+                    "response_json": "{\"admin_state\": \"unknown\", \"oper_state\": \"open\", \"admin_mode\": 0, \"schedule\": 0, \"start_soc\": 100, \"stop_soc\": -1, \"exc_on\": 0, \"present\": 1, \"type\": 0}"
+                }
+            ],
             "uri": "ivp/ensemble/generator"
         }
     },
@@ -1078,8 +1262,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",

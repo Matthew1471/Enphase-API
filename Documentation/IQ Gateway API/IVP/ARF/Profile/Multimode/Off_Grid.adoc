@@ -1,4 +1,4 @@
-= IVP - ARF - Profile - Multimode - Off Grid
+= IVP - Active Ripple Filter (ARF) - Profile - Multimode - Off Grid
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+This endpoint obtains the Distributed Energy Resources (DER) parameters for the multi-mode inverter when it is running off-grid.
 
 == Introduction
 
@@ -42,3 +42,240 @@ More details on the project are available from the link:../../../../../../README
 A HTTP `GET` to the `/ivp/arf/profile/multimode/off_grid` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`profile`
+|Object
+|`Profile` object
+|An instance of an Active Ripple Filter (ARF) profile.
+
+|===
+
+=== `Profile` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`profile_type`
+|String
+|String
+|The profile type.
+
+|`name`
+|String
+|String
+|The name of the profile.
+
+|`description`
+|String
+|String
+|A description of the profile.
+
+|`MultiModeProfileParameters`
+|Object
+|`MultiModeProfileParameters` object
+|The parameters for this multi-mode DER profile.
+
+|===
+
+=== `MultiModeProfileParameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`FRT`
+|Object
+|`FRT` object
+|Frequency Ride-Through
+
+|`VRT`
+|Object
+|`VRT` object
+|Voltage Ride-Through
+
+|===
+
+=== `FRT` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`PTUF1`
+|Object
+|`PairAttributes` object
+|Time Under-Frequency Protection.
+
+|`PTOF1`
+|Object
+|`PairAttributes` object
+|Time Over-Frequency Protection.
+
+|===
+
+=== `PairAttributes` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`pattr`
+|Object
+|`PairAttributes.Pattr` object
+|A pair of attributes value.
+
+|===
+
+=== `PairAttributes.Pattr` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`crvPts`
+|Object
+|`CurvePoints` object
+|Curve Points
+
+|`numPts` (Optional)
+|Object
+|`CurveNumberOfPoints` object
+|Curve Number of Points
+
+|===
+
+=== `CurvePoints` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`objref`
+|String
+|String
+|The object reference.
+
+|`type`
+|String
+|String
+|The type of the value.
+
+|`value`
+|Array(Object)
+|Array of `CurvePointValue`
+|The value.
+
+|===
+
+=== `CurvePointValue` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`x`
+|Number
+|Number
+|The X value.
+
+|`y`
+|Number
+|Number
+|The Y value.
+
+|`z`
+|Number
+|Number
+|The Z value?
+
+|===
+
+=== `VRT` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`PTUV1`
+|Object
+|`PairAttributes` object
+|Time Under-Voltage Protection.
+
+|`PTOV1`
+|Object
+|`PairAttributes` object
+|Time Over-Voltage Protection
+
+|===
+
+=== `CurveNumberOfPoints` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`objref`
+|String
+|String
+|The object reference.
+
+|`type`
+|String
+|String
+|The type of the value.
+
+|`value`
+|Number
+|Number
+|The value.
+
+|===
+
+== Examples
+
+=== Get Off Grid Profile
+
+.GET */ivp/arf/profile/multimode/off_grid* Response
+[source,json,subs="+quotes"]
+----
+{"profile": {"profile_type": "Private profile", "name": "Multi Mode OffGrid Profile Parameters", "description": "Multi Mode Profile Parameters for OffGrid", "MultiModeProfileParameters": {"FRT": {"PTUF1": {"pattr": {"crvPts": {"objref": "FRT/PTUF1.MD.crvPts", "type": "::agf::model::PointArr", "value": [{"x": 1000, "y": 50, "z": 0}, {"x": 30000, "y": 50, "z": 0}, {"x": 30000, "y": 56.4, "z": 0}, {"x": 600000, "y": 56.4, "z": 0}, {"x": 600000, "y": 57, "z": 0}]}}}, "PTOF1": {"pattr": {"crvPts": {"objref": "FRT/PTOF1.MD.crvPts", "type": "::agf::model::PointArr", "value": [{"x": 5000, "y": 65, "z": 0}, {"x": 30000, "y": 65, "z": 0}, {"x": 30000, "y": 63.4, "z": 0}, {"x": 600000, "y": 63.4, "z": 0}, {"x": 600000, "y": 63, "z": 0}]}}}}, "VRT": {"PTUV1": {"pattr": {"crvPts": {"objref": "VRT/PTUV1.MD.crvPts", "type": "::agf::model::PointArr", "value": [{"x": 100, "y": 50, "z": 0}, {"x": 500, "y": 50, "z": 0}, {"x": 500, "y": 60, "z": 0}, {"x": 1000, "y": 60, "z": 0}, {"x": 1000, "y": 70, "z": 0}, {"x": 20500, "y": 70, "z": 0}, {"x": 20500, "y": 88, "z": 0}]}, "numPts": {"objref": "VRT/PTUV1.MD.numPts", "type": "::agf::model::BtInt16u", "value": 7}}}, "PTOV1": {"pattr": {"crvPts": {"objref": "VRT/PTOV1.MD.crvPts", "type": "::agf::model::PointArr", "value": [{"x": 50, "y": 120, "z": 0}, {"x": 1000, "y": 120, "z": 0}, {"x": 1000, "y": 110, "z": 0}]}, "numPts": {"objref": "VRT/PTOV1.MD.numPts", "type": "::agf::model::BtInt16u", "value": 3}}}}}}}
+----
