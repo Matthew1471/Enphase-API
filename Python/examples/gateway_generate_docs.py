@@ -607,8 +607,8 @@ def get_example_section(uri, example_item):
         result += '\n.'
         result += (example_item['method'] if 'method' in example_item else 'GET')
         result += ' */' + uri
-        if 'uri' in example_item:
-            result += '?' + example_item['uri']
+        if 'request_query' in example_item:
+            result += '?' + example_item['request_query']
         result += '* ' + example_type + '\n'
 
         # We can override JSON responses and present raw text instead.
@@ -697,8 +697,8 @@ def process_single_endpoint(gateway, key, endpoint):
                     # Perform a GET request on the resource.
                     print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
                     request_uri = '/' + endpoint_request['uri']
-                    if 'uri' in example:
-                        request_uri += '?' + example['uri']
+                    if 'request_query' in example:
+                        request_uri += '?' + example['request_query']
 
                     # The API supports a mixture of JSON and form payloads.
                     if 'request_json' in example:
