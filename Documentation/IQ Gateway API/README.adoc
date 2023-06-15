@@ -245,7 +245,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - ARF - Profile - Multimode
+==== IVP - Active Ripple Filter (ARF) - Profile - Multimode
 
 [cols="1,1,2", options="header"]
 |===

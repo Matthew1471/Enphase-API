@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Legacy API providing `api_version`, `upgrade_init`, `upgrade_status`, `restart_page_process`, `auxup` (start file upload server), `upgrade_start` (start an upgrade), `upgrade_resume` (resume an upgrade), `update_profile_key`, `upload` (upload a file).
 
 == Introduction
 

@@ -406,6 +406,9 @@
         }
     },
     "General - Information": {
+        "description": {
+            "short": "Obtain a summary of the gateway’s software status."
+        },
         "documentation": "General/Info.adoc",
         "name": "Information",
         "request": {
@@ -413,6 +416,9 @@
         }
     },
     "General - Inv": {
+        "description": {
+            "short": "Get ESUB circuit board status."
+        },
         "documentation": "General/Inv.adoc",
         "name": "Inv",
         "request": {
@@ -420,6 +426,9 @@
         }
     },
     "General - Inventory": {
+        "description": {
+            "short": "Lists the inventory of `PCU` (Power Conditioning Unit, also called a \"Micro-inverter\"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called a \"Q Relay\") and `ESUB` (Electronic SUB-panel, also called a \"IQ System Controller\" formerly \"Enpower\") devices."
+        },
         "documentation": "General/Inventory.adoc",
         "name": "Inventory",
         "request": {
@@ -603,6 +612,9 @@
         }
     },
     "General - Provision": {
+        "description": {
+            "short": "Adds or deletes inverters."
+        },
         "documentation": "General/Prov.adoc",
         "name": "Provision",
         "request": {
@@ -610,6 +622,9 @@
         }
     },
     "General - Upload": {
+        "description": {
+            "short": "Upload file package."
+        },
         "documentation": "General/Upload.adoc",
         "name": "Upload",
         "request": {
@@ -617,6 +632,9 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Details": {
+        "description": {
+            "short": "Get the current Advanced Grid Functionality (AGF) profile."
+        },
         "documentation": "Installer/AGF/Details.adoc",
         "name": "Details",
         "request": {
@@ -624,6 +642,9 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Index": {
+        "description": {
+            "short": "List uploaded Advanced Grid Functionality (AGF) profile(s)."
+        },
         "documentation": "Installer/AGF/Index.adoc",
         "name": "Index",
         "request": {
@@ -631,6 +652,9 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Inverters Phase": {
+        "description": {
+            "short": "List each inverter installed by phase."
+        },
         "documentation": "Installer/AGF/Inverters_Phase.adoc",
         "name": "Inverters_Phase",
         "request": {
@@ -638,6 +662,9 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Inverters Status": {
+        "description": {
+            "short": "Get the status of each inverter."
+        },
         "documentation": "Installer/AGF/Inverters_Status.adoc",
         "name": "Inverters_Status",
         "request": {
@@ -680,6 +707,9 @@
         }
     },
     "Installer - Advanced Grid Functionality (AGF) - Upload Profile Package": {
+        "description": {
+            "short": "Upload a new Advanced Grid Functionality (AGF) profile."
+        },
         "documentation": "Installer/AGF/Upload_Profile_Package.adoc",
         "name": "Upload Profile Package",
         "request": {
@@ -687,6 +717,9 @@
         }
     },
     "Installer - General - Power Conditioning Unit (PCU) Communication Check": {
+        "description": {
+            "short": "Check communication with the inverter(s) (also called \"Power Conditioning Unit (PCU)\")."
+        },
         "documentation": "Installer/PCU_Comm_Check.adoc",
         "name": "Power Conditioning Unit (PCU) Communication Check",
         "request": {
@@ -694,6 +727,9 @@
         }
     },
     "Installer - General - Secure SHell (SSH) Revoke List": {
+        "description": {
+            "short": "Get the list of Secure SHell (SSH) revoked keys."
+        },
         "documentation": "Installer/SSH_Revoke_List.adoc",
         "name": "Secure SHell (SSH) Revoke List",
         "request": {
@@ -701,6 +737,9 @@
         }
     },
     "Installer - General - Upgrade Start": {
+        "description": {
+            "short": "Start an upgrade of a gateway or Energy Management Unit (EMU)."
+        },
         "documentation": "Installer/Upgrade_Start.adoc",
         "name": "Upgrade Start",
         "request": {
@@ -708,6 +747,9 @@
         }
     },
     "Installer - General - Upgrade Status": {
+        "description": {
+            "short": "Get the status of a gateway or Energy Management Unit (EMU) upgrade."
+        },
         "documentation": "Installer/Upgrade_Status.adoc",
         "name": "Upgrade Status",
         "request": {
@@ -715,6 +757,9 @@
         }
     },
     "Installer - General - Upload": {
+        "description": {
+            "short": "Upload a file to the gateway or Energy Management Unit (EMU)."
+        },
         "documentation": "Installer/Upload.adoc",
         "name": "Upload",
         "request": {
@@ -722,6 +767,9 @@
         }
     },
     "Installer - General - xapi": {
+        "description": {
+            "short": "Legacy API providing `api_version`, `upgrade_init`, `upgrade_status`, `restart_page_process`, `auxup` (start file upload server), `upgrade_start` (start an upgrade), `upgrade_resume` (resume an upgrade), `update_profile_key`, `upload` (upload a file)."
+        },
         "documentation": "Installer/xapi.adoc",
         "name": "xapi",
         "request": {
@@ -908,13 +956,23 @@
         }
     },
     "IVP - Analog-to-Digital Converter (ADC) - Relaxed Parameters - Add Relaxed Parameters": {
+        "description": {
+            "long": "This allows you to override M-Series microinverter parameters.",
+            "short": "Overrides M-Series Parameters."
+        },
         "documentation": "IVP/ADC/RelaxedParams/Add.adoc",
         "name": "Add Relaxed Parameters",
         "request": {
+            "methods": {
+                "POST": "Overrides M-Series Parameters."
+            },
             "uri": "ivp/adc/relaxedparams/add"
         }
     },
     "IVP - EH": {
+        "description": {
+            "short": "Get device status (including micro-inverters and meters)."
+        },
         "documentation": "IVP/EH/Devs.adoc",
         "name": "Device Status",
         "request": {
@@ -922,6 +980,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Communication Check": {
+        "description": {
+            "short": "IQ System Controller (formerly \"Enpower\") and IQ Battery (formerly \"Encharge Storage\") communication check."
+        },
         "documentation": "IVP/Ensemble/Comm_Check.adoc",
         "name": "Communication Check",
         "request": {
@@ -929,6 +990,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Data Raw": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data, IQ Battery (formerly \"Encharge Storage\") raw data or IQ System Controller (formerly \"Enpower\") manual override status."
+        },
         "documentation": "IVP/Ensemble/DataRaw.adoc",
         "name": "Data Raw",
         "request": {
@@ -936,6 +1000,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Decommission": {
+        "description": {
+            "short": "Delete an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
+        },
         "documentation": "IVP/Ensemble/Decommission.adoc",
         "name": "Decommission",
         "request": {
@@ -943,6 +1010,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device List": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") CAN device status."
+        },
         "documentation": "IVP/Ensemble/Device_List.adoc",
         "name": "Device List",
         "request": {
@@ -950,6 +1020,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device Provision": {
+        "description": {
+            "short": "Provision an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
+        },
         "documentation": "IVP/Ensemble/Device_Provision.adoc",
         "name": "Device Provision",
         "request": {
@@ -957,6 +1030,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Device Status": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") device status."
+        },
         "documentation": "IVP/Ensemble/Device_Status.adoc",
         "name": "Device Status",
         "request": {
@@ -990,6 +1066,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Dry Contacts": {
+        "description": {
+            "short": "Get or set the dry contact status."
+        },
         "documentation": "IVP/Ensemble/Dry_Contacts.adoc",
         "name": "Dry Contacts",
         "request": {
@@ -997,6 +1076,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - ECL Wiring Test": {
+        "description": {
+            "short": "Start or get the results of an IQ Battery (formerly \"Encharge Storage\") wiring test."
+        },
         "documentation": "IVP/Ensemble/ECL_Wiring_Test.adoc",
         "name": "ECL Wiring Test",
         "request": {
@@ -1004,19 +1086,42 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Errors": {
+        "description": {
+            "short": "Get or set the IQ System Controller (formerly \"Enpower\") error state."
+        },
         "documentation": "IVP/Ensemble/Errors.adoc",
         "name": "Errors",
         "request": {
             "examples": [
                 {
-                    "name": "Get Energy System Errors",
+                    "name": "Get IQ System Controller (formerly \"Enpower\") System Errors",
                     "response_json": "{\"enpower_error_flags\": 0}"
+                },
+                {
+                    "method": "POST",
+                    "name": "Clear IQ System Controller (formerly \"Enpower\") System Errors",
+                    "request_json": "{\"errors_to_clear\": 0}",
+                    "response_json": "{\"err\": \"404 - Not Found\", \"msg\": \"No enpowers found for clearing the errors\"}"
                 }
             ],
+            "methods": {
+                "GET": "Get the error flags for the IQ System Controller (formerly \"Enpower\").",
+                "POST": "Set the manual overide status for the IQ System Controller (formerly \"Enpower\")."
+            },
             "uri": "ivp/ensemble/errors"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "enpower_error_flags": "The IQ System Controller (formerly \"Enpower\") error flags for the system."
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Status": {
+        "description": {
+            "short": "Get or set the IQ System Controller (formerly \"Enpower\") generator status."
+        },
         "documentation": "IVP/Ensemble/Generator.adoc",
         "name": "Generator Status",
         "request": {
@@ -1030,6 +1135,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
+        "description": {
+            "short": "Start or get the results of the generator wiring test."
+        },
         "documentation": "IVP/Ensemble/Gen_Wiring_Test.adoc",
         "name": "Generator Wiring Test",
         "request": {
@@ -1129,6 +1237,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Profile Status": {
+        "description": {
+            "short": "Get or set the Enphase(R) Energy System (formerly \"Ensemble\") Advanced Grid Functionality (AGF) profile status."
+        },
         "documentation": "IVP/Ensemble/Profile_Status.adoc",
         "name": "Profile Status",
         "request": {
@@ -1136,6 +1247,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Relay": {
+        "description": {
+            "short": "Get the status of or toggle the grid relay."
+        },
         "documentation": "IVP/Ensemble/Relay.adoc",
         "name": "Relay",
         "request": {
@@ -1143,6 +1257,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Reset Device": {
+        "description": {
+            "short": "Reset a CAN device for IQ System Controller (formerly \"Enpower\") manual override."
+        },
         "documentation": "IVP/Ensemble/Reset_Device.adoc",
         "name": "Reset Device",
         "request": {
@@ -1150,6 +1267,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - SecCtrl": {
+        "description": {
+            "short": "Get the aggregate State Of Charge (SOC)."
+        },
         "documentation": "IVP/Ensemble/SecCtrl.adoc",
         "name": "SecCtrl",
         "request": {
@@ -1157,6 +1277,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Sleep": {
+        "description": {
+            "short": "Get, set or cancel the IQ Battery (formerly \"Encharge Storage\") sleep mode."
+        },
         "documentation": "IVP/Ensemble/Sleep.adoc",
         "name": "Sleep",
         "request": {
@@ -1164,6 +1287,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Status": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") status."
+        },
         "documentation": "IVP/Ensemble/Status.adoc",
         "name": "Status",
         "request": {
@@ -1171,6 +1297,9 @@
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Submodules": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") submodules."
+        },
         "documentation": "IVP/Ensemble/Submod.adoc",
         "name": "Submodules",
         "request": {
@@ -1178,6 +1307,9 @@
         }
     },
     "IVP - Firmware Manager - Config": {
+        "description": {
+            "short": "Get or set Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) automatic update settings and/or meter configuration status."
+        },
         "documentation": "IVP/FirmwareManager/Config.adoc",
         "name": "Config",
         "request": {
@@ -1185,6 +1317,9 @@
         }
     },
     "IVP - Firmware Manager - State": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) update state."
+        },
         "documentation": "IVP/FirmwareManager/State.adoc",
         "name": "State",
         "request": {
@@ -1192,6 +1327,9 @@
         }
     },
     "IVP - Firmware Manager - Update All": {
+        "description": {
+            "short": "Update all Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) and IQ System Controller (formerly \"Enpower\") devices."
+        },
         "documentation": "IVP/FirmwareManager/Update_All.adoc",
         "name": "Update All",
         "request": {
@@ -1211,6 +1349,9 @@
         }
     },
     "IVP - Firmware Manager - Update Single": {
+        "description": {
+            "short": "Update a single Enphase(R) Energy System (formerly \"Ensemble\") or IQ System Controller (formerly \"Enpower\") device."
+        },
         "documentation": "IVP/FirmwareManager/Update_Single.adoc",
         "name": "Update Single",
         "request": {
@@ -1218,6 +1359,9 @@
         }
     },
     "IVP - General - Cellular": {
+        "description": {
+            "short": "Get cellular information."
+        },
         "documentation": "IVP/Cellular.adoc",
         "name": "Cellular",
         "request": {
@@ -1225,6 +1369,9 @@
         }
     },
     "IVP - General - Meters": {
+        "description": {
+            "short": "Get or set internal meter configuration."
+        },
         "documentation": "IVP/Meters.adoc",
         "name": "Meters",
         "request": {
@@ -1232,6 +1379,9 @@
         }
     },
     "IVP - Grest - Profile": {
+        "description": {
+            "short": "Display Advanced Grid Functionality (AGF) profile."
+        },
         "documentation": "IVP/Grest/Profile.adoc",
         "name": "Profile",
         "request": {
@@ -1239,6 +1389,9 @@
         }
     },
     "IVP - Grest - Redetermine Phase": {
+        "description": {
+            "short": "Redetermine phase."
+        },
         "documentation": "IVP/Grest/Local/GS/RedeterminePhase.adoc",
         "name": "Redetermine Phase",
         "request": {
@@ -1335,6 +1488,10 @@
         }
     },
     "IVP - Live Data - Stream": {
+        "description": {
+            "long": "This enables or disables the live data streaming functionality.",
+            "short": "Enable or disable live data streaming."
+        },
         "documentation": "IVP/LiveData/Stream.adoc",
         "name": "Stream",
         "request": {
@@ -1344,18 +1501,15 @@
                     "name": "Enable Live Data Stream",
                     "request_json": "{\"enable\": 1}",
                     "response_json": "{\"sc_stream\": \"enabled\"}"
-                },
-                {
-                    "method": "POST",
-                    "name": "Optional Extra Data?",
-                    "request_json": "{\"enable\": 1, \"mains_admin_state\": 1}",
-                    "response_json": "{\"sc_stream\": \"enabled\"}"
                 }
             ],
             "uri": "ivp/livedata/stream"
         }
     },
     "IVP - Meters - CTS - Update EID": {
+        "description": {
+            "short": "Update specific meter's (by EID) Current Transformer (CT) clamp configuration."
+        },
         "documentation": "IVP/Meters/CTS/EID.adoc",
         "name": "Update EID",
         "request": {
@@ -1363,6 +1517,9 @@
         }
     },
     "IVP - Meters - General - CT Reversal": {
+        "description": {
+            "short": "Get or set specific meter's (by EID) Current Transformer (CT) clamp reverse polarity configuration."
+        },
         "documentation": "IVP/Meters/CTReversal.adoc",
         "name": "CT Reversal",
         "request": {
@@ -1370,6 +1527,9 @@
         }
     },
     "IVP - Meters - General - Current Transformer (CT) Settings": {
+        "description": {
+            "short": "Get internal meter's Current Transformer (CT) clamp settings."
+        },
         "documentation": "IVP/Meters/CTS.adoc",
         "name": "Current Transformer (CT) Settings",
         "request": {
@@ -1377,6 +1537,9 @@
         }
     },
     "IVP - Meters - General - Meter Readings": {
+        "description": {
+            "short": "Returns meter reading information (may be legacy)."
+        },
         "documentation": "IVP/Meters/Reports.adoc",
         "name": "Meter Readings",
         "request": {
@@ -1384,6 +1547,9 @@
         }
     },
     "IVP - Meters - General - Meter Settings": {
+        "description": {
+            "short": "Get or set a specific meter's (by EID) configuration."
+        },
         "documentation": "IVP/Meters/EID.adoc",
         "name": "Meter Settings",
         "request": {
@@ -1391,6 +1557,9 @@
         }
     },
     "IVP - Meters - General - Readings": {
+        "description": {
+            "short": "Get meter's readings."
+        },
         "documentation": "IVP/Meters/Readings.adoc",
         "name": "Readings",
         "request": {
@@ -1398,6 +1567,9 @@
         }
     },
     "IVP - Meters - General - Storage Setting": {
+        "description": {
+            "short": "Get or set storage Current Transformer (CT) clamp status."
+        },
         "documentation": "IVP/Meters/Storage_Setting.adoc",
         "name": "Storage Setting",
         "request": {
@@ -1405,6 +1577,9 @@
         }
     },
     "IVP - Meters - Reports - Consumption Meter Reading": {
+        "description": {
+            "short": "Returns consumption meter reading information (may be legacy)."
+        },
         "documentation": "IVP/Meters/Reports/Consumption.adoc",
         "name": "Consumption Meter Reading",
         "request": {
@@ -1412,6 +1587,9 @@
         }
     },
     "IVP - Meters - Reports - Production Meter Reading": {
+        "description": {
+            "short": "Returns production meter reading information (may be legacy)."
+        },
         "documentation": "IVP/Meters/Reports/Production.adoc",
         "name": "Production Meter Reading",
         "request": {
@@ -1419,6 +1597,9 @@
         }
     },
     "IVP - Mod - Power Mode": {
+        "description": {
+            "short": "Get or set the power production power state for this `envoyDevId` (where EID appears hardcoded as 603980032)."
+        },
         "documentation": "IVP/Mod/EID/Mode/Power.adoc",
         "name": "Power Mode",
         "request": {
@@ -1426,6 +1607,9 @@
         }
     },
     "IVP - Power Electronics Blocks (PEB) - Device Status": {
+        "description": {
+            "short": "Get device status."
+        },
         "documentation": "IVP/PEB/DevStatus.adoc",
         "name": "Device Status",
         "request": {
@@ -1492,6 +1676,9 @@
         }
     },
     "IVP - Power Electronics Blocks (PEB) - Report Settings": {
+        "description": {
+            "short": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten Cloud\")."
+        },
         "documentation": "IVP/PEB/ReportSettings.adoc",
         "name": "Report Settings",
         "request": {
@@ -1499,6 +1686,9 @@
         }
     },
     "IVP - SC - Sched": {
+        "description": {
+            "short": "Set Encharge charging/discharging status."
+        },
         "documentation": "IVP/SC/Sched.adoc",
         "name": "Sched",
         "request": {
@@ -1506,6 +1696,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Distributed Energy Resource (DER) Settings": {
+        "description": {
+            "short": "Get or set Distributed Energy Resource (DER) settings."
+        },
         "documentation": "IVP/SS/DER_Settings.adoc",
         "name": "Distributed Energy Resource (DER) Settings",
         "request": {
@@ -1513,6 +1706,9 @@
         }
     },
     "IVP - Smart Switch (SS) - dpel": {
+        "description": {
+            "short": "Get or set Device Power Export Limits (PEL) settings (Legacy, replaced by AGF)."
+        },
         "documentation": "IVP/SS/dpel.adoc",
         "name": "dpel",
         "request": {
@@ -1520,6 +1716,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Dry Contact Settings": {
+        "description": {
+            "short": "Get or set dry contact settings."
+        },
         "documentation": "IVP/SS/Dry_Contact_Settings.adoc",
         "name": "Dry Contact Settings",
         "request": {
@@ -1527,6 +1726,9 @@
         }
     },
     "IVP - Smart Switch (SS) - ENC Settings": {
+        "description": {
+            "short": "Update limit power output."
+        },
         "documentation": "IVP/SS/ENC_Settings.adoc",
         "name": "ENC Settings",
         "request": {
@@ -1534,6 +1736,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Configuration": {
+        "description": {
+            "short": "Get or set generator configuration."
+        },
         "documentation": "IVP/SS/Gen_Config.adoc",
         "name": "Generator Configuration",
         "request": {
@@ -1541,6 +1746,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Delete": {
+        "description": {
+            "short": "Delete generator."
+        },
         "documentation": "IVP/SS/Gen_Delete.adoc",
         "name": "Generator Delete",
         "request": {
@@ -1548,6 +1756,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Meter Enable": {
+        "description": {
+            "short": "Set generator meter state."
+        },
         "documentation": "IVP/SS/Generator_Meter_Enable.adoc",
         "name": "Generator Meter Enable",
         "request": {
@@ -1555,6 +1766,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Mode": {
+        "description": {
+            "short": "Get or set generator's status for toggle switch."
+        },
         "documentation": "IVP/SS/Gen_Mode.adoc",
         "name": "Generator Mode",
         "request": {
@@ -1562,6 +1776,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Profile": {
+        "description": {
+            "short": "Get or set generator’s profile."
+        },
         "documentation": "IVP/SS/Gen_Profile.adoc",
         "name": "Generator Profile",
         "request": {
@@ -1569,6 +1786,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Generator Schedule": {
+        "description": {
+            "short": "Get or set generator schedule."
+        },
         "documentation": "IVP/SS/Gen_Schedule.adoc",
         "name": "Generator Schedule",
         "request": {
@@ -1576,6 +1796,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Load Control": {
+        "description": {
+            "short": "Add load control kits."
+        },
         "documentation": "IVP/SS/Load_Control.adoc",
         "name": "Load Control",
         "request": {
@@ -1583,6 +1806,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Power Control System (PCS) Settings": {
+        "description": {
+            "short": "Get or set Power Control System (PCS) details."
+        },
         "documentation": "IVP/SS/PCS_Settings.adoc",
         "name": "Power Control System (PCS) Settings",
         "request": {
@@ -1590,6 +1816,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Power Export Limits (PEL) Settings": {
+        "description": {
+            "short": "Get Power Export Limits (PEL) data."
+        },
         "documentation": "IVP/SS/PEL_Settings.adoc",
         "name": "Power Export Limits (PEL) Settings",
         "request": {
@@ -1597,6 +1826,9 @@
         }
     },
     "IVP - Smart Switch (SS) - System Phase Balance": {
+        "description": {
+            "short": "Send phase information."
+        },
         "documentation": "IVP/SS/Sys_Phase_Balance.adoc",
         "name": "System Phase Balance",
         "request": {
@@ -1604,6 +1836,9 @@
         }
     },
     "IVP - Smart Switch (SS) - Third Party (Legacy) - PV": {
+        "description": {
+            "short": "Get, set or delete third-party PV information."
+        },
         "documentation": "IVP/SS/Third Party/PV.adoc",
         "name": "PV",
         "request": {
@@ -1611,6 +1846,9 @@
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Capability": {
+        "description": {
+            "short": "Trip Point Management (TPM) capability."
+        },
         "documentation": "IVP/TPM/Capability.adoc",
         "name": "Capability",
         "request": {
@@ -1618,6 +1856,9 @@
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Parameters": {
+        "description": {
+            "short": "Trip Point Management (TPM) parameters."
+        },
         "documentation": "IVP/TPM/Parameters.adoc",
         "name": "Parameters",
         "request": {
@@ -1625,6 +1866,9 @@
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - Select": {
+        "description": {
+            "short": "Trip Point Management (TPM) select."
+        },
         "documentation": "IVP/TPM/Select.adoc",
         "name": "Select",
         "request": {
@@ -1632,6 +1876,9 @@
         }
     },
     "IVP - Trip Point Management (TPM) (Legacy) - TPM Status": {
+        "description": {
+            "short": "Trip Point Management (TPM) status."
+        },
         "documentation": "IVP/TPM/TPMStatus.adoc",
         "name": "TPM Status",
         "request": {
@@ -1639,6 +1886,9 @@
         }
     },
     "IVP - Zigbee - Pairing Status": {
+        "description": {
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") pairing status."
+        },
         "documentation": "IVP/ZB/Pairing_Status.adoc",
         "name": "Pairing Status",
         "request": {
@@ -1646,6 +1896,9 @@
         }
     },
     "IVP - Zigbee - Provision": {
+        "description": {
+            "short": "Set or delete Enphase(R) Energy System (formerly \"Ensemble\") devices."
+        },
         "documentation": "IVP/ZB/Provision.adoc",
         "name": "Provision",
         "request": {
@@ -1653,6 +1906,9 @@
         }
     },
     "IVP - Zigbee - Reset Device": {
+        "description": {
+            "short": "Reset device for \"IQ System Controller\" (formerly \"Enpower\") manual override."
+        },
         "documentation": "IVP/ZB/Reset_Device.adoc",
         "name": "Reset Device",
         "request": {
@@ -1660,6 +1916,9 @@
         }
     },
     "IVP - Zigbee - Set Phase": {
+        "description": {
+            "short": "Update IQ Battery (formerly \"Encharge Storage\") phase."
+        },
         "documentation": "IVP/ZB/Set_Phase.adoc",
         "name": "Set Phase",
         "request": {
@@ -1667,6 +1926,9 @@
         }
     },
     "IVP - Zigbee - Status": {
+        "description": {
+            "short": "Get Zigbee status."
+        },
         "documentation": "IVP/ZB/Status.adoc",
         "name": "Status",
         "request": {
@@ -1736,6 +1998,9 @@
         }
     },
     "Stream - Power Spectral Density (PSD)": {
+        "description": {
+            "short": "Obtain a continuous stream of Power-Spectral-Density analysis of the Power-Line Communication (PLC)."
+        },
         "documentation": "Stream/PSD.adoc",
         "name": "Power Spectral Density (PSD)",
         "notes": "Idle data is returned if no extra data is provided in the body of the request two types of server-sent events are sent: 1. \"config\" event type: the data is JSON, e.g. {\"plc\": {\"f\": 103, \"bw\": 20}} where f is PLC frequency and bw is PLC bandwidth, both in kHz. 2. \"message\" (default) event type: the data is semicolon delimited pairs of (t,v) where t is in microseconds and v is in arbitrary units.",

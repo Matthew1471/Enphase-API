@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Get Enphase(R) Energy System (formerly "Ensemble") device status.
 
 == Introduction
 
@@ -42,3 +42,63 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/device_status` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Querystring
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_num`
+|Number
+|Number
+|The serial number of the device that is to be queried.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`{serial_num}`
+|Object
+|`DeviceStatus` object
+|The key is set to whatever device serial number the querystring requests information for.
+
+|===
+
+=== `DeviceStatus` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`device_type`
+|Number
+|Number
+|The type of the device. The type number mapping is currently unknown.
+
+|===
+
+== Examples
+
+=== Get Device Status
+
+.GET */ivp/ensemble/device_status?serial_num={serial_num}* Response
+[source,json,subs="+quotes"]
+----
+{"{serial_num}": {"device_type": 32733352}}
+----
