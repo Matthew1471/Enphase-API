@@ -87,7 +87,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`exc_on`
 |Number
 |Number
-|???
+|The exercise mode. This is used to run the generator automatically on a regular interval to keep it in good working condition.
 
 |`present`
 |Number

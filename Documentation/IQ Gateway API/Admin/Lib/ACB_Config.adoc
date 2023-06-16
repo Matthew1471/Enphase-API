@@ -91,12 +91,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Number
 |The serial number of the AC Battery (ACB).
 
-|`sleep_min_soc`
+|`sleep_min_soc` (Optional)
 |Number
 |Number
 |The minimum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode.
 
-|`sleep_max_soc`
+|`sleep_max_soc` (Optional)
 |Number
 |Number
 |The maximum State of Charge (SoC) the battery should charge or discharge to before entering sleep mode.
@@ -122,7 +122,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`message` (Optional)
 |String
 |String
-|The error message.
+|The returned status or error message.
 
 |`backtrace` (Optional)
 |String
@@ -173,4 +173,17 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 [source,json,subs="+quotes"]
 ----
 {"acb_sleep": [{"serial_num": 12345, "sleep_min_soc": 0, "sleep_max_soc": 100}]}
+----
+
+=== Cancel AC Battery Sleep Mode
+
+.DELETE */admin/lib/acb_config.json* Request
+[source,json,subs="+quotes"]
+----
+{"acb_sleep": [{"serial_num": 12345}]}
+----
+.DELETE */admin/lib/acb_config.json* Response
+[source,json,subs="+quotes"]
+----
+{"message": "success"}
 ----

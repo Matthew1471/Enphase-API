@@ -42,3 +42,157 @@ More details on the project are available from the link:../../../README.adoc[pro
 A HTTP `GET` to the `/inv` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`numrows`
+|Number
+|Number
+|The number of returned rows.
+
+|`rows`
+|Array(Object)
+|Array of `Row`
+|An array of the results.
+
+|===
+
+=== `Row` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`ce`
+|String
+|String
+|The channel ID.
+
+|`dtype`
+|String
+|String
+|The device type.
+
+|`chtype`
+|String
+|String
+|???
+
+|`as`
+|String
+|String
+|???
+
+|`s`
+|String
+|String
+|The hardware serial number.
+
+|`pn`
+|String
+|String
+|The hardware part number.
+
+|`ptpn`
+|String
+|String
+|???
+
+|`edcon`
+|String
+|String
+|???
+
+|`devobs`
+|String
+|String
+|???
+
+|`ctcon`
+|String
+|String
+|???
+
+|`ctobs`
+|String
+|String
+|???
+
+|`ctctf`
+|String
+|String
+|???
+
+|`chcon`
+|String
+|String
+|???
+
+|`chobs`
+|String
+|String
+|???
+
+|`chctf`
+|String
+|String
+|???
+
+|`cd`
+|String
+|String
+|The creation date (as in when the device was added).
+
+|`ld`
+|String
+|String
+|???
+
+|`ip`
+|String
+|String
+|The running firmware image the part number is running.
+
+|`id`
+|String
+|String
+|The date the firmware image was loaded onto this device.
+
+|`ap`
+|String
+|String
+|The assembly part number.
+
+|`fp`
+|String
+|String
+|The controller part number.
+
+|`cap`
+|String
+|String
+|???
+
+|===
+
+== Examples
+
+=== Get ESUB Circuit Board Status
+
+.GET */inv* Response
+[source,json,subs="+quotes"]
+----
+{"numrows": 14, "rows": [{"ce": "1627390225", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789110", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630660", "ld": "1686943699", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627390481", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789104", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630664", "ld": "1686943700", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627390737", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789105", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630669", "ld": "1686943703", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627390993", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789115", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630672", "ld": "1686943704", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627391249", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789108", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630677", "ld": "1686943706", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627391505", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789109", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630680", "ld": "1686943708", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627391761", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789113", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630690", "ld": "1686943709", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627392017", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789102", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630694", "ld": "1686943711", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627392273", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789114", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630711", "ld": "1686943714", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627392529", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789103", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1671630724", "ld": "1686943715", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627392785", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789112", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1679574985", "ld": "1686943717", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627393041", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789101", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1679575001", "ld": "1686943719", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627393297", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789106", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1679575013", "ld": "1686943720", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}, {"ce": "1627393553", "dtype": "1", "chtype": "1", "as": "1", "s": "123456789111", "pn": "800-01714-r02", "ptpn": "540-00169-r01-v04.27.09", "edcon": "0", "devobs": "0", "ctcon": "0", "ctobs": "0", "ctctf": "0", "chcon": "0", "chobs": "0", "chctf": "0", "cd": "1679575023", "ld": "1686943721", "ip": "520-00082-r01-v04.27.04", "id": "1613405094", "ap": "880-00791-r09", "fp": "480-00031-r01-v00.0c.01", "cap": "313338"}]}
+----

@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Used by the JavaScript datatable to return inventory records.
+Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return inventory records.
 
 == Introduction
 
@@ -57,22 +57,22 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`sEcho`
 |Number
 |Number
-|???
+|An unaltered copy of sEcho sent from the client side. This parameter will change with each table re-draw (it is basically a draw count) - so it is important that this is implemented.
 
 |`iTotalRecords`
 |Number
 |Number
-|???
+|Total records, before filtering (i.e. the total number of records in the database).
 
 |`iTotalDisplayRecords`
 |Number
 |Number
-|???
+|Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).
 
 |`aaData`
 |Array(Unknown)
 |Array of Unknown
-|???
+|The data in a 2D array.
 
 |===
 

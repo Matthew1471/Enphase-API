@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Used by the JavaScript datatable to return event log records.
+Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records.
 
 == Introduction
 
@@ -57,27 +57,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`iTotalRecords`
 |Number
 |Number
-|???
+|Total records, before filtering (i.e. the total number of records in the database).
 
 |`recordsTotal`
 |Number
 |Number
-|???
+|Total number of records.
 
 |`iTotalDisplayRecords`
 |Number
 |Number
-|???
+|Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).
 
 |`recordsFiltered`
 |Number
 |Number
-|???
+|The number of records after filtering?
 
 |`aaData`
 |Array(Unknown)
 |Array of Unknown
-|???
+|The data in a 2D array.
 
 |===
 
@@ -88,5 +88,5 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 .GET */datatab/event_dt.rb* Response
 [source,json,subs="+quotes"]
 ----
-{"iTotalRecords": 500, "recordsTotal": 500, "iTotalDisplayRecords": 500, "recordsFiltered": 500, "aaData": [["16326", "Microinverter failed to report: Set", "122213053509", "pcu ", "Sat Jun 03, 2023 09:30 PM BST"]]}
+{"iTotalRecords": 500, "recordsTotal": 500, "iTotalDisplayRecords": 500, "recordsFiltered": 500, "aaData": [["16326", "Microinverter failed to report: Set", "123456789111", "pcu ", "Sat Jun 03, 2023 09:30 PM BST"]]}
 ----

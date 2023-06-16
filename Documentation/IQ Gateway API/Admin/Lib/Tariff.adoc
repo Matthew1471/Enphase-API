@@ -57,12 +57,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`tariff`
 |Object
 |`Tariff` object
-|???
+|Contains details about the electricity tariff.
 
 |`schedule`
 |Object
 |`Schedule` object
-|???
+|Contains details about the differnt tariffs that apply at different times.
 
 |===
 
@@ -78,7 +78,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`currency`
 |Object
 |`Tariff.Currency` object
-|???
+|The currency that any amounts are in
 
 |`logger`
 |String
@@ -87,23 +87,23 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`storage_settings`
 |Object
-|`Tariff.Storage_settings` object
-|???
+|`Tariff.StorageSettings` object
+|Details about the storage settings.
 
 |`single_rate`
 |Object
-|`Tariff.Single_rate` object
-|???
+|`Tariff.SingleRate` object
+|A single rate tariff.
 
 |`seasons`
 |Array(Unknown)
 |Array of Unknown
-|???
+|Details about seasonal changes to electricity import rates.
 
 |`seasons_sell`
 |Array(Unknown)
 |Array of Unknown
-|???
+|Details about seasonal changes to electricity export rates.
 
 |===
 
@@ -119,11 +119,11 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`code`
 |String
 |String
-|???
+|The code of the currency that any specified amounts are in (e.g. GBP = Great Britain Pound)
 
 |===
 
-=== `Tariff.Storage_settings` Object
+=== `Tariff.StorageSettings` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -134,8 +134,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`mode`
 |String
-|String
-|???
+|`StorageProfileMode`
+|Storage profile mode. In the format `StorageProfileMode`.
 
 |`operation_mode_sub_type`
 |String
@@ -145,7 +145,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`reserved_soc`
 |Number
 |Number
-|???
+|What State of Charge (SoC) should be reserved for backup.
 
 |`very_low_soc`
 |Number
@@ -155,11 +155,11 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`charge_from_grid`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether charging from the grid is enabled.
 
 |===
 
-=== `Tariff.Single_rate` Object
+=== `Tariff.SingleRate` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -171,12 +171,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`rate`
 |Number
 |Number
-|???
+|The rate at which electricity is imported at.
 
 |`sell`
 |Number
 |Number
-|???
+|The rate at which electricity is sold at.
 
 |===
 
@@ -207,7 +207,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`reserved_soc`
 |Number
 |Number
-|???
+|What State of Charge (SoC) should be reserved for backup.
 
 |`operation_mode_sub_type`
 |String
@@ -217,12 +217,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`very_low_soc`
 |Number
 |Number
-|???
+|What is deemed to be a very low State of Charge (SoC).
 
 |`charge_from_grid`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether charging from the grid is enabled during this time.
 
 |===
 

@@ -17,6 +17,12 @@
                     "request_json": "{\"acb_sleep\": [{\"serial_num\":12345, \"sleep_min_soc\":0, \"sleep_max_soc\":100}]}",
                     "response_json": "{\"message\": \"EXCEPTION: wrong number of arguments (0 for 1..2)\", \"backtrace\": \"[\\\"/opt/emu/httpd/rhtdocs/admin/lib/acb_config.rb:137:in `throw'\\\", \\\"/opt/emu/httpd/rhtdocs/admin/lib/acb_config.rb:137:in `put'\\\", \\\"/opt/emu/httpd/rhtdocs/envoy.rb:1027:in `generate_body'\\\", \\\"/opt/emu/httpd/rhtdocs/envoy.rb:1187:in `page'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:240:in `process_cgi_page'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:79:in `process'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:157:in `request_lifecycle'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:144:in `one_loop'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `block (2 levels) in listen'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `loop'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:29:in `block in listen'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:28:in `catch'\\\", \\\"/usr/lib/ruby/site_ruby/m2r/handler.rb:28:in `listen'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:329:in `run'\\\", \\\"/opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb:349:in `<main>'\\\"]\"}",
                     "response_raw": null
+                },
+                {
+                    "method": "DELETE",
+                    "name": "Cancel AC Battery Sleep Mode",
+                    "request_json": "{\"acb_sleep\": [{\"serial_num\":12345}]}",
+                    "response_json": "{\"message\": \"success\"}"
                 }
             ],
             "field_map": {
@@ -53,7 +59,7 @@
                         "value_name": "SleepData"
                     },
                     "backtrace": "The stack trace for the error.",
-                    "message": "The error message."
+                    "message": "The returned status or error message."
                 },
                 "SleepData": {
                     "serial_num": {
@@ -312,6 +318,66 @@
                 }
             ],
             "uri": "admin/lib/tariff.json"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "schedule": "Contains details about the different tariffs that apply at different times.",
+                    "tariff": "Contains details about the electricity tariffs."
+                },
+                "Schedule": {
+                    "charge_from_grid": "Whether charging from the grid is allowed during this time.",
+                    "reserved_soc": "What State of Charge (SoC) should be reserved for backup.",
+                    "very_low_soc": "What is deemed to be a very low State of Charge (SoC)."
+                },
+                "Tariff": {
+                    "currency": "The currency that any amounts are in",
+                    "seasons": "Details about seasonal changes to electricity import rates.",
+                    "seasons_sell": "Details about seasonal changes to electricity export rates.",
+                    "single_rate": {
+                        "description": "A single rate tariff.",
+                        "value_name": "Tariff.SingleRate"
+                    },
+                    "storage_settings": {
+                        "description": "Details about the storage settings.",
+                        "value_name": "Tariff.StorageSettings"
+                    }
+                },
+                "Tariff.Currency": {
+                    "code": "The code of the currency that any specified amounts are in (e.g. GBP = Great Britain Pound)"
+                },
+                "Tariff.SingleRate": {
+                    "rate": "The rate at which electricity is imported at.",
+                    "sell": "The rate at which electricity is sold at."
+                },
+                "Tariff.StorageSettings": {
+                    "charge_from_grid": "Whether charging from the grid is allowed.",
+                    "mode": {
+                        "description": "Storage profile mode.",
+                        "value_name": "StorageProfileMode"
+                    },
+                    "reserved_soc": "What State of Charge (SoC) should be reserved for backup."
+                }
+            },
+            "type_map": {
+                "StorageProfileMode": [
+                    {
+                        "description": "Minimize the use of electricity from the grid.",
+                        "name": "Self Consumption Mode",
+                        "value": "self-consumption"
+                    },
+                    {
+                        "description": "Avoid using electricity from the grid during peak hours.",
+                        "name": "Savings Mode",
+                        "value": "savings"
+                    },
+                    {
+                        "description": "Maintain full charge in your battery for use during outages.",
+                        "name": "Full Backup Mode",
+                        "value": "full-backup"
+                    }
+                ]
+            }
         }
     },
     "Admin - Lib - Wireless Configuration": {
@@ -343,6 +409,7 @@
     },
     "Data Tables - Administer Device Conditions and Controls (DCC) DataTable": {
         "description": {
+            "long": "Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return Device Conditions and Controls (DCC) records.",
             "short": "Used by the JavaScript datatable to return Device Conditions and Controls (DCC) records."
         },
         "documentation": "Datatab/Admin_DCC_Display_DT.adoc",
@@ -355,10 +422,21 @@
                 }
             ],
             "uri": "datatab/admin_dcc_display_dt"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "aaData": "The data in a 2D array.",
+                    "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
+                    "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
+                    "sEcho": "An unaltered copy of sEcho sent from the client side. This parameter will change with each table re-draw (it is basically a draw count) - so it is important that this is implemented."
+                }
+            }
         }
     },
     "Data Tables - Events DataTable": {
         "description": {
+            "long": "Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records.",
             "short": "Used by the JavaScript datatable to return event log records."
         },
         "documentation": "Datatab/Event_DT.adoc",
@@ -367,14 +445,26 @@
             "examples": [
                 {
                     "name": "Get Events",
-                    "response_json": "{\"iTotalRecords\": 500, \"recordsTotal\": 500, \"iTotalDisplayRecords\": 500, \"recordsFiltered\": 500, \"aaData\": [[\"16326\", \"Microinverter failed to report: Set\", \"122213053509\", \"pcu \", \"Sat Jun 03, 2023 09:30 PM BST\"]]}"
+                    "response_json": "{\"iTotalRecords\": 500, \"recordsTotal\": 500, \"iTotalDisplayRecords\": 500, \"recordsFiltered\": 500, \"aaData\": [[\"16326\", \"Microinverter failed to report: Set\", \"123456789111\", \"pcu \", \"Sat Jun 03, 2023 09:30 PM BST\"]]}"
                 }
             ],
             "uri": "datatab/event_dt.rb"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "aaData": "The data in a 2D array.",
+                    "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
+                    "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
+                    "recordsFiltered": "The number of records after filtering?",
+                    "recordsTotal": "Total number of records."
+                }
+            }
         }
     },
     "Data Tables - Inventory DataTable": {
         "description": {
+            "long": "Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return inventory records.",
             "short": "Used by the JavaScript datatable to return inventory records."
         },
         "documentation": "Datatab/Inventory_DT.adoc",
@@ -387,6 +477,16 @@
                 }
             ],
             "uri": "datatab/inventory_dt"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "aaData": "The data in a 2D array.",
+                    "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
+                    "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
+                    "sEcho": "An unaltered copy of sEcho sent from the client side. This parameter will change with each table re-draw (it is basically a draw count) - so it is important that this is implemented."
+                }
+            }
         }
     },
     "General - Home": {
@@ -422,7 +522,35 @@
         "documentation": "General/Inv.adoc",
         "name": "Inv",
         "request": {
+            "examples": [
+                {
+                    "name": "Get ESUB Circuit Board Status",
+                    "response_json": "{\"numrows\": 14, \"rows\": [{\"ce\": \"1627390225\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789110\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630660\", \"ld\": \"1686943699\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627390481\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789104\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630664\", \"ld\": \"1686943700\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627390737\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789105\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630669\", \"ld\": \"1686943703\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627390993\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789115\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630672\", \"ld\": \"1686943704\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627391249\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789108\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630677\", \"ld\": \"1686943706\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627391505\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789109\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630680\", \"ld\": \"1686943708\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627391761\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789113\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630690\", \"ld\": \"1686943709\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627392017\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789102\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630694\", \"ld\": \"1686943711\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627392273\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789114\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630711\", \"ld\": \"1686943714\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627392529\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789103\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1671630724\", \"ld\": \"1686943715\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627392785\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789112\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1679574985\", \"ld\": \"1686943717\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627393041\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789101\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1679575001\", \"ld\": \"1686943719\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627393297\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789106\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1679575013\", \"ld\": \"1686943720\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}, {\"ce\": \"1627393553\", \"dtype\": \"1\", \"chtype\": \"1\", \"as\": \"1\", \"s\": \"123456789111\", \"pn\": \"800-01714-r02\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"edcon\": \"0\", \"devobs\": \"0\", \"ctcon\": \"0\", \"ctobs\": \"0\", \"ctctf\": \"0\", \"chcon\": \"0\", \"chobs\": \"0\", \"chctf\": \"0\", \"cd\": \"1679575023\", \"ld\": \"1686943721\", \"ip\": \"520-00082-r01-v04.27.04\", \"id\": \"1613405094\", \"ap\": \"880-00791-r09\", \"fp\": \"480-00031-r01-v00.0c.01\", \"cap\": \"313338\"}]}"
+                }
+            ],
             "uri": "inv"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "numrows": "The number of returned rows.",
+                    "rows": {
+                        "description": "An array of the results.",
+                        "value_name": "Row"
+                    }
+                },
+                "Row": {
+                    "ap": "The assembly part number.",
+                    "cd": "The creation date (as in when the device was added).",
+                    "ce": "The channel ID.",
+                    "dtype": "The device type.",
+                    "fp": "The controller part number.",
+                    "id": "The date the firmware image was loaded onto this device.",
+                    "ip": "The running firmware image the part number is running.",
+                    "pn": "The hardware part number.",
+                    "s": "The hardware serial number."
+                }
+            }
         }
     },
     "General - Inventory": {
@@ -432,6 +560,13 @@
         "documentation": "General/Inventory.adoc",
         "name": "Inventory",
         "request": {
+            "examples": [
+                {
+                    "1response_json": "[{\"type\": \"PCU\", \"devices\": [{\"part_num\": \"800-01714-r02\", \"installed\": \"1671630660\", \"serial_num\": \"123456789110\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944603\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630660\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627390225, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630664\", \"serial_num\": \"123456789104\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944604\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630664\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627390481, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630669\", \"serial_num\": \"123456789105\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944606\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630669\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627390737, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630672\", \"serial_num\": \"123456789115\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944608\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630672\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627390993, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630677\", \"serial_num\": \"123456789108\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944609\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630677\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627391249, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630680\", \"serial_num\": \"123456789109\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944611\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630680\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627391505, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630690\", \"serial_num\": \"123456789113\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944613\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630690\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627391761, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630694\", \"serial_num\": \"123456789102\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944614\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630694\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627392017, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630711\", \"serial_num\": \"123456789114\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944616\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630711\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627392273, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1671630724\", \"serial_num\": \"123456789103\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944618\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1671630724\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627392529, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1679574985\", \"serial_num\": \"123456789112\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944619\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1679574985\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627392785, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1679575001\", \"serial_num\": \"123456789101\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944621\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1679575001\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627393041, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1679575013\", \"serial_num\": \"123456789106\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944623\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1679575013\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627393297, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}, {\"part_num\": \"800-01714-r02\", \"installed\": \"1679575023\", \"serial_num\": \"123456789111\", \"device_status\": [\"envoy.global.ok\"], \"last_rpt_date\": \"1686944624\", \"admin_state\": 1, \"dev_type\": 1, \"created_date\": \"1679575023\", \"img_load_date\": \"1613405094\", \"img_pnum_running\": \"520-00082-r01-v04.27.04\", \"ptpn\": \"540-00169-r01-v04.27.09\", \"chaneid\": 1627393553, \"device_control\": [{\"gficlearset\": false}], \"producing\": true, \"communicating\": true, \"provisioned\": true, \"operating\": true}]}, {\"type\": \"ACB\", \"devices\": []}, {\"type\": \"NSRB\", \"devices\": []}, {\"type\": \"ESUB\", \"devices\": []}]",
+                    "disabled": true,
+                    "name": "Get Inventory"
+                }
+            ],
             "uri": "inventory.json?deleted=1"
         }
     },
@@ -1145,6 +1280,7 @@
                 ".": {
                     "admin_mode": "The administrative mode.",
                     "admin_state": "The configured administrative state.",
+                    "exc_on": "The exercise mode. This is used to run the generator automatically on a regular interval to keep it in good working condition.",
                     "oper_state": "The actual operational state.",
                     "present": "Whether the generator is present.",
                     "schedule": "Whether a schedule is defined.",
@@ -1475,8 +1611,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -1795,6 +1931,16 @@
         "documentation": "IVP/SS/Gen_Config.adoc",
         "name": "Generator Configuration",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Generator Configuration",
+                    "response_json": "{}"
+                }
+            ],
+            "methods": {
+                "GET": "Get the generator configuration.",
+                "POST": "Set the generator configuration."
+            },
             "uri": "ivp/ss/gen_config"
         }
     },
@@ -1845,6 +1991,16 @@
         "documentation": "IVP/SS/Gen_Schedule.adoc",
         "name": "Generator Schedule",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Generator Schedule",
+                    "response_json": "{}"
+                }
+            ],
+            "methods": {
+                "GET": "Get the generator schedule.",
+                "POST": "Set the generator schedule."
+            },
             "uri": "ivp/ss/gen_schedule"
         }
     },
@@ -1855,6 +2011,9 @@
         "documentation": "IVP/SS/Load_Control.adoc",
         "name": "Load Control",
         "request": {
+            "methods": {
+                "POST": "Add a load control kit."
+            },
             "uri": "ivp/ss/load_control"
         }
     },

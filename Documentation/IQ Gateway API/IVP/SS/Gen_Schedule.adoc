@@ -39,6 +39,42 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/ss/gen_schedule` endpoint provides the following response data.
+The `/ivp/ss/gen_schedule` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get the generator schedule.
+
+|`POST`
+|Set the generator schedule.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+== Examples
+
+=== Get Generator Schedule
+
+.GET */ivp/ss/gen_schedule* Response
+[source,json,subs="+quotes"]
+----
+{}
+----
