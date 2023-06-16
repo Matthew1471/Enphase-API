@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Get or set the IQ System Controller (formerly "Enpower") generator status.
 
 == Introduction
 
@@ -42,3 +42,71 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/generator` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`admin_state`
+|String
+|String
+|The configured administrative state.
+
+|`oper_state`
+|String
+|String
+|The actual operational state.
+
+|`admin_mode`
+|Number
+|Number
+|The administrative mode.
+
+|`schedule`
+|Number
+|Number
+|Whether a schedule is defined.
+
+|`start_soc`
+|Number
+|Number
+|The start State of Charge (SoC) the generator will start.
+
+|`stop_soc`
+|Number
+|Number
+|The end State of Charge (SoC) the generator will stop.
+
+|`exc_on`
+|Number
+|Number
+|???
+
+|`present`
+|Number
+|Number
+|Whether the generator is present.
+
+|`type`
+|Number
+|Number
+|The type of generator.
+
+|===
+
+== Examples
+
+=== Get Generator Status
+
+.GET */ivp/ensemble/generator* Response
+[source,json,subs="+quotes"]
+----
+{"admin_state": "unknown", "oper_state": "open", "admin_mode": 0, "schedule": 0, "start_soc": 100, "stop_soc": -1, "exc_on": 0, "present": 1, "type": 0}
+----

@@ -1104,6 +1104,11 @@
                     "response_json": "{\"err\": \"404 - Not Found\", \"msg\": \"No enpowers found for clearing the errors\"}"
                 }
             ],
+            "field_map": {
+                ".": {
+                    "errors_to_clear": "The errors to clear on the IQ System Controller (formerly \"Enpower\")."
+                }
+            },
             "methods": {
                 "GET": "Get the error flags for the IQ System Controller (formerly \"Enpower\").",
                 "POST": "Set the manual overide status for the IQ System Controller (formerly \"Enpower\")."
@@ -1113,7 +1118,9 @@
         "response": {
             "field_map": {
                 ".": {
-                    "enpower_error_flags": "The IQ System Controller (formerly \"Enpower\") error flags for the system."
+                    "enpower_error_flags": "The IQ System Controller (formerly \"Enpower\") error flags for the system.",
+                    "err": "If an error occurred the error message.",
+                    "msg": "Any resulting message."
                 }
             }
         }
@@ -1132,6 +1139,20 @@
                 }
             ],
             "uri": "ivp/ensemble/generator"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "admin_mode": "The administrative mode.",
+                    "admin_state": "The configured administrative state.",
+                    "oper_state": "The actual operational state.",
+                    "present": "Whether the generator is present.",
+                    "schedule": "Whether a schedule is defined.",
+                    "start_soc": "The start State of Charge (SoC) the generator will start.",
+                    "stop_soc": "The end State of Charge (SoC) the generator will stop.",
+                    "type": "The type of generator."
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
@@ -1328,7 +1349,7 @@
     },
     "IVP - Firmware Manager - Update All": {
         "description": {
-            "short": "Update all Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) and IQ System Controller (formerly \"Enpower\") devices."
+            "short": "Update all IQ System Controller (formerly \"Enpower\") and Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) devices."
         },
         "documentation": "IVP/FirmwareManager/Update_All.adoc",
         "name": "Update All",
@@ -1345,7 +1366,27 @@
                     "response_json": "{\n\"Status\":\"Update firmware requested for all devices without overwrite.\",\n\"Command\":\"Unicast\",\n\"Offgrid-Check\":\"Off-grid checks enabled for update - update will abort if ever off-grid\",\n\"SOC-check\":\"Low SOC checks enabled for BMU/PCU images\",\n\"commission_only\":\"false\"\n}"
                 }
             ],
+            "field_map": {
+                ".": {
+                    "broadcast": "Whether the update request should be broadcast.",
+                    "dont_retry_failed_files": "If an update fails whether it should be retried.",
+                    "force": "Whether the update should be applied even if the device would not usually apply it due to a pre-condition failing (e.g. off-grid, low-SoC etc).",
+                    "overwrite_low_soc": "Whether the update should apply even if the battery has a low State of Charge (SoC).",
+                    "overwrite_off_grid": "Whether the update should apply even if the system is currently off-grid."
+                }
+            },
             "uri": "ivp/firmware_manager/update_all"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "Command": "The type of command.",
+                    "commission_only": "Whether to apply to only commissioned devices.",
+                    "Offgrid-Check": "Whether the command will be applied even if off-grid.",
+                    "SOC-check": "Whether the command will be applied even if the batteries are a low State of Charge (SoC).",
+                    "Status": "The status of the request."
+                }
+            }
         }
     },
     "IVP - Firmware Manager - Update Single": {
@@ -1401,7 +1442,7 @@
     "IVP - Live Data - Status": {
         "description": {
             "long": "This retrieves the information and status of the live status functionality. The MQTT client and meter states and the counters supporting it.",
-            "short": "Get live data streaming status."
+            "short": "Get live data MQTT streaming status."
         },
         "documentation": "IVP/LiveData/Status.adoc",
         "name": "Status",
@@ -1427,7 +1468,7 @@
                     "mqtt_state": "The MQTT broker state.",
                     "prov_state": "The provisioning state.",
                     "sc_debug": "Whether data is being written to the debug stream.",
-                    "sc_stream": "Whether live data is being written to the stream currently."
+                    "sc_stream": "Whether live data is being written to the MQTT stream currently."
                 },
                 "Counters": {
                     "main_CfgChanged": "The number of times the configuration has been changed.",
@@ -1489,8 +1530,8 @@
     },
     "IVP - Live Data - Stream": {
         "description": {
-            "long": "This enables or disables the live data streaming functionality.",
-            "short": "Enable or disable live data streaming."
+            "long": "This enables or disables the live data MQTT streaming functionality.",
+            "short": "Enable or disable live data MQTT streaming."
         },
         "documentation": "IVP/LiveData/Stream.adoc",
         "name": "Stream",
@@ -1503,7 +1544,19 @@
                     "response_json": "{\"sc_stream\": \"enabled\"}"
                 }
             ],
+            "field_map": {
+                ".": {
+                    "enable": "Whether live data should be collected and written to the MQTT stream currently."
+                }
+            },
             "uri": "ivp/livedata/stream"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "sc_stream": "Whether live data is being written to the MQTT stream currently."
+                }
+            }
         }
     },
     "IVP - Meters - CTS - Update EID": {

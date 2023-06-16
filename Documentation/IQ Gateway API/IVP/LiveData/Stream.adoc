@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+This enables or disables the live data MQTT streaming functionality.
 
 == Introduction
 
@@ -39,4 +39,57 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/ivp/livedata/stream` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Message Body
+
+==== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enable`
+|Number
+|Number
+|Whether live data should be collected and written to the MQTT stream currently.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`sc_stream`
+|String
+|String
+|Whether live data is being written to the MQTT stream currently.
+
+|===
+
+== Examples
+
+=== Enable Live Data Stream
+
+.POST */ivp/livedata/stream* Request
+[source,json,subs="+quotes"]
+----
+{"enable": 1}
+----
+.POST */ivp/livedata/stream* Response
+[source,json,subs="+quotes"]
+----
+{"sc_stream": "enabled"}
+----

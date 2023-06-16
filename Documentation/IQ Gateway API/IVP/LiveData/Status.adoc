@@ -103,7 +103,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`sc_stream`
 |String
 |String
-|Whether live data is being written to the stream currently.
+|Whether live data is being written to the MQTT stream currently.
 
 |`sc_debug`
 |String

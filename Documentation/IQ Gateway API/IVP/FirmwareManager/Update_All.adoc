@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Update all IQ System Controller (formerly "Enpower") and Enphase(R) Energy System (formerly "Ensemble") Software (ESS) devices.
 
 == Introduction
 
@@ -39,4 +39,110 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
+A HTTP `GET` to the `/ivp/firmware_manager/update_all` endpoint provides the following response data.
+
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Message Body
+
+==== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`force`
+|String
+|String
+|Whether the update should be applied even if the device would not usually apply it due to a pre-condition failing (e.g. off-grid, low-SoC etc).
+
+|`broadcast` (Optional)
+|String
+|String
+|Whether the update request should be broadcast.
+
+|`dont_retry_failed_files` (Optional)
+|String
+|String
+|If an update fails whether it should be retried.
+
+|`overwrite_off_grid` (Optional)
+|String
+|String
+|Whether the update should apply even if the system is currently off-grid.
+
+|`overwrite_low_soc` (Optional)
+|String
+|String
+|Whether the update should apply even if the battery has a low State of Charge (SoC).
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`Status`
+|String
+|String
+|The status of the request.
+
+|`Command`
+|String
+|String
+|The type of command.
+
+|`Offgrid-Check`
+|String
+|String
+|Whether the command will be applied even if off-grid.
+
+|`SOC-check`
+|String
+|String
+|Whether the command will be applied even if the batteries are a low State of Charge (SoC).
+
+|`commission_only`
+|String
+|String
+|Whether to apply to only commissioned devices.
+
+|===
+
+== Examples
+
+=== Firmware Update (Forced)
+
+.GET */ivp/firmware_manager/update_all* Request
+[source,json,subs="+quotes"]
+----
+{"force": "true", "broadcast": "false", "dont_retry_failed_files": "false", "overwrite_off_grid": "true", "overwrite_low_soc": "true"}
+----
+.GET */ivp/firmware_manager/update_all* Response
+[source,json,subs="+quotes"]
+----
+{"Status": "Update firmware requested for all devices with overwrite.", "Command": "Unicast", "Offgrid-Check": "Ignoring off-grid checks for update to continue even if off-grid", "SOC-check": "Ignoring low SOC checks for BMU/PCU images", "commission_only": "false"}
+----
+
+=== Firmware Update (Not Forced)
+
+.GET */ivp/firmware_manager/update_all* Request
+[source,json,subs="+quotes"]
+----
+{"force": "false"}
+----
+.GET */ivp/firmware_manager/update_all* Response
+[source,json,subs="+quotes"]
+----
+{"Status": "Update firmware requested for all devices without overwrite.", "Command": "Unicast", "Offgrid-Check": "Off-grid checks enabled for update - update will abort if ever off-grid", "SOC-check": "Low SOC checks enabled for BMU/PCU images", "commission_only": "false"}
+----

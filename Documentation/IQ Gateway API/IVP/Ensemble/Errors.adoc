@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint and its purpose has not been fully documented yet.
+Get or set the IQ System Controller (formerly "Enpower") error state.
 
 == Introduction
 
@@ -39,6 +39,88 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/ensemble/errors` endpoint provides the following response data.
+The `/ivp/ensemble/errors` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get the error flags for the IQ System Controller (formerly "Enpower").
+
+|`POST`
+|Set the manual overide status for the IQ System Controller (formerly "Enpower").
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Message Body
+
+==== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`errors_to_clear`
+|Number
+|Number
+|The errors to clear on the IQ System Controller (formerly "Enpower").
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enpower_error_flags` (Optional)
+|Number
+|Number
+|The IQ System Controller (formerly "Enpower") error flags for the system.
+
+|`err` (Optional)
+|String
+|String
+|If an error occurred the error message.
+
+|`msg` (Optional)
+|String
+|String
+|Any resulting message.
+
+|===
+
+== Examples
+
+=== Get IQ System Controller (formerly "Enpower") System Errors
+
+.GET */ivp/ensemble/errors* Response
+[source,json,subs="+quotes"]
+----
+{"enpower_error_flags": 0}
+----
+
+=== Clear IQ System Controller (formerly "Enpower") System Errors
+
+.POST */ivp/ensemble/errors* Request
+[source,json,subs="+quotes"]
+----
+{"errors_to_clear": 0}
+----
+.POST */ivp/ensemble/errors* Response
+[source,json,subs="+quotes"]
+----
+{"err": "404 - Not Found", "msg": "No enpowers found for clearing the errors"}
+----
