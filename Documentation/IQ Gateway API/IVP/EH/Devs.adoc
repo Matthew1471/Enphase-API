@@ -42,3 +42,56 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/eh/devs` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`eid`
+|Number
+|Number
+|Gateway (formerly "Envoy") ID number
+
+|`devType`
+|Number
+|Number
+|The device type.
+
+|`adminState`
+|Number
+|Number
+|The administrative state of the device.
+
+|`createdDate`
+|Number
+|Number
+|The date and time this was added to the Gateway (formerly "Envoy") in epoch format.
+
+|`partnum`
+|String
+|String
+|The Enphase(R) part number for this product.
+
+|`serialnum`
+|String
+|String
+|The serial number of this product.
+
+|===
+
+== Examples
+
+=== Get Device Status
+
+.GET */ivp/eh/devs* Response
+[source,json,subs="+quotes"]
+----
+[{"eid": 553648384, "devType": 1, "adminState": 1, "createdDate": 1671630660, "partnum": "800-01714-r02", "serialnum": "123456789109"}, {"eid": 553648640, "devType": 1, "adminState": 1, "createdDate": 1671630664, "partnum": "800-01714-r02", "serialnum": "123456789103"}, {"eid": 553648896, "devType": 1, "adminState": 1, "createdDate": 1671630669, "partnum": "800-01714-r02", "serialnum": "123456789106"}, {"eid": 553649152, "devType": 1, "adminState": 1, "createdDate": 1671630672, "partnum": "800-01714-r02", "serialnum": "123456789111"}, {"eid": 553649408, "devType": 1, "adminState": 1, "createdDate": 1671630677, "partnum": "800-01714-r02", "serialnum": "123456789102"}, {"eid": 553649664, "devType": 1, "adminState": 1, "createdDate": 1671630680, "partnum": "800-01714-r02", "serialnum": "123456789113"}, {"eid": 553649920, "devType": 1, "adminState": 1, "createdDate": 1671630690, "partnum": "800-01714-r02", "serialnum": "123456789105"}, {"eid": 553650176, "devType": 1, "adminState": 1, "createdDate": 1671630694, "partnum": "800-01714-r02", "serialnum": "123456789114"}, {"eid": 553650432, "devType": 1, "adminState": 1, "createdDate": 1671630711, "partnum": "800-01714-r02", "serialnum": "123456789110"}, {"eid": 553650688, "devType": 1, "adminState": 1, "createdDate": 1671630724, "partnum": "800-01714-r02", "serialnum": "123456789108"}, {"eid": 553650944, "devType": 1, "adminState": 1, "createdDate": 1679574985, "partnum": "800-01714-r02", "serialnum": "123456789107"}, {"eid": 553651200, "devType": 1, "adminState": 1, "createdDate": 1679575001, "partnum": "800-01714-r02", "serialnum": "123456789112"}, {"eid": 553651456, "devType": 1, "adminState": 1, "createdDate": 1679575013, "partnum": "800-01714-r02", "serialnum": "123456789101"}, {"eid": 553651712, "devType": 1, "adminState": 1, "createdDate": 1679575023, "partnum": "800-01714-r02", "serialnum": "123456789104"}, {"eid": 603980032, "devType": 4, "adminState": 1, "createdDate": 1671551533, "partnum": "800-00654-r08", "serialnum": "999999999999"}, {"eid": 704643328, "devType": 10, "adminState": 2, "createdDate": 1671551558, "partnum": "800-00654-r08", "serialnum": "999999999999EIM1"}, {"eid": 704643584, "devType": 10, "adminState": 2, "createdDate": 1671551558, "partnum": "800-00654-r08", "serialnum": "999999999999EIM2"}]
+----

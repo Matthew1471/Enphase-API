@@ -42,3 +42,31 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ss/gen_profile` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`generator_profile`
+|String
+|String
+|The JSON generator profile encapsulated in a string.
+
+|===
+
+== Examples
+
+=== Get Generator's Profile
+
+.GET */ivp/ss/gen_profile* Response
+[source,json,subs="+quotes"]
+----
+{"generator_profile": "{\"profile\":{\"profile_type\":\"Private profile\",\"name\":\"OffGrid Generator Profile Parameters\",\"description\":\"Generator Profile Parameters for OffGrid\",\"OverlayProfileParameters\":{\"FRT\":{\"PTUF1\":{\"pattr\":{\"crvPts\":{\"objref\":\"GEN/FRT/PTUF1.MD.crvPts\",\"type\":\"::agf::model::PointArr\",\"value\":[{\"x\":160,\"y\":56,\"z\":0},{\"x\":21000,\"y\":56,\"z\":0},{\"x\":21000,\"y\":57,\"z\":0}]},\"numPts\":{\"objref\":\"GEN/FRT/PTUF1.MD.numPts\",\"type\":\"::agf::model::BtInt16u\",\"value\":3}}},\"PTOF1\":{\"pattr\":{\"crvPts\":{\"objref\":\"GEN/FRT/PTOF1.MD.crvPts\",\"type\":\"::agf::model::PointArr\",\"value\":[{\"x\":160,\"y\":64,\"z\":0},{\"x\":21000,\"y\":64,\"z\":0},{\"x\":21000,\"y\":63,\"z\":0}]},\"numPts\":{\"objref\":\"GEN/FRT/PTOF1.MD.numPts\",\"type\":\"::agf::model::BtInt16u\",\"value\":3}}}},\"VRT\":{\"PTUV1\":{\"pattr\":{\"crvPts\":{\"objref\":\"GEN/VRT/PTUV1.MD.crvPts\",\"type\":\"::agf::model::PointArr\",\"value\":[{\"x\":2000,\"y\":50,\"z\":0},{\"x\":11000,\"y\":50,\"z\":0},{\"x\":11000,\"y\":70,\"z\":0},{\"x\":21000,\"y\":70,\"z\":0},{\"x\":21000,\"y\":88,\"z\":0}]},\"numPts\":{\"objref\":\"GEN/VRT/PTUV1.MD.numPts\",\"type\":\"::agf::model::BtInt16u\",\"value\":5}}},\"PTOV1\":{\"pattr\":{\"crvPts\":{\"objref\":\"GEN/VRT/PTOV1.MD.crvPts\",\"type\":\"::agf::model::PointArr\",\"value\":[{\"x\":160,\"y\":120,\"z\":0},{\"x\":1000,\"y\":120,\"z\":0},{\"x\":1000,\"y\":110,\"z\":0}]},\"numPts\":{\"objref\":\"GEN/VRT/PTOV1.MD.numPts\",\"type\":\"::agf::model::BtInt16u\",\"value\":3}}}},\"ES\":{\"ES1\":{\"pattr\":{\"StrDlTms\":{\"objref\":\"ENPSYS/GEN/DRCT1.StrDlTms.setVal\",\"type\":\"::agf::model::BtInt32\",\"value\":15},\"VMin\":{\"objref\":\"ENPSYS/GEN/DRCT1.VMin.setMag\",\"type\":\"::agf::model::AnalogValue\",\"value\":88},\"VMax\":{\"objref\":\"ENPSYS/GEN/DRCT1.VMax.setMag\",\"type\":\"::agf::model::AnalogValue\",\"value\":110},\"FMin\":{\"objref\":\"ENPSYS/GEN/DOPR1.ECPNomHz.minVal\",\"type\":\"::agf::model::AnalogValue\",\"value\":57},\"FMax\":{\"objref\":\"ENPSYS/GEN/DOPR1.ECPNomHz.maxVal\",\"type\":\"::agf::model::AnalogValue\",\"value\":63}}}},\"MCP\":{\"MCP1\":{\"pattr\":{\"SVDMax\":{\"objref\":\"ENPSYS/GEN/MCP1.SVDMax.setMag\",\"type\":\"::agf::model::AnalogValue\",\"value\":2000},\"SFDMin\":{\"objref\":\"ENPSYS/GEN/MCP1.SFDMin.minVal\",\"type\":\"::agf::model::AnalogValue\",\"value\":100},\"SFDMax\":{\"objref\":\"ENPSYS/GEN/MCP1.SFDMax.maxVal\",\"type\":\"::agf::model::AnalogValue\",\"value\":550}}}}}}}"}
+----

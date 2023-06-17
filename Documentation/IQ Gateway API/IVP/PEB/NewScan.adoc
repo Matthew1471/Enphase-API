@@ -89,12 +89,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`active`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether a scan is currently running.
 
 |`is-suspended`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether a scan has been suspended.
 
 |`controlled`
 |Boolean
@@ -104,37 +104,37 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`scan-is-done`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the scan completed.
 
 |`in-exclusive-mode`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the scan is running in a high priority mode.
 
 |`duration-in-minutes`
 |Number
 |Number
-|???
+|How long the scan will run for (in minutes).
 
 |`remaining-minutes`
 |Number
 |Number
-|???
+|How long the scan has left to run for (in minutes).
 
 |`exclusive-minutes`
 |Number
 |Number
-|???
+|How long the scan will be allowed to run in high priority mode.
 
 |`rem-minutes-exclusive`
 |Number
 |Number
-|???
+|How long the high priority scan has left to run for (in minutes).
 
 |`inhibit-device-scan`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether scanning is currently inhibited.
 
 |`rqst-opportunity-modulus`
 |Number
@@ -149,27 +149,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`devices-to-be-discovered`
 |Number
 |Number
-|???
+|How many devices have been asked to be discovered.
 
 |`tot-devices-discovered`
 |Number
 |Number
-|???
+|How many devices have been discovered in total.
 
 |`curr-devices-discovered`
 |Number
 |Number
-|???
+|How many devices have been discovered so far.
 
 |`avg-rate-of-new-devices-discovered-per-min`
 |Number
 |Number
-|???
+|The average rate new devices are being discovered per minute.
 
 |`avg-num-of-new-devices-discovered-per-poll`
 |Number
 |Number
-|???
+|Per each poll request how many new devices are being discovered.
 
 |`pcu`
 |Object
@@ -199,7 +199,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`mins-until-next-cycle`
 |Number
 |Number
-|???
+|How many minutes until the next cycle.
 
 |`xdom-disabled-scan`
 |Boolean
@@ -209,17 +209,17 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`polling-period-secs`
 |Number
 |Number
-|???
+|How often the device should poll in seconds.
 
 |`polling-is-off`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether polling is enabled.
 
 |`forget-all-scan`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this scan will forget existing devices.
 
 |===
 
@@ -235,27 +235,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`expected`
 |Number
 |Number
-|???
+|How many of these devices we expected to find.
 
 |`discovered`
 |Number
 |Number
-|???
+|How many of these devices we have found.
 
 |`this-scan`
 |Number
 |Number
-|???
+|How many devices were found on this scan.
 
 |`per-min`
 |Number
 |Number
-|???
+|How many devices were discovered per each minute.
 
 |`per-poll`
 |Number
 |Number
-|???
+|How many devices were discovered per each poll request.
 
 |===
 

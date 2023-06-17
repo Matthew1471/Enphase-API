@@ -42,3 +42,57 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/comm_check` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`average_encharge_level`
+|Object
+|`CommunicationCheckResult` object
+|The average signal strength of the Energy System Communication Check.
+
+|===
+
+=== `CommunicationCheckResult` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`num`
+|Number
+|Number
+|The number of IQ Batteries (formerly "Encharge Storage") that are communicating.
+
+|`comm_level_sub_ghz`
+|Number
+|Number
+|The sub-GHz (Zigbee is 915Mhz in the Americas and 868Mhz in Europe) signal level.
+
+|`comm_level_2_4_ghz`
+|Number
+|Number
+|The 2.4 GHz WiFi signal level.
+
+|===
+
+== Examples
+
+=== Perform Energy System Communication Check
+
+.GET */ivp/ensemble/comm_check* Response
+[source,json,subs="+quotes"]
+----
+{"average_encharge_level": {"num": 0, "comm_level_sub_ghz": 0, "comm_level_2_4_ghz": 0}}
+----

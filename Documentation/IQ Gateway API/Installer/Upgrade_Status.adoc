@@ -42,3 +42,67 @@ More details on the project are available from the link:../../../README.adoc[pro
 A HTTP `GET` to the `/installer/upgrade_status` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`status_code`
+|Number
+|Number
+|The status code.
+
+|`reason_code`
+|Number
+|Number
+|The reason code.
+
+|`message_key`
+|String
+|String
+|The message key.
+
+|`message_params`
+|Object
+|`Message_params` object
+|The message parameters.
+
+|`timestamp`
+|Number
+|Number
+|The epoch date and time the message was generated.
+
+|`serial_num`
+|String
+|String
+|The serial number of the Gateway (formerly "Envoy").
+
+|===
+
+=== `Message_params` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+== Examples
+
+=== Get Gateway Upgrade Status
+
+.GET */installer/upgrade_status* Response
+[source,json,subs="+quotes"]
+----
+{"status_code": 200, "reason_code": 2200, "message_key": "task.emu_upgrade.finished_successful", "message_params": {}, "timestamp": 1679574816, "serial_num": "123456789101"}
+----
