@@ -56,19 +56,6 @@ The `/ivp/ss/gen_config` endpoint supports the following:
 |===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
-== Response
-
-=== Root
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|===
-
 == Examples
 
 === Get Generator Configuration
