@@ -192,7 +192,7 @@ def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_he
 
 def get_weather_details(latitude, longitude, timezone='Europe%2FLondon'):
     today = datetime.datetime.today().strftime('%Y-%m-%d')
-    response = requests.get('https://api.open-meteo.com/v1/forecast?latitude=' + str(latitude) + '&longitude=' + str(longitude) + '&current_weather=true&daily=sunrise,sunset&start_date=' + today + '&end_date=' + today + '&timezone=' + timezone + '&timeformat=unixtime', headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}).json()
+    response = requests.get('https://api.open-meteo.com/v1/forecast?latitude=' + str(latitude) + '&longitude=' + str(longitude) + '&current_weather=true&daily=sunrise,sunset&start_date=' + today + '&end_date=' + today + '&timezone=' + timezone + '&timeformat=unixtime', headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}, timeout=5).json()
     return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
 def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
