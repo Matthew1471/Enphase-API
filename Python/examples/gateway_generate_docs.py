@@ -137,6 +137,14 @@ class JSONSchema:
 
                     # Replace the 'a' value with the recently updated 'b' dictionary.
                     a[key] = b[key]
+                # If 'a' is an array of unknown but 'b' is defined.
+                elif (key == 'type' and (a[key] == 'Array(Unknown)')) or (key == 'value' and (a[key] == 'Array of Unknown')):
+                    # Unknown type and another type are compatible.
+                    a[key] = b[key]
+                # If 'b' is an array of unknown but 'a' is defined.
+                elif (key == 'type' and (b[key] == 'Array(Unknown)')) or (key == 'value' and (b[key] == 'Array of Unknown')):
+                    # Do not require copying.
+                    pass
                 # Do the types not otherwise match?
                 else:
                     # Error as data loss could occur.
@@ -687,48 +695,71 @@ def process_single_endpoint(gateway, key, endpoint):
             for example in endpoint_request['examples']:
                 # The user can supply the JSON to use instead of us directly querying for it.
                 if 'response_json' in example:
-                    # Extract the sample and use it as the response.
-                    example['response'] = json.loads(example['response_json'])
+                    if example['response_json']:
+                        # Extract the sample and use it as the response.
+                        example['response'] = json.loads(example['response_json'])
+                    else:
+                        example['response'] = None
                 # The user can disable requesting data for a specific endpoint example.
                 elif 'disabled' in example:
                     print('Warning : Skipping disabled example \'' + example['name'] + '\' for \'' + key + '\'.')
                     continue
                 elif not TEST_ONLY:
-                    # Perform a GET request on the resource.
+                    # Notify the user we are about to query the API.
                     print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
+
+                    # Build the URI.
                     request_uri = '/' + endpoint_request['uri']
                     if 'request_query' in example:
                         request_uri += '?' + example['request_query']
 
                     # The API supports a mixture of JSON and form payloads.
-                    if 'request_json' in example:
-                        data = example['request_json']
-                    elif 'request_form' in example:
-                        data = example['request_form']
-                    else:
-                        data = None
+                    if 'request_form' not in example:
+                        # Some API requests contain JSON payloads.
+                        if 'request_json' in example:
+                            data = example['request_json']
+                        else:
+                            data = None
 
-                    example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), data=data)
+                        if 'response_raw' not in example:
+                            # Perform a request on the resource (with a JSON response).
+                            example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), json=data)
+                        else:
+                            # Perform a request on the resource (but with a raw response).
+                            example['response'] = None
+                            example['response_raw'] = gateway.api_call(path=request_uri, method=example.get('method'), json=data, response_raw=True)
+                    else:
+                        # This is a legacy form API request.
+                        example['response'] = gateway.api_call_form(path=request_uri, method=example.get('method'), data=example['request_form'])
 
                     # This variable can be inspected to hardcode a sample in API_Details.
-                    debug_variable = json.dumps({ 'response_json': json.dumps(example['response']) })[1:-1]
+                    if 'response_raw' not in example:
+                        debug_variable = json.dumps({ 'response_json': json.dumps(example['response']) })[1:-1]
+                    else:
+                        # This prevents the program from attempting to parse it as JSON.
+                        debug_variable = '"response_json": null,\n'
+                        debug_variable += json.dumps({ 'response_raw': example['response_raw']})[1:-1]
+
+                    # This is a good place to set a breakpoint to cache the response.
                     set_breakpoint_here = debug_variable
                 else:
                     print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
                     continue
 
-                # Obtain the response schema for the current example.
-                # We can override some known types, provide known value criteria
-                # and descriptions using the field_map.
-                current_response_schema = JSONSchema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example['response'])
+                # It's possible for an API endpoint to return nothing.
+                if example['response']:
+                    # Obtain the response schema for the current example.
+                    # We can override some known types, provide known value criteria
+                    # and descriptions using the field_map.
+                    current_response_schema = JSONSchema.get_schema(table_field_map=endpoint_response.get('field_map'), json_object=example['response'])
 
-                # Have we already obtained a response schema from a previous example?
-                if previous_response_schema:
-                    # Merge the current_example_response_schema into the previous_response_schema.
-                    previous_response_schema = JSONSchema.merge_dictionaries(a=previous_response_schema, b=current_response_schema, mark_optional_at_depth=1)
-                else:
-                    # Just take the current_example_response_schema as the previous_response_schema.
-                    previous_response_schema = current_response_schema
+                    # Have we already obtained a response schema from a previous example?
+                    if previous_response_schema:
+                        # Merge the current_example_response_schema into the previous_response_schema.
+                        previous_response_schema = JSONSchema.merge_dictionaries(a=previous_response_schema, b=current_response_schema, mark_optional_at_depth=1)
+                    else:
+                        # Just take the current_example_response_schema as the previous_response_schema.
+                        previous_response_schema = current_response_schema
 
                 # Is there JSON request information?
                 if 'request_json' in example:
