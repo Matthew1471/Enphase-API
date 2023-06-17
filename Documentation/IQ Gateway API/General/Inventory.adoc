@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Lists the inventory of `PCU` (Power Conditioning Unit, also called a "micro-inverter"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called an "IQ Relay") and `ESUB` (Electrical SUB-panel, also called an "IQ System Controller" formerly "Enpower") devices.
+Lists the inventory of `PCU` (Power Conditioning Unit, also called a "microinverter"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called an "IQ Relay") and `ESUB` (Electrical SUB-panel, also called an "IQ System Controller" formerly "Enpower") devices.
 
 == Introduction
 
@@ -206,7 +206,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`PCU`
 |Power Conditioning Unit
-|A Power Conditioning Unit (PCU) or "micro-inverter".
+|A Power Conditioning Unit (PCU) or "microinverter".
 
 |`ACB`
 |AC Battery

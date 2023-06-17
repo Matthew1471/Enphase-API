@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Obtain the legacy micro-inverter energy production information.
+Obtain the legacy microinverter energy production information.
 
 == Introduction
 

@@ -42,3 +42,56 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/relay` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`mains_admin_state`
+|String
+|String
+|The administrative state of the mains relay.
+
+|`mains_oper_state`
+|String
+|String
+|The operational state of the mains relay.
+
+|`der1_state`
+|Number
+|Number
+|Distributed Energy Resource (DER) #1 state.
+
+|`der2_state`
+|Number
+|Number
+|Distributed Energy Resource (DER) #2 state.
+
+|`Enchg_grid_mode`
+|String
+|String
+|The status of the microinverter on the IQ Battery (formerly "Encharge Storage").
+
+|`Solar_grid_mode`
+|String
+|String
+|The status of the solar microinverter grid mode.
+
+|===
+
+== Examples
+
+=== Get Grid Relay Status
+
+.GET */ivp/ensemble/relay* Response
+[source,json,subs="+quotes"]
+----
+{"mains_admin_state": "closed", "mains_oper_state": "closed", "der1_state": 0, "der2_state": 0, "Enchg_grid_mode": "grid-tied", "Solar_grid_mode": "unknown"}
+----

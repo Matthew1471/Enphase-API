@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get device status (including micro-inverters and meters).
+Get device status (including microinverters and meters).
 
 == Introduction
 
