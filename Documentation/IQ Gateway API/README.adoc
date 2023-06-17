@@ -435,11 +435,11 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/LiveData/Status.adoc[Status]`
 |`/ivp/livedata/status`
-|Get live status.
+|Get live data MQTT streaming status.
 
 |`link:IVP/LiveData/Stream.adoc[Stream]`
 |`/ivp/livedata/stream`
-|Enable live status.
+|Enable or disable live data MQTT streaming.
 
 |===
 

@@ -57,12 +57,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`tariff`
 |Object
 |`Tariff` object
-|Contains details about the electricity tariff.
+|Contains details about the electricity tariffs.
 
 |`schedule`
 |Object
 |`Schedule` object
-|Contains details about the differnt tariffs that apply at different times.
+|Contains details about the different tariffs that apply at different times.
 
 |===
 
@@ -155,7 +155,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`charge_from_grid`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Whether charging from the grid is enabled.
+|Whether charging from the grid is allowed.
 
 |===
 
@@ -222,7 +222,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`charge_from_grid`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Whether charging from the grid is enabled during this time.
+|Whether charging from the grid is allowed during this time.
 
 |===
 

@@ -1,4 +1,4 @@
-= Admin - Lib - Administer Power Meter Unit (PMU)
+= Admin - Lib - Administer Phasor Measurement Unit (PMU)
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Add or read a Power Meter Unit (PMU).
+Add, read or remove a Phasor Measurement Unit (PMU).
 
 == Introduction
 
@@ -48,10 +48,69 @@ The `/admin/lib/admin_pmu_display.json` endpoint supports the following:
 |Description
 
 |`GET`
-|Read a Power Meter Unit (PMU).
+|Read a Phasor Measurement Unit (PMU).
 
 |`POST`
-|Add a Power Meter Unit (PMU).
+|Add/Remove a Phasor Measurement Unit (PMU).
 
 |===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`available_pmus`
+|Array(Unknown)
+|Array of Unknown
+|Detected available Phasor Measurement Unit (PMU) devices.
+
+|`associated_pmus`
+|Array(Unknown)
+|Array of Unknown
+|Currently added Phasor Measurement Unit (PMU) devices.
+
+|===
+
+== Examples
+
+=== Read a Phasor Measurement Unit (PMU)
+
+.GET */admin/lib/admin_pmu_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"available_pmus": [], "associated_pmus": []}
+----
+
+=== Add a Phasor Measurement Unit (PMU)
+
+.POST */admin/lib/admin_pmu_display.json* Request
+[source,http]
+----
+fname=accept&ip_addresses=192.168.1.254
+----
+.POST */admin/lib/admin_pmu_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"available_pmus": [], "associated_pmus": []}
+----
+
+=== Delete a Phasor Measurement Unit (PMU)
+
+.POST */admin/lib/admin_pmu_display.json* Request
+[source,http]
+----
+fname=remove&ip_addresses=192.168.1.254
+----
+.POST */admin/lib/admin_pmu_display.json* Response
+[source,json,subs="+quotes"]
+----
+{"available_pmus": [], "associated_pmus": []}
+----

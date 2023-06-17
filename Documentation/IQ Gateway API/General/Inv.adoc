@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get ESUB circuit board status.
+Get Electrical SUB-panel (ESUB), also called an "IQ System Controller" (formerly "Enpower") circuit board status.
 
 == Introduction
 
@@ -189,7 +189,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get ESUB Circuit Board Status
+=== Get Electrical SUB-panel (ESUB) Circuit Board Status
 
 .GET */inv* Response
 [source,json,subs="+quotes"]

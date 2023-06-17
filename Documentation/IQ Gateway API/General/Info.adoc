@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Obtain a summary of the gateway’s software status.
+Obtain an unauthenticated summary of the gateway’s software status.
 
 == Introduction
 
@@ -41,4 +41,238 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 A HTTP `GET` to the `/info.xml` endpoint provides the following response data.
 
-As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`envoy_info`
+|Object
+|`EnvoyInfo` object
+|An XML root node containing the Gateway (formerly "Envoy") information.
+
+|===
+
+=== `EnvoyInfo` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`time`
+|Number
+|Number
+|The time (in epoch format) this information was generated.
+
+|`device`
+|Object
+|`Device` object
+|Information about this Gateway (formerly "Envoy") device.
+
+|`web-tokens`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether JSON Web Tokens (JWT) are required on this Gateway (formerly "Envoy") device.
+
+|`package`
+|Array(Object)
+|Array of `Package`
+|The list of installed packages on this Gateway (formerly "Envoy") device.
+
+|`build_info`
+|Object
+|`BuildInfo` object
+|The build information for the software running on this Gateway (formerly "Envoy") device.
+
+|===
+
+=== `Device` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`sn`
+|Number
+|Number
+|The serial number of the Gateway (formerly "Envoy").
+
+|`pn`
+|String
+|String
+|The part number of the Gateway (formerly "Envoy").
+
+|`software`
+|String
+|String
+|The software version running on this Gateway (formerly "Envoy").
+
+|`euaid`
+|String
+|String
+|???
+
+|`seqnum`
+|Number
+|Number
+|A sequence number.
+
+|`apiver`
+|Number
+|Number
+|The supported API version.
+
+|`imeter`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the product has an integrated meter.
+
+|===
+
+=== `Package` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`pn`
+|String
+|String
+|The part number of this software component.
+
+|`version`
+|String
+|String
+|The human readable version of this software component.
+
+|`build`
+|String
+|String
+|The build string of this software component.
+
+|===
+
+=== `BuildInfo` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`build_time_gmt`
+|Number
+|Number
+|The GMT date and time in epoch format that this build was created.
+
+|`build_id`
+|String
+|String
+|The build string of this firmware.
+
+|===
+
+== Examples
+
+=== Get Gateway Software Status
+
+.GET */info.xml* Response
+[listing]
+----
+<?xml version='1.0' encoding='UTF-8'?>
+<envoy_info>
+  <time>1687008044</time>
+  <device>
+    <sn>999999999999</sn>
+    <pn>800-00654-r08</pn>
+    <software>D7.0.88</software>
+    <euaid>4c8675</euaid>
+    <seqnum>0</seqnum>
+    <apiver>1</apiver>
+    <imeter>true</imeter>
+  </device>
+  <web-tokens>true</web-tokens>
+  <package name='rootfs'>
+    <pn>500-00001-r01</pn>
+    <version>02.00.00</version>
+    <build>1210</build>
+  </package>
+  <package name='kernel'>
+    <pn>500-00011-r02</pn>
+    <version>04.04.225</version>
+    <build>d7c2e5</build>
+  </package>
+  <package name='boot'>
+    <pn>590-00019-r01</pn>
+    <version>02.00.01</version>
+    <build>1f421b</build>
+  </package>
+  <package name='app'>
+    <pn>500-00002-r01</pn>
+    <version>07.00.88</version>
+    <build>5580b1</build>
+  </package>
+  <package name='devimg'>
+    <pn>500-00005-r01</pn>
+    <version>01.02.371</version>
+    <build>373aab</build>
+  </package>
+  <package name='geo'>
+    <pn>500-00008-r01</pn>
+    <version>02.01.24</version>
+    <build>a74d96</build>
+  </package>
+  <package name='backbone'>
+    <pn>500-00010-r01</pn>
+    <version>07.00.20</version>
+    <build>176d57</build>
+  </package>
+  <package name='meter'>
+    <pn>500-00013-r01</pn>
+    <version>03.02.08</version>
+    <build>4f713a</build>
+  </package>
+  <package name='agf'>
+    <pn>500-00012-r01</pn>
+    <version>02.02.00</version>
+    <build>c62cdb</build>
+  </package>
+  <package name='essimg'>
+    <pn>500-00020-r01</pn>
+    <version>21.19.82</version>
+    <build>667fd7</build>
+  </package>
+  <package name='security'>
+    <pn>500-00016-r01</pn>
+    <version>02.00.00</version>
+    <build>54a6dc</build>
+  </package>
+  <package name='pkgsec'>
+    <pn>500-00021-r01</pn>
+    <version>01.00.00</version>
+    <build>19ae14</build>
+  </package>
+  <build_info>
+    <build_time_gmt>1645731441</build_time_gmt>
+    <build_id>ec2-user-envoy_uber-pkg_master:pkg-Feb-24-22-19:35:10</build_id>
+  </build_info>
+</envoy_info>
+
+----

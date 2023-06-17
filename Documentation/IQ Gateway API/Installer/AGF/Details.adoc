@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get the current Advanced Grid Functionality (AGF) profile.
+Get an Advanced Grid Functionality (AGF) profile.
 
 == Introduction
 
@@ -42,3 +42,900 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/installer/agf/details.json` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`profile_id` (Optional)
+|String
+|String
+|The unique profile identification string.
+
+|`en` (Optional)
+|Object
+|`Profile` object
+|The Advanced Grid Functionality (AGF) profile data in English.
+
+|`fr` (Optional)
+|Object
+|`Profile` object
+|The Advanced Grid Functionality (AGF) profile data in French.
+
+|`error` (Optional)
+|String
+|String
+|Any error that occurred.
+
+|===
+
+=== `Profile` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`groups`
+|Object
+|`Group` object
+|The groups that make up each of the components of a profile.
+
+|===
+
+=== `Group` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`grid_specification`
+|Object
+|`GridSpecification` object
+|The grid specification details.
+
+|`voltage_limits`
+|Object
+|`VoltageLimits` object
+|The voltage limit details.
+
+|`frequency_limits`
+|Object
+|`FrequencyLimits` object
+|The frequency limit details.
+
+|`reconnect`
+|Object
+|`Reconnect` object
+|The reconnect details.
+
+|`external_ac_disconnect_relay`
+|Object
+|`ExternalACDisconnectRelay` object
+|The external AC disconnect relay details.
+
+|`ramp_rates`
+|Object
+|`RampRates` object
+|The ramp rate details.
+
+|`dc_current_injection`
+|Object
+|`DCCurrentInjection` object
+|The DC current injection details.
+
+|`islanding_detection`
+|Object
+|`IslandingDetection` object
+|The islanding detection details.
+
+|`over_voltage_power_limit`
+|Object
+|`OverVoltagePowerLimit` object
+|The over voltage power limit details.
+
+|`under_voltage_charge_limit`
+|Object
+|`UnderVoltageChargeLimit` object
+|The under voltage charge limit details.
+
+|`over_frequency_power_limit`
+|Object
+|`OverFrequencyPowerLimit` object
+|The over frequency power limit details.
+
+|`under_frequency_charge_limit`
+|Object
+|`UnderFrequencyChargeLimit` object
+|The under frequency charge limit details.
+
+|`watt_power_factor`
+|Object
+|`WattPowerFactor` object
+|The watt power factor details.
+
+|`power_export_limiting`
+|Object
+|`PowerExportLimiting` object
+|The power export limiting details.
+
+|`loss_of_phase_detection`
+|Object
+|`LossOfPhaseDetection` object
+|The loss of phase detection details.
+
+|`volt_var`
+|Object
+|`VoltVar` object
+|The volt var details.
+
+|===
+
+=== `GridSpecification` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Grid Specification" in the requested language.
+
+|`parameters`
+|Object
+|`GridSpecification.Parameters` object
+|The list of the various grid specification parameters.
+
+|===
+
+=== `GridSpecification.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`reference_voltage`
+|Object
+|`Parameter` object
+|The reference voltage.
+
+|`nominal_frequency`
+|Object
+|`Parameter` object
+|The nominal frequency.
+
+|===
+
+=== `Parameter` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|The name of the parameter in the requested language.
+
+|`parameter_type`
+|String
+|String
+|The parameter type.
+
+|`display_value`
+|String
+|String
+|What the value should display as.
+
+|`units` (Optional)
+|String
+|String
+|What units the value is in.
+
+|`table` (Optional)
+|String
+|String
+|What table this value should visually come under.
+
+|`row` (Optional)
+|String
+|String
+|The label for the row this item should appear in the table.
+
+|`column` (Optional)
+|String
+|String
+|The label for the column this item should appear in the table under.
+
+|===
+
+=== `VoltageLimits` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Voltage limits" in the requested language.
+
+|`parameters`
+|Object
+|`VoltageLimits.Parameters` object
+|The list of the various voltage limit parameters.
+
+|===
+
+=== `VoltageLimits.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`fast_over_voltage_trip_time`
+|Object
+|`Parameter` object
+|The over voltage trip time.
+
+|`fast_over_voltage_limit`
+|Object
+|`Parameter` object
+|The over voltage limit.
+
+|`slow_over_voltage_trip_time`
+|Object
+|`Parameter` object
+|The over voltage trip time (slow).
+
+|`slow_over_voltage_limit`
+|Object
+|`Parameter` object
+|The over voltage limit (slow).
+
+|`fast_under_voltage_trip_time`
+|Object
+|`Parameter` object
+|The under voltage trip time.
+
+|`fast_under_voltage_limit`
+|Object
+|`Parameter` object
+|The under voltage limit.
+
+|`reconnect_ac_voltage_high`
+|Object
+|`Parameter` object
+|The reconnect AC voltage high.
+
+|`reconnect_ac_voltage_low`
+|Object
+|`Parameter` object
+|The reconnect AC voltage low.
+
+|===
+
+=== `FrequencyLimits` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Frequency limits" in the requested language.
+
+|`parameters`
+|Object
+|`FrequencyLimits.Parameters` object
+|The list of the various frequency limit parameters.
+
+|===
+
+=== `FrequencyLimits.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`fast_over_frequency_trip_time`
+|Object
+|`Parameter` object
+|The over frequency trip time.
+
+|`fast_over_frequency_limit`
+|Object
+|`Parameter` object
+|The over frequency limit.
+
+|`fast_under_frequency_trip_time`
+|Object
+|`Parameter` object
+|The under frequency trip time.
+
+|`fast_under_frequency`
+|Object
+|`Parameter` object
+|The under frequency limit.
+
+|`slow_under_frequency_trip_time`
+|Object
+|`Parameter` object
+|The under frequency trip time (slow).
+
+|`slow_under_frequency`
+|Object
+|`Parameter` object
+|The under frequency limit (slow).
+
+|`reconnect_ac_frequency_high`
+|Object
+|`Parameter` object
+|The reconnect AC frequency high.
+
+|`reconnect_ac_frequency_low`
+|Object
+|`Parameter` object
+|The reconnect AC frequency low.
+
+|===
+
+=== `Reconnect` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Reconnect" in the requested language.
+
+|`parameters`
+|Object
+|`Reconnect.Parameters` object
+|The list of the various reconnect parameters.
+
+|===
+
+=== `Reconnect.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`reconnect_ac_trip_time`
+|Object
+|`Parameter` object
+|The start / reconnect time.
+
+|`long_term_reconnect_time`
+|Object
+|`Parameter` object
+|The anti-islanding reconnect time (long).
+
+|===
+
+=== `ExternalACDisconnectRelay` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"External AC disconnect relay" in the requested language.
+
+|`parameters`
+|Object
+|`ExternalACDisconnectRelay.Parameters` object
+|The list of the various AC disconnect relay parameters.
+
+|===
+
+=== `ExternalACDisconnectRelay.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`external_ac_disconnect_relay_enabled`
+|Object
+|`Parameter` object
+|The external AC disconnect relay is enabled.
+
+|`reconnect_delay`
+|Object
+|`Parameter` object
+|The reconnect delay.
+
+|===
+
+=== `RampRates` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Ramp Rates" in the requested language.
+
+|`parameters`
+|Object
+|`RampRates.Parameters` object
+|The list of the various ramp rate parameters.
+
+|===
+
+=== `RampRates.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`reconnect_power_ramp_up_rate`
+|Object
+|`Parameter` object
+|The soft-start ramp rate.
+
+|===
+
+=== `DCCurrentInjection` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"DC Current Injection" in the requested language.
+
+|`parameters`
+|Object
+|`DCCurrentInjection.Parameters` object
+|The list of the various DC current injection parameters.
+
+|===
+
+=== `DCCurrentInjection.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `IslandingDetection` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Islanding detection" in the requested language.
+
+|`parameters`
+|Object
+|`IslandingDetection.Parameters` object
+|The list of the various islanding detection parameters.
+
+|===
+
+=== `IslandingDetection.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enable_islanding_detection`
+|Object
+|`Parameter` object
+|The Islanding detection is enabled.
+
+|`anti_islanding_disconnect_time`
+|Object
+|`Parameter` object
+|The anti-islanding threshold trip time.
+
+|===
+
+=== `OverVoltagePowerLimit` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Over voltage power limit" in the requested language.
+
+|`parameters`
+|Object
+|`OverVoltagePowerLimit.Parameters` object
+|The list of the various over voltage power limit parameters.
+
+|===
+
+=== `OverVoltagePowerLimit.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `UnderVoltageChargeLimit` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Under voltage charge limit" in the requested language.
+
+|`parameters`
+|Object
+|`UnderVoltageChargeLimit.Parameters` object
+|The list of the various under voltage charge limit parameters.
+
+|===
+
+=== `UnderVoltageChargeLimit.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `OverFrequencyPowerLimit` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Over frequency power limit" in the requested language.
+
+|`parameters`
+|Object
+|`OverFrequencyPowerLimit.Parameters` object
+|The list of the various over frequency power limit parameters.
+
+|===
+
+=== `OverFrequencyPowerLimit.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enable_over_frequency_power_limit`
+|Object
+|`Parameter` object
+|The over frequency power limit is enabled.
+
+|`over_frequency_power_limit_start_frequency`
+|Object
+|`Parameter` object
+|The start frequency.
+
+|`over_frequency_power_limit_ramp_down_rate`
+|Object
+|`Parameter` object
+|The ramp down rate.
+
+|`over_frequency_power_limit_ramp_up_rate_high`
+|Object
+|`Parameter` object
+|The ramp up rate.
+
+|===
+
+=== `UnderFrequencyChargeLimit` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Under frequency charge limit" in the requested language.
+
+|`parameters`
+|Object
+|`UnderFrequencyChargeLimit.Parameters` object
+|The list of the various under frequency charge limit parameters.
+
+|===
+
+=== `UnderFrequencyChargeLimit.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enable_under_frequency_charge_limit`
+|Object
+|`Parameter` object
+|The under frequency charge limit enabled.
+
+|`under_frequency_charge_limit_start_frequency`
+|Object
+|`Parameter` object
+|The start frequency.
+
+|`under_frequency_charge_limit_ramp_down_rate`
+|Object
+|`Parameter` object
+|The ramp down rate.
+
+|===
+
+=== `WattPowerFactor` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Watt Power Factor" in the requested language.
+
+|`parameters`
+|Object
+|`WattPowerFactor.Parameters` object
+|The list of the various watt power factor parameters.
+
+|===
+
+=== `WattPowerFactor.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `PowerExportLimiting` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Power Export Limiting" in the requested language.
+
+|`parameters`
+|Object
+|`PowerExportLimiting.Parameters` object
+|The list of the various power export limiting parameters.
+
+|===
+
+=== `PowerExportLimiting.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `LossOfPhaseDetection` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Loss of Phase Detection" in the requested language.
+
+|`parameters`
+|Object
+|`LossOfPhaseDetection.Parameters` object
+|The list of the various loss of phase detection parameters.
+
+|===
+
+=== `LossOfPhaseDetection.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`lop_enabled`
+|Object
+|`Parameter` object
+|The loss of phase detection is enabled
+
+|===
+
+=== `VoltVar` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`label`
+|String
+|String
+|"Volt/Var" in the requested language.
+
+|`parameters`
+|Object
+|`VoltVar.Parameters` object
+|The list of the various volt var parameters.
+
+|===
+
+=== `VoltVar.Parameters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+== Examples
+
+=== Get Current Advanced Grid Functionality (AGF) Profile
+
+.GET */installer/agf/details.json* Response
+[source,json,subs="+quotes"]
+----
+{"profile_id": "G99-1-6:2020 UK:1.2.10", "en": {"groups": {"grid_specification": {"label": "Grid Specification", "parameters": {"reference_voltage": {"label": "Reference voltage", "parameter_type": "agf", "display_value": "230.0", "units": "V"}, "nominal_frequency": {"label": "Nominal frequency", "parameter_type": "agf", "display_value": "50.00", "units": "Hz"}}}, "voltage_limits": {"label": "Voltage limits", "parameters": {"fast_over_voltage_trip_time": {"label": "Over voltage trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Over voltage disconnect", "row": "Limit (fast)", "column": "Time"}, "fast_over_voltage_limit": {"label": "Over voltage limit", "parameter_type": "tpm", "display_value": "273.70", "units": "V", "table": "Over voltage disconnect", "row": "Limit (fast)", "column": "Magnitude"}, "slow_over_voltage_trip_time": {"label": "Over voltage trip time (slow)", "parameter_type": "tpm", "display_value": "1,100", "units": "ms", "table": "Over voltage disconnect", "row": "Limit (slow)", "column": "Time"}, "slow_over_voltage_limit": {"label": "Over voltage limit (slow)", "parameter_type": "tpm", "display_value": "262.20", "units": "V", "table": "Over voltage disconnect", "row": "Limit (slow)", "column": "Magnitude"}, "fast_under_voltage_trip_time": {"label": "Under voltage trip time", "parameter_type": "tpm", "display_value": "2,600", "units": "ms", "table": "Under voltage disconnect", "row": "Limit", "column": "Time"}, "fast_under_voltage_limit": {"label": "Under voltage limit", "parameter_type": "tpm", "display_value": "184.00", "units": "V", "table": "Under voltage disconnect", "row": "Limit", "column": "Magnitude"}, "reconnect_ac_voltage_high": {"label": "Reconnect AC voltage high", "parameter_type": "tpm", "display_value": "262.20", "units": "V", "table": "Reconnect voltage", "row": "High", "column": "Magnitude"}, "reconnect_ac_voltage_low": {"label": "Reconnect AC voltage low", "parameter_type": "tpm", "display_value": "195.50", "units": "V", "table": "Reconnect voltage", "row": "Low", "column": "Magnitude"}}}, "frequency_limits": {"label": "Frequency limits", "parameters": {"fast_over_frequency_trip_time": {"label": "Over frequency trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Over frequency disconnect", "row": "Limit", "column": "Time"}, "fast_over_frequency_limit": {"label": "Over frequency limit", "parameter_type": "tpm", "display_value": "52.00", "units": "Hz", "table": "Over frequency disconnect", "row": "Limit", "column": "Magnitude"}, "fast_under_frequency_trip_time": {"label": "Under frequency trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Under frequency disconnect", "row": "Limit (fast)", "column": "Time"}, "fast_under_frequency": {"label": "Under frequency limit", "parameter_type": "tpm", "display_value": "47.00", "units": "Hz", "table": "Under frequency disconnect", "row": "Limit (fast)", "column": "Magnitude"}, "slow_under_frequency_trip_time": {"label": "Under frequency trip time (slow)", "parameter_type": "tpm", "display_value": "20,300", "units": "ms", "table": "Under frequency disconnect", "row": "Limit (slow)", "column": "Time"}, "slow_under_frequency": {"label": "Under frequency limit (slow)", "parameter_type": "tpm", "display_value": "47.50", "units": "Hz", "table": "Under frequency disconnect", "row": "Limit (slow)", "column": "Magnitude"}, "reconnect_ac_frequency_high": {"label": "Reconnect AC frequency high", "parameter_type": "tpm", "display_value": "52.00", "units": "Hz", "table": "Reconnect frequency", "row": "High", "column": "Magnitude"}, "reconnect_ac_frequency_low": {"label": "Reconnect AC frequency low", "parameter_type": "tpm", "display_value": "47.50", "units": "Hz", "table": "Reconnect frequency", "row": "Low", "column": "Magnitude"}}}, "reconnect": {"label": "Reconnect", "parameters": {"reconnect_ac_trip_time": {"label": "Start / Reconnect time", "parameter_type": "tpm", "display_value": "20", "units": "s"}, "long_term_reconnect_time": {"label": "Anti-islanding reconnect time (long)", "parameter_type": "tpm", "display_value": "20", "units": "s"}}}, "external_ac_disconnect_relay": {"label": "External AC disconnect relay", "parameters": {"external_ac_disconnect_relay_enabled": {"label": "External AC disconnect relay enabled", "parameter_type": "agf", "display_value": "Yes"}, "reconnect_delay": {"label": "Reconnect delay", "parameter_type": "agf", "display_value": "10,000", "units": "ms"}}}, "ramp_rates": {"label": "Ramp Rates", "parameters": {"reconnect_power_ramp_up_rate": {"label": "Soft-start ramp rate", "parameter_type": "tpm", "display_value": "0.17", "units": "%/s"}}}, "dc_current_injection": {"label": "DC Current Injection", "parameters": {}}, "islanding_detection": {"label": "Islanding detection", "parameters": {"enable_islanding_detection": {"label": "Islanding detection enabled", "parameter_type": "tpm", "display_value": "Yes"}, "anti_islanding_disconnect_time": {"label": "Anti-islanding threshold trip time", "parameter_type": "tpm", "display_value": "500", "units": "ms"}}}, "over_voltage_power_limit": {"label": "Over voltage power limit", "parameters": {}}, "under_voltage_charge_limit": {"label": "Under voltage charge limit", "parameters": {}}, "over_frequency_power_limit": {"label": "Over frequency power limit", "parameters": {"enable_over_frequency_power_limit": {"label": "Over frequency power limit enabled", "parameter_type": "tpm", "display_value": "Yes"}, "over_frequency_power_limit_start_frequency": {"label": "Start frequency", "parameter_type": "tpm", "display_value": "50.40", "units": "Hz"}, "over_frequency_power_limit_ramp_down_rate": {"label": "Ramp down rate", "parameter_type": "tpm", "display_value": "20.00", "units": "%/Hz"}, "over_frequency_power_limit_ramp_up_rate_high": {"label": "Ramp up rate", "parameter_type": "tpm", "display_value": "0.167", "units": "%/s"}}}, "under_frequency_charge_limit": {"label": "Under frequency charge limit", "parameters": {"enable_under_frequency_charge_limit": {"label": "Under frequency charge limit enabled", "parameter_type": "agf", "display_value": "Yes"}, "under_frequency_charge_limit_start_frequency": {"label": "Start frequency", "parameter_type": "agf", "display_value": "49.60", "units": "Hz"}, "under_frequency_charge_limit_ramp_down_rate": {"label": "Ramp down rate", "parameter_type": "agf", "display_value": "20.00", "units": "%/Hz"}}}, "watt_power_factor": {"label": "Watt Power Factor", "parameters": {}}, "power_export_limiting": {"label": "Power Export Limiting", "parameters": {}}, "loss_of_phase_detection": {"label": "Loss of Phase Detection", "parameters": {"lop_enabled": {"label": "Loss of phase detection enabled", "parameter_type": "agf", "display_value": "Yes"}}}, "volt_var": {"label": "Volt/Var", "parameters": {}}}}}
+----
+
+=== Get Current Advanced Grid Functionality (AGF) Profile (in French)
+
+.GET */installer/agf/details.json?language=fr* Response
+[source,json,subs="+quotes"]
+----
+{"profile_id": "G99-1-6:2020 UK:1.2.10", "fr": {"groups": {"grid_specification": {"label": "Sp\u00e9cification de r\u00e9seau", "parameters": {"reference_voltage": {"label": "Tension de r\u00e9f\u00e9rence", "parameter_type": "agf", "display_value": "230,0", "units": "V"}, "nominal_frequency": {"label": "Fr\u00e9quence nominale", "parameter_type": "agf", "display_value": "50,00", "units": "Hz"}}}, "voltage_limits": {"label": "Limites de tension", "parameters": {"fast_over_voltage_trip_time": {"label": "D\u00e9lai de d\u00e9clenchement de surtension", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "D\u00e9connexion de surtension", "row": "Limite (rapide)", "column": "Heure"}, "fast_over_voltage_limit": {"label": "Limite de surtension", "parameter_type": "tpm", "display_value": "273,70", "units": "V", "table": "D\u00e9connexion de surtension", "row": "Limite (rapide)", "column": "Magnitude"}, "slow_over_voltage_trip_time": {"label": "D\u00e9lai de d\u00e9clenchement de surtension (lent)", "parameter_type": "tpm", "display_value": "1100", "units": "ms", "table": "D\u00e9connexion de surtension", "row": "Limite (lent)", "column": "Heure"}, "slow_over_voltage_limit": {"label": "Limite de surtension (lent)", "parameter_type": "tpm", "display_value": "262,20", "units": "V", "table": "D\u00e9connexion de surtension", "row": "Limite (lent)", "column": "Magnitude"}, "fast_under_voltage_trip_time": {"label": "D\u00e9lai de d\u00e9clenchement de sous-tension", "parameter_type": "tpm", "display_value": "2600", "units": "ms", "table": "D\u00e9connexion de sous-tension", "row": "Limite", "column": "Heure"}, "fast_under_voltage_limit": {"label": "Limite de sous-tension", "parameter_type": "tpm", "display_value": "184,00", "units": "V", "table": "D\u00e9connexion de sous-tension", "row": "Limite", "column": "Magnitude"}, "reconnect_ac_voltage_high": {"label": "Tension AC de reconnexion haute", "parameter_type": "tpm", "display_value": "262,20", "units": "V", "table": "Tension de reconnexion", "row": "\u00c9lev\u00e9", "column": "Magnitude"}, "reconnect_ac_voltage_low": {"label": "Tension AC de reconnexion basse", "parameter_type": "tpm", "display_value": "195,50", "units": "V", "table": "Tension de reconnexion", "row": "Faible", "column": "Magnitude"}}}, "frequency_limits": {"label": "Limites de fr\u00e9quence", "parameters": {"fast_over_frequency_trip_time": {"label": "D\u00e9lai de d\u00e9clenchement de surfr\u00e9quence", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "D\u00e9connexion de surfr\u00e9quence", "row": "Limite", "column": "Heure"}, "fast_over_frequency_limit": {"label": "Limite de surfr\u00e9quence", "parameter_type": "tpm", "display_value": "52,00", "units": "Hz", "table": "D\u00e9connexion de surfr\u00e9quence", "row": "Limite", "column": "Magnitude"}, "fast_under_frequency_trip_time": {"label": "D\u00e9lai de d\u00e9couplage suite \u00e0 fr\u00e9quence trop basse", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "D\u00e9connexion de sous-fr\u00e9quence", "row": "Limite (rapide)", "column": "Heure"}, "fast_under_frequency": {"label": "Limite de sous-fr\u00e9quence", "parameter_type": "tpm", "display_value": "47,00", "units": "Hz", "table": "D\u00e9connexion de sous-fr\u00e9quence", "row": "Limite (rapide)", "column": "Magnitude"}, "slow_under_frequency_trip_time": {"label": "D\u00e9lai de d\u00e9clenchement de sous-fr\u00e9quence (lent)", "parameter_type": "tpm", "display_value": "20300", "units": "ms", "table": "D\u00e9connexion de sous-fr\u00e9quence", "row": "Limite (lent)", "column": "Heure"}, "slow_under_frequency": {"label": "Limite de sous-fr\u00e9quence (lent)", "parameter_type": "tpm", "display_value": "47,50", "units": "Hz", "table": "D\u00e9connexion de sous-fr\u00e9quence", "row": "Limite (lent)", "column": "Magnitude"}, "reconnect_ac_frequency_high": {"label": "Fr\u00e9quence AC de reconnexion haute", "parameter_type": "tpm", "display_value": "52,00", "units": "Hz", "table": "Fr\u00e9quence de reconnexion", "row": "\u00c9lev\u00e9", "column": "Magnitude"}, "reconnect_ac_frequency_low": {"label": "Fr\u00e9quence AC de reconnexion basse", "parameter_type": "tpm", "display_value": "47,50", "units": "Hz", "table": "Fr\u00e9quence de reconnexion", "row": "Faible", "column": "Magnitude"}}}, "reconnect": {"label": "Reconnexion", "parameters": {"reconnect_ac_trip_time": {"label": "D\u00e9lai de d\u00e9marrage/reconnexion", "parameter_type": "tpm", "display_value": "20", "units": "s"}, "long_term_reconnect_time": {"label": "D\u00e9lai de d\u00e9connexion anti-\u00eelotage (long)", "parameter_type": "tpm", "display_value": "20", "units": "s"}}}, "external_ac_disconnect_relay": {"label": "Relais de d\u00e9connexion AC externe", "parameters": {"external_ac_disconnect_relay_enabled": {"label": "Relais de d\u00e9connexion AC externe activ\u00e9", "parameter_type": "agf", "display_value": "Oui"}, "reconnect_delay": {"label": "Retard de reconnexion", "parameter_type": "agf", "display_value": "10000", "units": "ms"}}}, "ramp_rates": {"label": "Valeurs de la rampe", "parameters": {"reconnect_power_ramp_up_rate": {"label": "Valeur de rampe de d\u00e9marrage progressif", "parameter_type": "tpm", "display_value": "0,17", "units": "%/s"}}}, "dc_current_injection": {"label": "Injection de courant DC", "parameters": {}}, "islanding_detection": {"label": "D\u00e9tection de mise en \u00eele", "parameters": {"enable_islanding_detection": {"label": "D\u00e9tection d'\u00eelotage activ\u00e9e", "parameter_type": "tpm", "display_value": "Oui"}, "anti_islanding_disconnect_time": {"label": "D\u00e9lai de d\u00e9clenchement du seuil d'anti-\u00eelotage", "parameter_type": "tpm", "display_value": "500", "units": "ms"}}}, "over_voltage_power_limit": {"label": "Limite d'alimentation de surtension", "parameters": {}}, "under_voltage_charge_limit": {"label": "Limite de charge de sous-tension", "parameters": {}}, "over_frequency_power_limit": {"label": "Limite d'alimentation de surfr\u00e9quence", "parameters": {"enable_over_frequency_power_limit": {"label": "Limite d'alimentation de surfr\u00e9quence activ\u00e9e", "parameter_type": "tpm", "display_value": "Oui"}, "over_frequency_power_limit_start_frequency": {"label": "Fr\u00e9quence de d\u00e9part", "parameter_type": "tpm", "display_value": "50,40", "units": "Hz"}, "over_frequency_power_limit_ramp_down_rate": {"label": "Taux de d\u00e9croissance de rampe", "parameter_type": "tpm", "display_value": "20,00", "units": "%/Hz"}, "over_frequency_power_limit_ramp_up_rate_high": {"label": "Taux de croissance de rampe", "parameter_type": "tpm", "display_value": "0,167", "units": "%/s"}}}, "under_frequency_charge_limit": {"label": "Sous la limite de charge de fr\u00e9quence", "parameters": {"enable_under_frequency_charge_limit": {"label": "Limite de charge de sous-fr\u00e9quence activ\u00e9e", "parameter_type": "agf", "display_value": "Oui"}, "under_frequency_charge_limit_start_frequency": {"label": "Fr\u00e9quence de d\u00e9part", "parameter_type": "agf", "display_value": "49,60", "units": "Hz"}, "under_frequency_charge_limit_ramp_down_rate": {"label": "Taux de d\u00e9croissance de rampe", "parameter_type": "agf", "display_value": "20,00", "units": "%/Hz"}}}, "watt_power_factor": {"label": "Facteur de puissance des watts", "parameters": {}}, "power_export_limiting": {"label": "Limitation d'exportation de puissance", "parameters": {}}, "loss_of_phase_detection": {"label": "Perte de d\u00e9tection de phase", "parameters": {"lop_enabled": {"label": "Perte de d\u00e9tection de phase activ\u00e9e", "parameter_type": "agf", "display_value": "Oui"}}}, "volt_var": {"label": "Volt/Var", "parameters": {}}}}}
+----
+
+=== Get Current Advanced Grid Functionality (AGF) Profile (with bad selected profile)
+
+.GET */installer/agf/details.json?selected_profile=1* Response
+[source,json,subs="+quotes"]
+----
+{"error": "Could not retrieve details of requested profile '1', either the profile is not in the profile package, or the current profile configuration has been corrupted."}
+----
+
+=== Get Current Advanced Grid Functionality (AGF) Profile (with selected profile)
+
+.GET */installer/agf/details.json?selected_profile=G99-1-6:2020%20UK:1.2.10* Response
+[source,json,subs="+quotes"]
+----
+{"profile_id": "G99-1-6:2020 UK:1.2.10", "en": {"groups": {"grid_specification": {"label": "Grid Specification", "parameters": {"reference_voltage": {"label": "Reference voltage", "parameter_type": "agf", "display_value": "230.0", "units": "V"}, "nominal_frequency": {"label": "Nominal frequency", "parameter_type": "agf", "display_value": "50.00", "units": "Hz"}}}, "voltage_limits": {"label": "Voltage limits", "parameters": {"fast_over_voltage_trip_time": {"label": "Over voltage trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Over voltage disconnect", "row": "Limit (fast)", "column": "Time"}, "fast_over_voltage_limit": {"label": "Over voltage limit", "parameter_type": "tpm", "display_value": "273.70", "units": "V", "table": "Over voltage disconnect", "row": "Limit (fast)", "column": "Magnitude"}, "slow_over_voltage_trip_time": {"label": "Over voltage trip time (slow)", "parameter_type": "tpm", "display_value": "1,100", "units": "ms", "table": "Over voltage disconnect", "row": "Limit (slow)", "column": "Time"}, "slow_over_voltage_limit": {"label": "Over voltage limit (slow)", "parameter_type": "tpm", "display_value": "262.20", "units": "V", "table": "Over voltage disconnect", "row": "Limit (slow)", "column": "Magnitude"}, "fast_under_voltage_trip_time": {"label": "Under voltage trip time", "parameter_type": "tpm", "display_value": "2,600", "units": "ms", "table": "Under voltage disconnect", "row": "Limit", "column": "Time"}, "fast_under_voltage_limit": {"label": "Under voltage limit", "parameter_type": "tpm", "display_value": "184.00", "units": "V", "table": "Under voltage disconnect", "row": "Limit", "column": "Magnitude"}, "reconnect_ac_voltage_high": {"label": "Reconnect AC voltage high", "parameter_type": "tpm", "display_value": "262.20", "units": "V", "table": "Reconnect voltage", "row": "High", "column": "Magnitude"}, "reconnect_ac_voltage_low": {"label": "Reconnect AC voltage low", "parameter_type": "tpm", "display_value": "195.50", "units": "V", "table": "Reconnect voltage", "row": "Low", "column": "Magnitude"}}}, "frequency_limits": {"label": "Frequency limits", "parameters": {"fast_over_frequency_trip_time": {"label": "Over frequency trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Over frequency disconnect", "row": "Limit", "column": "Time"}, "fast_over_frequency_limit": {"label": "Over frequency limit", "parameter_type": "tpm", "display_value": "52.00", "units": "Hz", "table": "Over frequency disconnect", "row": "Limit", "column": "Magnitude"}, "fast_under_frequency_trip_time": {"label": "Under frequency trip time", "parameter_type": "tpm", "display_value": "600", "units": "ms", "table": "Under frequency disconnect", "row": "Limit (fast)", "column": "Time"}, "fast_under_frequency": {"label": "Under frequency limit", "parameter_type": "tpm", "display_value": "47.00", "units": "Hz", "table": "Under frequency disconnect", "row": "Limit (fast)", "column": "Magnitude"}, "slow_under_frequency_trip_time": {"label": "Under frequency trip time (slow)", "parameter_type": "tpm", "display_value": "20,300", "units": "ms", "table": "Under frequency disconnect", "row": "Limit (slow)", "column": "Time"}, "slow_under_frequency": {"label": "Under frequency limit (slow)", "parameter_type": "tpm", "display_value": "47.50", "units": "Hz", "table": "Under frequency disconnect", "row": "Limit (slow)", "column": "Magnitude"}, "reconnect_ac_frequency_high": {"label": "Reconnect AC frequency high", "parameter_type": "tpm", "display_value": "52.00", "units": "Hz", "table": "Reconnect frequency", "row": "High", "column": "Magnitude"}, "reconnect_ac_frequency_low": {"label": "Reconnect AC frequency low", "parameter_type": "tpm", "display_value": "47.50", "units": "Hz", "table": "Reconnect frequency", "row": "Low", "column": "Magnitude"}}}, "reconnect": {"label": "Reconnect", "parameters": {"reconnect_ac_trip_time": {"label": "Start / Reconnect time", "parameter_type": "tpm", "display_value": "20", "units": "s"}, "long_term_reconnect_time": {"label": "Anti-islanding reconnect time (long)", "parameter_type": "tpm", "display_value": "20", "units": "s"}}}, "external_ac_disconnect_relay": {"label": "External AC disconnect relay", "parameters": {"external_ac_disconnect_relay_enabled": {"label": "External AC disconnect relay enabled", "parameter_type": "agf", "display_value": "Yes"}, "reconnect_delay": {"label": "Reconnect delay", "parameter_type": "agf", "display_value": "10,000", "units": "ms"}}}, "ramp_rates": {"label": "Ramp Rates", "parameters": {"reconnect_power_ramp_up_rate": {"label": "Soft-start ramp rate", "parameter_type": "tpm", "display_value": "0.17", "units": "%/s"}}}, "dc_current_injection": {"label": "DC Current Injection", "parameters": {}}, "islanding_detection": {"label": "Islanding detection", "parameters": {"enable_islanding_detection": {"label": "Islanding detection enabled", "parameter_type": "tpm", "display_value": "Yes"}, "anti_islanding_disconnect_time": {"label": "Anti-islanding threshold trip time", "parameter_type": "tpm", "display_value": "500", "units": "ms"}}}, "over_voltage_power_limit": {"label": "Over voltage power limit", "parameters": {}}, "under_voltage_charge_limit": {"label": "Under voltage charge limit", "parameters": {}}, "over_frequency_power_limit": {"label": "Over frequency power limit", "parameters": {"enable_over_frequency_power_limit": {"label": "Over frequency power limit enabled", "parameter_type": "tpm", "display_value": "Yes"}, "over_frequency_power_limit_start_frequency": {"label": "Start frequency", "parameter_type": "tpm", "display_value": "50.40", "units": "Hz"}, "over_frequency_power_limit_ramp_down_rate": {"label": "Ramp down rate", "parameter_type": "tpm", "display_value": "20.00", "units": "%/Hz"}, "over_frequency_power_limit_ramp_up_rate_high": {"label": "Ramp up rate", "parameter_type": "tpm", "display_value": "0.167", "units": "%/s"}}}, "under_frequency_charge_limit": {"label": "Under frequency charge limit", "parameters": {"enable_under_frequency_charge_limit": {"label": "Under frequency charge limit enabled", "parameter_type": "agf", "display_value": "Yes"}, "under_frequency_charge_limit_start_frequency": {"label": "Start frequency", "parameter_type": "agf", "display_value": "49.60", "units": "Hz"}, "under_frequency_charge_limit_ramp_down_rate": {"label": "Ramp down rate", "parameter_type": "agf", "display_value": "20.00", "units": "%/Hz"}}}, "watt_power_factor": {"label": "Watt Power Factor", "parameters": {}}, "power_export_limiting": {"label": "Power Export Limiting", "parameters": {}}, "loss_of_phase_detection": {"label": "Loss of Phase Detection", "parameters": {"lop_enabled": {"label": "Loss of phase detection enabled", "parameter_type": "agf", "display_value": "Yes"}}}, "volt_var": {"label": "Volt/Var", "parameters": {}}}}}
+----

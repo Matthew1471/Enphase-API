@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Lists the inventory of `PCU` (Power Conditioning Unit, also called a "Micro-inverter"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called a "Q Relay") and `ESUB` (Electronic SUB-panel, also called a "IQ System Controller" formerly "Enpower") devices.
+Lists the inventory of `PCU` (Power Conditioning Unit, also called a "micro-inverter"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called an "IQ Relay") and `ESUB` (Electrical SUB-panel, also called an "IQ System Controller" formerly "Enpower") devices.
 
 == Introduction
 
@@ -39,6 +39,195 @@ More details on the project are available from the link:../../../README.adoc[pro
 
 == Request
 
-A HTTP `GET` to the `/inventory.json?deleted=1` endpoint provides the following response data.
+A HTTP `GET` to the `/inventory.json` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Querystring
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`deleted` (Optional)
+|Boolean
+|Boolean (e.g. `0` or `1`)
+|Presumably specifies deleted devices should also be included in the results.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`type`
+|String
+|`DeviceType` (e.g. `PCU`)
+|The type of device. In the format `DeviceType`.
+
+|`devices`
+|Array(Object)
+|Array of `Device`
+|The array of devices for this type of device.
+
+|===
+
+=== `Device` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`part_num`
+|String
+|String
+|The part number of the device.
+
+|`installed`
+|String
+|String
+|The date and time the device was installed (in epoch format).
+
+|`serial_num`
+|String
+|String
+|The serial number of the device.
+
+|`device_status`
+|Array(Unknown)
+|Array of Unknown
+|An array of statuses the device is currently in.
+
+|`last_rpt_date`
+|String
+|String
+|The date the device last reported to the Gateway (formerly "Envoy").
+
+|`admin_state`
+|Number
+|Number
+|The configured administrative state.
+
+|`dev_type`
+|Number
+|Number
+|The device type.
+
+|`created_date`
+|String
+|String
+|The date and time this was added to the Gateway (formerly "Envoy") in epoch format.
+
+|`img_load_date`
+|String
+|String
+|The date the firmware image was loaded onto this device.
+
+|`img_pnum_running`
+|String
+|String
+|The software product number this is running.
+
+|`ptpn`
+|String
+|String
+|???
+
+|`chaneid`
+|Number
+|Number
+|The channel Enphase ID.
+
+|`device_control`
+|Array(Object)
+|Array of `DeviceControl`
+|???
+
+|`producing`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether or not this is producing electricity.
+
+|`communicating`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether this device is currently communicating with the Gateway (formerly "Envoy").
+
+|`provisioned`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether this device is provisioned.
+
+|`operating`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether this device is currently operating.
+
+|===
+
+=== `DeviceControl` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`gficlearset`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the device currently has the Ground Fault Interrupt (GFI) error state set.
+
+|===
+
+== Types
+
+=== `DeviceType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`PCU`
+|Power Conditioning Unit
+|A Power Conditioning Unit (PCU) or "micro-inverter".
+
+|`ACB`
+|AC Battery
+|An AC Battery.
+
+|`NSRB`
+|IQ Relay
+|An IQ Relay (formerly "Q Relay" and "Network System Relay Board (NSRB)").
+
+|`ESUB`
+|Electrical SUB-panel
+|An Electrical SUB-panel (ESUB), also called an "IQ System Controller" (formerly "Enpower").
+
+|===
+
+== Examples
+
+=== Get Inventory
+
+.GET */inventory.json?deleted=1* Response
+[source,json,subs="+quotes"]
+----
+[{"type": "PCU", "devices": [{"part_num": "800-01714-r02", "installed": "1671630660", "serial_num": "123456789110", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944603", "admin_state": 1, "dev_type": 1, "created_date": "1671630660", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627390225, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630664", "serial_num": "123456789104", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944604", "admin_state": 1, "dev_type": 1, "created_date": "1671630664", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627390481, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630669", "serial_num": "123456789105", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944606", "admin_state": 1, "dev_type": 1, "created_date": "1671630669", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627390737, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630672", "serial_num": "123456789115", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944608", "admin_state": 1, "dev_type": 1, "created_date": "1671630672", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627390993, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630677", "serial_num": "123456789108", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944609", "admin_state": 1, "dev_type": 1, "created_date": "1671630677", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627391249, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630680", "serial_num": "123456789109", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944611", "admin_state": 1, "dev_type": 1, "created_date": "1671630680", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627391505, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630690", "serial_num": "123456789113", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944613", "admin_state": 1, "dev_type": 1, "created_date": "1671630690", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627391761, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630694", "serial_num": "123456789102", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944614", "admin_state": 1, "dev_type": 1, "created_date": "1671630694", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627392017, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630711", "serial_num": "123456789114", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944616", "admin_state": 1, "dev_type": 1, "created_date": "1671630711", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627392273, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1671630724", "serial_num": "123456789103", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944618", "admin_state": 1, "dev_type": 1, "created_date": "1671630724", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627392529, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1679574985", "serial_num": "123456789112", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944619", "admin_state": 1, "dev_type": 1, "created_date": "1679574985", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627392785, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1679575001", "serial_num": "123456789101", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944621", "admin_state": 1, "dev_type": 1, "created_date": "1679575001", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627393041, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1679575013", "serial_num": "123456789106", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944623", "admin_state": 1, "dev_type": 1, "created_date": "1679575013", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627393297, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}, {"part_num": "800-01714-r02", "installed": "1679575023", "serial_num": "123456789111", "device_status": ["envoy.global.ok"], "last_rpt_date": "1686944624", "admin_state": 1, "dev_type": 1, "created_date": "1679575023", "img_load_date": "1613405094", "img_pnum_running": "520-00082-r01-v04.27.04", "ptpn": "540-00169-r01-v04.27.09", "chaneid": 1627393553, "device_control": [{"gficlearset": false}], "producing": true, "communicating": true, "provisioned": true, "operating": true}]}, {"type": "ACB", "devices": []}, {"type": "NSRB", "devices": []}, {"type": "ESUB", "devices": []}]
+----
