@@ -38,6 +38,11 @@ import enphase_api.local.ignore_hostname_adapter
 class Gateway:
     # This prevents the requests module from creating its own user-agent.
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
+    STEALTHY_HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
+    STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+
+    # This sets a 5 second connect and a 15 second read timeout.
+    TIMEOUT = (5,15)
 
     def __init__(self, host='https://envoy.local'):
         # The Gateway host (or if the network supports mDNS, "https://envoy.local").
@@ -84,16 +89,39 @@ class Gateway:
         # Check the response is positive.
         return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
 
-    def api_call(self, path, method='GET', json=None):
+    def api_call(self, path, method='GET', json=None, response_raw=False):
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
-            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS)
+            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
         elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
+            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
+            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS, json=json)
+            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+
+        # Has the session expired?
+        if response.status_code == 401:
+            raise ValueError(response.reason)
+
+        # Some requests might not be JSON responses.
+        if not response_raw:
+             # Return the JSON response.
+            return response.json() if len(response.content) > 0 else None
+        else:
+            # This is a raw response.
+            return response.text
+    
+    def api_call_form(self, path, method='GET', data=None):
+        # Call the Gateway API endpoint.
+        if method is None or method == 'GET':
+            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
+        elif method == 'PUT':
+            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+        elif method == 'POST':
+            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+        elif method == 'DELETE':
+            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
 
         # Has the session expired?
         if response.status_code == 401:
