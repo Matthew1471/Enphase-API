@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set Power Control System (PCS) details.
+Get or set Power Control System (PCS) details. PCS systems limit current and loading on the busbars and conductors supplied by the power production sources and/or energy storage systems irrespective of self-consumption. The PCS is similar to the Power Export Limit (PEL) however PCS also monitors grid import loads and will ensure a total current (before consumption) is not exceeded from grid, storage or solar production.
 
 == Introduction
 
@@ -42,3 +42,97 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ss/pcs_settings` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`pcsOffering`
+|Object
+|`PCSOffering` object
+|The PCS offering details.
+
+|`mainCircuitBreaker`
+|Number
+|Number
+|The main service breaker rating (in amps).
+
+|`mainPanelBusbar`
+|Number
+|Number
+|The main panel busbar rating (in amps).
+
+|`mainPanelDERBreaker`
+|Number
+|Number
+|The main panel DER breaker rating (in amps).
+
+|`pvBreaker`
+|Number
+|Number
+|The photovoltaic (PV) breaker rating (in amps).
+
+|`enchargeBreaker`
+|Number
+|Number
+|The IQ Battery (formerly "Encharge") breaker rating (in amps).
+
+|`consumptionMeterLocation`
+|String
+|String
+|The location of the consumption meter.
+
+|`override`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|The override value.
+
+|`max_back_feed`
+|Number
+|Number
+|The Power Control System (PCS) controlled export current limit.
+
+|===
+
+=== `PCSOffering` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`PVOversubscription`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Photovoltaic (PV) oversubscription.
+
+|`EnchargeOversubscription`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|IQ Battery oversubscription.
+
+|`MPUAvoidance`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Main Panel Upgrade (MPU) avoidance mode. This limits the back feed of the PV back to the grid to avoid having to upsize the main panel
+
+|===
+
+== Examples
+
+=== Get Power Control System (PCS) details
+
+.GET */ivp/ss/pcs_settings* Response
+[source,json,subs="+quotes"]
+----
+{"pcsOffering": {"PVOversubscription": false, "EnchargeOversubscription": false, "MPUAvoidance": false}, "mainCircuitBreaker": 0.0, "mainPanelBusbar": 0.0, "mainPanelDERBreaker": 0.0, "pvBreaker": 0.0, "enchargeBreaker": 0.0, "consumptionMeterLocation": "Between_Main_Load_Panel_and_Enpower", "override": false, "max_back_feed": 0.0}
+----

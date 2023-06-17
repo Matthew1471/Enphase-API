@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get Electrical SUB-panel (ESUB), also called an "IQ System Controller" (formerly "Enpower") circuit board status.
+Get the Electrical SUB-panels (ESUBs) status, also includes the "IQ System Controller" (formerly "Enpower") circuit board.
 
 == Introduction
 

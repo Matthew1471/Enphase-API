@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the dry contact status.
+Get or set the IQ System Controller (formerly "Enpower") dry contact status.
 
 == Introduction
 
@@ -42,3 +42,92 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/dry_contacts` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`dry_contacts`
+|Array(Object)
+|Array of `DryContact`
+|Information about each of the IQ System Controller (formerly "Enpower") dry contacts.
+
+|===
+
+=== `DryContact` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`id`
+|String
+|`DryContact` (e.g. `NC1`)
+|The IQ System Controller (formerly "Enpower") dry contact identifier. In the format `DryContact`.
+
+|`status`
+|String
+|String
+|The status of the dry contact.
+
+|===
+
+== Types
+
+=== `DryContact` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`NC1`
+|Normally Closed #1
+|Usually used for load shedding control (during grid outage).
+
+|`NC2`
+|Normally Closed #2
+|Usually used for PV shedding control (during grid outage).
+
+|`NC3`
+|Normally Closed #3
+|Usually used by the Rapid ShutDown (RSD) Switch.
+
+|`NC4`
+|Normally Closed #4
+|Usually used by the Rapid ShutDown (RSD) Switch.
+
+|`NO1`
+|Normally Open #1
+|Usually used by the PV/storage to use excess load such as from a generator.
+
+|`NO2`
+|Normally Open #2
+|Usually used by the PV/storage to use excess load such as surplus solar.
+
+|`NO3`
+|Normally Open #3
+|Usually used for generator control.
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System (formerly "Ensemble") Dry Contacts Status
+
+.GET */ivp/ensemble/dry_contacts* Response
+[source,json,subs="+quotes"]
+----
+{"dry_contacts": [{"id": "NC1", "status": "open"}, {"id": "NC2", "status": "open"}, {"id": "NO1", "status": "open"}, {"id": "NO2", "status": "open"}]}
+----

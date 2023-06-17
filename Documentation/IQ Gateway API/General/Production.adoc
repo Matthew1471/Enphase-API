@@ -326,11 +326,11 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |AC Battery
 |Encharge AC storage battery.
 
-|`rgm`?
+|`rgms`
 |Revenue Grade Meter
 |An external Zigbee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
 
-|`pmu`
+|`pmus`
 |Phasor Measurement Unit
 |A Phasor Measurement Unit (PMU) is an external device that produces synchronized phasor, frequency, and rate of change of frequency (ROCOF) estimates from voltage and/or current signals and a time synchronizing signal.
 

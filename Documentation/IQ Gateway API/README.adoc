@@ -139,7 +139,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:General/Inv.adoc[Inv]`
 |`/inv`
-|Get ESUB circuit board status.
+|Get the Electrical SUB-panels (ESUBs) status, also includes the \"IQ System Controller\" (formerly \"Enpower\") circuit board.
 
 |`link:General/Inventory.adoc[Inventory]`
 |`/inventory.json`
