@@ -146,8 +146,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |The region of the Gateway (formerly "Envoy") that is able to use this profile.
 
 |`countries`
-|Array(Unknown)
-|Array of Unknown
+|Array(String)
+|Array of String
 |The countries this profile can be applied to.
 
 |`states`
@@ -161,8 +161,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Whether the profile has been unpacked on the device.
 
 |`profile_source`
-|Array(Unknown)
-|Array of Unknown
+|Array(String)
+|Array of String
 |Where the profile was obtained from.
 
 |`dynamic`

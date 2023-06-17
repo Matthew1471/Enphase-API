@@ -111,8 +111,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |The serial number of this product.
 
 |`device_status`
-|Array(Unknown)
-|Array of Unknown
+|Array(String)
+|Array of String
 |An array of states the device is currently in.
 
 |`last_rpt_date`

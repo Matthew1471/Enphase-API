@@ -39,6 +39,50 @@ More details on the project are available from the link:../../../../../README.ad
 
 == Request
 
-A HTTP `GET` to the `/ivp/ss/third_party/pv` endpoint provides the following response data.
+The `/ivp/ss/third_party/pv` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`DELETE`
+|Delete Non-Enphase(R) Photovoltaic (PV) Inverter.
+
+|`GET`
+|Get Non-Enphase(R) Photovoltaic (PV) Inverter.
+
+|`POST`
+|Set Non-Enphase(R) Photovoltaic (PV) Inverter.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`err`
+|String
+|String
+|The error message.
+
+|===
+
+== Examples
+
+=== Get Non-Enphase(R) Photovoltaic (PV) Inverters
+
+.GET */ivp/ss/third_party/pv* Response
+[source,json,subs="+quotes"]
+----
+{"err": "404 - Not Found"}
+----

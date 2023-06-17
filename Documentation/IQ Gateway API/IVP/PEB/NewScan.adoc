@@ -174,27 +174,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pcu`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the PCU.
+|An object that contains the scan result for the Power Conditioning Units (PCU).
 
 |`acb`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the AC Battery (ACB).
+|An object that contains the scan result for the AC Batteries (ACB).
 
 |`nsrb`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the NSRB.
+|An object that contains the scan result for the IQ Relays (formerly "Q Relay" and "Network System Relay Board (NSRB)").
 
 |`esub`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the ESUB.
+|An object that contains the scan result for the Electrical SUB-panel (ESUB), also called an "IQ System Controller" (formerly "Enpower").
 
 |`pld`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the PLD.
+|An object that contains the scan result for the Programmable Logic Devices (PLD).
 
 |`mins-until-next-cycle`
 |Number

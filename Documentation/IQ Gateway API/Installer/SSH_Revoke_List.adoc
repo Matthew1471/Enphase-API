@@ -42,3 +42,46 @@ More details on the project are available from the link:../../../README.adoc[pro
 A HTTP `GET` to the `/installer/ssh_revoke_list` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`sig`
+|String
+|String
+|The KRL signature (ECDSA?).
+
+|`date`
+|String
+|String
+|The date (in epoch format).
+
+|`serno`
+|String
+|String
+|The serial number of the Key Revocation List (KRL).
+
+|`crl`
+|String
+|String
+|The SSH Key Revocation List (KRL).
+
+|===
+
+== Examples
+
+=== Get Secure SHell (SSH) Revoke List
+
+.GET */installer/ssh_revoke_list* Response
+[source,json,subs="+quotes"]
+----
+{"sig": "MEYCIQDqsDkPsOQio9oDco1zfsfztzvHKv9boNQbA2Oi9zxSQwIhAKFi6WGq2W4X2wsb/3oaQLI45thL0MClE9fgTIjMWKxA", "date": "1637812398", "serno": "4", "crl": "U1NIS1JMCgAAAAABAAAAAAAAAAAAAAAAYZ8IHgAAAAAAAAAAAAAAAAAAAAABAAABLAAAARcAAAAHc3NoLXJzYQAAAAMBAAEAAAEBAPQ0b8RU5nJebzJpUOSCso/kwbjacwJ9lxRkhFv5Ek+WGRM89JrTvp0cfRXCxgsvgxjBf9WWPK2nmGQ5LGpIPzBXxGXfGm8rtpIPiTAL7tz0g2eoBDrSUHuQQdixBKiYKoHAeSlL/x6W6+a2VNRlTxu40hv3zudPD5XbD0OW3G2qcEHcGsSB8JUnIvuDkqEXYaEaNw3xCjBWThH8QWZjEIsY2ajh2JVswHhsNDIzeUCx3VxMuYDgoftHD5UXh0Haji18oP/gN8jR9s6TXAeORPlBQq0V6WoRTeHVw+bLDBhQdUc2NsDkEhivoJRT5lh0UJjwfLvQpW2hYOLT1l+NAoMAAAAAIAAAAAgAAAAAAAAAng=="}
+----

@@ -108,8 +108,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |The IP address that was ICMP pinged.
 
 |`results` (Optional)
-|Array(Unknown)
-|Array of Unknown
+|Array(String)
+|Array of String
 |The results of an ICMP ping.
 
 |`primary_interface` (Optional)

@@ -42,3 +42,46 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/installer/agf/inverters_phase.rb` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`ph-a`
+|Array(String)
+|Array of String
+|Inverters assigned to phase A (or Phase 1).
+
+|`ph-b`
+|Array(String)
+|Array of String
+|Inverters assigned to phase B (or Phase 2).
+
+|`ph-c`
+|Array(String)
+|Array of String
+|Inverters assigned to phase C (or Phase 3).
+
+|`ph-unk`
+|Array(String)
+|Array of String
+|Inverters not currently assigned to a phase.
+
+|===
+
+== Examples
+
+=== List Each Inverter Installed By Phase
+
+.GET */installer/agf/inverters_phase.rb* Response
+[source,json,subs="+quotes"]
+----
+[{"ph-a": ["123456789101", "123456789102", "123456789103", "123456789104", "123456789105", "123456789106", "123456789107", "123456789108", "123456789109", "123456789110", "123456789111", "123456789112", "123456789113", "123456789114"], "ph-b": [], "ph-c": [], "ph-unk": []}]
+----
