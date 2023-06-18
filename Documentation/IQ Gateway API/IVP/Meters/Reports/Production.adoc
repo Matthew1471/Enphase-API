@@ -1,4 +1,4 @@
-= IVP - Meters - Reports - Production Meter Reading
+= IVP - Meters - Reports (Legacy) - Production Meters' Readings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Returns production meter reading information (may be legacy).
+Get readings from the production meters (Legacy).
 
 == Introduction
 
@@ -42,3 +42,138 @@ More details on the project are available from the link:../../../../../README.ad
 A HTTP `GET` to the `/ivp/meters/reports/production` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`createdAt`
+|Number
+|Number
+|The epoch date and time the message was generated.
+
+|`reportType`
+|String
+|`MeasurementType` (e.g. `production`)
+|What type of measurement this is reporting. In the format `MeasurementType`.
+
+|`cumulative`
+|Object
+|`MeterReading` object
+|The cumulative results of all the phases.
+
+|`lines`
+|Array(Object)
+|Array of `MeterReading`
+|The results for each of the phases.
+
+|===
+
+=== `MeterReading` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`currW`
+|Number
+|Number
+|The current number of Watts.
+
+|`actPower`
+|Number
+|Number
+|The active power.
+
+|`apprntPwr`
+|Number
+|Number
+|The apparent power.
+
+|`reactPwr`
+|Number
+|Number
+|The reactive power.
+
+|`whDlvdCum`
+|Number
+|Number
+|The cumulative watt-hour delivered.
+
+|`whRcvdCum`
+|Number
+|Number
+|The cumulative watt-hour received.
+
+|`varhLagCum`
+|Number
+|Number
+|The cumulative lagging varh.
+
+|`varhLeadCum`
+|Number
+|Number
+|The cumulative leading varh.
+
+|`vahCum`
+|Number
+|Number
+|The cumulative vah.
+
+|`rmsVoltage`
+|Number
+|Number
+|The rms Voltage.
+
+|`rmsCurrent`
+|Number
+|Number
+|The rms Current.
+
+|`pwrFactor`
+|Number
+|Number
+|The power factor.
+
+|`freqHz`
+|Number
+|Number
+|The frequency in Hz.
+
+|===
+
+== Types
+
+=== `MeasurementType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|===
+
+== Examples
+
+=== Get Production Meter Reading Information
+
+.GET */ivp/meters/reports/production* Response
+[source,json,subs="+quotes"]
+----
+{"createdAt": 1686961670, "reportType": "production", "cumulative": {"currW": 0.831, "actPower": 0.831, "apprntPwr": 255.515, "reactPwr": 249.574, "whDlvdCum": 2485013.748, "whRcvdCum": 11887.499, "varhLagCum": 795789.55, "varhLeadCum": 0.398, "vahCum": 3054501.517, "rmsVoltage": 244.266, "rmsCurrent": 1.047, "pwrFactor": 0.0, "freqHz": 50.12}, "lines": [{"currW": 0.831, "actPower": 0.831, "apprntPwr": 255.515, "reactPwr": 249.574, "whDlvdCum": 2485013.748, "whRcvdCum": 11887.499, "varhLagCum": 795789.55, "varhLeadCum": 0.398, "vahCum": 3054501.517, "rmsVoltage": 244.266, "rmsCurrent": 1.047, "pwrFactor": 0.0, "freqHz": 50.12}]}
+----

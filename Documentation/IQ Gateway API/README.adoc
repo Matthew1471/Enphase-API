@@ -477,13 +477,9 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/ivp/meters/{EID}`
 |Get or set a specific meter's (by EID) configuration.
 
-|`link:IVP/Meters/Readings.adoc[Readings]`
+|`link:IVP/Meters/Readings.adoc[All Meters' Readings]`
 |`/ivp/meters/readings`
-|Get meter's readings.
-
-|`link:IVP/Meters/Reports.adoc[Meter Readings]`
-|`/ivp/meters/reports/`
-|Returns meter reading information (may be legacy).
+|Get readings from the meters.
 
 |`link:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
 |`/ivp/meters/storage_setting`
@@ -492,7 +488,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |===
 
 
-==== IVP - Meters - Reports
+==== IVP - Meters - Reports (Legacy)
 
 [cols="1,1,2", options="header"]
 |===
@@ -500,13 +496,17 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Meter Reading]`
-|`/ivp/meters/reports/consumption`
-|Returns consumption meter reading information (may be legacy).
+|`link:IVP/Meters/Reports/All.adoc[All Meters' Readings (Legacy)]`
+|`/ivp/meters/reports/`
+|Get readings from all the meters (Legacy).
 
-|`link:IVP/Meters/Reports/Production.adoc[Production Meter Reading]`
+|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Meters' Readings]`
+|`/ivp/meters/reports/consumption`
+|Get readings from the consumption meters (Legacy).
+
+|`link:IVP/Meters/Reports/Production.adoc[Production Meters' Readings]`
 |`/ivp/meters/reports/production`
-|Returns production meter reading information (may be legacy).
+|Get readings from the production meters (Legacy).
 
 |===
 

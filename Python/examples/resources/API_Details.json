@@ -2734,8 +2734,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
+                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -2828,20 +2828,62 @@
             "uri": "ivp/meters/cts/{EID}"
         }
     },
-    "IVP - Meters - General - Meter Readings": {
+    "IVP - Meters - General - All Meters' Readings": {
         "description": {
-            "short": "Returns meter reading information (may be legacy)."
+            "short": "Get readings from the meters."
         },
-        "documentation": "IVP/Meters/Reports.adoc",
-        "name": "Meter Readings",
+        "documentation": "IVP/Meters/Readings.adoc",
+        "name": "All Meters' Readings",
         "request": {
             "examples": [
                 {
-                    "name": "Get Internal Meter Reading Information",
-                    "response_json": "[{\"createdAt\": 1686961552, \"reportType\": \"production\", \"cumulative\": {\"currW\": 0.591, \"actPower\": 0.591, \"apprntPwr\": 254.555, \"reactPwr\": 248.904, \"whDlvdCum\": 2485013.732, \"whRcvdCum\": 11887.499, \"varhLagCum\": 795781.345, \"varhLeadCum\": 0.398, \"vahCum\": 3054493.114, \"rmsVoltage\": 243.958, \"rmsCurrent\": 1.043, \"pwrFactor\": 0.0, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 0.591, \"actPower\": 0.591, \"apprntPwr\": 254.555, \"reactPwr\": 248.904, \"whDlvdCum\": 2485013.732, \"whRcvdCum\": 11887.499, \"varhLagCum\": 795781.345, \"varhLeadCum\": 0.398, \"vahCum\": 3054493.114, \"rmsVoltage\": 243.958, \"rmsCurrent\": 1.043, \"pwrFactor\": 0.0, \"freqHz\": 50.12}]}, {\"createdAt\": 1686961552, \"reportType\": \"net-consumption\", \"cumulative\": {\"currW\": 434.245, \"actPower\": 434.245, \"apprntPwr\": 972.372, \"reactPwr\": -792.063, \"whDlvdCum\": 1749552.725, \"whRcvdCum\": 1601637.637, \"varhLagCum\": 17.665, \"varhLeadCum\": 2831880.565, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.888, \"rmsCurrent\": 3.987, \"pwrFactor\": 0.44, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 434.245, \"actPower\": 434.245, \"apprntPwr\": 972.372, \"reactPwr\": -792.063, \"whDlvdCum\": 1749552.725, \"whRcvdCum\": 1601637.637, \"varhLagCum\": 17.665, \"varhLeadCum\": 2831880.565, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.888, \"rmsCurrent\": 3.987, \"pwrFactor\": 0.44, \"freqHz\": 50.12}]}, {\"createdAt\": 1686961552, \"reportType\": \"total-consumption\", \"cumulative\": {\"currW\": 434.836, \"actPower\": 434.836, \"apprntPwr\": 1226.868, \"reactPwr\": -1040.967, \"whDlvdCum\": 2631392.206, \"whRcvdCum\": 0.0, \"varhLagCum\": 795799.01, \"varhLeadCum\": 2831880.963, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.923, \"rmsCurrent\": 5.03, \"pwrFactor\": 0.35, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 434.836, \"actPower\": 434.836, \"apprntPwr\": 1226.868, \"reactPwr\": -1040.967, \"whDlvdCum\": 2631401.67, \"whRcvdCum\": 0.0, \"varhLagCum\": 795799.01, \"varhLeadCum\": 2831880.963, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.923, \"rmsCurrent\": 5.03, \"pwrFactor\": 0.35, \"freqHz\": 50.12}]}]"
+                    "name": "Get Meters' Readings",
+                    "response_json": "[{\"eid\": 704643328, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385169, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125}, {\"eid\": 1778385170, \"timestamp\": 1686961582, \"actEnergyDlvd\": 9.464, \"actEnergyRcvd\": 1998.651, \"apparentEnergy\": 3232.019, \"reactEnergyLagg\": 301.011, \"reactEnergyLead\": 2.645, \"instantaneousDemand\": -0.1, \"activePower\": -0.1, \"apparentPower\": 0.75, \"reactivePower\": -0.0, \"pwrFactor\": 0.0, \"voltage\": 5.478, \"current\": 0.137, \"freq\": 50.125}, {\"eid\": 1778385171, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 4766.67, \"apparentEnergy\": 306.341, \"reactEnergyLagg\": 286.551, \"reactEnergyLead\": 0.293, \"instantaneousDemand\": -0.0, \"activePower\": -0.0, \"apparentPower\": -0.0, \"reactivePower\": 0.0, \"pwrFactor\": 0.0, \"voltage\": 9.968, \"current\": 0.0, \"freq\": 50.125}]}, {\"eid\": 704643584, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385425, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125}, {\"eid\": 1778385426, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 6887.628, \"apparentEnergy\": 2848.524, \"reactEnergyLagg\": 273.934, \"reactEnergyLead\": 0.183, \"instantaneousDemand\": -0.285, \"activePower\": -0.285, \"apparentPower\": 0.773, \"reactivePower\": 0.0, \"pwrFactor\": -1.0, \"voltage\": 6.849, \"current\": 0.112, \"freq\": 50.125}, {\"eid\": 1778385427, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.005, \"actEnergyRcvd\": 10679.623, \"apparentEnergy\": 2662.289, \"reactEnergyLagg\": 274.727, \"reactEnergyLead\": 0.57, \"instantaneousDemand\": -0.332, \"activePower\": -0.332, \"apparentPower\": 0.711, \"reactivePower\": 0.074, \"pwrFactor\": 0.0, \"voltage\": 6.283, \"current\": 0.113, \"freq\": 50.125}]}]"
                 }
             ],
-            "uri": "ivp/meters/reports/"
+            "uri": "ivp/meters/readings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "actEnergyDlvd": "The active energy delivered.",
+                    "actEnergyRcvd": "The active energy received.",
+                    "activePower": "The active power.",
+                    "apparentEnergy": "The apparent energy.",
+                    "apparentPower": "The apparent power.",
+                    "channels": {
+                        "description": "Each of the channels (typically the different phases) that make up this reading.",
+                        "value_name": "Channel"
+                    },
+                    "current": "The current.",
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "freq": "The frequency.",
+                    "instantaneousDemand": "The instantaneous demand.",
+                    "pwrFactor": "The power factor.",
+                    "reactEnergyLagg": "The lagging reactive energy.",
+                    "reactEnergyLead": "The leading reactive energy.",
+                    "reactivePower": "The reactive power.",
+                    "timestamp": "The epoch date and time the message was generated.",
+                    "voltage": "The voltage."
+                },
+                "Channel": {
+                    "actEnergyDlvd": "The active energy delivered on this channel.",
+                    "actEnergyRcvd": "The active energy received on this channel.",
+                    "activePower": "The active power on this channel.",
+                    "apparentEnergy": "The apparent energy on this channel.",
+                    "apparentPower": "The apparent power on this channel.",
+                    "current": "The current on this channel.",
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "freq": "The frequency on this channel.",
+                    "instantaneousDemand": "The instantaneous demand on this channel.",
+                    "pwrFactor": "The power factor on this channel.",
+                    "reactEnergyLagg": "The lagging reactive energy on this channel.",
+                    "reactEnergyLead": "The leading reactive energy on this channel.",
+                    "reactivePower": "The reactive power on this channel.",
+                    "timestamp": "The epoch date and time the channel was read.",
+                    "voltage": "The voltage on this channel."
+                }
+            }
         }
     },
     "IVP - Meters - General - Meter Settings": {
@@ -2898,29 +2940,6 @@
             }
         }
     },
-    "IVP - Meters - General - Readings": {
-        "description": {
-            "short": "Get meter's readings."
-        },
-        "documentation": "IVP/Meters/Readings.adoc",
-        "name": "Readings",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Meter Readings",
-                    "response_json": "[{\"eid\": 704643328, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385169, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125}, {\"eid\": 1778385170, \"timestamp\": 1686961582, \"actEnergyDlvd\": 9.464, \"actEnergyRcvd\": 1998.651, \"apparentEnergy\": 3232.019, \"reactEnergyLagg\": 301.011, \"reactEnergyLead\": 2.645, \"instantaneousDemand\": -0.1, \"activePower\": -0.1, \"apparentPower\": 0.75, \"reactivePower\": -0.0, \"pwrFactor\": 0.0, \"voltage\": 5.478, \"current\": 0.137, \"freq\": 50.125}, {\"eid\": 1778385171, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 4766.67, \"apparentEnergy\": 306.341, \"reactEnergyLagg\": 286.551, \"reactEnergyLead\": 0.293, \"instantaneousDemand\": -0.0, \"activePower\": -0.0, \"apparentPower\": -0.0, \"reactivePower\": 0.0, \"pwrFactor\": 0.0, \"voltage\": 9.968, \"current\": 0.0, \"freq\": 50.125}]}, {\"eid\": 704643584, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385425, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125}, {\"eid\": 1778385426, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 6887.628, \"apparentEnergy\": 2848.524, \"reactEnergyLagg\": 273.934, \"reactEnergyLead\": 0.183, \"instantaneousDemand\": -0.285, \"activePower\": -0.285, \"apparentPower\": 0.773, \"reactivePower\": 0.0, \"pwrFactor\": -1.0, \"voltage\": 6.849, \"current\": 0.112, \"freq\": 50.125}, {\"eid\": 1778385427, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.005, \"actEnergyRcvd\": 10679.623, \"apparentEnergy\": 2662.289, \"reactEnergyLagg\": 274.727, \"reactEnergyLead\": 0.57, \"instantaneousDemand\": -0.332, \"activePower\": -0.332, \"apparentPower\": 0.711, \"reactivePower\": 0.074, \"pwrFactor\": 0.0, \"voltage\": 6.283, \"current\": 0.113, \"freq\": 50.125}]}]"
-                }
-            ],
-            "uri": "ivp/meters/readings"
-        },
-        "response": {
-            "field_map": {
-                ".": {
-                    "eid": "Gateway (formerly \"Envoy\") record ID number."
-                }
-            }
-        }
-    },
     "IVP - Meters - General - Storage Setting": {
         "description": {
             "short": "Get or set storage Current Transformer (CT) clamp status."
@@ -2944,12 +2963,81 @@
             }
         }
     },
-    "IVP - Meters - Reports - Consumption Meter Reading": {
+    "IVP - Meters - Reports (Legacy) - All Meters' Readings (Legacy)": {
         "description": {
-            "short": "Returns consumption meter reading information (may be legacy)."
+            "short": "Get readings from all the meters (Legacy)."
+        },
+        "documentation": "IVP/Meters/Reports/All.adoc",
+        "name": "All Meters' Readings",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Meters' Readings",
+                    "response_json": "[{\"createdAt\": 1686961552, \"reportType\": \"production\", \"cumulative\": {\"currW\": 0.591, \"actPower\": 0.591, \"apprntPwr\": 254.555, \"reactPwr\": 248.904, \"whDlvdCum\": 2485013.732, \"whRcvdCum\": 11887.499, \"varhLagCum\": 795781.345, \"varhLeadCum\": 0.398, \"vahCum\": 3054493.114, \"rmsVoltage\": 243.958, \"rmsCurrent\": 1.043, \"pwrFactor\": 0.0, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 0.591, \"actPower\": 0.591, \"apprntPwr\": 254.555, \"reactPwr\": 248.904, \"whDlvdCum\": 2485013.732, \"whRcvdCum\": 11887.499, \"varhLagCum\": 795781.345, \"varhLeadCum\": 0.398, \"vahCum\": 3054493.114, \"rmsVoltage\": 243.958, \"rmsCurrent\": 1.043, \"pwrFactor\": 0.0, \"freqHz\": 50.12}]}, {\"createdAt\": 1686961552, \"reportType\": \"net-consumption\", \"cumulative\": {\"currW\": 434.245, \"actPower\": 434.245, \"apprntPwr\": 972.372, \"reactPwr\": -792.063, \"whDlvdCum\": 1749552.725, \"whRcvdCum\": 1601637.637, \"varhLagCum\": 17.665, \"varhLeadCum\": 2831880.565, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.888, \"rmsCurrent\": 3.987, \"pwrFactor\": 0.44, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 434.245, \"actPower\": 434.245, \"apprntPwr\": 972.372, \"reactPwr\": -792.063, \"whDlvdCum\": 1749552.725, \"whRcvdCum\": 1601637.637, \"varhLagCum\": 17.665, \"varhLeadCum\": 2831880.565, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.888, \"rmsCurrent\": 3.987, \"pwrFactor\": 0.44, \"freqHz\": 50.12}]}, {\"createdAt\": 1686961552, \"reportType\": \"total-consumption\", \"cumulative\": {\"currW\": 434.836, \"actPower\": 434.836, \"apprntPwr\": 1226.868, \"reactPwr\": -1040.967, \"whDlvdCum\": 2631392.206, \"whRcvdCum\": 0.0, \"varhLagCum\": 795799.01, \"varhLeadCum\": 2831880.963, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.923, \"rmsCurrent\": 5.03, \"pwrFactor\": 0.35, \"freqHz\": 50.12}, \"lines\": [{\"currW\": 434.836, \"actPower\": 434.836, \"apprntPwr\": 1226.868, \"reactPwr\": -1040.967, \"whDlvdCum\": 2631401.67, \"whRcvdCum\": 0.0, \"varhLagCum\": 795799.01, \"varhLeadCum\": 2831880.963, \"vahCum\": 5069070.805, \"rmsVoltage\": 243.923, \"rmsCurrent\": 5.03, \"pwrFactor\": 0.35, \"freqHz\": 50.12}]}]"
+                }
+            ],
+            "uri": "ivp/meters/reports/"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "createdAt": "The epoch date and time the message was generated.",
+                    "cumulative": {
+                        "description": "The cumulative results of all the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "lines": {
+                        "description": "The results for each of the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "reportType": {
+                        "description": "What type of measurement this is reporting.",
+                        "value_name": "MeasurementType"
+                    }
+                },
+                "MeterReading": {
+                    "actPower": "The active power.",
+                    "apprntPwr": "The apparent power.",
+                    "currW": "The current number of Watts.",
+                    "freqHz": "The frequency in Hz.",
+                    "pwrFactor": "The power factor.",
+                    "reactPwr": "The reactive power.",
+                    "rmsCurrent": "The rms Current.",
+                    "rmsVoltage": "The rms Voltage.",
+                    "vahCum": "The cumulative vah.",
+                    "varhLagCum": "The cumulative lagging varh.",
+                    "varhLeadCum": "The cumulative leading varh.",
+                    "whDlvdCum": "The cumulative watt-hour delivered.",
+                    "whRcvdCum": "The cumulative watt-hour received."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the energy produced from the inverters.",
+                    "name": "Production",
+                    "value": "production"
+                },
+                {
+                    "description": "Reporting the load with solar production included.",
+                    "name": "Net Consumption",
+                    "value": "net-consumption"
+                },
+                {
+                    "description": "Reporting the load only (solar production excluded).",
+                    "name": "Total Consumption",
+                    "value": "total-consumption"
+                }
+            ]
+        }
+    },
+    "IVP - Meters - Reports (Legacy) - Consumption Meters' Reading": {
+        "description": {
+            "short": "Get readings from the consumption meters (Legacy)."
         },
         "documentation": "IVP/Meters/Reports/Consumption.adoc",
-        "name": "Consumption Meter Reading",
+        "name": "Consumption Meters' Readings",
         "request": {
             "examples": [
                 {
@@ -2958,14 +3046,62 @@
                 }
             ],
             "uri": "ivp/meters/reports/consumption"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "createdAt": "The epoch date and time the message was generated.",
+                    "cumulative": {
+                        "description": "The cumulative results of all the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "lines": {
+                        "description": "The results for each of the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "reportType": {
+                        "description": "What type of measurement this is reporting.",
+                        "value_name": "MeasurementType"
+                    }
+                },
+                "MeterReading": {
+                    "actPower": "The active power.",
+                    "apprntPwr": "The apparent power.",
+                    "currW": "The current number of Watts.",
+                    "freqHz": "The frequency in Hz.",
+                    "pwrFactor": "The power factor.",
+                    "reactPwr": "The reactive power.",
+                    "rmsCurrent": "The rms Current.",
+                    "rmsVoltage": "The rms Voltage.",
+                    "vahCum": "The cumulative vah.",
+                    "varhLagCum": "The cumulative lagging varh.",
+                    "varhLeadCum": "The cumulative leading varh.",
+                    "whDlvdCum": "The cumulative watt-hour delivered.",
+                    "whRcvdCum": "The cumulative watt-hour received."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the load with solar production included.",
+                    "name": "Net Consumption",
+                    "value": "net-consumption"
+                },
+                {
+                    "description": "Reporting the load only (solar production excluded).",
+                    "name": "Total Consumption",
+                    "value": "total-consumption"
+                }
+            ]
         }
     },
-    "IVP - Meters - Reports - Production Meter Reading": {
+    "IVP - Meters - Reports (Legacy) - Production Meters' Readings": {
         "description": {
-            "short": "Returns production meter reading information (may be legacy)."
+            "short": "Get readings from the production meters (Legacy)."
         },
         "documentation": "IVP/Meters/Reports/Production.adoc",
-        "name": "Production Meter Reading",
+        "name": "Production Meters' Readings",
         "request": {
             "examples": [
                 {
@@ -2974,6 +3110,49 @@
                 }
             ],
             "uri": "ivp/meters/reports/production"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "createdAt": "The epoch date and time the message was generated.",
+                    "cumulative": {
+                        "description": "The cumulative results of all the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "lines": {
+                        "description": "The results for each of the phases.",
+                        "value_name": "MeterReading"
+                    },
+                    "reportType": {
+                        "description": "What type of measurement this is reporting.",
+                        "value_name": "MeasurementType"
+                    }
+                },
+                "MeterReading": {
+                    "actPower": "The active power.",
+                    "apprntPwr": "The apparent power.",
+                    "currW": "The current number of Watts.",
+                    "freqHz": "The frequency in Hz.",
+                    "pwrFactor": "The power factor.",
+                    "reactPwr": "The reactive power.",
+                    "rmsCurrent": "The rms Current.",
+                    "rmsVoltage": "The rms Voltage.",
+                    "vahCum": "The cumulative vah.",
+                    "varhLagCum": "The cumulative lagging varh.",
+                    "varhLeadCum": "The cumulative leading varh.",
+                    "whDlvdCum": "The cumulative watt-hour delivered.",
+                    "whRcvdCum": "The cumulative watt-hour received."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the energy produced from the inverters.",
+                    "name": "Production",
+                    "value": "production"
+                }
+            ]
         }
     },
     "IVP - Mod - Power Mode": {

@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - Consumption Meters' Reading
+= IVP - Meters - Reports (Legacy) - All Meters' Readings (Legacy)
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get readings from the consumption meters (Legacy).
+Get readings from all the meters (Legacy).
 
 == Introduction
 
@@ -39,7 +39,7 @@ More details on the project are available from the link:../../../../../README.ad
 
 == Request
 
-A HTTP `GET` to the `/ivp/meters/reports/consumption` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/meters/reports/` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
@@ -61,7 +61,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`reportType`
 |String
-|`MeasurementType` (e.g. `net-consumption`)
+|`MeasurementType` (e.g. `production`)
 |What type of measurement this is reporting. In the format `MeasurementType`.
 
 |`cumulative`
@@ -162,6 +162,10 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Name
 |Description
 
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
 |`net-consumption`
 |Net Consumption
 |Reporting the load with solar production included.
@@ -174,10 +178,10 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Consumption Meter Reading Information
+=== Get Meters' Readings
 
-.GET */ivp/meters/reports/consumption* Response
+.GET */ivp/meters/reports/* Response
 [source,json,subs="+quotes"]
 ----
-[{"createdAt": 1686961636, "reportType": "total-consumption", "cumulative": {"currW": 435.983, "actPower": 435.983, "apprntPwr": 1228.326, "reactPwr": -1041.54, "whDlvdCum": 2631402.389, "whRcvdCum": 0.0, "varhLagCum": 795804.842, "varhLeadCum": 2831899.533, "vahCum": 5069093.617, "rmsVoltage": 243.847, "rmsCurrent": 5.037, "pwrFactor": 0.35, "freqHz": 50.12}, "lines": [{"currW": 435.983, "actPower": 435.983, "apprntPwr": 1228.326, "reactPwr": -1041.54, "whDlvdCum": 2631411.854, "whRcvdCum": 0.0, "varhLagCum": 795804.842, "varhLeadCum": 2831899.533, "vahCum": 5069093.617, "rmsVoltage": 243.847, "rmsCurrent": 5.037, "pwrFactor": 0.35, "freqHz": 50.12}]}, {"createdAt": 1686961636, "reportType": "net-consumption", "cumulative": {"currW": 435.311, "actPower": 435.311, "apprntPwr": 974.38, "reactPwr": -792.26, "whDlvdCum": 1749562.897, "whRcvdCum": 1601637.637, "varhLagCum": 17.665, "varhLeadCum": 2831899.135, "vahCum": 5069093.617, "rmsVoltage": 243.847, "rmsCurrent": 3.992, "pwrFactor": 0.45, "freqHz": 50.12}, "lines": [{"currW": 435.311, "actPower": 435.311, "apprntPwr": 974.38, "reactPwr": -792.26, "whDlvdCum": 1749562.897, "whRcvdCum": 1601637.637, "varhLagCum": 17.665, "varhLeadCum": 2831899.135, "vahCum": 5069093.617, "rmsVoltage": 243.847, "rmsCurrent": 3.992, "pwrFactor": 0.45, "freqHz": 50.12}]}]
+[{"createdAt": 1686961552, "reportType": "production", "cumulative": {"currW": 0.591, "actPower": 0.591, "apprntPwr": 254.555, "reactPwr": 248.904, "whDlvdCum": 2485013.732, "whRcvdCum": 11887.499, "varhLagCum": 795781.345, "varhLeadCum": 0.398, "vahCum": 3054493.114, "rmsVoltage": 243.958, "rmsCurrent": 1.043, "pwrFactor": 0.0, "freqHz": 50.12}, "lines": [{"currW": 0.591, "actPower": 0.591, "apprntPwr": 254.555, "reactPwr": 248.904, "whDlvdCum": 2485013.732, "whRcvdCum": 11887.499, "varhLagCum": 795781.345, "varhLeadCum": 0.398, "vahCum": 3054493.114, "rmsVoltage": 243.958, "rmsCurrent": 1.043, "pwrFactor": 0.0, "freqHz": 50.12}]}, {"createdAt": 1686961552, "reportType": "net-consumption", "cumulative": {"currW": 434.245, "actPower": 434.245, "apprntPwr": 972.372, "reactPwr": -792.063, "whDlvdCum": 1749552.725, "whRcvdCum": 1601637.637, "varhLagCum": 17.665, "varhLeadCum": 2831880.565, "vahCum": 5069070.805, "rmsVoltage": 243.888, "rmsCurrent": 3.987, "pwrFactor": 0.44, "freqHz": 50.12}, "lines": [{"currW": 434.245, "actPower": 434.245, "apprntPwr": 972.372, "reactPwr": -792.063, "whDlvdCum": 1749552.725, "whRcvdCum": 1601637.637, "varhLagCum": 17.665, "varhLeadCum": 2831880.565, "vahCum": 5069070.805, "rmsVoltage": 243.888, "rmsCurrent": 3.987, "pwrFactor": 0.44, "freqHz": 50.12}]}, {"createdAt": 1686961552, "reportType": "total-consumption", "cumulative": {"currW": 434.836, "actPower": 434.836, "apprntPwr": 1226.868, "reactPwr": -1040.967, "whDlvdCum": 2631392.206, "whRcvdCum": 0.0, "varhLagCum": 795799.01, "varhLeadCum": 2831880.963, "vahCum": 5069070.805, "rmsVoltage": 243.923, "rmsCurrent": 5.03, "pwrFactor": 0.35, "freqHz": 50.12}, "lines": [{"currW": 434.836, "actPower": 434.836, "apprntPwr": 1226.868, "reactPwr": -1040.967, "whDlvdCum": 2631401.67, "whRcvdCum": 0.0, "varhLagCum": 795799.01, "varhLeadCum": 2831880.963, "vahCum": 5069070.805, "rmsVoltage": 243.923, "rmsCurrent": 5.03, "pwrFactor": 0.35, "freqHz": 50.12}]}]
 ----

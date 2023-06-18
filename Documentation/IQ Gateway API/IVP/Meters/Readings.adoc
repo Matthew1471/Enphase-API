@@ -1,4 +1,4 @@
-= IVP - Meters - General - Readings
+= IVP - Meters - General - All Meters' Readings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get meter's readings.
+Get readings from the meters.
 
 == Introduction
 
@@ -42,3 +42,192 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/meters/readings` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`eid`
+|Number
+|Number
+|Gateway (formerly "Envoy") record ID number.
+
+|`timestamp`
+|Number
+|Number
+|The epoch date and time the message was generated.
+
+|`actEnergyDlvd`
+|Number
+|Number
+|The active energy delivered.
+
+|`actEnergyRcvd`
+|Number
+|Number
+|The active energy received.
+
+|`apparentEnergy`
+|Number
+|Number
+|The apparent energy.
+
+|`reactEnergyLagg`
+|Number
+|Number
+|The lagging reactive energy.
+
+|`reactEnergyLead`
+|Number
+|Number
+|The leading reactive energy.
+
+|`instantaneousDemand`
+|Number
+|Number
+|The instantaneous demand.
+
+|`activePower`
+|Number
+|Number
+|The active power.
+
+|`apparentPower`
+|Number
+|Number
+|The apparent power.
+
+|`reactivePower`
+|Number
+|Number
+|The reactive power.
+
+|`pwrFactor`
+|Number
+|Number
+|The power factor.
+
+|`voltage`
+|Number
+|Number
+|The voltage.
+
+|`current`
+|Number
+|Number
+|The current.
+
+|`freq`
+|Number
+|Number
+|The frequency.
+
+|`channels`
+|Array(Object)
+|Array of `Channel`
+|Each of the channels (typically the different phases) that make up this reading.
+
+|===
+
+=== `Channel` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`eid`
+|Number
+|Number
+|Gateway (formerly "Envoy") record ID number.
+
+|`timestamp`
+|Number
+|Number
+|The epoch date and time the channel was read.
+
+|`actEnergyDlvd`
+|Number
+|Number
+|The active energy delivered on this channel.
+
+|`actEnergyRcvd`
+|Number
+|Number
+|The active energy received on this channel.
+
+|`apparentEnergy`
+|Number
+|Number
+|The apparent energy on this channel.
+
+|`reactEnergyLagg`
+|Number
+|Number
+|The lagging reactive energy on this channel.
+
+|`reactEnergyLead`
+|Number
+|Number
+|The leading reactive energy on this channel.
+
+|`instantaneousDemand`
+|Number
+|Number
+|The instantaneous demand on this channel.
+
+|`activePower`
+|Number
+|Number
+|The active power on this channel.
+
+|`apparentPower`
+|Number
+|Number
+|The apparent power on this channel.
+
+|`reactivePower`
+|Number
+|Number
+|The reactive power on this channel.
+
+|`pwrFactor`
+|Number
+|Number
+|The power factor on this channel.
+
+|`voltage`
+|Number
+|Number
+|The voltage on this channel.
+
+|`current`
+|Number
+|Number
+|The current on this channel.
+
+|`freq`
+|Number
+|Number
+|The frequency on this channel.
+
+|===
+
+== Examples
+
+=== Get Meters' Readings
+
+.GET */ivp/meters/readings* Response
+[source,json,subs="+quotes"]
+----
+[{"eid": 704643328, "timestamp": 1686961582, "actEnergyDlvd": 2485013.736, "actEnergyRcvd": 11887.499, "apparentEnergy": 3054495.271, "reactEnergyLagg": 795783.451, "reactEnergyLead": 0.398, "instantaneousDemand": 0.543, "activePower": 0.543, "apparentPower": 254.202, "reactivePower": 248.806, "pwrFactor": 0.0, "voltage": 244.004, "current": 1.043, "freq": 50.125, "channels": [{"eid": 1778385169, "timestamp": 1686961582, "actEnergyDlvd": 2485013.736, "actEnergyRcvd": 11887.499, "apparentEnergy": 3054495.271, "reactEnergyLagg": 795783.451, "reactEnergyLead": 0.398, "instantaneousDemand": 0.543, "activePower": 0.543, "apparentPower": 254.202, "reactivePower": 248.806, "pwrFactor": 0.0, "voltage": 244.004, "current": 1.043, "freq": 50.125}, {"eid": 1778385170, "timestamp": 1686961582, "actEnergyDlvd": 9.464, "actEnergyRcvd": 1998.651, "apparentEnergy": 3232.019, "reactEnergyLagg": 301.011, "reactEnergyLead": 2.645, "instantaneousDemand": -0.1, "activePower": -0.1, "apparentPower": 0.75, "reactivePower": -0.0, "pwrFactor": 0.0, "voltage": 5.478, "current": 0.137, "freq": 50.125}, {"eid": 1778385171, "timestamp": 1686961582, "actEnergyDlvd": 0.002, "actEnergyRcvd": 4766.67, "apparentEnergy": 306.341, "reactEnergyLagg": 286.551, "reactEnergyLead": 0.293, "instantaneousDemand": -0.0, "activePower": -0.0, "apparentPower": -0.0, "reactivePower": 0.0, "pwrFactor": 0.0, "voltage": 9.968, "current": 0.0, "freq": 50.125}]}, {"eid": 704643584, "timestamp": 1686961582, "actEnergyDlvd": 1749556.395, "actEnergyRcvd": 1601637.637, "apparentEnergy": 5069079.041, "reactEnergyLagg": 17.665, "reactEnergyLead": 2831887.274, "instantaneousDemand": 432.435, "activePower": 432.435, "apparentPower": 971.846, "reactivePower": -793.38, "pwrFactor": 0.444, "voltage": 244.187, "current": 3.981, "freq": 50.125, "channels": [{"eid": 1778385425, "timestamp": 1686961582, "actEnergyDlvd": 1749556.395, "actEnergyRcvd": 1601637.637, "apparentEnergy": 5069079.041, "reactEnergyLagg": 17.665, "reactEnergyLead": 2831887.274, "instantaneousDemand": 432.435, "activePower": 432.435, "apparentPower": 971.846, "reactivePower": -793.38, "pwrFactor": 0.444, "voltage": 244.187, "current": 3.981, "freq": 50.125}, {"eid": 1778385426, "timestamp": 1686961582, "actEnergyDlvd": 0.002, "actEnergyRcvd": 6887.628, "apparentEnergy": 2848.524, "reactEnergyLagg": 273.934, "reactEnergyLead": 0.183, "instantaneousDemand": -0.285, "activePower": -0.285, "apparentPower": 0.773, "reactivePower": 0.0, "pwrFactor": -1.0, "voltage": 6.849, "current": 0.112, "freq": 50.125}, {"eid": 1778385427, "timestamp": 1686961582, "actEnergyDlvd": 0.005, "actEnergyRcvd": 10679.623, "apparentEnergy": 2662.289, "reactEnergyLagg": 274.727, "reactEnergyLead": 0.57, "instantaneousDemand": -0.332, "activePower": -0.332, "apparentPower": 0.711, "reactivePower": 0.074, "pwrFactor": 0.0, "voltage": 6.283, "current": 0.113, "freq": 50.125}]}]
+----
