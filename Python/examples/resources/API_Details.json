@@ -2785,32 +2785,6 @@
             "uri": "ivp/meters/cts/{EID}"
         }
     },
-    "IVP - Meters - General - Meter's Current Transformer (CT) Reversal": {
-        "description": {
-            "short": "Get or set specific meter's Current Transformer (CT) clamp reverse polarity configuration by Gateway (formerly \"Envoy\") record ID."
-        },
-        "documentation": "IVP/Meters/CTReversal.adoc",
-        "name": "Meter's Current Transformer (CT) Reversal",
-        "request": {
-            "uri": "ivp/meters/ctreversal/{EID}"
-        }
-    },
-    "IVP - Meters - General - Meters Current Transformer (CT) Settings": {
-        "description": {
-            "short": "Get internal meters' Current Transformer (CT) clamp settings."
-        },
-        "documentation": "IVP/Meters/CTS.adoc",
-        "name": "Meters Current Transformer (CT) Settings",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Internal Meter's Current Transformer (CT) Clamp Settings",
-                    "response_json": "{\"704643328\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}, \"704643584\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}"
-                }
-            ],
-            "uri": "ivp/meters/cts"
-        }
-    },
     "IVP - Meters - General - Meter Readings": {
         "description": {
             "short": "Returns meter reading information (may be legacy)."
@@ -2835,6 +2809,50 @@
         "name": "Meter Settings",
         "request": {
             "uri": "ivp/meters/{EID}"
+        }
+    },
+    "IVP - Meters - General - Meter's Current Transformer (CT) Reversal": {
+        "description": {
+            "short": "Get or set specific meter's Current Transformer (CT) clamp reverse polarity configuration by Gateway (formerly \"Envoy\") record ID."
+        },
+        "documentation": "IVP/Meters/CTReversal.adoc",
+        "name": "Meter's Current Transformer (CT) Reversal",
+        "request": {
+            "uri": "ivp/meters/ctreversal/{EID}"
+        }
+    },
+    "IVP - Meters - General - Meters' Current Transformer (CT) Settings": {
+        "description": {
+            "short": "Get meters' Current Transformer (CT) clamp settings."
+        },
+        "documentation": "IVP/Meters/CTS.adoc",
+        "name": "Meters' Current Transformer (CT) Settings",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Meters' Current Transformer (CT) Clamp Settings",
+                    "response_json": "{\"{EID}\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}",
+                    "response_raw": "{\"704643328\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}, \"704643584\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}"
+                }
+            ],
+            "uri": "ivp/meters/cts"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "{EID}": {
+                        "description": "The meter's Current Transformer (CT) clamp settings.",
+                        "value_name": "CTClampSettings"
+                    }
+                },
+                "CTClampSettings": {
+                    "attachType": "How the Curent Transformer (CT) is attached.",
+                    "primaryAmps": "The primary current input (in Amps).",
+                    "resistorOhms": "The burden resister (in Ohms).",
+                    "secondaryAmps": "The secondary current output (in Amps).",
+                    "turns": "The turns ratio."
+                }
+            }
         }
     },
     "IVP - Meters - General - Readings": {

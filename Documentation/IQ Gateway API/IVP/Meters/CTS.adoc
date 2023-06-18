@@ -1,4 +1,4 @@
-= IVP - Meters - General - Current Transformer (CT) Settings
+= IVP - Meters - General - Meters' Current Transformer (CT) Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get internal meter's Current Transformer (CT) clamp settings.
+Get meters' Current Transformer (CT) clamp settings.
 
 == Introduction
 
@@ -42,3 +42,67 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/meters/cts` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`{EID}`
+|Object
+|`CTClampSettings` object
+|The meter's Current Transformer (CT) clamp settings.
+
+|===
+
+=== `CTClampSettings` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`attachType`
+|String
+|String
+|How the Curent Transformer (CT) is attached.
+
+|`primaryAmps`
+|Number
+|Number
+|The primary current input (in Amps).
+
+|`secondaryAmps`
+|Number
+|Number
+|The secondary current output (in Amps).
+
+|`resistorOhms`
+|Number
+|Number
+|The burden resister (in Ohms).
+
+|`turns`
+|Number
+|Number
+|The turns ratio.
+
+|===
+
+== Examples
+
+=== Get Meters' Current Transformer (CT) Clamp Settings
+
+.GET */ivp/meters/cts* Response
+[listing]
+----
+{"704643328": {"attachType": "none", "primaryAmps": 0.0, "secondaryAmps": 0.0, "resistorOhms": 0.0, "turns": 0}, "704643584": {"attachType": "none", "primaryAmps": 0.0, "secondaryAmps": 0.0, "resistorOhms": 0.0, "turns": 0}}
+----
