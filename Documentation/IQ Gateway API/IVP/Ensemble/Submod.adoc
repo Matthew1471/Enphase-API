@@ -42,3 +42,42 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/submod` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_nums`
+|Object
+|`Serial_nums` object
+|The serial numbers of the Energy System Submodules.
+
+|===
+
+=== `Serial_nums` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System (formerly "Ensemble") Submodules
+
+.GET */ivp/ensemble/submod* Response
+[source,json,subs="+quotes"]
+----
+{"serial_nums": {}}
+----

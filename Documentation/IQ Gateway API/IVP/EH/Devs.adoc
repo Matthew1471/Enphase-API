@@ -57,7 +57,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`eid`
 |Number
 |Number
-|Gateway (formerly "Envoy") ID number
+|Gateway (formerly "Envoy") database ID number.
 
 |`devType`
 |Number

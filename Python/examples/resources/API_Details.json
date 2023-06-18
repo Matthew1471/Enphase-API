@@ -1877,7 +1877,7 @@
                     },
                     "createdDate": "The date and time this was added to the Gateway (formerly \"Envoy\") in epoch format.",
                     "devType": "The device type.",
-                    "eid": "Gateway (formerly \"Envoy\") ID number",
+                    "eid": "Gateway (formerly \"Envoy\") database ID number.",
                     "partnum": "The Enphase(R) part number for this product.",
                     "serialnum": "The serial number of this product."
                 }
@@ -2413,22 +2413,37 @@
                 }
             ],
             "uri": "ivp/ensemble/submod"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "serial_nums": "The serial numbers of the Energy System Submodules."
+                }
+            }
         }
     },
     "IVP - Firmware Manager - Config": {
         "description": {
-            "short": "Get or set Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) automatic update settings and/or meter configuration status."
+            "short": "Get or set Enphase(R) Energy System (formerly \"Ensemble\") Software (ESS) automatic update settings (and might be a typo but also meter configuration status?)."
         },
         "documentation": "IVP/FirmwareManager/Config.adoc",
         "name": "Config",
         "request": {
             "examples": [
                 {
-                    "name": "Get Enphase(R) Energy System (formerly \"Ensemble\") Software Automatic Update Settings and Meter Configuration Status",
+                    "name": "Get Enphase(R) Energy System (formerly \"Ensemble\") Software Automatic Update Settings",
                     "response_json": "[{\"auto_update_enable\": \"true\", \"auto_update_8_hrs_disable\": \"false\"}]"
                 }
             ],
             "uri": "ivp/firmware_manager/config"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "auto_update_8_hrs_disable": "Whether automatic updates are disabled for just the next 8 hours.",
+                    "auto_update_enable": "Whether automatic updates are enabled."
+                }
+            }
         }
     },
     "IVP - Firmware Manager - State": {
@@ -2529,6 +2544,41 @@
                 }
             ],
             "uri": "ivp/meters"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "eid": "Gateway (formerly \"Envoy\") database ID number.",
+                    "measurementType": {
+                        "description": "The type of data this is measuring.",
+                        "value_name": "MeasurementType"
+                    },
+                    "meteringStatus": "Whether the meter is in an error state.",
+                    "phaseCount": "The number of phases the meter is monitoring.",
+                    "phaseMode": "The number of phases the meter can monitor.",
+                    "state": "The state of the meter.",
+                    "statusFlags": "Status flags."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the energy produced from the inverters.",
+                    "name": "Production",
+                    "value": "production"
+                },
+                {
+                    "description": "Reporting the load with solar production included.",
+                    "name": "Net Consumption",
+                    "value": "net-consumption"
+                },
+                {
+                    "description": "Reporting the load only (solar production excluded).",
+                    "name": "Total Consumption",
+                    "value": "total-consumption"
+                }
+            ]
         }
     },
     "IVP - Grest - Profile": {
@@ -2603,8 +2653,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -2763,6 +2813,13 @@
                 }
             ],
             "uri": "ivp/meters/readings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "eid": "Gateway (formerly \"Envoy\") database ID number."
+                }
+            }
         }
     },
     "IVP - Meters - General - Storage Setting": {

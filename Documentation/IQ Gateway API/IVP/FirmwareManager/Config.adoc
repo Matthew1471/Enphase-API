@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set Enphase(R) Energy System (formerly "Ensemble") Software (ESS) automatic update settings and/or meter configuration status.
+Get or set Enphase(R) Energy System (formerly "Ensemble") Software (ESS) automatic update settings (and might be a typo but also meter configuration status?).
 
 == Introduction
 
@@ -42,3 +42,36 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/firmware_manager/config` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`auto_update_enable`
+|String
+|String
+|Whether automatic updates are enabled.
+
+|`auto_update_8_hrs_disable`
+|String
+|String
+|Whether automatic updates are disabled for just the next 8 hours.
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System (formerly "Ensemble") Software Automatic Update Settings
+
+.GET */ivp/firmware_manager/config* Response
+[source,json,subs="+quotes"]
+----
+[{"auto_update_enable": "true", "auto_update_8_hrs_disable": "false"}]
+----
