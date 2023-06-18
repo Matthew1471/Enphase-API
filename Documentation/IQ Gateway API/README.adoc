@@ -496,7 +496,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/Reports/All.adoc[All Meters' Readings (Legacy)]`
+|`link:IVP/Meters/Reports/All.adoc[All Meters' Readings]`
 |`/ivp/meters/reports/`
 |Get readings from all the meters (Legacy).
 
