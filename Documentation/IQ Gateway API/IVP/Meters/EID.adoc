@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set a specific meter's (by EID) configuration.
+Get or set a specific meter's configuration by Gateway (formerly "Envoy") record ID.
 
 == Introduction
 

@@ -698,6 +698,12 @@ def process_single_endpoint(gateway, key, endpoint):
 
             # Take each of the examples to learn the schema.
             for example in endpoint_request['examples']:
+
+                # An example can over-ride a URL.
+                endpoint_uri = endpoint_request['uri']
+                if 'request_eid' in example:
+                    endpoint_uri = endpoint_uri.replace('{EID}', str(example['request_eid']))
+
                 # The user can supply the JSON to use instead of us directly querying for it.
                 if 'response_json' in example:
                     if example['response_json']:
@@ -714,7 +720,7 @@ def process_single_endpoint(gateway, key, endpoint):
                     print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
 
                     # Build the URI.
-                    request_uri = '/' + endpoint_request['uri']
+                    request_uri = '/' + endpoint_uri
                     if 'request_query' in example:
                         request_uri += '?' + example['request_query']
 
@@ -858,7 +864,7 @@ def process_single_endpoint(gateway, key, endpoint):
                     continue
 
                 # Take the obtained JSON as an example.
-                output += get_example_section(uri=endpoint_request['uri'], example_item=example)
+                output += get_example_section(uri=endpoint_uri, example_item=example)
     else:
         # Add placeholder text.
         output += get_not_yet_documented()

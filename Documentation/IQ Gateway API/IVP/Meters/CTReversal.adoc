@@ -1,4 +1,4 @@
-= IVP - Meters - General - CT Reversal
+= IVP - Meters - General - Meter's Current Transformer (CT) Reversal
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set specific meter's (by EID) Current Transformer (CT) clamp reverse polarity configuration.
+Get or set specific meter's Current Transformer (CT) clamp reverse polarity configuration by Gateway (formerly "Envoy") record ID.
 
 == Introduction
 

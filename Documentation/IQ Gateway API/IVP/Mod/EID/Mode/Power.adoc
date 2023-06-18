@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the power production power state for this `envoyDevId` (where EID appears hardcoded as 603980032).
+Get or set the power production power state, where the Gateway (formerly "Envoy") record ID is hardcoded as `603980032`.
 
 == Introduction
 
@@ -42,3 +42,31 @@ More details on the project are available from the link:../../../../../../README
 A HTTP `GET` to the `/ivp/mod/{EID}/mode/power` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`powerForcedOff`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the production power is diabled.
+
+|===
+
+== Examples
+
+=== Get Power Production Power State
+
+.GET */ivp/mod/603980032/mode/power* Response
+[source,json,subs="+quotes"]
+----
+{"powerForcedOff": false}
+----
