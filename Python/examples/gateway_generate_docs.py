@@ -500,23 +500,22 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
     result += '|'
     if type(field_metadata) is dict and 'value' in field_metadata:
         result += field_metadata['value']
-    else:
-        # Did the user provide further details about this field in the field map?
-        if field_type not in ('Object','Array(Object)','Array(Unknown)') and (value_name := field_metadata.get('value_name')):
+    # Did the user provide further details about this field in the field map?
+    elif type(field_metadata) is dict and field_type not in ('Object','Array(Object)','Array(Unknown)') and (value_name := field_metadata.get('value_name')):
             result += '`' + value_name + '`'
 
             # Add an example value if available.
             if type_map and value_name in type_map and len(type_map[value_name]) > 0:
                 result += ' (e.g. `' + str(type_map[value_name][0]['value']) + '`)'
-        else:
-            result += field_type
+    else:
+        result += field_type
 
-            # Did the user provide further details about this number field in the field map?
-            if field_type == 'Number' and field_metadata.get('allow_negative') is False:
-                result += ' (> 0)'
-            # Booleans will always be 0 or 1.
-            elif field_type == 'Boolean':
-                result += ' (e.g. `' + ('0` or `1' if short_booleans else 'true` or `false') + '`)'
+        # Did the user provide further details about this number field in the field map?
+        if field_type == 'Number' and field_metadata.get('allow_negative') is False:
+            result += ' (> 0)'
+        # Booleans will always be 0 or 1.
+        elif field_type == 'Boolean':
+            result += ' (e.g. `' + ('0` or `1' if short_booleans else 'true` or `false') + '`)'
 
     result += '\n'
 

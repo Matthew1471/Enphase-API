@@ -42,3 +42,137 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ss/dry_contact_settings` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`dry_contacts`
+|Array(Object)
+|Array of `DryContactSetting`
+|Information about each of the IQ System Controller (formerly "Enpower") dry contacts.
+
+|===
+
+=== `DryContactSetting` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`id`
+|String
+|`DryContact` (e.g. `NC1`)
+|The IQ System Controller (formerly "Enpower") dry contact identifier. In the format `DryContact`.
+
+|`type`
+|String
+|String
+|The dry contact type.
+
+|`grid_action`
+|String
+|String
+|The action that should be taken when on-grid.
+
+|`micro_grid_action`
+|String
+|String
+|The action that should be taken when running as a micro-grid.
+
+|`gen_action`
+|String
+|String
+|The action that should be taken when the generator is running.
+
+|`override`
+|String
+|String
+|Whether the user can override the action.
+
+|`load_name`
+|String
+|String
+|The name of the load.
+
+|`mode`
+|String
+|String
+|The mode.
+
+|`soc_low`
+|Number
+|Number
+|The low State of Charge (SoC) value.
+
+|`soc_high`
+|Number
+|Number
+|The high State of Charge (SoC) value.
+
+|`pv_serial_nb`
+|Array(Unknown)
+|Array of Unknown
+|List of assigned photovoltaic serial numbers.
+
+|===
+
+== Types
+
+=== `DryContact` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`NC1`
+|Normally Closed #1
+|Usually used for load shedding control (during grid outage).
+
+|`NC2`
+|Normally Closed #2
+|Usually used for PV shedding control (during grid outage).
+
+|`NC3`
+|Normally Closed #3
+|Usually used by the Rapid ShutDown (RSD) Switch.
+
+|`NC4`
+|Normally Closed #4
+|Usually used by the Rapid ShutDown (RSD) Switch.
+
+|`NO1`
+|Normally Open #1
+|Usually used by the PV/storage to use excess load such as from a generator.
+
+|`NO2`
+|Normally Open #2
+|Usually used by the PV/storage to use excess load such as surplus solar.
+
+|`NO3`
+|Normally Open #3
+|Usually used for generator control.
+
+|===
+
+== Examples
+
+=== Get Dry Contact Settings
+
+.GET */ivp/ss/dry_contact_settings* Response
+[source,json,subs="+quotes"]
+----
+{"dry_contacts": [{"id": "NC1", "type": "NONE", "grid_action": "none", "micro_grid_action": "none", "gen_action": "none", "override": "false", "load_name": "", "mode": "manual", "soc_low": 30.0, "soc_high": 70.0, "pv_serial_nb": []}, {"id": "NC2", "type": "NONE", "grid_action": "none", "micro_grid_action": "none", "gen_action": "none", "override": "false", "load_name": "", "mode": "manual", "soc_low": 30.0, "soc_high": 70.0, "pv_serial_nb": []}, {"id": "NO1", "type": "NONE", "grid_action": "none", "micro_grid_action": "none", "gen_action": "none", "override": "false", "load_name": "", "mode": "manual", "soc_low": 30.0, "soc_high": 70.0, "pv_serial_nb": []}, {"id": "NO2", "type": "NONE", "grid_action": "none", "micro_grid_action": "none", "gen_action": "none", "override": "false", "load_name": "", "mode": "manual", "soc_low": 30.0, "soc_high": 70.0, "pv_serial_nb": []}]}
+----

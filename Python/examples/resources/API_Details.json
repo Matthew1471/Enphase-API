@@ -1570,10 +1570,18 @@
             "examples": [
                 {
                     "name": "Perform Power Conditioning Unit (PCU) Communication Check",
-                    "response_json": "{\"123456789101\": 5, \"123456789102\": 5, \"123456789103\": 5, \"123456789104\": 5, \"123456789105\": 5, \"123456789106\": 5, \"123456789107\": 5, \"123456789108\": 5, \"123456789109\": 5, \"123456789110\": 5, \"123456789111\": 5, \"123456789112\": 5, \"123456789113\": 5, \"123456789114\": 5}"
+                    "response_json": "{\"{serial_num}\": 2}",
+                    "response_raw": "{\"123456789101\": 5, \"123456789102\": 5, \"123456789103\": 5, \"123456789104\": 5, \"123456789105\": 5, \"123456789106\": 5, \"123456789107\": 5, \"123456789108\": 5, \"123456789109\": 5, \"123456789110\": 5, \"123456789111\": 5, \"123456789112\": 5, \"123456789113\": 5, \"123456789114\": 5}"
                 }
             ],
             "uri": "installer/pcu_comm_check"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "{serial_num}": "The Power-Line Communication (PLC) communication level of this Power Conditioning Unit (or \"microinverter\")."
+                }
+            }
         }
     },
     "Installer - General - Secure SHell (SSH) Revoke List": {
@@ -2043,10 +2051,10 @@
                 ".": {
                     "dry_contacts": {
                         "description": "Information about each of the IQ System Controller (formerly \"Enpower\") dry contacts.",
-                        "value_name": "DryContact"
+                        "value_name": "DryContactStatus"
                     }
                 },
-                "DryContact": {
+                "DryContactStatus": {
                     "id": {
                         "description": "The IQ System Controller (formerly \"Enpower\") dry contact identifier.",
                         "value_name": "DryContact"
@@ -2653,8 +2661,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
+                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -2895,6 +2903,7 @@
     },
     "IVP - Power Electronics Block (PEB) - Report Settings": {
         "description": {
+            "long": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten Cloud\"). The JSON PUT data is sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`. The diagnostic mode may also be enabled, which temporarily sets the `bandwidth` to `high`.",
             "short": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten Cloud\")."
         },
         "documentation": "IVP/PEB/ReportSettings.adoc",
@@ -2902,11 +2911,73 @@
         "request": {
             "examples": [
                 {
-                    "name": "Get Enphase(R) Cloud (formerly \"Enlighten Cloud\") Reporting Priority",
+                    "name": "Get Reporting Priority",
+                    "response_json": "{\"reportsettings\": {\"bandwidth\": \"high\", \"diag_duration_mins\": 0, \"diag_remaining_secs\": 0}}"
+                },
+                {
+                    "method": "PUT",
+                    "name": "Set Reporting Priority (High)",
+                    "request_form": "{\"reportsettings\": {\"bandwidth\": \"high\", \"diag_duration_mins\": 0}}",
                     "response_json": "{\"reportsettings\": {\"bandwidth\": \"high\", \"diag_duration_mins\": 0, \"diag_remaining_secs\": 0}}"
                 }
             ],
+            "field_map": {
+                ".": {
+                    "reportsettings": {
+                        "description": "The Enphase(R) Cloud (formerly \"Enlighten Cloud\") report settings.",
+                        "type": "Object",
+                        "value_name": "ReportSettings"
+                    }
+                },
+                "ReportSettings": {
+                    "bandwidth": {
+                        "description": "The amount of bandwidth the Gateway (formerly \"Envoy\") can use to report to Enphase(R) Cloud (formerly \"Enlighten Cloud\").",
+                        "type": "String",
+                        "value_name": "Bandwidth"
+                    },
+                    "diag_duration_mins": {
+                        "description": "The diagnostic reporting duration in minutes (temporarily sets `Bandwidth` to `high`).",
+                        "type": "Number"
+                    }
+                }
+            },
+            "methods": {
+                "GET": "Get Reporting Priority.",
+                "PUT": "Set Reporting Priority."
+            },
             "uri": "ivp/peb/reportsettings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "reportsettings": {
+                        "description": "The Enphase(R) Cloud (formerly \"Enlighten Cloud\") report settings.",
+                        "value_name": "ReportSettings"
+                    }
+                },
+                "ReportSettings": {
+                    "bandwidth": {
+                        "description": "The amount of bandwidth the Gateway (formerly \"Envoy\") can use to report to Enphase(R) Cloud (formerly \"Enlighten Cloud\").",
+                        "value_name": "Bandwidth"
+                    },
+                    "diag_duration_mins": "The diagnostic reporting duration in minutes (temporarily sets `Bandwidth` to `high`).",
+                    "diag_remaining_secs": "The diagnostic reporting remaining in seconds (temporarily sets `Bandwidth` to `high`)."
+                }
+            }
+        },
+        "type_map": {
+            "Bandwidth": [
+                {
+                    "description": "Standard reporting, which typically reports 5-minute interval data to Enphase(R) Cloud (formerly \"Enlighten Cloud\") every 5 minutes during daylight hours.",
+                    "name": "Standard",
+                    "value": "high"
+                },
+                {
+                    "description": "Low-bandwidth reporting, which reports 15-minute interval data to Enphase(R) Cloud (formerly \"Enlighten Cloud\") four times per day.",
+                    "name": "Low-Bandwidth",
+                    "value": "low"
+                }
+            ]
         }
     },
     "IVP - Power Electronics Blocks (PEB) - Device Status": {
@@ -3072,6 +3143,71 @@
                 }
             ],
             "uri": "ivp/ss/dry_contact_settings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "dry_contacts": {
+                        "description": "Information about each of the IQ System Controller (formerly \"Enpower\") dry contacts.",
+                        "value_name": "DryContactSetting"
+                    }
+                },
+                "DryContactSetting": {
+                    "gen_action": "The action that should be taken when the generator is running.",
+                    "grid_action": "The action that should be taken when on-grid.",
+                    "id": {
+                        "description": "The IQ System Controller (formerly \"Enpower\") dry contact identifier.",
+                        "value_name": "DryContact"
+                    },
+                    "load_name": "The name of the load.",
+                    "micro_grid_action": "The action that should be taken when running as a micro-grid.",
+                    "mode": "The mode.",
+                    "override": "Whether the user can override the action.",
+                    "pv_serial_nb": "List of assigned photovoltaic serial numbers.",
+                    "soc_high": "The high State of Charge (SoC) value.",
+                    "soc_low": "The low State of Charge (SoC) value.",
+                    "type": "The dry contact type."
+                }
+            }
+        },
+        "type_map": {
+            "DryContact": [
+                {
+                    "description": "Usually used for load shedding control (during grid outage).",
+                    "name": "Normally Closed #1",
+                    "value": "NC1"
+                },
+                {
+                    "description": "Usually used for PV shedding control (during grid outage).",
+                    "name": "Normally Closed #2",
+                    "value": "NC2"
+                },
+                {
+                    "description": "Usually used by the Rapid ShutDown (RSD) Switch.",
+                    "name": "Normally Closed #3",
+                    "value": "NC3"
+                },
+                {
+                    "description": "Usually used by the Rapid ShutDown (RSD) Switch.",
+                    "name": "Normally Closed #4",
+                    "value": "NC4"
+                },
+                {
+                    "description": "Usually used by the PV/storage to use excess load such as from a generator.",
+                    "name": "Normally Open #1",
+                    "value": "NO1"
+                },
+                {
+                    "description": "Usually used by the PV/storage to use excess load such as surplus solar.",
+                    "name": "Normally Open #2",
+                    "value": "NO2"
+                },
+                {
+                    "description": "Usually used for generator control.",
+                    "name": "Normally Open #3",
+                    "value": "NO3"
+                }
+            ]
         }
     },
     "IVP - Smart Switch (SS) - ENC Settings": {

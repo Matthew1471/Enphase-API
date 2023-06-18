@@ -56,12 +56,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`dry_contacts`
 |Array(Object)
-|Array of `DryContact`
+|Array of `DryContactStatus`
 |Information about each of the IQ System Controller (formerly "Enpower") dry contacts.
 
 |===
 
-=== `DryContact` Object
+=== `DryContactStatus` Object
 
 [cols="1,1,1,2", options="header"]
 |===
