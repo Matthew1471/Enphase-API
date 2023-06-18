@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - All Meters' Readings (Legacy)
+= IVP - Meters - Reports (Legacy) - All Meters' Readings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

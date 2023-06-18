@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - Consumption Meters' Reading
+= IVP - Meters - Reports (Legacy) - Consumption Meters' Readings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

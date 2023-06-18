@@ -2963,7 +2963,7 @@
             }
         }
     },
-    "IVP - Meters - Reports (Legacy) - All Meters' Readings (Legacy)": {
+    "IVP - Meters - Reports (Legacy) - All Meters' Readings": {
         "description": {
             "short": "Get readings from all the meters (Legacy)."
         },
@@ -3032,7 +3032,7 @@
             ]
         }
     },
-    "IVP - Meters - Reports (Legacy) - Consumption Meters' Reading": {
+    "IVP - Meters - Reports (Legacy) - Consumption Meters' Readings": {
         "description": {
             "short": "Get readings from the consumption meters (Legacy)."
         },
