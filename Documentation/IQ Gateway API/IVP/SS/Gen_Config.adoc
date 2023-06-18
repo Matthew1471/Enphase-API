@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set generator configuration.
+Get or set generator configuration. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 == Introduction
 

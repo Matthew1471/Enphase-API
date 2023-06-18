@@ -42,3 +42,39 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/ec1_wiring_test` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`err`
+|String
+|String
+|The error message that occurred.
+
+|===
+
+== Examples
+
+=== Get IQ Battery (formerly "Encharge Storage") Wiring Test Results
+
+.GET */ivp/ensemble/ec1_wiring_test* Response
+[source,json,subs="+quotes"]
+----
+{"err": "405 - Method Not Allowed"}
+----
+
+=== Start IQ Battery (formerly "Encharge Storage") Wiring Test
+
+.POST */ivp/ensemble/ec1_wiring_test* Response
+[source,json,subs="+quotes"]
+----
+{"err": "405 - Method Not Allowed"}
+----

@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the IQ System Controller (formerly "Enpower") generator status.
+Get or set the IQ System Controller (formerly "Enpower") generator status. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 == Introduction
 

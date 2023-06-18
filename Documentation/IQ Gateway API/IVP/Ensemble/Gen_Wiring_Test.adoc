@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Start or get the results of the generator wiring test.
+Start or get the results of the generator wiring test. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 == Introduction
 
@@ -39,6 +39,55 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/ensemble/gen_wiring_test` endpoint provides the following response data.
+The `/ivp/ensemble/gen_wiring_test` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get Generator Wiring Test Results.
+
+|`POST`
+|Start Generator Wiring Test.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`err`
+|String
+|String
+|The error message that occurred.
+
+|===
+
+== Examples
+
+=== Get Generator Wiring Test Results
+
+.GET */ivp/ensemble/gen_wiring_test* Response
+[source,json,subs="+quotes"]
+----
+{"err": "405 - Method Not Allowed"}
+----
+
+=== Start Generator Wiring Test
+
+.POST */ivp/ensemble/gen_wiring_test* Response
+[source,json,subs="+quotes"]
+----
+{"err": "405 - Method Not Allowed"}
+----

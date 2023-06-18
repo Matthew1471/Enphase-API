@@ -2114,9 +2114,21 @@
                 {
                     "name": "Get IQ Battery (formerly \"Encharge Storage\") Wiring Test Results",
                     "response_json": "{\"err\": \"405 - Method Not Allowed\"}"
+                },
+                {
+                    "method": "POST",
+                    "name": "Start IQ Battery (formerly \"Encharge Storage\") Wiring Test",
+                    "response_json": "{\"err\": \"405 - Method Not Allowed\"}"
                 }
             ],
             "uri": "ivp/ensemble/ec1_wiring_test"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "err": "The error message that occurred."
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Errors": {
@@ -2161,6 +2173,7 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Status": {
         "description": {
+            "long": "Get or set the IQ System Controller (formerly \"Enpower\") generator status. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set the IQ System Controller (formerly \"Enpower\") generator status."
         },
         "documentation": "IVP/Ensemble/Generator.adoc",
@@ -2192,6 +2205,7 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
         "description": {
+            "long": "Start or get the results of the generator wiring test. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Start or get the results of the generator wiring test."
         },
         "documentation": "IVP/Ensemble/Gen_Wiring_Test.adoc",
@@ -2201,9 +2215,25 @@
                 {
                     "name": "Get Generator Wiring Test Results",
                     "response_json": "{\"err\": \"405 - Method Not Allowed\"}"
+                },
+                {
+                    "method": "POST",
+                    "name": "Start Generator Wiring Test",
+                    "response_json": "{\"err\": \"405 - Method Not Allowed\"}"
                 }
             ],
+            "methods": {
+                "GET": "Get Generator Wiring Test Results.",
+                "POST": "Start Generator Wiring Test."
+            },
             "uri": "ivp/ensemble/gen_wiring_test"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "err": "The error message that occurred."
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Inventory": {
@@ -2661,8 +2691,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -3222,6 +3252,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Configuration": {
         "description": {
+            "long": "Get or set generator configuration. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set generator configuration."
         },
         "documentation": "IVP/SS/Gen_Config.adoc",
@@ -3242,6 +3273,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Delete": {
         "description": {
+            "long": "Delete generator. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Delete generator."
         },
         "documentation": "IVP/SS/Gen_Delete.adoc",
@@ -3255,6 +3287,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Meter Enable": {
         "description": {
+            "long": "Set generator meter state. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Set generator meter state."
         },
         "documentation": "IVP/SS/Generator_Meter_Enable.adoc",
@@ -3268,6 +3301,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Mode": {
         "description": {
+            "long": "Get or set generator's status for toggle switch. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set generator's status for toggle switch."
         },
         "documentation": "IVP/SS/Gen_Mode.adoc",
@@ -3284,6 +3318,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Profile": {
         "description": {
+            "long": "Get or set generator's profile. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set generator’s profile."
         },
         "documentation": "IVP/SS/Gen_Profile.adoc",
@@ -3307,6 +3342,7 @@
     },
     "IVP - Smart Switch (SS) - Generator Schedule": {
         "description": {
+            "long": "Get or set generator schedule. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set generator schedule."
         },
         "documentation": "IVP/SS/Gen_Schedule.adoc",
