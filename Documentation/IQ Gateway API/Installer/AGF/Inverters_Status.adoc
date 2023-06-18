@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get the status of each inverter.
+Get the Advanced Grid Functionality (AGF) profile status of each inverter and/or set its associated phase.
 
 == Introduction
 
@@ -39,6 +39,186 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/installer/agf/inverters_status.json` endpoint provides the following response data.
+The `/installer/agf/inverters_status.json` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get the Advanced Grid Functionality (AGF) Profile Status
+
+|`PUT`
+|Update Inverter Phase
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Querystring
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`man_ph_ind`
+|Phase
+|Phase
+|The user selected phase to assign this device to.
+
+|`serial_num`
+|Number
+|Number
+|The serial number of the device that is to be updated.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_num`
+|String
+|String
+|The serial number of this device.
+
+|`device_type`
+|String
+|`DeviceType` (e.g. `PCU`)
+|The type of the device. In the format `DeviceType`.
+
+|`device_record_type`
+|String
+|`DeviceRecordType` (e.g. `AGF`)
+|The device record type. In the format `DeviceRecordType`.
+
+|`admin_state`
+|Number
+|`AdminState` (e.g. `1`)
+|The administrative state of this device. In the format `AdminState`.
+
+|`ph_ind`
+|String
+|`Phase` (e.g. `ph-a`)
+|The assigned phase. In the format `Phase`.
+
+|`gcpa_ph_ind`
+|String
+|`Phase` (e.g. `ph-a`)
+|The Grid Connected PV Array (GCPA) phase assigned by the Gateway. In the format `Phase`.
+
+|`man_ph_ind`
+|String
+|`Phase` (e.g. `ph-a`)
+|The user manually assigned phase. In the format `Phase`.
+
+|`status`
+|Number
+|Number
+|The status.
+
+|`message`
+|String
+|String
+|The message.
+
+|===
+
+== Types
+
+=== `DeviceType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`PCU`
+|Power Conditioning Unit
+|A Power Conditioning Unit (PCU) or "microinverter".
+
+|===
+
+=== `DeviceRecordType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`AGF`
+|Advanced Grid Functionality (AGF)
+|This device is being managed by an Advanced Grid Functionality (AGF) profile.
+
+|===
+
+=== `AdminState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`1`
+|Discovered
+|The device has been discovered.
+
+|`2`
+|Verified
+|The device has been verified.
+
+|`3`
+|Deleted
+|The device has been deleted.
+
+|===
+
+=== `Phase` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`ph-a`
+|Phase A (or Phase 1)
+|Phase A (or Phase 1).
+
+|`ph-b`
+|Phase B (or Phase 2)
+|Phase B (or Phase 2).
+
+|`ph-c`
+|Phase C (or Phase 3)
+|Phase C (or Phase 3).
+
+|`ph-unk`
+|Unknown Phase
+|No phase selected.
+
+|===
+
+== Examples
+
+=== Get Inverter(s) Status
+
+.GET */installer/agf/inverters_status.json* Response
+[source,json,subs="+quotes"]
+----
+[{"serial_num": "123456789109", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789103", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789106", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789111", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789102", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789113", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789105", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789114", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789110", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789108", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789107", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789112", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789101", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}, {"serial_num": "123456789104", "device_type": "PCU", "device_record_type": "AGF", "admin_state": 1, "ph_ind": "ph-a", "gcpa_ph_ind": "ph-a", "man_ph_ind": "ph-unk", "status": 2, "message": "cookie:0,VVAR:0,FRT:0,VRT:0,FPF:0,PRL:0,PLP:0,VW:0,INV2:0,WP:0,TV:0,FW:0,SS:0,ISLND:0,NotUsed_1:0,IAC:0,VECT:0,ROCOF:0,ACAVE:0,VW52:0,FW22:0,WVAR:0"}]
+----

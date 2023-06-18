@@ -55,7 +55,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`deleted` (Optional)
 |Boolean
 |Boolean (e.g. `0` or `1`)
-|Presumably specifies deleted devices should also be included in the results.
+|Whether deleted devices should also be included in the results.
 
 |===
 
@@ -118,8 +118,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`admin_state`
 |Number
-|Number
-|The configured administrative state.
+|`AdminState` (e.g. `1`)
+|The administrative state. In the format `AdminState`.
 
 |`dev_type`
 |Number
@@ -219,6 +219,28 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ESUB`
 |Electrical SUB-panel
 |An Electrical SUB-panel (ESUB), also called an "IQ System Controller" (formerly "Enpower").
+
+|===
+
+=== `AdminState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`1`
+|Discovered
+|The device has been discovered.
+
+|`2`
+|Verified
+|The device has been verified.
+
+|`3`
+|Deleted
+|The device has been deleted.
 
 |===
 

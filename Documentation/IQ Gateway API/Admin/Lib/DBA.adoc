@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the Enphase(R) De-Bug Access (DBA) tunnel state.
+Get or set the Enphase(R) De-Bug Access (DBA) tunnel state. This creates a secure connection so Enphase support personnel can troubleshoot this system remotely.
 
 == Introduction
 
@@ -55,3 +55,57 @@ The `/admin/lib/dba.json` endpoint supports the following:
 
 |===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`tunnel_open`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|The state of the De-Bug Access (DBA) tunnel.
+
+|===
+
+== Examples
+
+=== Open De-Bug Access (DBA) Tunnel Connection
+
+.POST */admin/lib/dba.json* Request
+[source,http]
+----
+fname=tunnelopen
+----
+.POST */admin/lib/dba.json* Response
+[source,json,subs="+quotes"]
+----
+{"tunnel_open": true}
+----
+
+=== Close De-Bug Access (DBA) Tunnel Connection
+
+.POST */admin/lib/dba.json* Request
+[source,http]
+----
+fname=tunnelclose
+----
+.POST */admin/lib/dba.json* Response
+[source,json,subs="+quotes"]
+----
+{"tunnel_open": false}
+----
+
+=== Get De-Bug Access (DBA) Tunnel State
+
+.GET */admin/lib/dba.json* Response
+[source,json,subs="+quotes"]
+----
+{"tunnel_open": false}
+----

@@ -66,8 +66,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`adminState`
 |Number
-|Number
-|The administrative state of the device.
+|`AdminState` (e.g. `1`)
+|The administrative state of the device. In the format `AdminState`.
 
 |`createdDate`
 |Number
@@ -83,6 +83,30 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |String
 |String
 |The serial number of this product.
+
+|===
+
+== Types
+
+=== `AdminState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`1`
+|Discovered
+|The device has been discovered.
+
+|`2`
+|Verified
+|The device has been verified.
+
+|`3`
+|Deleted
+|The device has been deleted.
 
 |===
 

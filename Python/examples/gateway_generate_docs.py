@@ -34,7 +34,7 @@ from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
 # Enable this mode to perform no actual requests.
-TEST_ONLY = True
+TEST_ONLY = False
 
 # This script's version.
 VERSION = 0.1
@@ -214,26 +214,33 @@ class JSONSchema:
 
             # Is this a list of values?
             elif type(json_value) is list:
-                # Are there any values and is the first value an object?
-                if len(json_value) > 0 and type(json_value[0]) is dict:
-                    # We can override some object names (and merge metadata).
-                    child_table_name = JSONSchema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
+                # Are there any values.
+                if len(json_value) > 0:
+                    # Is the first value an object?
+                    if type(json_value[0]) is dict:
+                        # We can override some object names (and merge metadata).
+                        child_table_name = JSONSchema.get_table_name(table_field_map=current_table_field_map, original_table_name=table_name, json_key=json_key)
 
-                    # As this is a list each item could have different metadata;
-                    # take each of the items in the list
-                    # and combine all the keys and their metadata.
-                    for list_item in json_value:
-                        # This could return multiple tables if there are nested types.
-                        new_list_schema = JSONSchema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=list_item)
+                        # As this is a list each item could have different metadata;
+                        # take each of the items in the list
+                        # and combine all the keys and their metadata.
+                        for list_item in json_value:
+                            # This could return multiple tables if there are nested types.
+                            new_list_schema = JSONSchema.get_schema(table_name=child_table_name, table_field_map=table_field_map, json_object=list_item)
 
-                        # Merge this table list.
-                        if child_tables:
-                            child_tables = JSONSchema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1)
-                        else:
-                            child_tables = new_list_schema
+                            # Merge this table list.
+                            if child_tables:
+                                child_tables = JSONSchema.merge_dictionaries(a=child_tables, b=new_list_schema, mark_optional_at_depth=1)
+                            else:
+                                child_tables = new_list_schema
 
-                    # Add the type of this key.
-                    current_table_fields[json_key] = {'type':'Array(Object)', 'value':'Array of `' + child_table_name + '`'}
+                        # Add the type of this key.
+                        current_table_fields[json_key] = {'type':'Array(Object)', 'value':'Array of `' + child_table_name + '`'}
+                    # The first value must be a primitive type.
+                    else:
+                        # Add the type of the key.
+                        type_string = JSONSchema.get_type_string(json_value[0])
+                        current_table_fields[json_key] = {'type':'Array(' + type_string + ')', 'value': 'Array of ' + type_string}
 
                 # This is just an array of standard JSON types.
                 else:
@@ -343,58 +350,53 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     # Any used custom types are collected then output after the tables.
     used_custom_types = []
 
-    # Check if there is anything to add to this section before printing the heading.
-    if ('query' in request_json or 'request_json' in request_json) or ('auth_required' not in request_json or request_json['auth_required'] is not False):
-        # Heading.
-        result = '\n== Request\n\n'
+    # Heading.
+    result = '\n== Request\n\n'
 
-        # List available methods.
-        if 'methods' in request_json:
-            result += 'The `/' + request_json['uri'] + '` endpoint supports the following:\n'
-            result += get_methods_section(request_json['methods'])
-        else:
-            result += 'A HTTP `GET` to the `/' + request_json['uri'] + '` endpoint provides the following response data.\n\n'
+    # List available methods.
+    if 'methods' in request_json:
+        result += 'The `/' + request_json['uri'] + '` endpoint supports the following:\n'
+        result += get_methods_section(request_json['methods'])
+    else:
+        result += 'A HTTP `GET` to the `/' + request_json['uri'] + '` endpoint provides the following response data.\n\n'
 
-        # Some IQ Gateway API requests now require authorisation.
-        if 'auth_required' not in request_json or request_json['auth_required'] is not False:
-            result += 'As of recent Gateway software versions this request requires a valid '
-            result += '`sessionid` cookie obtained by link:'
-            result += ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
+    # Some IQ Gateway API requests now require authorisation.
+    if 'auth_required' not in request_json or request_json['auth_required'] is not False:
+        result += 'As of recent Gateway software versions this request requires a valid '
+        result += '`sessionid` cookie obtained by link:'
+        result += ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
 
-        # Get the request querystring table.
-        if 'query' in request_json:
+    # Get the request querystring table.
+    if 'query' in request_json:
+        # Get the table section but also any used and referenced custom types.
+        table_section, used_custom_types = get_table_section(table_name='Querystring', table=request_json['query'], type_map=type_map, short_booleans=True, level=3)
+
+        # Add the table section to the output.
+        result += table_section
+
+    # Get the request data table.
+    if (field_map := request_json.get('field_map')):
+        # Ouput all the request content tables.
+        result += '\n=== Message Body\n'
+
+        # Add each of the tables from the derived json_schema.
+        for table_name, table in field_map.items():
+            # Format the table_name.
+            if table_name and table_name != '.':
+                table_name = '`' + table_name + '` Object'
+            else:
+                table_name = 'Root'
+
             # Get the table section but also any used and referenced custom types.
-            table_section, used_custom_types = get_table_section(table_name='Querystring', table=request_json['query'], type_map=type_map, short_booleans=True, level=3)
+            table_section, table_used_custom_types = get_table_section(table_name=table_name, table=table, type_map=type_map, short_booleans=True, level=4)
+
+            # Collect any used custom_types, ignoring any duplicates.
+            for custom_type in table_used_custom_types:
+                if custom_type not in used_custom_types:
+                    used_custom_types.append(custom_type)
 
             # Add the table section to the output.
             result += table_section
-
-        # Get the request data table.
-        if (field_map := request_json.get('field_map')):
-            # Ouput all the request content tables.
-            result += '\n=== Message Body\n'
-
-            # Add each of the tables from the derived json_schema.
-            for table_name, table in field_map.items():
-                # Format the table_name.
-                if table_name and table_name != '.':
-                    table_name = '`' + table_name + '` Object'
-                else:
-                    table_name = 'Root'
-
-                # Get the table section but also any used and referenced custom types.
-                table_section, table_used_custom_types = get_table_section(table_name=table_name, table=table, type_map=type_map, short_booleans=True, level=4)
-
-                # Collect any used custom_types, ignoring any duplicates.
-                for custom_type in table_used_custom_types:
-                    if custom_type not in used_custom_types:
-                        used_custom_types.append(custom_type)
-
-                # Add the table section to the output.
-                result += table_section
-    else:
-        # Skip this section.
-        result = ''
 
     return result, used_custom_types
 
@@ -452,7 +454,7 @@ def get_type_section(used_custom_types, type_map):
             # Type Table Rows.
             for current_field in custom_type:
                 # Field Value.
-                result += '|`' + current_field['value'] + '`'
+                result += '|`' + str(current_field['value']) + '`'
                 if 'uncertain' in current_field:
                     result += '?'
                 result += '\n'
@@ -499,13 +501,13 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
     if type(field_metadata) is dict and 'value' in field_metadata:
         result += field_metadata['value']
     else:
-        # Did the user provide further details about this string field in the field map?
-        if field_type == 'String' and (value_name := field_metadata.get('value_name')):
+        # Did the user provide further details about this field in the field map?
+        if field_type not in ('Object','Array(Object)','Array(Unknown)') and (value_name := field_metadata.get('value_name')):
             result += '`' + value_name + '`'
 
             # Add an example value if available.
             if type_map and value_name in type_map and len(type_map[value_name]) > 0:
-                result += ' (e.g. `' + type_map[value_name][0]['value'] + '`)'
+                result += ' (e.g. `' + str(type_map[value_name][0]['value']) + '`)'
         else:
             result += field_type
 
@@ -526,8 +528,8 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
         # Add the description.
         result += field_metadata['description']
 
-        # Is this a string or array that has a custom type?
-        if field_type == 'String' and (field_value_name:= field_metadata.get('value_name')):
+        # Is this a field that has a custom type?
+        if field_type not in ('Object','Array(Object)','Array(Unknown)') and (field_value_name:= field_metadata.get('value_name')):
             # Update the description to mark the type.
             result += ' In the format `' + field_value_name + '`.'
     else:
@@ -573,7 +575,7 @@ def get_table_section(table_name, table, type_map, short_booleans=False, level=3
 
         # Was this a custom type?
         # pylint: disable-next=unidiomatic-typecheck
-        if type(field_metadata) is dict and field_metadata.get('type') == 'String' and (field_value_name:= field_metadata.get('value_name')):
+        if type(field_metadata) is dict and field_metadata.get('type') not in ('Object','Array(Object)','Array(Unknown)') and (field_value_name:= field_metadata.get('value_name')):
             # We do not want to collect duplicates.
             if field_value_name not in used_custom_types:
                 # Mark that we need to ouput this custom type after this table.
@@ -755,10 +757,10 @@ def process_single_endpoint(gateway, key, endpoint):
 
                     # Have we already obtained a response schema from a previous example?
                     if previous_response_schema:
-                        # Merge the current_example_response_schema into the previous_response_schema.
+                        # Merge the current_response_schema into the previous_response_schema.
                         previous_response_schema = JSONSchema.merge_dictionaries(a=previous_response_schema, b=current_response_schema, mark_optional_at_depth=1)
                     else:
-                        # Just take the current_example_response_schema as the previous_response_schema.
+                        # Just take the current_response_schema as the previous_response_schema.
                         previous_response_schema = current_response_schema
 
                 # Is there JSON request information?
@@ -773,10 +775,10 @@ def process_single_endpoint(gateway, key, endpoint):
 
                     # Have we already obtained a request schema from a previous example?
                     if previous_request_schema:
-                        # Merge the current_example_request_schema with the previous_request_schema.
+                        # Merge the current_request_schema with the previous_request_schema.
                         previous_request_schema = JSONSchema.merge_dictionaries(a=previous_request_schema, b=current_request_schema, mark_optional_at_depth=1)
                     else:
-                        # Take the current_example_request_schema as the previous_request_schema.
+                        # Take the current_request_schema as the previous_request_schema.
                         previous_request_schema = current_request_schema
 
             # Is there a request schema to process?

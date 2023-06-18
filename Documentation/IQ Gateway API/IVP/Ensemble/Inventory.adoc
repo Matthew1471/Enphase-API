@@ -113,7 +113,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`device_status`
 |Array(String)
 |Array of String
-|An array of states the device is currently in.
+|An array of states the device is currently in. In the format `ConditionFlags`.
 
 |`last_rpt_date`
 |Number
@@ -264,6 +264,24 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ENPOWER`
 |IQ System Controller
 |IQ System Controller (formerly "Enpower").
+
+|===
+
+=== `ConditionFlags` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`envoy.global.ok`
+|Normal
+|The status is normal.
+
+|`prop.done`
+|???
+|???
 
 |===
 
