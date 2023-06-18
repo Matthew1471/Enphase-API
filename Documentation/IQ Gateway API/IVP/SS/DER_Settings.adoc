@@ -42,3 +42,76 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ss/der_settings` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`der`
+|Object
+|`DERSettings` object
+|The collection of Distributed Energy Resource (DER) settings.
+
+|===
+
+=== `DERSettings` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`der1`
+|String
+|`DER` (e.g. `DER_TYPE_ENCHARGE`)
+|The Distributed Energy Resource (DER) #1 settings. In the format `DER`.
+
+|`der2`
+|String
+|`DER` (e.g. `DER_TYPE_ENCHARGE`)
+|The Distributed Energy Resource (DER) #2 settings. In the format `DER`.
+
+|===
+
+== Types
+
+=== `DER` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`DER_TYPE_ENCHARGE`
+|IQ Battery (formerly "Encharge")
+|The IQ Battery (formerly "Encharge").
+
+|`DER_TYPE_PV_IQ8`
+|IQ8 PV
+|The IQ8 photovoltaic (PV) microinverters.
+
+|`DER_TYPE_NONE`
+|None
+|Not specified.
+
+|===
+
+== Examples
+
+=== Get Distributed Energy Resource (DER) Settings
+
+.GET */ivp/ss/der_settings* Response
+[source,json,subs="+quotes"]
+----
+{"der": {"der1": "DER_TYPE_ENCHARGE", "der2": "DER_TYPE_NONE"}}
+----

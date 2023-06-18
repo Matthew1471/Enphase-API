@@ -42,3 +42,127 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/firmware_manager/state` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`SiteSync`
+|Object
+|`SiteUpdateSynchronisationDetails` object
+|The site update synchronisation details.
+
+|`updates`
+|Array(Unknown)
+|Array of Unknown
+|???
+
+|===
+
+=== `SiteUpdateSynchronisationDetails` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`Current_Status`
+|Number
+|Number
+|The current upgrade status (as a code).
+
+|`Current_Status_str`
+|String
+|String
+|The current upgrade status (as a string).
+
+|`Last_Status`
+|Number
+|Number
+|The previous upgrade status (as a code).
+
+|`Last_Status_str`
+|String
+|String
+|The previous upgrade status (as a string).
+
+|`Type`
+|Number
+|Number
+|The type (as a code).
+
+|`Type_str`
+|String
+|String
+|The type (as a string).
+
+|`Estimated Time Left`
+|String
+|String
+|The estimated time left of the upgrade.
+
+|`Total Duration`
+|String
+|String
+|How long the upgrades have been running for.
+
+|`Current essimg version`
+|String
+|String
+|The current Energy System Software (ESS) image version.
+
+|`Failure Reason`
+|String
+|String
+|Why an upgrade failed (if any).
+
+|`Zigbee Dongle`
+|Number
+|Number
+|The Zigbee dongle update status (as a code).
+
+|`Zigbee Status_str`
+|String
+|String
+|The Zigbee dongle update status (as a string).
+
+|`Zigbee Firmware`
+|String
+|String
+|The firmware of the Zigbee dongle.
+
+|`auto_update_enable`
+|String
+|String
+|Whether automatic updates are enabled.
+
+|`auto_update_8_hrs_disable`
+|String
+|String
+|Whether updates have been disabled for the next 8 hours.
+
+|`Progress`
+|String
+|String
+|The progress of the update.
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System (formerly "Ensemble") Software (ESS) Update State
+
+.GET */ivp/firmware_manager/state* Response
+[source,json,subs="+quotes"]
+----
+{"SiteSync": {"Current_Status": 10, "Current_Status_str": "No Update Running", "Last_Status": 10, "Last_Status_str": "No Update Running", "Type": 0, "Type_str": "None", "Estimated Time Left": "00::00::00", "Total Duration": "00::00::00", "Current essimg version": "500-00020-r01-v21.19.82", "Failure Reason": "None", "Zigbee Dongle": 5, "Zigbee Status_str": "No update", "Zigbee Firmware": "NOT PROVIDED", "auto_update_enable": "true", "auto_update_8_hrs_disable": "true", "Progress": "0.00"}, "updates": []}
+----

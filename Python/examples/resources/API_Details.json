@@ -2396,6 +2396,21 @@
                 }
             ],
             "uri": "ivp/ensemble/secctrl"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "adjusted_backup_soc": "The adjusted backup State of Charge (SoC).",
+                    "agg_avail_energy": "The aggregate available energy.",
+                    "agg_backup_energy": "The aggregate backup energy.",
+                    "agg_soc": "The aggregate State of Charge (SoC).",
+                    "configured_backup_soc": "The configured backup State of Charge (SoC).",
+                    "freq_bias_hz": "Frequency bias in Hz.",
+                    "freq_bias_hz_q8": "Frequency bias in Hz for IQ8?",
+                    "voltage_bias_v": "Voltage bias in Volts.",
+                    "voltage_bias_v_q5": "Voltage bias in Hz for IQ Battery 5?"
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Sleep": {
@@ -2498,6 +2513,34 @@
                 }
             ],
             "uri": "ivp/firmware_manager/state"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "SiteSync": {
+                        "description": "The site update synchronisation details.",
+                        "value_name": "SiteUpdateSynchronisationDetails"
+                    }
+                },
+                "SiteUpdateSynchronisationDetails": {
+                    "auto_update_8_hrs_disable": "Whether updates have been disabled for the next 8 hours.",
+                    "auto_update_enable": "Whether automatic updates are enabled.",
+                    "Current essimg version": "The current Energy System Software (ESS) image version.",
+                    "Current_Status": "The current upgrade status (as a code).",
+                    "Current_Status_str": "The current upgrade status (as a string).",
+                    "Estimated Time Left": "The estimated time left of the upgrade.",
+                    "Failure Reason": "Why an upgrade failed (if any).",
+                    "Last_Status": "The previous upgrade status (as a code).",
+                    "Last_Status_str": "The previous upgrade status (as a string).",
+                    "Progress": "The progress of the update.",
+                    "Total Duration": "How long the upgrades have been running for.",
+                    "Type": "The type (as a code).",
+                    "Type_str": "The type (as a string).",
+                    "Zigbee Dongle": "The Zigbee dongle update status (as a code).",
+                    "Zigbee Firmware": "The firmware of the Zigbee dongle.",
+                    "Zigbee Status_str": "The Zigbee dongle update status (as a string)."
+                }
+            }
         }
     },
     "IVP - Firmware Manager - Update All": {
@@ -2691,8 +2734,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -3160,6 +3203,45 @@
                 }
             ],
             "uri": "ivp/ss/der_settings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "der": {
+                        "description": "The collection of Distributed Energy Resource (DER) settings.",
+                        "value_name": "DERSettings"
+                    }
+                },
+                "DERSettings": {
+                    "der1": {
+                        "description": "The Distributed Energy Resource (DER) #1 settings.",
+                        "value_name": "DER"
+                    },
+                    "der2": {
+                        "description": "The Distributed Energy Resource (DER) #2 settings.",
+                        "value_name": "DER"
+                    }
+                }
+            }
+        },
+        "type_map": {
+            "DER": [
+                {
+                    "description": "The IQ Battery (formerly \"Encharge\").",
+                    "name": "IQ Battery (formerly \"Encharge\")",
+                    "value": "DER_TYPE_ENCHARGE"
+                },
+                {
+                    "description": "The IQ8 photovoltaic (PV) microinverters.",
+                    "name": "IQ8 PV",
+                    "value": "DER_TYPE_PV_IQ8"
+                },
+                {
+                    "description": "Not specified.",
+                    "name": "None",
+                    "value": "DER_TYPE_NONE"
+                }
+            ]
         }
     },
     "IVP - Smart Switch (SS) - dpel": {

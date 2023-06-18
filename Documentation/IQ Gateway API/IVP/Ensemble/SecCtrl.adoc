@@ -42,3 +42,71 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/secctrl` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`freq_bias_hz`
+|Number
+|Number
+|Frequency bias in Hz.
+
+|`voltage_bias_v`
+|Number
+|Number
+|Voltage bias in Volts.
+
+|`freq_bias_hz_q8`
+|Number
+|Number
+|Frequency bias in Hz for IQ8?
+
+|`voltage_bias_v_q5`
+|Number
+|Number
+|Voltage bias in Hz for IQ Battery 5?
+
+|`configured_backup_soc`
+|Number
+|Number
+|The configured backup State of Charge (SoC).
+
+|`adjusted_backup_soc`
+|Number
+|Number
+|The adjusted backup State of Charge (SoC).
+
+|`agg_soc`
+|Number
+|Number
+|The aggregate State of Charge (SoC).
+
+|`agg_backup_energy`
+|Number
+|Number
+|The aggregate backup energy.
+
+|`agg_avail_energy`
+|Number
+|Number
+|The aggregate available energy.
+
+|===
+
+== Examples
+
+=== Get Aggregate State of Charge
+
+.GET */ivp/ensemble/secctrl* Response
+[source,json,subs="+quotes"]
+----
+{"freq_bias_hz": 0.0, "voltage_bias_v": 0.0, "freq_bias_hz_q8": 0, "voltage_bias_v_q5": 0, "configured_backup_soc": 0, "adjusted_backup_soc": 0, "agg_soc": 0, "agg_backup_energy": 0, "agg_avail_energy": 0}
+----
