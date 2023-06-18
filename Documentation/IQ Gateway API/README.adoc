@@ -520,7 +520,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Mod/EID/Mode/Power.adoc[Power Mode]`
 |`/ivp/mod/{EID}/mode/power`
-|Get or set the power production power state for this `envoyDevId` (where EID appears hardcoded as 603980032).
+|Get or set the power production power state, where the Gateway (formerly \"Envoy\") record ID is hardcoded as `603980032`.
 
 |===
 
