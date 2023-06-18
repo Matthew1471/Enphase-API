@@ -39,6 +39,26 @@ More details on the project are available from the link:../../../../../../README
 
 == Request
 
-A HTTP `GET` to the `/ivp/grest/local/gs/redeterminephase` endpoint provides the following response data.
+The `/ivp/grest/local/gs/redeterminephase` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`POST`
+|Redetermine the phase.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Examples
+
+=== Redetermine Phase
+
+.POST */ivp/grest/local/gs/redeterminephase* Response
+[listing]
+----
+No data was returned.
+----

@@ -604,7 +604,11 @@ def get_example_section(uri, example_item):
 
     # Add the response.
     if not 'response_raw' in example_item:
-        example_output['Response'] = json.dumps(example_item['response'])
+        if example_item['response'] != None:
+            example_output['Response'] = json.dumps(example_item['response'])
+        else:
+            example_item['response_raw'] = 'No data was returned.'
+            example_output['Response'] = example_item['response_raw']
     else:
         # We allow the raw value to opt-out of displaying anything.
         if example_item['response_raw']:

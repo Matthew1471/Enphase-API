@@ -2646,7 +2646,7 @@
                 {
                     "method": "POST",
                     "name": "Redetermine Phase",
-                    "response_json": "null"
+                    "response_json": null
                 }
             ],
             "methods": {
