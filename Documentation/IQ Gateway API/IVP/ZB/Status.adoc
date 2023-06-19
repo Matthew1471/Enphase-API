@@ -42,3 +42,478 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/zb/status` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`state`
+|Object
+|`State` object
+|The zigbee state.
+
+|`counters`
+|Object
+|`Counters` object
+|The zigbee counters.
+
+|===
+
+=== `State` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`zb is_device_connected`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Is there a zigbee device connected.
+
+|`zb is_init_done`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Has the zigbee host completed initialisation.
+
+|`zb max_pyld_size`
+|Number
+|Number
+|The maximum zigbee payload size.
+
+|`zb num_joined_nodes`
+|Number
+|Number
+|The number of zigbee joined nodes.
+
+|`zb joined_nodes`
+|Array(Unknown)
+|Array of Unknown
+|Each of the zigbee joined nodes.
+
+|`ieee_15_4 is_device_connected`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Is there a IEEE 802.15.4 device connected.
+
+|`ieee_15_4 is_init_done`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Has the IEEE 802.15.4 host completed initialisation.
+
+|`ieee_15_4 max_pyld_size`
+|Number
+|Number
+|The maximum IEEE 802.15.4 payload size.
+
+|`ieee_15_4 num_joined_nodes`
+|Number
+|Number
+|The number of IEEE 802.15.4 joined nodes.
+
+|`ieee_15_4 joined_nodes`
+|Array(Unknown)
+|Array of Unknown
+|Each of the IEEE 802.15.4 joined nodes.
+
+|`num_client_devices`
+|Number
+|Number
+|The number of client devices.
+
+|`client_devices`
+|Array(Unknown)
+|Array of Unknown
+|Each of the client devices.
+
+|===
+
+=== `Counters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`zigbee_counters`
+|Object
+|`Counters.InterfaceCounters` object
+|The zigbee counters.
+
+|`ral_counters`
+|Object
+|`Counters.RALCounters` object
+|The Radio Access Layer (RAL) counters.
+
+|`ral_radio_counters`
+|Object
+|`Counters.RALRadioCounters` object
+|The Radio Access Layer (RAL) radio counters.
+
+|`zigbee_lib_counters`
+|String
+|String
+|The zigbee library counters in string form.
+
+|`IEEE_15_4_counters`
+|Object
+|`Counters.InterfaceCounters` object
+|The IEEE 802.15.4 counters.
+
+|`client_dev_counters`
+|Array(Unknown)
+|Array of Unknown
+|The client device counters.
+
+|`buffer_pool`
+|Object
+|`Counters.BufferPool` object
+|The buffer pool state.
+
+|`buffer_subpool`
+|Array(Object)
+|Array of `Counters.BufferSubPool`
+|The buffer subpool state.
+
+|===
+
+=== `Counters.InterfaceCounters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`rx_packets`
+|Number
+|Number
+|The number of received packets.
+
+|`rx_err`
+|Number
+|Number
+|The number of received packets with errors.
+
+|`tx_packets`
+|Number
+|Number
+|The number of transmitted packets.
+
+|`tx_err`
+|Number
+|Number
+|The number of transmitted packets with errors.
+
+|`tx_comp_err`
+|Number
+|Number
+|The number of transmitted coordinated multi-point (CoMP) errors.
+
+|`reg_prov_dev` (Optional)
+|Number
+|Number
+|The number of provisioned device registrations.
+
+|`reg_prov_dev_err` (Optional)
+|Number
+|Number
+|The number of provisioned device registration errors.
+
+|`dereg_prov_dev` (Optional)
+|Number
+|Number
+|The number of provisioned devices de-registered.
+
+|`dereg_prov_dev_err` (Optional)
+|Number
+|Number
+|The number of provisioned devices de-registered errors.
+
+|`rx_hello_msg`
+|Number
+|Number
+|The number of received hello messages.
+
+|`tx_dev_info_req`
+|Number
+|Number
+|The number of transmitted device information requests.
+
+|`rx_dev_info_rsp`
+|Number
+|Number
+|The number of received device information requests.
+
+|===
+
+=== `Counters.RALCounters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`totTxReqDropCnt1`
+|Number
+|Number
+|The total transmission requests dropped count.
+
+|`totTxOkCnt`
+|Number
+|Number
+|The total transmission okay count.
+
+|`totTxFlrCnt`
+|Number
+|Number
+|The total transmission FIFO level register (FLR) count.
+
+|`txReqNoRadioDropCnt`
+|Number
+|Number
+|The transmission request no radio drop count.
+
+|`trxnTblFullCnt`
+|Number
+|Number
+|The transaction table full count.
+
+|`txCnfTrxnNotFndCnt`
+|Number
+|Number
+|The transmission confirmation transaction not found count.
+
+|`radioSwitchCnt`
+|Number
+|Number
+|The radio switch count.
+
+|`initDoneCbDropCnt`
+|Number
+|Number
+|The initialisation done Cb drop count.
+
+|`txReqQFullDropCnt`
+|Number
+|Number
+|The transmission request queue full drop count.
+
+|`trxnCxFreedCnt`
+|Number
+|Number
+|The transaction count freed count.
+
+|`trxnCxAllocOkCnt`
+|Number
+|Number
+|The transaction count allocation okay count.
+
+|`trxnCxAllocFlrCnt`
+|Number
+|Number
+|The transaction count allocation FIFO level register (FLR) count.
+
+|`txReqToZbCnt`
+|Number
+|Number
+|The transmission request to zigbee count.
+
+|`txReqToSubGCnt`
+|Number
+|Number
+|The transmission request to sub-Ghz count.
+
+|`txCnfRxCnt`
+|Number
+|Number
+|The transmission confirmation received count.
+
+|`framesFwdToUpLyrCnt`
+|Number
+|Number
+|The frames forwarded to upper layer count.
+
+|`txQueueRemoves`
+|Number
+|Number
+|The transmission queue removes.
+
+|`immediateTxReqs`
+|Number
+|Number
+|The immediate transmission request.
+
+|`txQueueInserts`
+|Number
+|Number
+|The transmission queue inserts.
+
+|`txQueueNumItems`
+|Number
+|Number
+|The transmission queue number of items.
+
+|===
+
+=== `Counters.RALRadioCounters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`joinIndDropCnt`
+|Number
+|Number
+|The Join indication drop count.
+
+|`totTxReqProcCnt`
+|Number
+|Number
+|The total transmit request processed count.
+
+|`totTxOkCnt`
+|Number
+|Number
+|The total transmit okay count.
+
+|`totTxNoAckFlrCnt`
+|Number
+|Number
+|The total transmit no acknowledgement FIFO level register (FLR) count.
+
+|`totTxCCAFlrCnt`
+|Number
+|Number
+|The total transmit clear channel assessment (CCA) FIFO level register (FLR) count.
+
+|===
+
+=== `Counters.BufferPool` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`buffer_pool_total`
+|Number
+|Number
+|The total buffer pool size.
+
+|`buffer_pool_in_use`
+|Number
+|Number
+|The buffer pool in use.
+
+|`buffer_pool_free`
+|Number
+|Number
+|The buffer pool free space.
+
+|`buffer_pool_watermark`
+|Number
+|Number
+|The buffer pool watermark.
+
+|`buffer_pool_alloc_failed`
+|Number
+|Number
+|The buffer pool allocation failed count.
+
+|`buffer_pool_alloc_ok`
+|Number
+|Number
+|The buffer pool allocation okay count.
+
+|`buffer_pool_free_ok`
+|Number
+|Number
+|The buffer pool free okay count.
+
+|===
+
+=== `Counters.BufferSubPool` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`subpool_index`
+|Number
+|Number
+|The subpool index.
+
+|`subpool_size`
+|Number
+|Number
+|The subpool size.
+
+|`subpool_total`
+|Number
+|Number
+|The subpool total.
+
+|`subpool_in_use`
+|Number
+|Number
+|The subpool in use.
+
+|`subpool_free`
+|Number
+|Number
+|The subpool free.
+
+|`subpool_watermark`
+|Number
+|Number
+|The subpool watermark.
+
+|`subpool_alloc_failed`
+|Number
+|Number
+|The subpool allocation failed count.
+
+|`subpool_alloc_ok`
+|Number
+|Number
+|The subpool allocation okay count.
+
+|`subpool_alloc_free_ok`
+|Number
+|Number
+|The subpool free okay count.
+
+|===
+
+== Examples
+
+=== Get Zigbee Status
+
+.GET */ivp/zb/status* Response
+[source,json,subs="+quotes"]
+----
+{"state": {"zb is_device_connected": false, "zb is_init_done": false, "zb max_pyld_size": 0, "zb num_joined_nodes": 0, "zb joined_nodes": [], "ieee_15_4 is_device_connected": false, "ieee_15_4 is_init_done": false, "ieee_15_4 max_pyld_size": 0, "ieee_15_4 num_joined_nodes": 0, "ieee_15_4 joined_nodes": [], "num_client_devices": 0, "client_devices": []}, "counters": {"zigbee_counters": {"rx_packets": 0, "rx_err": 0, "tx_packets": 0, "tx_err": 0, "tx_comp_err": 0, "reg_prov_dev": 0, "reg_prov_dev_err": 0, "dereg_prov_dev": 0, "dereg_prov_dev_err": 0, "rx_hello_msg": 0, "tx_dev_info_req": 0, "rx_dev_info_rsp": 0}, "ral_counters": {"totTxReqDropCnt1": 0, "totTxOkCnt": 0, "totTxFlrCnt": 0, "txReqNoRadioDropCnt": 0, "trxnTblFullCnt": 0, "txCnfTrxnNotFndCnt": 0, "radioSwitchCnt": 0, "initDoneCbDropCnt": 0, "txReqQFullDropCnt": 0, "trxnCxFreedCnt": 0, "trxnCxAllocOkCnt": 0, "trxnCxAllocFlrCnt": 0, "txReqToZbCnt": 0, "txReqToSubGCnt": 0, "txCnfRxCnt": 0, "framesFwdToUpLyrCnt": 0, "txQueueRemoves": 0, "immediateTxReqs": 0, "txQueueInserts": 0, "txQueueNumItems": 0}, "ral_radio_counters": {"joinIndDropCnt": 0, "totTxReqProcCnt": 0, "totTxOkCnt": 0, "totTxNoAckFlrCnt": 0, "totTxCCAFlrCnt": 0}, "zigbee_lib_counters": "zj-i-rx: 0 zdp-tx-req: 0 z-cq-full: 0 z-dq-full: 0 ztx1-to-m: 0 zdp1-rx-m: 0 ztx1-cnf: 0 ztx1-cnf-tmo: 0 ztx1-cnf-dr: 0 ztx-cnf-flr: 0 ztx-cnf-mAck: 0 ztx-cnf-cca: 0 ztx-cnf-nAck: 0 ztx-cnf-nj: 0 ztx-cnf-rtNF: 0 ztx-cnf-encF: 0 ztx-cnf-pyTL: 0 ztx-cnf-nSSC: 0 ztx-cnf-aNF: 0 ztx-cnf-rAE1: 0 ztx-cnf-rAE2: 0 ztx-cnf-nBRF: 0 ztx-cnf-mEC: 0 atc-req: 0 atc-resp: 0 u-rx-b: 0 u-rx-m: 0 u-drop-0: 0 u-drop-1: 0 u-drop-2: 0 rssi-tmo: 0 ", "IEEE_15_4_counters": {"rx_packets": 0, "rx_err": 0, "tx_packets": 0, "tx_err": 0, "tx_comp_err": 0, "rx_hello_msg": 0, "tx_dev_info_req": 0, "rx_dev_info_rsp": 0}, "client_dev_counters": [], "buffer_pool": {"buffer_pool_total": 254, "buffer_pool_in_use": 0, "buffer_pool_free": 254, "buffer_pool_watermark": 0, "buffer_pool_alloc_failed": 0, "buffer_pool_alloc_ok": 0, "buffer_pool_free_ok": 0}, "buffer_subpool": [{"subpool_index": 0, "subpool_size": 16, "subpool_total": 48, "subpool_in_use": 0, "subpool_free": 48, "subpool_watermark": 0, "subpool_alloc_failed": 0, "subpool_alloc_ok": 0, "subpool_alloc_free_ok": 0}, {"subpool_index": 1, "subpool_size": 32, "subpool_total": 48, "subpool_in_use": 0, "subpool_free": 48, "subpool_watermark": 0, "subpool_alloc_failed": 0, "subpool_alloc_ok": 0, "subpool_alloc_free_ok": 0}, {"subpool_index": 2, "subpool_size": 64, "subpool_total": 90, "subpool_in_use": 0, "subpool_free": 90, "subpool_watermark": 0, "subpool_alloc_failed": 0, "subpool_alloc_ok": 0, "subpool_alloc_free_ok": 0}, {"subpool_index": 3, "subpool_size": 128, "subpool_total": 32, "subpool_in_use": 0, "subpool_free": 32, "subpool_watermark": 0, "subpool_alloc_failed": 0, "subpool_alloc_ok": 0, "subpool_alloc_free_ok": 0}, {"subpool_index": 4, "subpool_size": 255, "subpool_total": 36, "subpool_in_use": 0, "subpool_free": 36, "subpool_watermark": 0, "subpool_alloc_failed": 0, "subpool_alloc_ok": 0, "subpool_alloc_free_ok": 0}]}}
+----

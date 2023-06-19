@@ -4125,6 +4125,122 @@
                 }
             ],
             "uri": "ivp/zb/status"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "counters": "The zigbee counters.",
+                    "state": "The zigbee state."
+                },
+                "Counters": {
+                    "buffer_pool": {
+                        "description": "The buffer pool state.",
+                        "value_name": "Counters.BufferPool"
+                    },
+                    "buffer_subpool": {
+                        "description": "The buffer subpool state.",
+                        "value_name": "Counters.BufferSubPool"
+                    },
+                    "client_dev_counters": {
+                        "description": "The client device counters.",
+                        "value_name": "Counters.ClientDeviceCounters"
+                    },
+                    "IEEE_15_4_counters": {
+                        "description": "The IEEE 802.15.4 counters.",
+                        "value_name": "Counters.InterfaceCounters"
+                    },
+                    "ral_counters": {
+                        "description": "The Radio Access Layer (RAL) counters.",
+                        "value_name": "Counters.RALCounters"
+                    },
+                    "ral_radio_counters": {
+                        "description": "The Radio Access Layer (RAL) radio counters.",
+                        "value_name": "Counters.RALRadioCounters"
+                    },
+                    "zigbee_counters": {
+                        "description": "The zigbee counters.",
+                        "value_name": "Counters.InterfaceCounters"
+                    },
+                    "zigbee_lib_counters": "The zigbee library counters in string form."
+                },
+                "Counters.BufferPool": {
+                    "buffer_pool_alloc_failed": "The buffer pool allocation failed count.",
+                    "buffer_pool_alloc_ok": "The buffer pool allocation okay count.",
+                    "buffer_pool_free": "The buffer pool free space.",
+                    "buffer_pool_free_ok": "The buffer pool free okay count.",
+                    "buffer_pool_in_use": "The buffer pool in use.",
+                    "buffer_pool_total": "The total buffer pool size.",
+                    "buffer_pool_watermark": "The buffer pool watermark."
+                },
+                "Counters.BufferSubPool": {
+                    "subpool_alloc_failed": "The subpool allocation failed count.",
+                    "subpool_alloc_free_ok": "The subpool free okay count.",
+                    "subpool_alloc_ok": "The subpool allocation okay count.",
+                    "subpool_free": "The subpool free.",
+                    "subpool_in_use": "The subpool in use.",
+                    "subpool_index": "The subpool index.",
+                    "subpool_size": "The subpool size.",
+                    "subpool_total": "The subpool total.",
+                    "subpool_watermark": "The subpool watermark."
+                },
+                "Counters.InterfaceCounters": {
+                    "dereg_prov_dev": "The number of provisioned devices de-registered.",
+                    "dereg_prov_dev_err": "The number of provisioned devices de-registered errors.",
+                    "reg_prov_dev": "The number of provisioned device registrations.",
+                    "reg_prov_dev_err": "The number of provisioned device registration errors.",
+                    "rx_dev_info_rsp": "The number of received device information requests.",
+                    "rx_err": "The number of received packets with errors.",
+                    "rx_hello_msg": "The number of received hello messages.",
+                    "rx_packets": "The number of received packets.",
+                    "tx_comp_err": "The number of transmitted coordinated multi-point (CoMP) errors.",
+                    "tx_dev_info_req": "The number of transmitted device information requests.",
+                    "tx_err": "The number of transmitted packets with errors.",
+                    "tx_packets": "The number of transmitted packets."
+                },
+                "Counters.RALCounters": {
+                    "framesFwdToUpLyrCnt": "The frames forwarded to upper layer count.",
+                    "immediateTxReqs": "The immediate transmission request.",
+                    "initDoneCbDropCnt": "The initialisation done Cb drop count.",
+                    "radioSwitchCnt": "The radio switch count.",
+                    "totTxFlrCnt": "The total transmission FIFO level register (FLR) count.",
+                    "totTxOkCnt": "The total transmission okay count.",
+                    "totTxReqDropCnt1": "The total transmission requests dropped count.",
+                    "trxnCxAllocFlrCnt": "The transaction count allocation FIFO level register (FLR) count.",
+                    "trxnCxAllocOkCnt": "The transaction count allocation okay count.",
+                    "trxnCxFreedCnt": "The transaction count freed count.",
+                    "trxnTblFullCnt": "The transaction table full count.",
+                    "txCnfRxCnt": "The transmission confirmation received count.",
+                    "txCnfTrxnNotFndCnt": "The transmission confirmation transaction not found count.",
+                    "txQueueInserts": "The transmission queue inserts.",
+                    "txQueueNumItems": "The transmission queue number of items.",
+                    "txQueueRemoves": "The transmission queue removes.",
+                    "txReqNoRadioDropCnt": "The transmission request no radio drop count.",
+                    "txReqQFullDropCnt": "The transmission request queue full drop count.",
+                    "txReqToSubGCnt": "The transmission request to sub-Ghz count.",
+                    "txReqToZbCnt": "The transmission request to zigbee count."
+                },
+                "Counters.RALRadioCounters": {
+                    "joinIndDropCnt": "The Join indication drop count.",
+                    "totTxCCAFlrCnt": "The total transmit clear channel assessment (CCA) FIFO level register (FLR) count.",
+                    "totTxNoAckFlrCnt": "The total transmit no acknowledgement FIFO level register (FLR) count.",
+                    "totTxOkCnt": "The total transmit okay count.",
+                    "totTxReqProcCnt": "The total transmit request processed count."
+                },
+                "State": {
+                    "client_devices": "Each of the client devices.",
+                    "ieee_15_4 is_device_connected": "Is there a IEEE 802.15.4 device connected.",
+                    "ieee_15_4 is_init_done": "Has the IEEE 802.15.4 host completed initialisation.",
+                    "ieee_15_4 joined_nodes": "Each of the IEEE 802.15.4 joined nodes.",
+                    "ieee_15_4 max_pyld_size": "The maximum IEEE 802.15.4 payload size.",
+                    "ieee_15_4 num_joined_nodes": "The number of IEEE 802.15.4 joined nodes.",
+                    "num_client_devices": "The number of client devices.",
+                    "zb is_device_connected": "Is there a zigbee device connected.",
+                    "zb is_init_done": "Has the zigbee host completed initialisation.",
+                    "zb joined_nodes": "Each of the zigbee joined nodes.",
+                    "zb max_pyld_size": "The maximum zigbee payload size.",
+                    "zb num_joined_nodes": "The number of zigbee joined nodes."
+                }
+            }
         }
     },
     "Stream - Meter": {
