@@ -313,7 +313,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/ivp/ensemble/dry_contacts`
 |Get or set the dry contact status.
 
-|`link:IVP/Ensemble/ECL_Wiring_Test.adoc[ECL Wiring Test]`
+|`link:IVP/Ensemble/EC1_Wiring_Test.adoc[EC1 Wiring Test]`
 |`/ivp/ensemble/ec1_wiring_test`
 |Start or get the results of an IQ Battery (formerly "Encharge Storage") wiring test.
 
@@ -580,9 +580,9 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/ivp/ss/dry_contact_settings`
 |Get or set dry contact settings.
 
-|`link:IVP/SS/ENC_Settings.adoc[ENC Settings]`
+|`link:IVP/SS/ENC_Settings.adoc[IQ Battery (formerly "Encharge") Settings]`
 |`/ivp/ss/enc_settings`
-|Update limit power output.
+|Update IQ Battery (formerly "Encharge") settings.
 
 |`link:IVP/SS/Gen_Config.adoc[Generator Configuration]`
 |`/ivp/ss/gen_config`

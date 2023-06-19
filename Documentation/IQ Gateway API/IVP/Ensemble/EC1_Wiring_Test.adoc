@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - ECL Wiring Test
+= IVP - Energy System (formerly "Ensemble") - EC1 Wiring Test
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

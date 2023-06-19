@@ -2103,12 +2103,12 @@
             ]
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - ECL Wiring Test": {
+    "IVP - Energy System (formerly \"Ensemble\") - EC1 Wiring Test": {
         "description": {
             "short": "Start or get the results of an IQ Battery (formerly \"Encharge Storage\") wiring test."
         },
-        "documentation": "IVP/Ensemble/ECL_Wiring_Test.adoc",
-        "name": "ECL Wiring Test",
+        "documentation": "IVP/Ensemble/EC1_Wiring_Test.adoc",
+        "name": "EC1 Wiring Test",
         "request": {
             "examples": [
                 {
@@ -2734,8 +2734,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -3527,16 +3527,6 @@
             ]
         }
     },
-    "IVP - Smart Switch (SS) - ENC Settings": {
-        "description": {
-            "short": "Update limit power output."
-        },
-        "documentation": "IVP/SS/ENC_Settings.adoc",
-        "name": "ENC Settings",
-        "request": {
-            "uri": "ivp/ss/enc_settings"
-        }
-    },
     "IVP - Smart Switch (SS) - Generator Configuration": {
         "description": {
             "long": "Get or set generator configuration. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
@@ -3646,6 +3636,48 @@
                 "POST": "Set the generator schedule."
             },
             "uri": "ivp/ss/gen_schedule"
+        }
+    },
+    "IVP - Smart Switch (SS) - IQ Battery (formerly \"Encharge\") Settings": {
+        "description": {
+            "long": "Update IQ Battery (formerly \"Encharge\") settings. This specifically enables/disables power output and sets the country.",
+            "short": "Update IQ Battery (formerly \"Encharge\") settings."
+        },
+        "documentation": "IVP/SS/ENC_Settings.adoc",
+        "name": "IQ Battery (formerly \"Encharge\") Settings",
+        "request": {
+            "examples": [
+                {
+                    "method": "POST",
+                    "name": "Set IQ Battery (formerly \"Encharge\") Settings",
+                    "request_json": "{\"enc_settings\":{\"enable\":false, \"country\":\"GB\"}}",
+                    "response_json": "{\"err\": \"404 - Not Found\"}"
+                }
+            ],
+            "field_map": {
+                ".": {
+                    "enc_settings": {
+                        "description": "The IQ Battery (formerly \"Encharge\") settings.",
+                        "value_name": "IQBatterySettings"
+                    }
+                },
+                "IQBatterySettings": {
+                    "country": "The country the device is installed in.",
+                    "enable": "Whether power output is enabled/disabled."
+                }
+            },
+            "methods": {
+                "GET": "Get IQ Battery (formerly \"Encharge\") Settings?",
+                "POST": "Update IQ Battery (formerly \"Encharge\") Settings."
+            },
+            "uri": "ivp/ss/enc_settings"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "err": "The error message."
+                }
+            }
         }
     },
     "IVP - Smart Switch (SS) - Load Control": {

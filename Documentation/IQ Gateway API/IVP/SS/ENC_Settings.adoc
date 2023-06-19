@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - ENC Settings
+= IVP - Smart Switch (SS) - IQ Battery (formerly "Encharge") Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Update limit power output.
+Update IQ Battery (formerly "Encharge") settings. This specifically enables/disables power output and sets the country.
 
 == Introduction
 
@@ -39,6 +39,91 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/ss/enc_settings` endpoint provides the following response data.
+The `/ivp/ss/enc_settings` endpoint supports the following:
 
+=== Methods
+[cols="1,2", options="header"]
+|===
+|Method
+|Description
+
+|`GET`
+|Get IQ Battery (formerly "Encharge") Settings?
+
+|`POST`
+|Update IQ Battery (formerly "Encharge") Settings.
+
+|===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+=== Message Body
+
+==== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enc_settings`
+|Object
+|`IQBatterySettings` object
+|The IQ Battery (formerly "Encharge") settings.
+
+|===
+
+==== `IQBatterySettings` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`enable`
+|Boolean
+|Boolean (e.g. `0` or `1`)
+|Whether power output is enabled/disabled.
+
+|`country`
+|String
+|String
+|The country the device is installed in.
+
+|===
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`err`
+|String
+|String
+|The error message.
+
+|===
+
+== Examples
+
+=== Set IQ Battery (formerly "Encharge") Settings
+
+.POST */ivp/ss/enc_settings* Request
+[source,json,subs="+quotes"]
+----
+{"enc_settings": {"enable": false, "country": "GB"}}
+----
+.POST */ivp/ss/enc_settings* Response
+[source,json,subs="+quotes"]
+----
+{"err": "404 - Not Found"}
+----
