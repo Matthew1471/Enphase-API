@@ -174,7 +174,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pcu`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the Power Conditioning Units (PCU).
+|An object that contains the scan result for the Power Conditioning Units (PCU, also known as "microinverters").
 
 |`acb`
 |Object

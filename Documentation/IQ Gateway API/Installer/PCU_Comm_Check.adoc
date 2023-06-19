@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Check communication with the microinverter(s) (also called "Power Conditioning Unit(s) (PCU)").
+Check communication with the Power Conditioning Unit(s) (PCU, also called "microinverter(s)").
 
 == Introduction
 

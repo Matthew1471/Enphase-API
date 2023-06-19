@@ -62,7 +62,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pcu`
 |Object
 |`DeviceStatus` object
-|The Power Conditioning Unit (PCU) status.
+|The Power Conditioning Unit (PCU, also known as a "microinverter") status.
 
 |`acb`
 |Object
@@ -88,7 +88,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`pcu`
 |Object
 |`DeviceCounters` object
-|The Power Conditioning Unit (PCB) counters.
+|The Power Conditioning Unit (PCU, also known as a "microinverter") counters.
 
 |`acb`
 |Object

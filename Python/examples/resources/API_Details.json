@@ -1563,7 +1563,7 @@
     },
     "Installer - General - Power Conditioning Unit (PCU) Communication Check": {
         "description": {
-            "short": "Check communication with the microinverter(s) (also called \"Power Conditioning Unit(s) (PCU)\")."
+            "short": "Check communication with the Power Conditioning Unit(s) (PCU, also called \"microinverter(s)\")."
         },
         "documentation": "Installer/PCU_Comm_Check.adoc",
         "name": "Power Conditioning Unit (PCU) Communication Check",
@@ -2764,8 +2764,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -3426,7 +3426,7 @@
                         "value_name": "DeviceStatus"
                     },
                     "pcu": {
-                        "description": "The Power Conditioning Unit (PCU) status.",
+                        "description": "The Power Conditioning Unit (PCU, also known as a \"microinverter\") status.",
                         "value_name": "DeviceStatus"
                     }
                 },
@@ -3444,7 +3444,7 @@
                         "value_name": "DeviceCounters"
                     },
                     "pcu": {
-                        "description": "The Power Conditioning Unit (PCB) counters.",
+                        "description": "The Power Conditioning Unit (PCU, also known as a \"microinverter\") counters.",
                         "value_name": "DeviceCounters"
                     },
                     "pld": {
@@ -3536,7 +3536,7 @@
                         "value_name": "DeviceScanResult"
                     },
                     "pcu": {
-                        "description": "An object that contains the scan result for the Power Conditioning Units (PCU).",
+                        "description": "An object that contains the scan result for the Power Conditioning Units (PCU, also known as \"microinverters\").",
                         "value_name": "DeviceScanResult"
                     },
                     "pld": {
