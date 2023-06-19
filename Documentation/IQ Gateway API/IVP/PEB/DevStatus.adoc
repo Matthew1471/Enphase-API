@@ -42,3 +42,154 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/peb/devstatus` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`counters`
+|Object
+|`Counters` object
+|Collection of device counters.
+
+|`pcu`
+|Object
+|`DeviceStatus` object
+|The Power Conditioning Unit (PCU) status.
+
+|`acb`
+|Object
+|`DeviceStatus` object
+|The AC Battery (ACB) status.
+
+|`nsrb`
+|Object
+|`DeviceStatus` object
+|The Network System Relay Breaker (NSRB, also known as an "IQ Relay") status.
+
+|===
+
+=== `Counters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`pcu`
+|Object
+|`DeviceCounters` object
+|The Power Conditioning Unit (PCB) counters.
+
+|`acb`
+|Object
+|`DeviceCounters` object
+|The AC Battery (ACB) counters.
+
+|`nsrb`
+|Object
+|`DeviceCounters` object
+|The Network System Relay Breaker (NSRB, also called an "IQ Relay" counters).
+
+|`pld`
+|Object
+|`DeviceCounters` object
+|The Programmable Logic Devices (PLD) counters.
+
+|`esub`
+|Object
+|`DeviceCounters` object
+|The Electrical SUB-panel (ESUB, also called an "IQ System Controller", formerly "Enpower") counters.
+
+|===
+
+=== `DeviceCounters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`expected`
+|Number
+|Number
+|How many of these devices are expected to communicate with this Gateway (formerly "Envoy").
+
+|`discovered`
+|Number
+|Number
+|How many of these devices have been found from a scan.
+
+|`ctrlsTotal`
+|Number
+|Number
+|How many controllers there are in total.
+
+|`ctrlsGone`
+|Number
+|Number
+|How many controllers are no longer reporting in.
+
+|`ctrlsCommunicating`
+|Number
+|Number
+|How many controllers are communicating with this Gateway (formerly "Envoy").
+
+|`chansTotal`
+|Number
+|Number
+|How many channels in total there are.
+
+|`chansRecent`
+|Number
+|Number
+|How many channels have recently been communicating with this Gateway (formerly "Envoy").
+
+|`chansProducing`
+|Number
+|Number
+|How many channels are producing electricity.
+
+|===
+
+=== `DeviceStatus` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`fields`
+|Array(String)
+|Array of String
+|The collection of status field names returned for this type of device.
+
+|`values`
+|Array(Unknown)
+|Array of Unknown
+|The collection of status values returned for this type of device.
+
+|===
+
+== Examples
+
+=== Get Device Status
+
+.GET */ivp/peb/devstatus* Response
+[source,json,subs="+quotes"]
+----
+{"counters": {"pcu": {"expected": 14, "discovered": 14, "ctrlsTotal": 14, "ctrlsGone": 0, "ctrlsCommunicating": 14, "chansTotal": 14, "chansRecent": 14, "chansProducing": 14}, "acb": {"expected": 0, "discovered": 0, "ctrlsTotal": 0, "ctrlsGone": 0, "ctrlsCommunicating": 0, "chansTotal": 0, "chansRecent": 0, "chansProducing": 0}, "nsrb": {"expected": 0, "discovered": 0, "ctrlsTotal": 0, "ctrlsGone": 0, "ctrlsCommunicating": 0, "chansTotal": 0, "chansRecent": 0, "chansProducing": 0}, "pld": {"expected": 14, "discovered": 14, "ctrlsTotal": 14, "ctrlsGone": 0, "ctrlsCommunicating": 14, "chansTotal": 14, "chansRecent": 14, "chansProducing": 14}, "esub": {"expected": 0, "discovered": 0, "ctrlsTotal": 0, "ctrlsGone": 0, "ctrlsCommunicating": 0, "chansTotal": 0, "chansRecent": 0, "chansProducing": 0}}, "pcu": {"fields": ["serialNumber", "devType", "communicating", "recent", "producing", "reportDate", "temperature", "dcVoltageINmV", "dcCurrentINmA", "acVoltageINmV", "acPowerINmW"], "values": [["123456789101", 1, true, true, true, 1687204569, 29, 36742, 677, 243872, 26456], ["123456789114", 1, true, true, true, 1687204571, 30, 36652, 711, 244184, 27046], ["123456789108", 1, true, true, true, 1687204573, 29, 36872, 676, 243912, 26512], ["123456789103", 1, true, true, true, 1687204574, 28, 36781, 683, 243968, 27285], ["123456789105", 1, true, true, true, 1687204576, 30, 36452, 704, 244240, 26910], ["123456789107", 1, true, true, true, 1687204578, 29, 36742, 711, 243848, 27003], ["123456789106", 1, true, true, true, 1687204579, 27, 36758, 665, 243856, 26147], ["123456789112", 1, true, true, true, 1687204580, 29, 36658, 686, 244264, 26541], ["123456789102", 1, true, true, true, 1687204583, 27, 36922, 689, 244592, 26792], ["123456789111", 1, true, true, true, 1687204584, 27, 36473, 678, 244208, 25702], ["123456789104", 1, true, true, true, 1687204586, 27, 36065, 670, 244240, 22154], ["123456789109", 1, true, true, true, 1687204588, 27, 36423, 683, 243816, 25419], ["123456789113", 1, true, true, true, 1687204589, 27, 36251, 685, 243920, 25829], ["123456789110", 1, true, true, true, 1687204590, 28, 36320, 658, 243920, 25444]]}, "acb": {"fields": ["serialNumber", "SOC", "minCellTemp", "maxCellTemp", "capacity", "totVoltage", "sleepEnabled", "sleepMinSoc", "sleepMaxSoc"], "values": []}, "nsrb": {"fields": ["serialNumber", "relay", "forced", "reason_code", "reason", "line-count", "line1-connected", "line2-connected", "line3-connected"], "values": []}}
+----

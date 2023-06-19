@@ -184,7 +184,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`nsrb`
 |Object
 |`DeviceScanResult` object
-|An object that contains the scan result for the IQ Relays (formerly "Q Relay" and "Network System Relay Board (NSRB)").
+|An object that contains the scan result for the IQ Relays (formerly "Q Relay" and "Network System Relay Breaker (NSRB)").
 
 |`esub`
 |Object

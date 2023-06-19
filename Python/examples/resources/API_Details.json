@@ -659,7 +659,7 @@
     },
     "General - Inventory": {
         "description": {
-            "short": "Lists the inventory of `PCU` (Power Conditioning Unit, also called a \"microinverter\"), `ACB` (AC Battery), `NSRB` (Network System Relay Board?, also called an \"IQ Relay\") and `ESUB` (Electrical SUB-panel, also called an \"IQ System Controller\" formerly \"Enpower\") devices."
+            "short": "Lists the inventory of `PCU` (Power Conditioning Unit, also called a \"microinverter\"), `ACB` (AC Battery), `NSRB` (Network System Relay Breaker?, also called an \"IQ Relay\") and `ESUB` (Electrical SUB-panel, also called an \"IQ System Controller\" formerly \"Enpower\") devices."
         },
         "documentation": "General/Inventory.adoc",
         "name": "Inventory",
@@ -750,7 +750,7 @@
                     "value": "ACB"
                 },
                 {
-                    "description": "An IQ Relay (formerly \"Q Relay\" and \"Network System Relay Board (NSRB)\").",
+                    "description": "An IQ Relay (formerly \"Q Relay\" and \"Network System Relay Breaker (NSRB)\").",
                     "name": "IQ Relay",
                     "value": "NSRB"
                 },
@@ -2764,8 +2764,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
+                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -3408,10 +3408,65 @@
             "examples": [
                 {
                     "name": "Get Device Status",
-                    "response_json": "{\"counters\": {\"pcu\": {\"expected\": 14, \"discovered\": 14, \"ctrlsTotal\": 14, \"ctrlsGone\": 14, \"ctrlsCommunicating\": 0, \"chansTotal\": 14, \"chansRecent\": 0, \"chansProducing\": 0}, \"acb\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}, \"nsrb\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}, \"pld\": {\"expected\": 14, \"discovered\": 14, \"ctrlsTotal\": 14, \"ctrlsGone\": 14, \"ctrlsCommunicating\": 0, \"chansTotal\": 14, \"chansRecent\": 0, \"chansProducing\": 0}, \"esub\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}}, \"pcu\": {\"fields\": [\"serialNumber\", \"devType\", \"communicating\", \"recent\", \"producing\", \"reportDate\", \"temperature\", \"dcVoltageINmV\", \"dcCurrentINmA\", \"acVoltageINmV\", \"acPowerINmW\"], \"values\": [[\"123456789109\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789103\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789106\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789111\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789102\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789113\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789105\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789114\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789110\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789108\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789107\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789112\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789101\", 1, false, false, false, 0, 0, 0, 0, 0, 0], [\"123456789104\", 1, false, false, false, 0, 0, 0, 0, 0, 0]]}, \"acb\": {\"fields\": [\"serialNumber\", \"SOC\", \"minCellTemp\", \"maxCellTemp\", \"capacity\", \"totVoltage\", \"sleepEnabled\", \"sleepMinSoc\", \"sleepMaxSoc\"], \"values\": []}, \"nsrb\": {\"fields\": [\"serialNumber\", \"relay\", \"forced\", \"reason_code\", \"reason\", \"line-count\", \"line1-connected\", \"line2-connected\", \"line3-connected\"], \"values\": []}}"
+                    "response_json": "{\"counters\": {\"pcu\": {\"expected\": 14, \"discovered\": 14, \"ctrlsTotal\": 14, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 14, \"chansTotal\": 14, \"chansRecent\": 14, \"chansProducing\": 14}, \"acb\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}, \"nsrb\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}, \"pld\": {\"expected\": 14, \"discovered\": 14, \"ctrlsTotal\": 14, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 14, \"chansTotal\": 14, \"chansRecent\": 14, \"chansProducing\": 14}, \"esub\": {\"expected\": 0, \"discovered\": 0, \"ctrlsTotal\": 0, \"ctrlsGone\": 0, \"ctrlsCommunicating\": 0, \"chansTotal\": 0, \"chansRecent\": 0, \"chansProducing\": 0}}, \"pcu\": {\"fields\": [\"serialNumber\", \"devType\", \"communicating\", \"recent\", \"producing\", \"reportDate\", \"temperature\", \"dcVoltageINmV\", \"dcCurrentINmA\", \"acVoltageINmV\", \"acPowerINmW\"], \"values\": [[\"123456789101\", 1, true, true, true, 1687204569, 29, 36742, 677, 243872, 26456], [\"123456789114\", 1, true, true, true, 1687204571, 30, 36652, 711, 244184, 27046], [\"123456789108\", 1, true, true, true, 1687204573, 29, 36872, 676, 243912, 26512], [\"123456789103\", 1, true, true, true, 1687204574, 28, 36781, 683, 243968, 27285], [\"123456789105\", 1, true, true, true, 1687204576, 30, 36452, 704, 244240, 26910], [\"123456789107\", 1, true, true, true, 1687204578, 29, 36742, 711, 243848, 27003], [\"123456789106\", 1, true, true, true, 1687204579, 27, 36758, 665, 243856, 26147], [\"123456789112\", 1, true, true, true, 1687204580, 29, 36658, 686, 244264, 26541], [\"123456789102\", 1, true, true, true, 1687204583, 27, 36922, 689, 244592, 26792], [\"123456789111\", 1, true, true, true, 1687204584, 27, 36473, 678, 244208, 25702], [\"123456789104\", 1, true, true, true, 1687204586, 27, 36065, 670, 244240, 22154], [\"123456789109\", 1, true, true, true, 1687204588, 27, 36423, 683, 243816, 25419], [\"123456789113\", 1, true, true, true, 1687204589, 27, 36251, 685, 243920, 25829], [\"123456789110\", 1, true, true, true, 1687204590, 28, 36320, 658, 243920, 25444]]}, \"acb\": {\"fields\": [\"serialNumber\", \"SOC\", \"minCellTemp\", \"maxCellTemp\", \"capacity\", \"totVoltage\", \"sleepEnabled\", \"sleepMinSoc\", \"sleepMaxSoc\"], \"values\": []}, \"nsrb\": {\"fields\": [\"serialNumber\", \"relay\", \"forced\", \"reason_code\", \"reason\", \"line-count\", \"line1-connected\", \"line2-connected\", \"line3-connected\"], \"values\": []}}"
                 }
             ],
             "uri": "ivp/peb/devstatus"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "acb": {
+                        "description": "The AC Battery (ACB) status.",
+                        "value_name": "DeviceStatus"
+                    },
+                    "counters": "Collection of device counters.",
+                    "nsrb": {
+                        "description": "The Network System Relay Breaker (NSRB, also known as an \"IQ Relay\") status.",
+                        "value_name": "DeviceStatus"
+                    },
+                    "pcu": {
+                        "description": "The Power Conditioning Unit (PCU) status.",
+                        "value_name": "DeviceStatus"
+                    }
+                },
+                "Counters": {
+                    "acb": {
+                        "description": "The AC Battery (ACB) counters.",
+                        "value_name": "DeviceCounters"
+                    },
+                    "esub": {
+                        "description": "The Electrical SUB-panel (ESUB, also called an \"IQ System Controller\", formerly \"Enpower\") counters.",
+                        "value_name": "DeviceCounters"
+                    },
+                    "nsrb": {
+                        "description": "The Network System Relay Breaker (NSRB, also called an \"IQ Relay\" counters).",
+                        "value_name": "DeviceCounters"
+                    },
+                    "pcu": {
+                        "description": "The Power Conditioning Unit (PCB) counters.",
+                        "value_name": "DeviceCounters"
+                    },
+                    "pld": {
+                        "description": "The Programmable Logic Devices (PLD) counters.",
+                        "value_name": "DeviceCounters"
+                    }
+                },
+                "DeviceCounters": {
+                    "chansProducing": "How many channels are producing electricity.",
+                    "chansRecent": "How many channels have recently been communicating with this Gateway (formerly \"Envoy\").",
+                    "chansTotal": "How many channels in total there are.",
+                    "ctrlsCommunicating": "How many controllers are communicating with this Gateway (formerly \"Envoy\").",
+                    "ctrlsGone": "How many controllers are no longer reporting in.",
+                    "ctrlsTotal": "How many controllers there are in total.",
+                    "discovered": "How many of these devices have been found from a scan.",
+                    "expected": "How many of these devices are expected to communicate with this Gateway (formerly \"Envoy\")."
+                },
+                "DeviceStatus": {
+                    "fields": "The collection of status field names returned for this type of device.",
+                    "values": "The collection of status values returned for this type of device."
+                }
+            }
         }
     },
     "IVP - Power Electronics Blocks (PEB) - New Scan": {
@@ -3477,7 +3532,7 @@
                     "is-suspended": "Whether a scan has been suspended.",
                     "mins-until-next-cycle": "How many minutes until the next cycle.",
                     "nsrb": {
-                        "description": "An object that contains the scan result for the IQ Relays (formerly \"Q Relay\" and \"Network System Relay Board (NSRB)\").",
+                        "description": "An object that contains the scan result for the IQ Relays (formerly \"Q Relay\" and \"Network System Relay Breaker (NSRB)\").",
                         "value_name": "DeviceScanResult"
                     },
                     "pcu": {
