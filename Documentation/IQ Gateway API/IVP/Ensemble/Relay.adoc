@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Relay
+= IVP - Energy System (formerly "Ensemble") - General - Relay
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Generator Wiring Test
+= IVP - Energy System (formerly "Ensemble") - General - Generator Wiring Test
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

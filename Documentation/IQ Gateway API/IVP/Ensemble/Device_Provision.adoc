@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Device Provision
+= IVP - Energy System (formerly "Ensemble") - General - Device Provision
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

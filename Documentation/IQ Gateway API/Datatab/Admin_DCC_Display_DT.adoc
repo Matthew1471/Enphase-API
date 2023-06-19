@@ -72,16 +72,16 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`aaData`
 |Array(Unknown)
 |Array of Unknown
-|The data in a 2D array.
+|The data in a 2D array (select, serial_num, part_num, dev_control, dev_condition, last_rpt_date).
 
 |===
 
 == Examples
 
-=== Get DCC Events
+=== Get Device Conditions and Controls (DCC) Events
 
-.GET */datatab/admin_dcc_display_dt* Response
+.GET */datatab/admin_dcc_display_dt?name=adcdActiveTable&sColumns=select* Response
 [source,json,subs="+quotes"]
 ----
-{"sEcho": 0, "iTotalRecords": 0, "iTotalDisplayRecords": 0, "aaData": []}
+{"sEcho": 0, "iTotalRecords": 14, "iTotalDisplayRecords": 14, "aaData": [["<input type=\"checkbox\" value=\"553648384\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390225\">123456789101</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553648640\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390481\">123456789102</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553648896\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390737\">123456789103</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553649152\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390993\">123456789104</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553649408\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391249\">123456789105</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553649664\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391505\">123456789106</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553649920\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391761\">123456789107</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553650176\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392017\">123456789108</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553650432\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392273\">123456789109</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553650688\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392529\">123456789110</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553650944\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392785\">123456789111</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553651200\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393041\">123456789112</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553651456\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393297\">123456789113</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"], ["<input type=\"checkbox\" value=\"553651712\" name=\"selectDev\">", "<a href=\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393553\">123456789114</a>", "800-01714-r02", "None<br>", "OK<br>", "Mon Jun 19, 2023 05:50 PM BST"]]}
 ----

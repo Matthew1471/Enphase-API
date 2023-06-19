@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records.
+Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records. `iDisplayLength` sets the number of records to return (defaults to 1) and if set to `-1` will return all records.
 
 == Introduction
 
@@ -77,7 +77,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`aaData`
 |Array(Unknown)
 |Array of Unknown
-|The data in a 2D array.
+|The data in a 2D array (event_id, event_desc, serial_num, device_type, event_date).
 
 |===
 

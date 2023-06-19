@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - SecCtrl
+= IVP - Energy System (formerly "Ensemble") - General - SecCtrl
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

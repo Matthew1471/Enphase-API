@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Inventory
+= IVP - Energy System (formerly "Ensemble") - General - Inventory
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

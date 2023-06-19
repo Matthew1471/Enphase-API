@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Dry Contacts
+= IVP - Energy System (formerly "Ensemble") - General - Dry Contacts
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

@@ -57,27 +57,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`serialNumber`
 |String
 |String
-|???
+|The serial number of this microinverter.
 
 |`lastReportDate`
 |Number
 |Number
-|???
+|The last time this microinverter reported in (in epoch date and time format).
 
 |`devType`
 |Number
 |Number
-|???
+|The device type.
 
 |`lastReportWatts`
 |Number
 |Number
-|???
+|The power (in Watts) this observed when it last reported in.
 
 |`maxReportWatts`
 |Number
 |Number
-|???
+|The highest power (in Watts) this device has ever seen.
 
 |===
 

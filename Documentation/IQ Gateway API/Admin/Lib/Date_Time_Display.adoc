@@ -1,4 +1,4 @@
-= Admin - Lib - Date and Time Configuration
+= Admin - Lib - Date and Time Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
