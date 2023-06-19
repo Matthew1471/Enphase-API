@@ -2560,6 +2560,84 @@
                 }
             ],
             "uri": "ivp/ensemble/status"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "counters": "The counters.",
+                    "fakeit": "Whether the device is running in fake inventory mode.",
+                    "inventory": "The inventory of the Enphase(R) Energy System (formerly \"Ensemble\") devices.",
+                    "profile": "The grid profile.",
+                    "relay": "The relay status.",
+                    "secctrl": "The sec control."
+                },
+                "Counters": {
+                    "api_AggNameplate": "The API aggregate nameplate count.",
+                    "api_ChgEstimated": "The API charge estimated count.",
+                    "api_ecagtGetDeviceCount": "The API Encharge grid-tied device count.",
+                    "api_ecagtGetDeviceInfo": "The API Encharge grid-tied get device information count.",
+                    "api_ecagtGetGenRelayState": "The API Encharge grid-tied get generator relay state.",
+                    "api_ecagtGetGridFreq": "The API Encharge grid-tied get grid frequency count.",
+                    "api_ecagtGetGridFreq_err_notfound": "The API Encharge grid-tied get grid frequency error not found.",
+                    "api_ecagtGetGridVolt": "The API Encharge grid-tied get grid voltage count.",
+                    "api_ecagtGetOneDeviceInfo": "The API Encharge grid-tied get one device information count.",
+                    "api_ecagtGetRelayState": "The API Encharge grid-tied get relay state count.",
+                    "api_ecagtGetSecCtrlBias": "The API Encharge grid-tied get sec control bias count.",
+                    "api_ecagtGetSecCtrlBiasQ": "The API Encharge grid-tied get sec control bias Q count.",
+                    "api_ecagtInit": "The API Encharge grid-tied initialisation count.",
+                    "api_ecagtSetDataModelCache": "The API Encharge grid-tied set data model cache count.",
+                    "api_ecagtSetSecCtrlBias": "The API Encharge grid-tied set sec control bias count.",
+                    "api_ecagtTick": "The API Encharge grid-tied tick count.",
+                    "backupSocLimitChanged": "The backup State of Charge limit changed count.",
+                    "backupSocLimitSet": "The backup State of Charge limit set count.",
+                    "dmdl_FILES_INDEXED": "The number of dmdl files indexed.",
+                    "rest_CommCheckGet": "The REST communication check HTTP GET count.",
+                    "rest_InventoryGet": "The REST inventory get count.",
+                    "rest_RelayGet": "The REST relay HTTP GET count.",
+                    "rest_RelayPost": "The REST relay HTTP POST count.",
+                    "rest_SecCtrlGet": "The REST sec control get count.",
+                    "rest_SleepGet": "The REST sleep get count.",
+                    "rest_StatusGet": "The REST status get count.",
+                    "rest_SubmodGet": "The REST submodule get count.",
+                    "zmq_eca_live_debug_req": "The ZeroMQ Encharge live debug request count.",
+                    "zmq_ecaHello": "The ZeroMQ Encharge hello count.",
+                    "zmq_ecaSecCtrlMsg": "The ZeroMQ Encharge sec control message count.",
+                    "zmq_live_debug": "The ZeroMQ live debug count.",
+                    "zmq_meterlog_ok": "The ZeroMQ meter log okay count.",
+                    "zmq_streamdata": "The ZeroMQ stream data count."
+                },
+                "Fakeit": {
+                    "fake_inventory_mode": "Whether the device is running in fake inventory mode."
+                },
+                "Inventory": {
+                    "serial_nums": {
+                        "description": "The serial numbers of the Enphase(R) Energy System (formerly \"Ensemble\") devices.",
+                        "value_name": "SerialNumbers"
+                    }
+                },
+                "Profile": {
+                    "message": "The error message."
+                },
+                "Relay": {
+                    "der1_state": "Distributed Energy Resource (DER) #1 state.",
+                    "der2_state": "Distributed Energy Resource (DER) #2 state.",
+                    "Enchg_grid_mode": "The status of the microinverter on the IQ Battery (formerly \"Encharge Storage\").",
+                    "mains_admin_state": "The administrative state of the mains relay.",
+                    "mains_oper_state": "The operational state of the mains relay.",
+                    "Solar_grid_mode": "The status of the solar microinverter grid mode."
+                },
+                "Secctrl": {
+                    "adjusted_backup_soc": "The adjusted backup State of Charge (SoC).",
+                    "agg_avail_energy": "The aggregate available energy.",
+                    "agg_backup_energy": "The aggregate backup energy.",
+                    "agg_soc": "The aggregate State of Charge (SoC).",
+                    "configured_backup_soc": "The configured backup State of Charge (SoC).",
+                    "freq_bias_hz": "Frequency bias in Hz.",
+                    "freq_bias_hz_q8": "Frequency bias in Hz for IQ8?",
+                    "voltage_bias_v": "Voltage bias in Volts.",
+                    "voltage_bias_v_q5": "Voltage bias in Hz for IQ Battery 5?"
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Submodules": {

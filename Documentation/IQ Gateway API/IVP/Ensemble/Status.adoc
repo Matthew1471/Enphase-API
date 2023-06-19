@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Status
+= IVP - Energy System (formerly "Ensemble") - General - Status
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -42,3 +42,388 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/ensemble/status` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`inventory`
+|Object
+|`Inventory` object
+|The inventory of the Enphase(R) Energy System (formerly "Ensemble") devices.
+
+|`counters`
+|Object
+|`Counters` object
+|The counters.
+
+|`secctrl`
+|Object
+|`Secctrl` object
+|The sec control.
+
+|`relay`
+|Object
+|`Relay` object
+|The relay status.
+
+|`profile`
+|Object
+|`Profile` object
+|The grid profile.
+
+|`fakeit`
+|Object
+|`Fakeit` object
+|Whether the device is running in fake inventory mode.
+
+|===
+
+=== `Inventory` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`serial_nums`
+|Object
+|`SerialNumbers` object
+|The serial numbers of the Enphase(R) Energy System (formerly "Ensemble") devices.
+
+|===
+
+=== `SerialNumbers` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+=== `Counters` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`api_ecagtInit`
+|Number
+|Number
+|The API Encharge grid-tied initialisation count.
+
+|`api_ecagtTick`
+|Number
+|Number
+|The API Encharge grid-tied tick count.
+
+|`api_ecagtGetDeviceCount`
+|Number
+|Number
+|The API Encharge grid-tied device count.
+
+|`api_ecagtGetDeviceInfo`
+|Number
+|Number
+|The API Encharge grid-tied get device information count.
+
+|`api_ecagtGetOneDeviceInfo`
+|Number
+|Number
+|The API Encharge grid-tied get one device information count.
+
+|`api_ecagtSetSecCtrlBias`
+|Number
+|Number
+|The API Encharge grid-tied set sec control bias count.
+
+|`api_ecagtGetSecCtrlBias`
+|Number
+|Number
+|The API Encharge grid-tied get sec control bias count.
+
+|`api_ecagtGetSecCtrlBiasQ`
+|Number
+|Number
+|The API Encharge grid-tied get sec control bias Q count.
+
+|`api_ecagtGetRelayState`
+|Number
+|Number
+|The API Encharge grid-tied get relay state count.
+
+|`api_ecagtSetDataModelCache`
+|Number
+|Number
+|The API Encharge grid-tied set data model cache count.
+
+|`api_AggNameplate`
+|Number
+|Number
+|The API aggregate nameplate count.
+
+|`api_ChgEstimated`
+|Number
+|Number
+|The API charge estimated count.
+
+|`api_ecagtGetGridFreq`
+|Number
+|Number
+|The API Encharge grid-tied get grid frequency count.
+
+|`api_ecagtGetGridVolt`
+|Number
+|Number
+|The API Encharge grid-tied get grid voltage count.
+
+|`api_ecagtGetGridFreq_err_notfound`
+|Number
+|Number
+|The API Encharge grid-tied get grid frequency error not found.
+
+|`rest_StatusGet`
+|Number
+|Number
+|The REST status get count.
+
+|`rest_SleepGet`
+|Number
+|Number
+|The REST sleep get count.
+
+|`rest_InventoryGet`
+|Number
+|Number
+|The REST inventory get count.
+
+|`rest_SubmodGet`
+|Number
+|Number
+|The REST submodule get count.
+
+|`rest_SecCtrlGet`
+|Number
+|Number
+|The REST sec control get count.
+
+|`rest_RelayGet`
+|Number
+|Number
+|The REST relay HTTP GET count.
+
+|`rest_RelayPost`
+|Number
+|Number
+|The REST relay HTTP POST count.
+
+|`rest_CommCheckGet`
+|Number
+|Number
+|The REST communication check HTTP GET count.
+
+|`zmq_ecaHello`
+|Number
+|Number
+|The ZeroMQ Encharge hello count.
+
+|`zmq_streamdata`
+|Number
+|Number
+|The ZeroMQ stream data count.
+
+|`zmq_live_debug`
+|Number
+|Number
+|The ZeroMQ live debug count.
+
+|`zmq_eca_live_debug_req`
+|Number
+|Number
+|The ZeroMQ Encharge live debug request count.
+
+|`zmq_ecaSecCtrlMsg`
+|Number
+|Number
+|The ZeroMQ Encharge sec control message count.
+
+|`zmq_meterlog_ok`
+|Number
+|Number
+|The ZeroMQ meter log okay count.
+
+|`dmdl_FILES_INDEXED`
+|Number
+|Number
+|The number of dmdl files indexed.
+
+|`backupSocLimitSet`
+|Number
+|Number
+|The backup State of Charge limit set count.
+
+|`backupSocLimitChanged`
+|Number
+|Number
+|The backup State of Charge limit changed count.
+
+|`api_ecagtGetGenRelayState`
+|Number
+|Number
+|The API Encharge grid-tied get generator relay state.
+
+|===
+
+=== `Secctrl` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`freq_bias_hz`
+|Number
+|Number
+|Frequency bias in Hz.
+
+|`voltage_bias_v`
+|Number
+|Number
+|Voltage bias in Volts.
+
+|`freq_bias_hz_q8`
+|Number
+|Number
+|Frequency bias in Hz for IQ8?
+
+|`voltage_bias_v_q5`
+|Number
+|Number
+|Voltage bias in Hz for IQ Battery 5?
+
+|`configured_backup_soc`
+|Number
+|Number
+|The configured backup State of Charge (SoC).
+
+|`adjusted_backup_soc`
+|Number
+|Number
+|The adjusted backup State of Charge (SoC).
+
+|`agg_soc`
+|Number
+|Number
+|The aggregate State of Charge (SoC).
+
+|`agg_backup_energy`
+|Number
+|Number
+|The aggregate backup energy.
+
+|`agg_avail_energy`
+|Number
+|Number
+|The aggregate available energy.
+
+|===
+
+=== `Relay` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`mains_admin_state`
+|String
+|String
+|The administrative state of the mains relay.
+
+|`mains_oper_state`
+|String
+|String
+|The operational state of the mains relay.
+
+|`der1_state`
+|Number
+|Number
+|Distributed Energy Resource (DER) #1 state.
+
+|`der2_state`
+|Number
+|Number
+|Distributed Energy Resource (DER) #2 state.
+
+|`Enchg_grid_mode`
+|String
+|String
+|The status of the microinverter on the IQ Battery (formerly "Encharge Storage").
+
+|`Solar_grid_mode`
+|String
+|String
+|The status of the solar microinverter grid mode.
+
+|===
+
+=== `Profile` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`message`
+|String
+|String
+|The error message.
+
+|===
+
+=== `Fakeit` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`fake_inventory_mode`
+|Boolean
+|Boolean (e.g. `true` or `false`)
+|Whether the device is running in fake inventory mode.
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System (formerly "Ensemble") Status
+
+.GET */ivp/ensemble/status* Response
+[source,json,subs="+quotes"]
+----
+{"inventory": {"serial_nums": {}}, "counters": {"api_ecagtInit": 1, "api_ecagtTick": 28894853, "api_ecagtGetDeviceCount": 60697, "api_ecagtGetDeviceInfo": 670, "api_ecagtGetOneDeviceInfo": 1, "api_ecagtSetSecCtrlBias": 2446245, "api_ecagtGetSecCtrlBias": 6768, "api_ecagtGetSecCtrlBiasQ": 6119, "api_ecagtGetRelayState": 57790343, "api_ecagtSetDataModelCache": 1, "api_AggNameplate": 28894853, "api_ChgEstimated": 28894853, "api_ecagtGetGridFreq": 28894853, "api_ecagtGetGridVolt": 28894853, "api_ecagtGetGridFreq_err_notfound": 28894853, "rest_StatusGet": 1, "rest_SleepGet": 1, "rest_InventoryGet": 567, "rest_SubmodGet": 43391, "rest_SecCtrlGet": 6119, "rest_RelayGet": 638, "rest_RelayPost": 2, "rest_CommCheckGet": 669, "zmq_ecaHello": 1, "zmq_streamdata": 28894853, "zmq_live_debug": 649, "zmq_eca_live_debug_req": 1139, "zmq_ecaSecCtrlMsg": 2446245, "zmq_meterlog_ok": 1, "dmdl_FILES_INDEXED": 3, "backupSocLimitSet": 2446245, "backupSocLimitChanged": 2, "api_ecagtGetGenRelayState": 28894854}, "secctrl": {"freq_bias_hz": 0.0, "voltage_bias_v": 0.0, "freq_bias_hz_q8": 0, "voltage_bias_v_q5": 0, "configured_backup_soc": 0, "adjusted_backup_soc": 0, "agg_soc": 0, "agg_backup_energy": 0, "agg_avail_energy": 0}, "relay": {"mains_admin_state": "closed", "mains_oper_state": "closed", "der1_state": 0, "der2_state": 0, "Enchg_grid_mode": "grid-tied", "Solar_grid_mode": "unknown"}, "profile": {"message": "Obsolete API, please use ivp/arf/profile"}, "fakeit": {"fake_inventory_mode": false}}
+----
