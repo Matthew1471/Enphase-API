@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - dpel
+= IVP - Smart Switch (SS) - Device Power Export Limits (PEL) Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

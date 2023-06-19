@@ -55,11 +55,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/admin/lib/admin_dcc_display.json`
 |Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
 
-|`link:Admin/Lib/Admin_PMU_Display.adoc[Administer Power Meter Unit (PMU)]`
+|`link:Admin/Lib/Admin_PMU_Display.adoc[Administer Phasor Measurement Unit (PMU)]`
 |`/admin/lib/admin_pmu_display.json`
-|Add or read a Power Meter Unit (PMU).
+|Add or read a Phasor Measurement Unit (PMU).
 
-|`link:Admin/Lib/Date_Time_Display.adoc[Date and Time Configuration]`
+|`link:Admin/Lib/Date_Time_Display.adoc[Date and Time Settings]`
 |`/admin/lib/date_time_display.json`
 |Get or set date, time and timezone.
 
@@ -263,7 +263,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - EH
+==== IVP - Cellular
 
 [cols="1,1,2", options="header"]
 |===
@@ -271,13 +271,53 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/EH/Devs.adoc[Device Status]`
-|`/ivp/eh/devs`
-|Get device status (including micro-inverters and meters).
+|`link:IVP/Cellular/All.adoc[All Devices]`
+|`/ivp/cellular`
+|Get all cellular devices information.
+
+|`link:IVP/Cellular/EID.adoc[Specific Device]`
+|`/ivp/cellular/{EID}`
+|Get specific cellular devices information.
 
 |===
 
-==== IVP - Energy System (formerly "Ensemble")
+==== IVP - EH - Device Status (devs)
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/EH/Devs/All.adoc[All Devices]`
+|`/ivp/eh/devs`
+|Get all devices' status (including microinverters and meters).
+
+|`link:IVP/EH/Devs/EID.adoc[Specific Device]`
+|`/ivp/eh/devs/{EID}`
+|Get specific device's status (of a microinverter, meter etc).
+
+|===
+
+==== IVP - Energy System (formerly "Ensemble") - DataRaw
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/Ensemble/DataRaw/All.adoc[All Devices]`
+|`/ivp/ensemble/dataraw/`
+|Get Enphase(R) Energy System (formerly "Ensemble") raw data for all devices.
+
+|`link:IVP/Ensemble/DataRaw/EID.adoc[Specific Device]`
+|`/ivp/ensemble/dataraw/{EID}`
+|Get Enphase(R) Energy System (formerly "Ensemble") raw data for a specific device.
+
+|===
+
+==== IVP - Energy System (formerly "Ensemble") - General
 
 [cols="1,1,2", options="header"]
 |===
@@ -288,10 +328,6 @@ More details on the project are available from the link:../../README.adoc[projec
 |`link:IVP/Ensemble/Comm_Check.adoc[Communication Check]`
 |`/ivp/ensemble/comm_check`
 |IQ System Controller (formerly "Enpower") and IQ Battery (formerly "Encharge Storage") communication check.
-
-|`link:IVP/Ensemble/DataRaw.adoc[Data Raw]`
-|`/ivp/ensemble/dataraw/{EID}`
-|Get Enphase(R) Energy System (formerly "Ensemble") raw data, IQ Battery (formerly "Encharge Storage") raw data or IQ System Controller (formerly "Enpower") manual override status.
 
 |`link:IVP/Ensemble/Decommission.adoc[Decommission]`
 |`/ivp/ensemble/decommission`
@@ -389,24 +425,6 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - General
-
-[cols="1,1,2", options="header"]
-|===
-|Name
-|URI
-|Description
-
-|`link:IVP/Cellular.adoc[Cellular]`
-|`/ivp/cellular`
-|Get cellular information.
-
-|`link:IVP/Meters.adoc[Meters]`
-|`/ivp/meters`
-|Get or set internal meter configuration.
-
-|===
-
 ==== IVP - Grest
 
 [cols="1,1,2", options="header"]
@@ -443,7 +461,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - Meters - CTS
+==== IVP - Meters - Current Transformer (CT) Settings (CTS)
 
 [cols="1,1,2", options="header"]
 |===
@@ -451,9 +469,13 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/CTS/EID.adoc[Update EID]`
+|`link:IVP/Meters/CTS/All.adoc[All Meters]`
+|`/ivp/meters/cts`
+|Get meters' Current Transformer (CT) clamp settings.
+
+|`link:IVP/Meters/CTS/EID.adoc[Specific Meter]`
 |`/ivp/meters/cts/{EID}`
-|Update specific meter's (by EID) Current Transformer (CT) clamp configuration.
+|Get or update specific meter's Current Transformer (CT) clamp settings by Gateway (formerly "Envoy") record ID.
 
 |===
 
@@ -465,28 +487,41 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/CTReversal.adoc[CT Reversal]`
-|`/ivp/meters/ctreversal/{EID}`
-|Get or set specific meter's (by EID) Current Transformer (CT) clamp reverse polarity configuration.
+|`link:IVP/Meters/All.adoc[All Meters' Settings]`
+|`/ivp/meters`
+|Get or set internal meter settings.
 
-|`link:IVP/Meters/CTS.adoc[Current Transformer (CT) Settings]`
-|`/ivp/meters/cts`
-|Get internal meter's Current Transformer (CT) clamp settings.
-
-|`link:IVP/Meters/EID.adoc[Meter Settings]`
+|`link:IVP/Meters/EID.adoc[Specific Meter's Settings]`
 |`/ivp/meters/{EID}`
-|Get or set a specific meter's (by EID) configuration.
+|Get or set a specific meter's settings by Gateway (formerly "Envoy") record ID.
 
-|`link:IVP/Meters/Readings.adoc[All Meters' Readings]`
-|`/ivp/meters/readings`
-|Get readings from the meters.
+|`link:IVP/Meters/CTReversal.adoc[Specific Meter's Current Transformer (CT) Reversal]`
+|`/ivp/meters/ctreversal/{EID}`
+|Get or set specific meter's Current Transformer (CT) clamp reverse polarity settings by Gateway (formerly "Envoy") record ID.
 
 |`link:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
 |`/ivp/meters/storage_setting`
-|Get or set storage Current Transformer (CT) clamp status.
+|Get or set the storage Current Transformer (CT) clamp status.
 
 |===
 
+==== IVP - Meters - Readings
+
+[cols="1,1,2", options="header"]
+|===
+|Name
+|URI
+|Description
+
+|`link:IVP/Meters/Readings/All.adoc[All Meters]`
+|`/ivp/meters/readings`
+|Get readings from all the meters.
+
+|`link:IVP/Meters/Readings/EID.adoc[Specific Meter]`
+|`/ivp/meters/readings/{EID}`
+|Get specific meter's readings by Gateway (formerly "Envoy") record ID.
+
+|===
 
 ==== IVP - Meters - Reports (Legacy)
 
@@ -496,15 +531,15 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/Reports/All.adoc[All Meters' Readings]`
+|`link:IVP/Meters/Reports/All.adoc[All Meters]`
 |`/ivp/meters/reports/`
 |Get readings from all the meters (Legacy).
 
-|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Meters' Readings]`
+|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Only]`
 |`/ivp/meters/reports/consumption`
 |Get readings from the consumption meters (Legacy).
 
-|`link:IVP/Meters/Reports/Production.adoc[Production Meters' Readings]`
+|`link:IVP/Meters/Reports/Production.adoc[Production Only]`
 |`/ivp/meters/reports/production`
 |Get readings from the production meters (Legacy).
 
@@ -568,13 +603,13 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
+|`link:IVP/SS/dpel.adoc[Device Power Export Limits (PEL) Settings]`
+|`+++<s>+++/ivp/ss/dpel+++</s>+++`
+|Get or set Device Power Export Limits (PEL) settings (Legacy, replaced by AGF).
+
 |`link:IVP/SS/DER_Settings.adoc[Distributed Energy Resource (DER) Settings]`
 |`/ivp/ss/der_settings`
 |Get or set Distributed Energy Resource (DER) settings.
-
-|`link:IVP/SS/dpel.adoc[dpel]`
-|`+++<s>+++/ivp/ss/dpel+++</s>+++`
-|Get or set Device Power Export Limits (PEL) settings (Legacy, replaced by AGF).
 
 |`link:IVP/SS/Dry_Contact_Settings.adoc[Dry Contact Settings]`
 |`/ivp/ss/dry_contact_settings`

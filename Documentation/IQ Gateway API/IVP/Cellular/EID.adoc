@@ -1,4 +1,4 @@
-= IVP - Meters - General - Storage Setting
+= IVP - Cellular - Specific Device
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the storage Current Transformer (CT) clamp status.
+Get specific cellular device information.
 
 == Introduction
 
@@ -39,34 +39,16 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/meters/storage_setting` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/cellular/{EID}` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
-== Response
-
-=== Root
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|`err`
-|String
-|String
-|The error message.
-
-|===
-
 == Examples
 
-=== Get Storage Current Transformer (CT) Clamp Status
+=== Get Specific Cellular Device Information
 
-.GET */ivp/meters/storage_setting* Response
+.GET */ivp/cellular/1* Response
 [source,json,subs="+quotes"]
 ----
-{"err": "404 - Not Found"}
+{}
 ----

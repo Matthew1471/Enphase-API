@@ -1,4 +1,4 @@
-= IVP - Meters - General - All Meters' Readings
+= IVP - Meters - Readings - Specific Meter
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,19 +29,19 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get readings from the meters.
+Get specific meter’s readings by Gateway (formerly "Envoy") record ID.
 
 == Introduction
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../../../../README.adoc[project's homepage].
+More details on the project are available from the link:../../../../../README.adoc[project's homepage].
 
 == Request
 
-A HTTP `GET` to the `/ivp/meters/readings` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/meters/readings/{EID}` endpoint provides the following response data.
 
-As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
 == Response
 
@@ -224,10 +224,10 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Meters' Readings
+=== Get Meter's Readings (Production)
 
-.GET */ivp/meters/readings* Response
+.GET */ivp/meters/readings/704643328* Response
 [source,json,subs="+quotes"]
 ----
-[{"eid": 704643328, "timestamp": 1686961582, "actEnergyDlvd": 2485013.736, "actEnergyRcvd": 11887.499, "apparentEnergy": 3054495.271, "reactEnergyLagg": 795783.451, "reactEnergyLead": 0.398, "instantaneousDemand": 0.543, "activePower": 0.543, "apparentPower": 254.202, "reactivePower": 248.806, "pwrFactor": 0.0, "voltage": 244.004, "current": 1.043, "freq": 50.125, "channels": [{"eid": 1778385169, "timestamp": 1686961582, "actEnergyDlvd": 2485013.736, "actEnergyRcvd": 11887.499, "apparentEnergy": 3054495.271, "reactEnergyLagg": 795783.451, "reactEnergyLead": 0.398, "instantaneousDemand": 0.543, "activePower": 0.543, "apparentPower": 254.202, "reactivePower": 248.806, "pwrFactor": 0.0, "voltage": 244.004, "current": 1.043, "freq": 50.125}, {"eid": 1778385170, "timestamp": 1686961582, "actEnergyDlvd": 9.464, "actEnergyRcvd": 1998.651, "apparentEnergy": 3232.019, "reactEnergyLagg": 301.011, "reactEnergyLead": 2.645, "instantaneousDemand": -0.1, "activePower": -0.1, "apparentPower": 0.75, "reactivePower": -0.0, "pwrFactor": 0.0, "voltage": 5.478, "current": 0.137, "freq": 50.125}, {"eid": 1778385171, "timestamp": 1686961582, "actEnergyDlvd": 0.002, "actEnergyRcvd": 4766.67, "apparentEnergy": 306.341, "reactEnergyLagg": 286.551, "reactEnergyLead": 0.293, "instantaneousDemand": -0.0, "activePower": -0.0, "apparentPower": -0.0, "reactivePower": 0.0, "pwrFactor": 0.0, "voltage": 9.968, "current": 0.0, "freq": 50.125}]}, {"eid": 704643584, "timestamp": 1686961582, "actEnergyDlvd": 1749556.395, "actEnergyRcvd": 1601637.637, "apparentEnergy": 5069079.041, "reactEnergyLagg": 17.665, "reactEnergyLead": 2831887.274, "instantaneousDemand": 432.435, "activePower": 432.435, "apparentPower": 971.846, "reactivePower": -793.38, "pwrFactor": 0.444, "voltage": 244.187, "current": 3.981, "freq": 50.125, "channels": [{"eid": 1778385425, "timestamp": 1686961582, "actEnergyDlvd": 1749556.395, "actEnergyRcvd": 1601637.637, "apparentEnergy": 5069079.041, "reactEnergyLagg": 17.665, "reactEnergyLead": 2831887.274, "instantaneousDemand": 432.435, "activePower": 432.435, "apparentPower": 971.846, "reactivePower": -793.38, "pwrFactor": 0.444, "voltage": 244.187, "current": 3.981, "freq": 50.125}, {"eid": 1778385426, "timestamp": 1686961582, "actEnergyDlvd": 0.002, "actEnergyRcvd": 6887.628, "apparentEnergy": 2848.524, "reactEnergyLagg": 273.934, "reactEnergyLead": 0.183, "instantaneousDemand": -0.285, "activePower": -0.285, "apparentPower": 0.773, "reactivePower": 0.0, "pwrFactor": -1.0, "voltage": 6.849, "current": 0.112, "freq": 50.125}, {"eid": 1778385427, "timestamp": 1686961582, "actEnergyDlvd": 0.005, "actEnergyRcvd": 10679.623, "apparentEnergy": 2662.289, "reactEnergyLagg": 274.727, "reactEnergyLead": 0.57, "instantaneousDemand": -0.332, "activePower": -0.332, "apparentPower": 0.711, "reactivePower": 0.074, "pwrFactor": 0.0, "voltage": 6.283, "current": 0.113, "freq": 50.125}]}]
+{"eid": 704643328, "timestamp": 1687180910, "actEnergyDlvd": 2535444.379, "actEnergyRcvd": 11887.499, "apparentEnergy": 3113216.741, "reactEnergyLagg": 810118.057, "reactEnergyLead": 0.398, "instantaneousDemand": 4992.514, "activePower": 4992.514, "apparentPower": 5004.992, "reactivePower": 194.992, "pwrFactor": 0.997, "voltage": 240.79, "current": 20.784, "freq": 50.125, "channels": [{"eid": 1778385169, "timestamp": 1687180910, "actEnergyDlvd": 2535444.379, "actEnergyRcvd": 11887.499, "apparentEnergy": 3113216.741, "reactEnergyLagg": 810118.057, "reactEnergyLead": 0.398, "instantaneousDemand": 4992.514, "activePower": 4992.514, "apparentPower": 5004.992, "reactivePower": 194.992, "pwrFactor": 0.997, "voltage": 240.79, "current": 20.784, "freq": 50.125}, {"eid": 1778385170, "timestamp": 1687180910, "actEnergyDlvd": 9.464, "actEnergyRcvd": 2031.345, "apparentEnergy": 3277.643, "reactEnergyLagg": 305.644, "reactEnergyLead": 2.645, "instantaneousDemand": -0.078, "activePower": -0.078, "apparentPower": 0.764, "reactivePower": -0.0, "pwrFactor": 0.0, "voltage": 5.591, "current": 0.136, "freq": 50.125}, {"eid": 1778385171, "timestamp": 1687180910, "actEnergyDlvd": 0.002, "actEnergyRcvd": 4843.8, "apparentEnergy": 310.658, "reactEnergyLagg": 291.184, "reactEnergyLead": 0.293, "instantaneousDemand": -0.0, "activePower": -0.0, "apparentPower": -0.0, "reactivePower": 0.0, "pwrFactor": 0.0, "voltage": 10.081, "current": 0.0, "freq": 50.125}]}
 ----

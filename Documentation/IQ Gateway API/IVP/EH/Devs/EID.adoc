@@ -1,4 +1,4 @@
-= IVP - Meters - Current Transformer (CT) Settings (CTS) - Specific Meter
+= IVP - EH - Device Status (devs) - Specific Device
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or update specific meter's Current Transformer (CT) clamp settings by Gateway (formerly "Envoy") record ID.
+Get specific device's status (of a microinverter, meter etc).
 
 == Introduction
 
@@ -39,6 +39,83 @@ More details on the project are available from the link:../../../../../README.ad
 
 == Request
 
-A HTTP `GET` to the `/ivp/meters/cts/{EID}` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/eh/devs` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`eid`
+|Number
+|Number
+|Gateway (formerly "Envoy") record ID number.
+
+|`devType`
+|Number
+|Number
+|The device type.
+
+|`adminState`
+|Number
+|`AdminState` (e.g. `1`)
+|The administrative state of the device. In the format `AdminState`.
+
+|`createdDate`
+|Number
+|Number
+|The date and time this was added to the Gateway (formerly "Envoy") in epoch format.
+
+|`partnum`
+|String
+|String
+|The Enphase(R) part number for this product.
+
+|`serialnum`
+|String
+|String
+|The serial number of this product.
+
+|===
+
+== Types
+
+=== `AdminState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`1`
+|Discovered
+|The device has been discovered.
+
+|`2`
+|Verified
+|The device has been verified.
+
+|`3`
+|Deleted
+|The device has been deleted.
+
+|===
+
+== Examples
+
+=== Get Specific Device Status
+
+.GET */ivp/eh/devs* Response
+[source,json,subs="+quotes"]
+----
+[{"eid": 553648384, "devType": 1, "adminState": 1, "createdDate": 1671630660, "partnum": "800-01714-r02", "serialnum": "123456789109"}]
+----

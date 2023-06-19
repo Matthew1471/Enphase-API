@@ -148,12 +148,12 @@
             }
         }
     },
-    "Admin - Lib - Date and Time Configuration": {
+    "Admin - Lib - Date and Time Settings": {
         "description": {
             "short": "Get or set date, time and timezone."
         },
         "documentation": "Admin/Lib/Date_Time_Display.adoc",
-        "name": "Date and Time Configuration",
+        "name": "Date and Time Settings",
         "request": {
             "examples": [
                 {
@@ -469,8 +469,9 @@
         "request": {
             "examples": [
                 {
-                    "name": "Get DCC Events",
-                    "response_json": "{\"sEcho\": 0, \"iTotalRecords\": 0, \"iTotalDisplayRecords\": 0, \"aaData\": []}"
+                    "name": "Get Device Conditions and Controls (DCC) Events",
+                    "request_query": "name=adcdActiveTable&sColumns=select",
+                    "response_json": "{\"sEcho\": 0, \"iTotalRecords\": 14, \"iTotalDisplayRecords\": 14, \"aaData\": [[\"<input type=\\\"checkbox\\\" value=\\\"553648384\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390225\\\">123456789101</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553648640\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390481\\\">123456789102</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553648896\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390737\\\">123456789103</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553649152\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627390993\\\">123456789104</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553649408\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391249\\\">123456789105</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553649664\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391505\\\">123456789106</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553649920\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627391761\\\">123456789107</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553650176\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392017\\\">123456789108</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553650432\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392273\\\">123456789109</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553650688\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392529\\\">123456789110</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553650944\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627392785\\\">123456789111</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553651200\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393041\\\">123456789112</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553651456\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393297\\\">123456789113</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"], [\"<input type=\\\"checkbox\\\" value=\\\"553651712\\\" name=\\\"selectDev\\\">\", \"<a href=\\\"/admin/lib/admin_dcc_display?locale=en&amp;eid=1627393553\\\">123456789114</a>\", \"800-01714-r02\", \"None<br>\", \"OK<br>\", \"Mon Jun 19, 2023 05:50 PM BST\"]]}"
                 }
             ],
             "uri": "datatab/admin_dcc_display_dt"
@@ -478,7 +479,7 @@
         "response": {
             "field_map": {
                 ".": {
-                    "aaData": "The data in a 2D array.",
+                    "aaData": "The data in a 2D array (select, serial_num, part_num, dev_control, dev_condition, last_rpt_date).",
                     "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
                     "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
                     "sEcho": "An unaltered copy of sEcho sent from the client side. This parameter will change with each table re-draw (it is basically a draw count) - so it is important that this is implemented."
@@ -488,7 +489,7 @@
     },
     "Data Tables - Events DataTable": {
         "description": {
-            "long": "Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records.",
+            "long": "Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records. `iDisplayLength` sets the number of records to return (defaults to 1) and if set to `-1` will return all records.",
             "short": "Used by the JavaScript datatable to return event log records."
         },
         "documentation": "Datatab/Event_DT.adoc",
@@ -505,7 +506,7 @@
         "response": {
             "field_map": {
                 ".": {
-                    "aaData": "The data in a 2D array.",
+                    "aaData": "The data in a 2D array (event_id, event_desc, serial_num, device_type, event_date).",
                     "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
                     "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
                     "recordsFiltered": "The number of records after filtering?",
@@ -525,7 +526,7 @@
             "examples": [
                 {
                     "name": "Get Inventory",
-                    "response_json": "{\"sEcho\": 0, \"iTotalRecords\": 0, \"iTotalDisplayRecords\": 0, \"aaData\": []}"
+                    "response_json": "{\"sEcho\": 0, \"iTotalRecords\": 14, \"iTotalDisplayRecords\": 14, \"aaData\": [[\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789101\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789111\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789110\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789102\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789108\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789107\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789104\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789113\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:51 PM GMT\", \"123456789103\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Wed Dec 21, 2022 01:52 PM GMT\", \"123456789112\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Thu Mar 23, 2023 12:36 PM GMT\", \"123456789105\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Thu Mar 23, 2023 12:36 PM GMT\", \"123456789114\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Thu Mar 23, 2023 12:36 PM GMT\", \"123456789109\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"], [\"800-01714-r02\", \"Thu Mar 23, 2023 12:37 PM GMT\", \"123456789106\", \"OK<br>\", \"520-00082-r01-v04.27.04 - Mon Feb 15, 2021 04:04 PM GMT\", \"880-00791-r09\", \"480-00031-r01-v00.0c.01\", \"Mon Jun 19, 2023 04:19 PM BST\"]]}"
                 }
             ],
             "uri": "datatab/inventory_dt"
@@ -533,7 +534,7 @@
         "response": {
             "field_map": {
                 ".": {
-                    "aaData": "The data in a 2D array.",
+                    "aaData": "The data in a 2D array (part_num, installed, serial_num, device_status, running_image, assem_part_num, ctrl_part_num, last_rpt_date).",
                     "iTotalDisplayRecords": "Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set).",
                     "iTotalRecords": "Total records, before filtering (i.e. the total number of records in the database).",
                     "sEcho": "An unaltered copy of sEcho sent from the client side. This parameter will change with each table re-draw (it is basically a draw count) - so it is important that this is implemented."
@@ -1861,16 +1862,49 @@
             "uri": "ivp/adc/relaxedparams/add"
         }
     },
-    "IVP - EH": {
+    "IVP - Cellular - All Devices": {
         "description": {
-            "short": "Get device status (including microinverters and meters)."
+            "short": "Get all cellular devices information."
         },
-        "documentation": "IVP/EH/Devs.adoc",
-        "name": "Device Status",
+        "documentation": "IVP/Cellular/All.adoc",
+        "name": "All Devices",
         "request": {
             "examples": [
                 {
-                    "name": "Get Device Status",
+                    "name": "Get All Cellular Devices Information",
+                    "response_json": "{}"
+                }
+            ],
+            "uri": "ivp/cellular"
+        }
+    },
+    "IVP - Cellular - Specific Device": {
+        "description": {
+            "short": "Get specific cellular device information."
+        },
+        "documentation": "IVP/Cellular/EID.adoc",
+        "name": "Specific Devices",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Specific Cellular Device Information",
+                    "request_eid": 1,
+                    "response_json": "{}"
+                }
+            ],
+            "uri": "ivp/cellular/{EID}"
+        }
+    },
+    "IVP - EH - Device Status (devs) - All Devices": {
+        "description": {
+            "short": "Get all devices' status (including microinverters and meters)."
+        },
+        "documentation": "IVP/EH/Devs/All.adoc",
+        "name": "All Devices",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get All Device Status",
                     "response_json": "[{\"eid\": 553648384, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630660, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789109\"}, {\"eid\": 553648640, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630664, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789103\"}, {\"eid\": 553648896, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630669, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789106\"}, {\"eid\": 553649152, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630672, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789111\"}, {\"eid\": 553649408, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630677, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789102\"}, {\"eid\": 553649664, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630680, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789113\"}, {\"eid\": 553649920, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630690, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789105\"}, {\"eid\": 553650176, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630694, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789114\"}, {\"eid\": 553650432, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630711, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789110\"}, {\"eid\": 553650688, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630724, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789108\"}, {\"eid\": 553650944, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1679574985, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789107\"}, {\"eid\": 553651200, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1679575001, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789112\"}, {\"eid\": 553651456, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1679575013, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789101\"}, {\"eid\": 553651712, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1679575023, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789104\"}, {\"eid\": 603980032, \"devType\": 4, \"adminState\": 1, \"createdDate\": 1671551533, \"partnum\": \"800-00654-r08\", \"serialnum\": \"999999999999\"}, {\"eid\": 704643328, \"devType\": 10, \"adminState\": 2, \"createdDate\": 1671551558, \"partnum\": \"800-00654-r08\", \"serialnum\": \"999999999999EIM1\"}, {\"eid\": 704643584, \"devType\": 10, \"adminState\": 2, \"createdDate\": 1671551558, \"partnum\": \"800-00654-r08\", \"serialnum\": \"999999999999EIM2\"}]"
                 }
             ],
@@ -1911,7 +1945,80 @@
             ]
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Communication Check": {
+    "IVP - EH - Device Status (devs) - Specific Device": {
+        "description": {
+            "short": "Get specific device's status (of a microinverter, meter etc)."
+        },
+        "documentation": "IVP/EH/Devs/EID.adoc",
+        "name": "Specific Device",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Specific Device Status",
+                    "request_eid": 553648384,
+                    "response_json": "[{\"eid\": 553648384, \"devType\": 1, \"adminState\": 1, \"createdDate\": 1671630660, \"partnum\": \"800-01714-r02\", \"serialnum\": \"123456789109\"}]"
+                }
+            ],
+            "uri": "ivp/eh/devs"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "adminState": {
+                        "description": "The administrative state of the device.",
+                        "value_name": "AdminState"
+                    },
+                    "createdDate": "The date and time this was added to the Gateway (formerly \"Envoy\") in epoch format.",
+                    "devType": "The device type.",
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "partnum": "The Enphase(R) part number for this product.",
+                    "serialnum": "The serial number of this product."
+                }
+            }
+        },
+        "type_map": {
+            "AdminState": [
+                {
+                    "description": "The device has been discovered.",
+                    "name": "Discovered",
+                    "value": 1
+                },
+                {
+                    "description": "The device has been verified.",
+                    "name": "Verified",
+                    "value": 2
+                },
+                {
+                    "description": "The device has been deleted.",
+                    "name": "Deleted",
+                    "value": 3
+                }
+            ]
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Data Raw - All Devices": {
+        "description": {
+            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data for all devices. This includes IQ Battery (formerly \"Encharge Storage\") raw data or IQ System Controller (formerly \"Enpower\") manual override status.",
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data for all devices."
+        },
+        "documentation": "IVP/Ensemble/DataRaw/All.adoc",
+        "name": "All Devices",
+        "request": {
+            "uri": "ivp/ensemble/dataraw/"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - Data Raw - Specific Device": {
+        "description": {
+            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data for a specific device. This includes IQ Battery (formerly \"Encharge Storage\") raw data or IQ System Controller (formerly \"Enpower\") manual override status.",
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data for a specific device."
+        },
+        "documentation": "IVP/Ensemble/DataRaw/EID.adoc",
+        "name": "Specific Device",
+        "request": {
+            "uri": "ivp/ensemble/dataraw/{EID}"
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - General - Communication Check": {
         "description": {
             "short": "IQ System Controller (formerly \"Enpower\") and IQ Battery (formerly \"Encharge Storage\") communication check."
         },
@@ -1942,17 +2049,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Data Raw": {
-        "description": {
-            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") raw data, IQ Battery (formerly \"Encharge Storage\") raw data or IQ System Controller (formerly \"Enpower\") manual override status."
-        },
-        "documentation": "IVP/Ensemble/DataRaw.adoc",
-        "name": "Data Raw",
-        "request": {
-            "uri": "ivp/ensemble/dataraw/{EID}"
-        }
-    },
-    "IVP - Energy System (formerly \"Ensemble\") - Decommission": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Decommission": {
         "description": {
             "short": "Delete an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
         },
@@ -1962,7 +2059,7 @@
             "uri": "ivp/ensemble/decommission"
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Device List": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Device List": {
         "description": {
             "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") CAN device status."
         },
@@ -1985,7 +2082,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Device Provision": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Device Provision": {
         "description": {
             "short": "Provision an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
         },
@@ -1995,7 +2092,7 @@
             "uri": "ivp/ensemble/device_provision"
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Device Status": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Device Status": {
         "description": {
             "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") device status."
         },
@@ -2031,7 +2128,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Dry Contacts": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Dry Contacts": {
         "description": {
             "short": "Get or set the IQ System Controller (formerly \"Enpower\") dry contact status."
         },
@@ -2103,7 +2200,7 @@
             ]
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - EC1 Wiring Test": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - EC1 Wiring Test": {
         "description": {
             "short": "Start or get the results of an IQ Battery (formerly \"Encharge Storage\") wiring test."
         },
@@ -2131,7 +2228,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Errors": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Errors": {
         "description": {
             "short": "Get or set the IQ System Controller (formerly \"Enpower\") error state."
         },
@@ -2171,7 +2268,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Generator Status": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Generator Status": {
         "description": {
             "long": "Get or set the IQ System Controller (formerly \"Enpower\") generator status. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Get or set the IQ System Controller (formerly \"Enpower\") generator status."
@@ -2203,7 +2300,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Generator Wiring Test": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Generator Wiring Test": {
         "description": {
             "long": "Start or get the results of the generator wiring test. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
             "short": "Start or get the results of the generator wiring test."
@@ -2236,7 +2333,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Inventory": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Inventory": {
         "description": {
             "short": "Get Energy System (formerly \"Ensemble\") inventory."
         },
@@ -2328,7 +2425,7 @@
             ]
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Profile Status": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Profile Status": {
         "description": {
             "short": "Get or set the Enphase(R) Energy System (formerly \"Ensemble\") Advanced Grid Functionality (AGF) profile status."
         },
@@ -2344,7 +2441,7 @@
             "uri": "ivp/ensemble/profile_status"
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Relay": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Relay": {
         "description": {
             "short": "Get the status of or toggle the grid relay."
         },
@@ -2372,7 +2469,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Reset Device": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Reset Device": {
         "description": {
             "short": "Reset a CAN device for IQ System Controller (formerly \"Enpower\") manual override."
         },
@@ -2382,7 +2479,7 @@
             "uri": "ivp/ensemble/reset_device/{serial_number}"
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - SecCtrl": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - SecCtrl": {
         "description": {
             "short": "Get the aggregate State Of Charge (SOC)."
         },
@@ -2413,7 +2510,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Sleep": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Sleep": {
         "description": {
             "short": "Get, set or cancel the IQ Battery (formerly \"Encharge Storage\") sleep mode."
         },
@@ -2436,7 +2533,7 @@
             }
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Status": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Status": {
         "description": {
             "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") status."
         },
@@ -2452,7 +2549,7 @@
             "uri": "ivp/ensemble/status"
         }
     },
-    "IVP - Energy System (formerly \"Ensemble\") - Submodules": {
+    "IVP - Energy System (formerly \"Ensemble\") - General - Submodules": {
         "description": {
             "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") submodules."
         },
@@ -2593,73 +2690,6 @@
         "name": "Update Single",
         "request": {
             "uri": "ivp/firmware_manager/update_single"
-        }
-    },
-    "IVP - General - Cellular": {
-        "description": {
-            "short": "Get cellular information."
-        },
-        "documentation": "IVP/Cellular.adoc",
-        "name": "Cellular",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Cellular Information",
-                    "response_json": "{}"
-                }
-            ],
-            "uri": "ivp/cellular"
-        }
-    },
-    "IVP - General - Meters": {
-        "description": {
-            "short": "Get or set internal meter configuration."
-        },
-        "documentation": "IVP/Meters.adoc",
-        "name": "Meters",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Internal Meter Information",
-                    "response_json": "[{\"eid\": 704643328, \"state\": \"enabled\", \"measurementType\": \"production\", \"phaseMode\": \"three\", \"phaseCount\": 1, \"meteringStatus\": \"normal\", \"statusFlags\": []}, {\"eid\": 704643584, \"state\": \"enabled\", \"measurementType\": \"net-consumption\", \"phaseMode\": \"three\", \"phaseCount\": 1, \"meteringStatus\": \"normal\", \"statusFlags\": []}]"
-                }
-            ],
-            "uri": "ivp/meters"
-        },
-        "response": {
-            "field_map": {
-                ".": {
-                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
-                    "measurementType": {
-                        "description": "The type of data this is measuring.",
-                        "value_name": "MeasurementType"
-                    },
-                    "meteringStatus": "Whether the meter is in an error state.",
-                    "phaseCount": "The number of phases the meter is monitoring.",
-                    "phaseMode": "The number of phases the meter can monitor.",
-                    "state": "The state of the meter.",
-                    "statusFlags": "Status flags."
-                }
-            }
-        },
-        "type_map": {
-            "MeasurementType": [
-                {
-                    "description": "Reporting the energy produced from the inverters.",
-                    "name": "Production",
-                    "value": "production"
-                },
-                {
-                    "description": "Reporting the load with solar production included.",
-                    "name": "Net Consumption",
-                    "value": "net-consumption"
-                },
-                {
-                    "description": "Reporting the load only (solar production excluded).",
-                    "name": "Total Consumption",
-                    "value": "total-consumption"
-                }
-            ]
         }
     },
     "IVP - Grest - Profile": {
@@ -2818,22 +2848,150 @@
             }
         }
     },
-    "IVP - Meters - CTS - Update Meter's Current Transformer (CT) Settings": {
+    "IVP - Meters - Current Transformer (CT) Settings (CTS) - All Meters": {
         "description": {
-            "short": "Update specific meter's Current Transformer (CT) clamp configuration by Gateway (formerly \"Envoy\") record ID."
+            "short": "Get meters' Current Transformer (CT) clamp settings."
+        },
+        "documentation": "IVP/Meters/CTS/All.adoc",
+        "name": "All Meters",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Meters' Current Transformer (CT) Clamp Settings",
+                    "response_json": "{\"{EID}\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}",
+                    "response_raw": "{\"704643328\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}, \"704643584\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}"
+                }
+            ],
+            "uri": "ivp/meters/cts"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "{EID}": {
+                        "description": "The meter's Current Transformer (CT) clamp settings.",
+                        "value_name": "CTClampSettings"
+                    }
+                },
+                "CTClampSettings": {
+                    "attachType": "How the Curent Transformer (CT) is attached.",
+                    "primaryAmps": "The primary current input (in Amps).",
+                    "resistorOhms": "The burden resister (in Ohms).",
+                    "secondaryAmps": "The secondary current output (in Amps).",
+                    "turns": "The turns ratio."
+                }
+            }
+        }
+    },
+    "IVP - Meters - Current Transformer (CT) Settings (CTS) - Specific Meter": {
+        "description": {
+            "short": "Get or update specific meter's Current Transformer (CT) clamp settings by Gateway (formerly \"Envoy\") record ID."
         },
         "documentation": "IVP/Meters/CTS/EID.adoc",
-        "name": "Update Meter's Current Transformer (CT) Settings",
+        "name": "Specific Meter",
         "request": {
             "uri": "ivp/meters/cts/{EID}"
         }
     },
-    "IVP - Meters - General - All Meters' Readings": {
+    "IVP - Meters - General - All Meters' Settings": {
         "description": {
-            "short": "Get readings from the meters."
+            "short": "Get or set internal meters' settings."
         },
-        "documentation": "IVP/Meters/Readings.adoc",
-        "name": "All Meters' Readings",
+        "documentation": "IVP/Meters/All.adoc",
+        "name": "MAll Meters' Settings",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Internal Meter Information",
+                    "response_json": "[{\"eid\": 704643328, \"state\": \"enabled\", \"measurementType\": \"production\", \"phaseMode\": \"three\", \"phaseCount\": 1, \"meteringStatus\": \"normal\", \"statusFlags\": []}, {\"eid\": 704643584, \"state\": \"enabled\", \"measurementType\": \"net-consumption\", \"phaseMode\": \"three\", \"phaseCount\": 1, \"meteringStatus\": \"normal\", \"statusFlags\": []}]"
+                }
+            ],
+            "uri": "ivp/meters"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "measurementType": {
+                        "description": "The type of data this is measuring.",
+                        "value_name": "MeasurementType"
+                    },
+                    "meteringStatus": "Whether the meter is in an error state.",
+                    "phaseCount": "The number of phases the meter is monitoring.",
+                    "phaseMode": "The number of phases the meter can monitor.",
+                    "state": "The state of the meter.",
+                    "statusFlags": "Status flags."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the energy produced from the inverters.",
+                    "name": "Production",
+                    "value": "production"
+                },
+                {
+                    "description": "Reporting the load with solar production included.",
+                    "name": "Net Consumption",
+                    "value": "net-consumption"
+                },
+                {
+                    "description": "Reporting the load only (solar production excluded).",
+                    "name": "Total Consumption",
+                    "value": "total-consumption"
+                }
+            ]
+        }
+    },
+    "IVP - Meters - General - Specific Meter's Current Transformer (CT) Reversal": {
+        "description": {
+            "short": "Get or set specific meter's Current Transformer (CT) clamp reverse polarity settings by Gateway (formerly \"Envoy\") record ID."
+        },
+        "documentation": "IVP/Meters/CTReversal.adoc",
+        "name": "Specific Meter's Current Transformer (CT) Reversal",
+        "request": {
+            "uri": "ivp/meters/ctreversal/{EID}"
+        }
+    },
+    "IVP - Meters - General - Specific Meter's Settings": {
+        "description": {
+            "short": "Get or set a specific meter's settings by Gateway (formerly \"Envoy\") record ID."
+        },
+        "documentation": "IVP/Meters/EID.adoc",
+        "name": "Specific Meter's Settings",
+        "request": {
+            "uri": "ivp/meters/{EID}"
+        }
+    },
+    "IVP - Meters - General - Storage Setting": {
+        "description": {
+            "short": "Get or set the storage Current Transformer (CT) clamp status."
+        },
+        "documentation": "IVP/Meters/Storage_Setting.adoc",
+        "name": "Storage Setting",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Storage Current Transformer (CT) Clamp Status",
+                    "response_json": "{\"err\": \"404 - Not Found\"}"
+                }
+            ],
+            "uri": "ivp/meters/storage_setting"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "err": "The error message."
+                }
+            }
+        }
+    },
+    "IVP - Meters - Readings - All Meters": {
+        "description": {
+            "short": "Get readings from all the meters."
+        },
+        "documentation": "IVP/Meters/Readings/All.adoc",
+        "name": "All Meters",
         "request": {
             "examples": [
                 {
@@ -2886,89 +3044,71 @@
             }
         }
     },
-    "IVP - Meters - General - Meter Settings": {
+    "IVP - Meters - Readings - Specific Meter": {
         "description": {
-            "short": "Get or set a specific meter's configuration by Gateway (formerly \"Envoy\") record ID."
+            "short": "Get specific meter’s readings by Gateway (formerly \"Envoy\") record ID."
         },
-        "documentation": "IVP/Meters/EID.adoc",
-        "name": "Meter Settings",
-        "request": {
-            "uri": "ivp/meters/{EID}"
-        }
-    },
-    "IVP - Meters - General - Meter's Current Transformer (CT) Reversal": {
-        "description": {
-            "short": "Get or set specific meter's Current Transformer (CT) clamp reverse polarity configuration by Gateway (formerly \"Envoy\") record ID."
-        },
-        "documentation": "IVP/Meters/CTReversal.adoc",
-        "name": "Meter's Current Transformer (CT) Reversal",
-        "request": {
-            "uri": "ivp/meters/ctreversal/{EID}"
-        }
-    },
-    "IVP - Meters - General - Meters' Current Transformer (CT) Settings": {
-        "description": {
-            "short": "Get meters' Current Transformer (CT) clamp settings."
-        },
-        "documentation": "IVP/Meters/CTS.adoc",
-        "name": "Meters' Current Transformer (CT) Settings",
+        "documentation": "IVP/Meters/Readings/EID.adoc",
+        "name": "Specific Meter",
         "request": {
             "examples": [
                 {
-                    "name": "Get Meters' Current Transformer (CT) Clamp Settings",
-                    "response_json": "{\"{EID}\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}",
-                    "response_raw": "{\"704643328\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}, \"704643584\": {\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}}"
+                    "name": "Get Meter's Readings (Production)",
+                    "request_eid": 704643328,
+                    "response_json": "{\"eid\": 704643328, \"timestamp\": 1687180910, \"actEnergyDlvd\": 2535444.379, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3113216.741, \"reactEnergyLagg\": 810118.057, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 4992.514, \"activePower\": 4992.514, \"apparentPower\": 5004.992, \"reactivePower\": 194.992, \"pwrFactor\": 0.997, \"voltage\": 240.79, \"current\": 20.784, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385169, \"timestamp\": 1687180910, \"actEnergyDlvd\": 2535444.379, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3113216.741, \"reactEnergyLagg\": 810118.057, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 4992.514, \"activePower\": 4992.514, \"apparentPower\": 5004.992, \"reactivePower\": 194.992, \"pwrFactor\": 0.997, \"voltage\": 240.79, \"current\": 20.784, \"freq\": 50.125}, {\"eid\": 1778385170, \"timestamp\": 1687180910, \"actEnergyDlvd\": 9.464, \"actEnergyRcvd\": 2031.345, \"apparentEnergy\": 3277.643, \"reactEnergyLagg\": 305.644, \"reactEnergyLead\": 2.645, \"instantaneousDemand\": -0.078, \"activePower\": -0.078, \"apparentPower\": 0.764, \"reactivePower\": -0.0, \"pwrFactor\": 0.0, \"voltage\": 5.591, \"current\": 0.136, \"freq\": 50.125}, {\"eid\": 1778385171, \"timestamp\": 1687180910, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 4843.8, \"apparentEnergy\": 310.658, \"reactEnergyLagg\": 291.184, \"reactEnergyLead\": 0.293, \"instantaneousDemand\": -0.0, \"activePower\": -0.0, \"apparentPower\": -0.0, \"reactivePower\": 0.0, \"pwrFactor\": 0.0, \"voltage\": 10.081, \"current\": 0.0, \"freq\": 50.125}]}"
                 }
             ],
-            "uri": "ivp/meters/cts"
+            "uri": "ivp/meters/readings/{EID}"
         },
         "response": {
             "field_map": {
                 ".": {
-                    "{EID}": {
-                        "description": "The meter's Current Transformer (CT) clamp settings.",
-                        "value_name": "CTClampSettings"
-                    }
+                    "actEnergyDlvd": "The active energy delivered.",
+                    "actEnergyRcvd": "The active energy received.",
+                    "activePower": "The active power.",
+                    "apparentEnergy": "The apparent energy.",
+                    "apparentPower": "The apparent power.",
+                    "channels": {
+                        "description": "Each of the channels (typically the different phases) that make up this reading.",
+                        "value_name": "Channel"
+                    },
+                    "current": "The current.",
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "freq": "The frequency.",
+                    "instantaneousDemand": "The instantaneous demand.",
+                    "pwrFactor": "The power factor.",
+                    "reactEnergyLagg": "The lagging reactive energy.",
+                    "reactEnergyLead": "The leading reactive energy.",
+                    "reactivePower": "The reactive power.",
+                    "timestamp": "The epoch date and time the message was generated.",
+                    "voltage": "The voltage."
                 },
-                "CTClampSettings": {
-                    "attachType": "How the Curent Transformer (CT) is attached.",
-                    "primaryAmps": "The primary current input (in Amps).",
-                    "resistorOhms": "The burden resister (in Ohms).",
-                    "secondaryAmps": "The secondary current output (in Amps).",
-                    "turns": "The turns ratio."
+                "Channel": {
+                    "actEnergyDlvd": "The active energy delivered on this channel.",
+                    "actEnergyRcvd": "The active energy received on this channel.",
+                    "activePower": "The active power on this channel.",
+                    "apparentEnergy": "The apparent energy on this channel.",
+                    "apparentPower": "The apparent power on this channel.",
+                    "current": "The current on this channel.",
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "freq": "The frequency on this channel.",
+                    "instantaneousDemand": "The instantaneous demand on this channel.",
+                    "pwrFactor": "The power factor on this channel.",
+                    "reactEnergyLagg": "The lagging reactive energy on this channel.",
+                    "reactEnergyLead": "The leading reactive energy on this channel.",
+                    "reactivePower": "The reactive power on this channel.",
+                    "timestamp": "The epoch date and time the channel was read.",
+                    "voltage": "The voltage on this channel."
                 }
             }
         }
     },
-    "IVP - Meters - General - Storage Setting": {
-        "description": {
-            "short": "Get or set storage Current Transformer (CT) clamp status."
-        },
-        "documentation": "IVP/Meters/Storage_Setting.adoc",
-        "name": "Storage Setting",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Storage Current Transformer (CT) Clamp Status",
-                    "response_json": "{\"err\": \"404 - Not Found\"}"
-                }
-            ],
-            "uri": "ivp/meters/storage_setting"
-        },
-        "response": {
-            "field_map": {
-                ".": {
-                    "err": "The error message."
-                }
-            }
-        }
-    },
-    "IVP - Meters - Reports (Legacy) - All Meters' Readings": {
+    "IVP - Meters - Reports (Legacy) - All Meters": {
         "description": {
             "short": "Get readings from all the meters (Legacy)."
         },
         "documentation": "IVP/Meters/Reports/All.adoc",
-        "name": "All Meters' Readings",
+        "name": "All Meters",
         "request": {
             "examples": [
                 {
@@ -3032,12 +3172,12 @@
             ]
         }
     },
-    "IVP - Meters - Reports (Legacy) - Consumption Meters' Readings": {
+    "IVP - Meters - Reports (Legacy) - Consumption Only": {
         "description": {
             "short": "Get readings from the consumption meters (Legacy)."
         },
         "documentation": "IVP/Meters/Reports/Consumption.adoc",
-        "name": "Consumption Meters' Readings",
+        "name": "Consumption Only",
         "request": {
             "examples": [
                 {
@@ -3096,12 +3236,12 @@
             ]
         }
     },
-    "IVP - Meters - Reports (Legacy) - Production Meters' Readings": {
+    "IVP - Meters - Reports (Legacy) - Production Only": {
         "description": {
             "short": "Get readings from the production meters (Legacy)."
         },
         "documentation": "IVP/Meters/Reports/Production.adoc",
-        "name": "Production Meters' Readings",
+        "name": "Prodution Only",
         "request": {
             "examples": [
                 {
@@ -3368,6 +3508,29 @@
             "uri": "ivp/sc/sched"
         }
     },
+    "IVP - Smart Switch (SS) - Device Power Export Limits (PEL) Settings": {
+        "description": {
+            "short": "Get or set Device Power Export Limit (PEL) settings (Legacy, replaced by AGF)."
+        },
+        "documentation": "IVP/SS/dpel.adoc",
+        "name": "Device Power Export Limits (PEL) Settings",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Power Export Limit Settings",
+                    "response_json": "{\"err\": \"404 - Not Found\"}"
+                }
+            ],
+            "uri": "ivp/ss/dpel"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "err": "The error message."
+                }
+            }
+        }
+    },
     "IVP - Smart Switch (SS) - Distributed Energy Resource (DER) Settings": {
         "description": {
             "short": "Get or set Distributed Energy Resource (DER) settings."
@@ -3421,29 +3584,6 @@
                     "value": "DER_TYPE_NONE"
                 }
             ]
-        }
-    },
-    "IVP - Smart Switch (SS) - dpel": {
-        "description": {
-            "short": "Get or set Device Power Export Limit (PEL) settings (Legacy, replaced by AGF)."
-        },
-        "documentation": "IVP/SS/dpel.adoc",
-        "name": "dpel",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Power Export Limit Settings",
-                    "response_json": "{\"err\": \"404 - Not Found\"}"
-                }
-            ],
-            "uri": "ivp/ss/dpel"
-        },
-        "response": {
-            "field_map": {
-                ".": {
-                    "err": "The error message."
-                }
-            }
         }
     },
     "IVP - Smart Switch (SS) - Dry Contact Settings": {
@@ -4019,6 +4159,17 @@
                 }
             ],
             "uri": "api/v1/production/inverters"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "devType": "The device type.",
+                    "lastReportDate": "The last time this microinverter reported in (in epoch date and time format).",
+                    "lastReportWatts": "The power (in Watts) this observed when it last reported in.",
+                    "maxReportWatts": "The highest power (in Watts) this device has ever seen.",
+                    "serialNumber": "The serial number of this microinverter."
+                }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - Data Raw
+= IVP - Cellular - All Devices
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get Enphase(R) Energy System (formerly "Ensemble") raw data, IQ Battery (formerly "Encharge Storage") raw data or IQ System Controller (formerly "Enpower") manual override status.
+Get all cellular devices information.
 
 == Introduction
 
@@ -39,6 +39,16 @@ More details on the project are available from the link:../../../../README.adoc[
 
 == Request
 
-A HTTP `GET` to the `/ivp/ensemble/dataraw/{EID}` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/cellular` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Examples
+
+=== Get All Cellular Devices Information
+
+.GET */ivp/cellular* Response
+[source,json,subs="+quotes"]
+----
+{}
+----
