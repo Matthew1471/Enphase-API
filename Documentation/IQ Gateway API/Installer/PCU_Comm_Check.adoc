@@ -54,7 +54,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Values
 |Description
 
-|`{serial_num}`
+|`{SERIAL_NUMBER}`
 |Number
 |Number
 |The Power-Line Communication (PLC) communication level of this Power Conditioning Unit (or "microinverter").

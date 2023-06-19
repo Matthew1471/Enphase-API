@@ -42,3 +42,42 @@ More details on the project are available from the link:../../../../../README.ad
 A HTTP `GET` to the `/ivp/ensemble/dataraw/` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`data_records`
+|Object
+|`Data_records` object
+|The data records returned.
+
+|===
+
+=== `Data_records` Object
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|===
+
+== Examples
+
+=== Get Enphase(R) Energy System Raw Data
+
+.GET */ivp/ensemble/dataraw/* Response
+[source,json,subs="+quotes"]
+----
+{"data_records": {}}
+----

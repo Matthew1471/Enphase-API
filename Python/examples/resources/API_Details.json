@@ -1571,7 +1571,7 @@
             "examples": [
                 {
                     "name": "Perform Power Conditioning Unit (PCU) Communication Check",
-                    "response_json": "{\"{serial_num}\": 2}",
+                    "response_json": "{\"{SERIAL_NUMBER}\": 2}",
                     "response_raw": "{\"123456789101\": 5, \"123456789102\": 5, \"123456789103\": 5, \"123456789104\": 5, \"123456789105\": 5, \"123456789106\": 5, \"123456789107\": 5, \"123456789108\": 5, \"123456789109\": 5, \"123456789110\": 5, \"123456789111\": 5, \"123456789112\": 5, \"123456789113\": 5, \"123456789114\": 5}"
                 }
             ],
@@ -1580,7 +1580,7 @@
         "response": {
             "field_map": {
                 ".": {
-                    "{serial_num}": "The Power-Line Communication (PLC) communication level of this Power Conditioning Unit (or \"microinverter\")."
+                    "{SERIAL_NUMBER}": "The Power-Line Communication (PLC) communication level of this Power Conditioning Unit (or \"microinverter\")."
                 }
             }
         }
@@ -2004,7 +2004,20 @@
         "documentation": "IVP/Ensemble/DataRaw/All.adoc",
         "name": "All Devices",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Enphase(R) Energy System Raw Data",
+                    "response_json": "{\"data_records\": {}}"
+                }
+            ],
             "uri": "ivp/ensemble/dataraw/"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "data_records": "The data records returned."
+                }
+            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - Data Raw - Specific Device": {
@@ -2102,8 +2115,8 @@
             "examples": [
                 {
                     "name": "Get Device Status",
-                    "request_query": "serial_num={serial_num}",
-                    "response_json": "{\"{serial_num}\": {\"device_type\": 32733352}}"
+                    "request_query": "serial_num={SERIAL_NUMBER}",
+                    "response_json": "{\"{SERIAL_NUMBER}\": {\"device_type\": 32733352}}"
                 }
             ],
             "query": {
@@ -2117,7 +2130,7 @@
         "response": {
             "field_map": {
                 ".": {
-                    "{serial_num}": {
+                    "{SERIAL_NUMBER}": {
                         "description": "The key is set to whatever device serial number the querystring requests information for.",
                         "value_name": "DeviceStatus"
                     }
@@ -2476,7 +2489,7 @@
         "documentation": "IVP/Ensemble/Reset_Device.adoc",
         "name": "Reset Device",
         "request": {
-            "uri": "ivp/ensemble/reset_device/{serial_number}"
+            "uri": "ivp/ensemble/reset_device/{SERIAL_NUMBER}"
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - SecCtrl": {
@@ -2764,8 +2777,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
+                    "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
@@ -2889,7 +2902,25 @@
         "documentation": "IVP/Meters/CTS/EID.adoc",
         "name": "Specific Meter",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Current Transformer (CT) Clamp Settings (Production)",
+                    "request_eid": 704643328,
+                    "response_json": "{\"attachType\": \"none\", \"primaryAmps\": 0.0, \"secondaryAmps\": 0.0, \"resistorOhms\": 0.0, \"turns\": 0}"
+                }
+            ],
             "uri": "ivp/meters/cts/{EID}"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "attachType": "How the Curent Transformer (CT) is attached.",
+                    "primaryAmps": "The primary current input (in Amps).",
+                    "resistorOhms": "The burden resister (in Ohms).",
+                    "secondaryAmps": "The secondary current output (in Amps).",
+                    "turns": "The turns ratio."
+                }
+            }
         }
     },
     "IVP - Meters - General - All Meters' Settings": {
@@ -2960,7 +2991,49 @@
         "documentation": "IVP/Meters/EID.adoc",
         "name": "Specific Meter's Settings",
         "request": {
+            "examples": [
+                {
+                    "name": "Get Meter's Settings (Production)",
+                    "request_eid": 704643328,
+                    "response_json": "{\"eid\": 704643328, \"state\": \"enabled\", \"measurementType\": \"production\", \"phaseMode\": \"three\", \"phaseCount\": 1, \"meteringStatus\": \"normal\", \"statusFlags\": []}"
+                }
+            ],
             "uri": "ivp/meters/{EID}"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "eid": "Gateway (formerly \"Envoy\") record ID number.",
+                    "measurementType": {
+                        "description": "The type of data this is measuring.",
+                        "value_name": "MeasurementType"
+                    },
+                    "meteringStatus": "Whether the meter is in an error state.",
+                    "phaseCount": "The number of phases the meter is monitoring.",
+                    "phaseMode": "The number of phases the meter can monitor.",
+                    "state": "The state of the meter.",
+                    "statusFlags": "Status flags."
+                }
+            }
+        },
+        "type_map": {
+            "MeasurementType": [
+                {
+                    "description": "Reporting the energy produced from the inverters.",
+                    "name": "Production",
+                    "value": "production"
+                },
+                {
+                    "description": "Reporting the load with solar production included.",
+                    "name": "Net Consumption",
+                    "value": "net-consumption"
+                },
+                {
+                    "description": "Reporting the load only (solar production excluded).",
+                    "name": "Total Consumption",
+                    "value": "total-consumption"
+                }
+            ]
         }
     },
     "IVP - Meters - General - Storage Setting": {

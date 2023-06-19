@@ -70,7 +70,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |Values
 |Description
 
-|`{serial_num}`
+|`{SERIAL_NUMBER}`
 |Object
 |`DeviceStatus` object
 |The key is set to whatever device serial number the querystring requests information for.
@@ -97,8 +97,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Get Device Status
 
-.GET */ivp/ensemble/device_status?serial_num={serial_num}* Response
+.GET */ivp/ensemble/device_status?serial_num={SERIAL_NUMBER}* Response
 [source,json,subs="+quotes"]
 ----
-{"{serial_num}": {"device_type": 32733352}}
+{"{SERIAL_NUMBER}": {"device_type": 32733352}}
 ----

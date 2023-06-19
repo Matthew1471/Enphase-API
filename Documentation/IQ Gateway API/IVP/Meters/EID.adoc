@@ -42,3 +42,85 @@ More details on the project are available from the link:../../../../README.adoc[
 A HTTP `GET` to the `/ivp/meters/{EID}` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+
+== Response
+
+=== Root
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`eid`
+|Number
+|Number
+|Gateway (formerly "Envoy") record ID number.
+
+|`state`
+|String
+|String
+|The state of the meter.
+
+|`measurementType`
+|String
+|`MeasurementType` (e.g. `production`)
+|The type of data this is measuring. In the format `MeasurementType`.
+
+|`phaseMode`
+|String
+|String
+|The number of phases the meter can monitor.
+
+|`phaseCount`
+|Number
+|Number
+|The number of phases the meter is monitoring.
+
+|`meteringStatus`
+|String
+|String
+|Whether the meter is in an error state.
+
+|`statusFlags`
+|Array(Unknown)
+|Array of Unknown
+|Status flags.
+
+|===
+
+== Types
+
+=== `MeasurementType` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production`
+|Production
+|Reporting the energy produced from the inverters.
+
+|`net-consumption`
+|Net Consumption
+|Reporting the load with solar production included.
+
+|`total-consumption`
+|Total Consumption
+|Reporting the load only (solar production excluded).
+
+|===
+
+== Examples
+
+=== Get Meter's Settings (Production)
+
+.GET */ivp/meters/704643328* Response
+[source,json,subs="+quotes"]
+----
+{"eid": 704643328, "state": "enabled", "measurementType": "production", "phaseMode": "three", "phaseCount": 1, "meteringStatus": "normal", "statusFlags": []}
+----
