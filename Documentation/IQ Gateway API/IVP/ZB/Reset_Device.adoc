@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Reset device for "IQ System Controller" (formerly "Enpower") manual override.
+Reset device for "IQ System Controller" (formerly "Enpower") manual override. The Gateway (formerly "Envoy") communicates with both the IQ System Controller (formerly "Enpower") before version 3 and the IQ Battery (formerly "Encharge") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.
 
 == Introduction
 

@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Reset a CAN device for IQ System Controller (formerly "Enpower") manual override.
+Reset a CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P) for IQ System Controller (formerly "Enpower") manual override. Enphase call the CAN bus the "Controller wire".
 
 == Introduction
 

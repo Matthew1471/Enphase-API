@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get Enphase(R) Energy System (formerly "Ensemble") zigbee pairing status.
+Get Enphase(R) Energy System (formerly "Ensemble") zigbee pairing status. The Gateway (formerly "Envoy") communicates with both the IQ System Controller (formerly "Enpower") before version 3 and the IQ Battery (formerly "Encharge") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.
 
 == Introduction
 

@@ -67,7 +67,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`secctrl`
 |Object
 |`Secctrl` object
-|The sec control.
+|The Zigbee security control messages.
 
 |`relay`
 |Object

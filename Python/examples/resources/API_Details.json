@@ -2139,7 +2139,8 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Decommission": {
         "description": {
-            "short": "Delete an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
+            "long": "Delete an Enphase(R) Energy System (formerly \"Ensemble\") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P). Enphase call the CAN bus the \"Controller wire\".",
+            "short": "Delete an Enphase(R) Energy System (formerly \"Ensemble\") CAN device (3rd-Generation)."
         },
         "documentation": "IVP/Ensemble/Decommission.adoc",
         "name": "Decommission",
@@ -2149,7 +2150,8 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Device List": {
         "description": {
-            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") CAN device status."
+            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P) status. Enphase call the CAN bus the \"Controller wire\".",
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") CAN device (3rd-Generation) status."
         },
         "documentation": "IVP/Ensemble/Device_List.adoc",
         "name": "Device List",
@@ -2172,6 +2174,7 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Device Provision": {
         "description": {
+            "long": "Provision an Enphase(R) Energy System (formerly \"Ensemble\") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P). Enphase call the CAN bus the \"Controller wire\".",
             "short": "Provision an Enphase(R) Energy System (formerly \"Ensemble\") CAN device."
         },
         "documentation": "IVP/Ensemble/Device_Provision.adoc",
@@ -2559,43 +2562,13 @@
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Reset Device": {
         "description": {
+            "long": "Reset a CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P) for IQ System Controller (formerly \"Enpower\") manual override. Enphase call the CAN bus the \"Controller wire\".",
             "short": "Reset a CAN device for IQ System Controller (formerly \"Enpower\") manual override."
         },
         "documentation": "IVP/Ensemble/Reset_Device.adoc",
         "name": "Reset Device",
         "request": {
             "uri": "ivp/ensemble/reset_device/{SERIAL_NUMBER}"
-        }
-    },
-    "IVP - Energy System (formerly \"Ensemble\") - General - SecCtrl": {
-        "description": {
-            "short": "Get the aggregate State Of Charge (SOC)."
-        },
-        "documentation": "IVP/Ensemble/SecCtrl.adoc",
-        "name": "SecCtrl",
-        "request": {
-            "examples": [
-                {
-                    "name": "Get Aggregate State of Charge",
-                    "response_json": "{\"freq_bias_hz\": 0.0, \"voltage_bias_v\": 0.0, \"freq_bias_hz_q8\": 0, \"voltage_bias_v_q5\": 0, \"configured_backup_soc\": 0, \"adjusted_backup_soc\": 0, \"agg_soc\": 0, \"agg_backup_energy\": 0, \"agg_avail_energy\": 0}"
-                }
-            ],
-            "uri": "ivp/ensemble/secctrl"
-        },
-        "response": {
-            "field_map": {
-                ".": {
-                    "adjusted_backup_soc": "The adjusted backup State of Charge (SoC).",
-                    "agg_avail_energy": "The aggregate available energy.",
-                    "agg_backup_energy": "The aggregate backup energy.",
-                    "agg_soc": "The aggregate State of Charge (SoC).",
-                    "configured_backup_soc": "The configured backup State of Charge (SoC).",
-                    "freq_bias_hz": "Frequency bias in Hz.",
-                    "freq_bias_hz_q8": "Frequency bias in Hz for IQ8?",
-                    "voltage_bias_v": "Voltage bias in Volts.",
-                    "voltage_bias_v_q5": "Voltage bias in Hz for IQ Battery 5?"
-                }
-            }
         }
     },
     "IVP - Energy System (formerly \"Ensemble\") - General - Sleep": {
@@ -2644,7 +2617,7 @@
                     "inventory": "The inventory of the Enphase(R) Energy System (formerly \"Ensemble\") devices.",
                     "profile": "The grid profile.",
                     "relay": "The relay status.",
-                    "secctrl": "The sec control."
+                    "secctrl": "The Zigbee security control messages."
                 },
                 "Counters": {
                     "api_AggNameplate": "The API aggregate nameplate count.",
@@ -2734,6 +2707,38 @@
             "field_map": {
                 ".": {
                     "serial_nums": "The serial numbers of the Energy System Submodules."
+                }
+            }
+        }
+    },
+    "IVP - Energy System (formerly \"Ensemble\") - General - Zigbee Security Control Messages": {
+        "description": {
+            "long": "Get the Energy System (formerly \"Ensemble\") status using Zigbee Security Control (SecCtrl) messages. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using encrypted Zigbee.",
+            "short": "Get the Energy System (formerly \"Ensemble\") status using Zigbee Security Control (SecCtrl) messages."
+        },
+        "documentation": "IVP/Ensemble/SecCtrl.adoc",
+        "name": "Zigbee Security Control Messages",
+        "request": {
+            "examples": [
+                {
+                    "name": "Get Zigbee Security Control Messages",
+                    "response_json": "{\"freq_bias_hz\": 0.0, \"voltage_bias_v\": 0.0, \"freq_bias_hz_q8\": 0, \"voltage_bias_v_q5\": 0, \"configured_backup_soc\": 0, \"adjusted_backup_soc\": 0, \"agg_soc\": 0, \"agg_backup_energy\": 0, \"agg_avail_energy\": 0}"
+                }
+            ],
+            "uri": "ivp/ensemble/secctrl"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "adjusted_backup_soc": "The adjusted backup State of Charge (SoC).",
+                    "agg_avail_energy": "The aggregate available energy.",
+                    "agg_backup_energy": "The aggregate backup energy.",
+                    "agg_soc": "The aggregate State of Charge (SoC).",
+                    "configured_backup_soc": "The configured backup State of Charge (SoC).",
+                    "freq_bias_hz": "Frequency bias in Hz.",
+                    "freq_bias_hz_q8": "Frequency bias in Hz for IQ8?",
+                    "voltage_bias_v": "Voltage bias in Volts.",
+                    "voltage_bias_v_q5": "Voltage bias in Hz for IQ Battery 5?"
                 }
             }
         }
@@ -4285,6 +4290,7 @@
     },
     "IVP - Zigbee - Pairing Status": {
         "description": {
+            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") zigbee pairing status. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
             "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") zigbee pairing status."
         },
         "documentation": "IVP/ZB/Pairing_Status.adoc",
@@ -4309,6 +4315,7 @@
     },
     "IVP - Zigbee - Provision": {
         "description": {
+            "long": "Set or delete Enphase(R) Energy System (formerly \"Ensemble\") devices. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
             "short": "Set or delete Enphase(R) Energy System (formerly \"Ensemble\") devices."
         },
         "documentation": "IVP/ZB/Provision.adoc",
@@ -4319,6 +4326,7 @@
     },
     "IVP - Zigbee - Reset Device": {
         "description": {
+            "long": "Reset device for \"IQ System Controller\" (formerly \"Enpower\") manual override. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
             "short": "Reset device for \"IQ System Controller\" (formerly \"Enpower\") manual override."
         },
         "documentation": "IVP/ZB/Reset_Device.adoc",
@@ -4329,6 +4337,7 @@
     },
     "IVP - Zigbee - Set Phase": {
         "description": {
+            "long": "Update IQ Battery (formerly \"Encharge Storage\") phase. The Gateway (formerly \"Envoy\") communicates with the IQ Battery (formerly \"Encharge Storage\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
             "short": "Update IQ Battery (formerly \"Encharge Storage\") phase."
         },
         "documentation": "IVP/ZB/Set_Phase.adoc",

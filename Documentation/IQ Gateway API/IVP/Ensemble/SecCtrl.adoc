@@ -1,4 +1,4 @@
-= IVP - Energy System (formerly "Ensemble") - General - SecCtrl
+= IVP - Energy System (formerly "Ensemble") - General - Zigbee Security Control Messages
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get the aggregate State Of Charge (SOC).
+Get the Energy System (formerly "Ensemble") status using Zigbee Security Control (SecCtrl) messages. The Gateway (formerly "Envoy") communicates with both the IQ System Controller (formerly "Enpower") before version 3 and the IQ Battery (formerly "Encharge") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using encrypted Zigbee.
 
 == Introduction
 
@@ -103,7 +103,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Aggregate State of Charge
+=== Get Zigbee Security Control Messages
 
 .GET */ivp/ensemble/secctrl* Response
 [source,json,subs="+quotes"]

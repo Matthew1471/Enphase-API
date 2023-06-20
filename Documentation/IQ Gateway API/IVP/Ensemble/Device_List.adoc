@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get Enphase(R) Energy System (formerly "Ensemble") CAN device status.
+Get Enphase(R) Energy System (formerly "Ensemble") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P) status. Enphase call the CAN bus the "Controller wire".
 
 == Introduction
 
