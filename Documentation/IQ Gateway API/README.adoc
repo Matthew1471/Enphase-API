@@ -383,7 +383,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Ensemble/SecCtrl.adoc[Zigbee Security Control Messages]`
 |`/ivp/ensemble/secctrl`
-|Get the aggregate State Of Charge (SOC) using Zigbee Security Control (SecCtrl) messages.
+|Get the Energy System (formerly \"Ensemble\") status using Zigbee Security Control (SecCtrl) messages.
 
 |`link:IVP/Ensemble/Sleep.adoc[Sleep]`
 |`/ivp/ensemble/sleep`
