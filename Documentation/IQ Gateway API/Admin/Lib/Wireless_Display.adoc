@@ -57,61 +57,61 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`supported`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this Gateway (formerly "Envoy") supports connecting to Wi-Fi.
 
 |`present`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the Wi-Fi adapter is currently present.
 
 |`configured`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether a Wi-Fi network is configured.
 
 |`up`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the Wi-Fi interface is currently connected.
 
 |`carrier`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the configured Wi-Fi network is currently available.
 
 |`current_network`
 |Object
-|`Current_network` object
-|???
+|`CurrentNetwork` object
+|Details about the current connected Wi-Fi network.
 
 |`device_info`
 |Object
-|`Device_info` object
-|???
+|`DeviceInfo` object
+|Details about the Wi-Fi adapter.
 
 |`ap_mode`
 |Object
-|`Ap_mode` object
-|???
+|`APMode` object
+|Details about this Gateway's (formerly "Envoy") access point mode.
 
 |`selected_region`
 |String
 |String
-|???
+|The selected legislative region the Wi-Fi adapter is operating in.
 
 |`regions`
-|Array(Unknown)
-|Array of Unknown
-|???
+|Array(String)
+|Array of String
+|List of available legislative regions that the Wi-Fi adapter can operate in.
 
-|`sites`
+|`sites` (Optional)
 |Array(Object)
-|Array of `Sites`
-|???
+|Array of `Site`
+|A list of available Wi-Fi networks.
 
 |===
 
-=== `Current_network` Object
+=== `CurrentNetwork` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -123,51 +123,51 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ssid`
 |String
 |String
-|???
+|The Wi-Fi network's Service Set IDentifier (SSID).
 
 |`status`
 |String
 |String
-|???
+|The status of the Wi-Fi connection.
 
 |`ip_address`
 |String
 |String
-|???
+|The Internet Protocol (IP) address of this interface.
 
 |`gateway_ip`
 |String
 |String
-|???
+|The Internet Protocol (IP) address of the gateway
 
 |`security_mode`
 |String
 |String
-|???
+|The version of security this Wi-Fi network is operating.
 
 |`encryption_type`
 |String
 |String
-|???
+|The type of encryption this Wi-Fi network is operating with.
 
 |`ap_bssid`
 |String
 |String
-|???
+|The Access Point (AP)'s Basic Service Set Identifier (BSSID)
 
 |`channel`
 |String
 |String
-|???
+|The channel (or frequency) this Wi-Fi network is currently operating on.
 
 |`bars`
 |Number
 |Number
-|???
+|The current signal strength in bars.
 
 |===
 
-=== `Device_info` Object
+=== `DeviceInfo` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -179,66 +179,66 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`vendor`
 |String
 |String
-|???
+|The vendor of the Wi-Fi adapter.
 
 |`device`
 |String
 |String
-|???
+|The name of the device.
 
 |`vendor_id`
 |String
 |String
-|???
+|The vendor identifier.
 
 |`device_id`
 |String
 |String
-|???
+|The device identifier.
 
 |`manufacturer`
 |String
 |String
-|???
+|The manufacturer of the device.
 
 |`model`
 |String
 |String
-|???
+|The model of the device.
 
 |`serial`
 |String
 |String
-|???
+|The serial number of the device.
 
 |`hw_version`
 |String
 |String
-|???
+|The hardware version of the device.
 
 |`usb_spec`
 |String
 |String
-|???
+|The USB specification version.
 
 |`usb_slot`
 |String
 |String
-|???
+|The USB slot the device is inserted into.
 
 |`driver`
 |String
 |String
-|???
+|The name of the Wi-Fi adapter driver.
 
 |`mac`
 |String
 |String
-|???
+|The Media Access Control (MAC) address of the adapter.
 
 |===
 
-=== `Ap_mode` Object
+=== `APMode` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -250,16 +250,16 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`enabled`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the Gateway (formerly "Envoy") is currently acting as an Access Point (AP).
 
 |`name`
 |String
 |String
-|???
+|The broadcast name of the Gateway's (formerly "Envoy") Wi-Fi Access Point (AP) name.
 
 |===
 
-=== `Sites` Object
+=== `Site` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -271,52 +271,52 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`is_current_ssid`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Is this the same Service Set IDentifier (SSID) as the current configured network.
 
 |`mac`
 |String
 |String
-|???
+|The Access Point (AP)'s Basic Service Set Identifier (BSSID)
 
 |`channel`
 |String
 |String
-|???
+|The channel (or frequency) the Access Point is currently operating on.
 
 |`ssid`
 |String
 |String
-|???
+|The Wi-Fi network's Service Set IDentifier (SSID).
 
 |`bars`
 |Number
 |Number
-|???
+|The current signal strength in bars.
 
 |`secured`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether or not the Wi-Fi network has any configured security.
 
 |`wps`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether Wi-Fi Protected Setup is enabled.
 
 |`unsupported`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this Gateway (formerly "Envoy") is unable to support connecting to this Wi-Fi network.
 
 |`security_mode`
 |String
 |String
-|???
+|The version of security this Wi-Fi network is operating.
 
 |`encryption_type`
 |String
 |String
-|???
+|The type of encryption this Wi-Fi network is operating with.
 
 |===
 
@@ -328,4 +328,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 [source,json,subs="+quotes"]
 ----
 {"supported": true, "present": true, "configured": true, "up": true, "carrier": true, "current_network": {"ssid": "MyHome", "status": "connected", "ip_address": "192.168.0.100", "gateway_ip": "192.168.0.1", "security_mode": "WPA2-PSK", "encryption_type": "CCMP", "ap_bssid": "AA:BB:CC:DD:EE:FF", "channel": "36", "bars": 2}, "device_info": {"vendor": "Enphase", "device": "platform:wl18xx", "vendor_id": "", "device_id": "", "manufacturer": "Enphase", "model": "platform:wl18xx", "serial": "", "hw_version": "", "usb_spec": "", "usb_slot": "", "driver": "wl18xx_driver", "mac": "BB:BB:CC:DD:EE:FF"}, "ap_mode": {"enabled": false, "name": "ENVOY_099999"}, "selected_region": "GB", "regions": ["00", "AE", "AL", "AM", "AN", "AR", "AT", "AU", "AW", "AZ", "BA", "BB", "BD", "BE", "BG", "BH", "BL", "BN", "BO", "BR", "BY", "BZ", "CA", "CH", "CL", "CN", "CO", "CR", "CS", "CY", "CZ", "DE", "DK", "DO", "DZ", "EC", "EE", "EG", "ES", "FI", "FR", "GB", "GD", "GE", "GL", "GR", "GT", "GU", "HK", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IN", "IR", "IS", "IT", "JM", "JO", "JP", "KE", "KH", "KP", "KR", "KW", "KZ", "LB", "LI", "LK", "LT", "LU", "LV", "MA", "MC", "MK", "MO", "MT", "MX", "MY", "NL", "NO", "NP", "NZ", "OM", "PA", "PE", "PG", "PH", "PK", "PL", "PR", "PT", "QA", "RO", "RU", "SA", "SE", "SG", "SI", "SK", "SV", "SY", "TH", "TN", "TR", "TT", "TW", "UA", "US", "UY", "UZ", "VE", "VN", "YE", "ZA", "ZW"], "sites": [{"is_current_ssid": false, "mac": "ff:ff:ff:ff:ff:ff", "channel": "5180", "ssid": "SomeoneElse", "bars": 2, "secured": false, "wps": false, "unsupported": false, "security_mode": "Open/Unsecured", "encryption_type": "NONE"}, {"is_current_ssid": false, "mac": "ee:cc:bb:aa:bb:cc", "channel": "5180", "ssid": "SomeoneElse2", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "cc:cc:cc:dd:aa:cc", "channel": "5180", "ssid": "SomeoneElse3", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "bb:bb:bb:bb:bb:bb", "channel": "2462", "ssid": "SomeoneElse4", "bars": 3, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": true, "mac": "aa:bb:cc:dd:ee:ff", "channel": "5180", "ssid": "MyHome", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "ff:ff:dd:cc:aa:aa", "channel": "2412", "ssid": "SomeoneElse4", "bars": 2, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}, {"is_current_ssid": false, "mac": "cc:cc:cc:cc:cc:cc", "channel": "2462", "ssid": "SomeoneElse5", "bars": 4, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "TKIP + CCMP"}, {"is_current_ssid": false, "mac": "aa:bb:cc:dd:ee:ff", "channel": "5260", "ssid": "SomeoneElse6", "bars": 1, "secured": true, "wps": false, "unsupported": false, "security_mode": "WPA2 Personal", "encryption_type": "CCMP"}]}
+----
+
+=== Get Wireless Configuration (No Site Info)
+
+.GET */admin/lib/wireless_display.json?site_info=0* Response
+[source,json,subs="+quotes"]
+----
+{"supported": true, "present": true, "configured": true, "up": true, "carrier": true, "current_network": {"ssid": "MyHome", "status": "connected", "ip_address": "192.168.0.100", "gateway_ip": "192.168.0.1", "security_mode": "WPA2-PSK", "encryption_type": "CCMP", "ap_bssid": "AA:BB:CC:DD:EE:FF", "channel": "36", "bars": 1}, "device_info": {"vendor": "Enphase", "device": "platform:wl18xx", "vendor_id": "", "device_id": "", "manufacturer": "Enphase", "model": "platform:wl18xx", "serial": "", "hw_version": "", "usb_spec": "", "usb_slot": "", "driver": "wl18xx_driver", "mac": "BB:BB:CC:DD:EE:FF"}, "ap_mode": {"enabled": false, "name": "ENVOY_099999"}, "selected_region": "GB", "regions": ["00", "AE", "AL", "AM", "AN", "AR", "AT", "AU", "AW", "AZ", "BA", "BB", "BD", "BE", "BG", "BH", "BL", "BN", "BO", "BR", "BY", "BZ", "CA", "CH", "CL", "CN", "CO", "CR", "CS", "CY", "CZ", "DE", "DK", "DO", "DZ", "EC", "EE", "EG", "ES", "FI", "FR", "GB", "GD", "GE", "GL", "GR", "GT", "GU", "HK", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IN", "IR", "IS", "IT", "JM", "JO", "JP", "KE", "KH", "KP", "KR", "KW", "KZ", "LB", "LI", "LK", "LT", "LU", "LV", "MA", "MC", "MK", "MO", "MT", "MX", "MY", "NL", "NO", "NP", "NZ", "OM", "PA", "PE", "PG", "PH", "PK", "PL", "PR", "PT", "QA", "RO", "RU", "SA", "SE", "SG", "SI", "SK", "SV", "SY", "TH", "TN", "TR", "TT", "TW", "UA", "US", "UY", "UZ", "VE", "VN", "YE", "ZA", "ZW"]}
 ----

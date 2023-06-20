@@ -443,9 +443,84 @@
                 {
                     "name": "Get Wireless Configuration",
                     "response_json": "{\"supported\": true, \"present\": true, \"configured\": true, \"up\": true, \"carrier\": true, \"current_network\": {\"ssid\": \"MyHome\", \"status\": \"connected\", \"ip_address\": \"192.168.0.100\", \"gateway_ip\": \"192.168.0.1\", \"security_mode\": \"WPA2-PSK\", \"encryption_type\": \"CCMP\", \"ap_bssid\": \"AA:BB:CC:DD:EE:FF\", \"channel\": \"36\", \"bars\": 2}, \"device_info\": {\"vendor\": \"Enphase\", \"device\": \"platform:wl18xx\", \"vendor_id\": \"\", \"device_id\": \"\", \"manufacturer\": \"Enphase\", \"model\": \"platform:wl18xx\", \"serial\": \"\", \"hw_version\": \"\", \"usb_spec\": \"\", \"usb_slot\": \"\", \"driver\": \"wl18xx_driver\", \"mac\": \"BB:BB:CC:DD:EE:FF\"}, \"ap_mode\": {\"enabled\": false, \"name\": \"ENVOY_099999\"}, \"selected_region\": \"GB\", \"regions\": [\"00\", \"AE\", \"AL\", \"AM\", \"AN\", \"AR\", \"AT\", \"AU\", \"AW\", \"AZ\", \"BA\", \"BB\", \"BD\", \"BE\", \"BG\", \"BH\", \"BL\", \"BN\", \"BO\", \"BR\", \"BY\", \"BZ\", \"CA\", \"CH\", \"CL\", \"CN\", \"CO\", \"CR\", \"CS\", \"CY\", \"CZ\", \"DE\", \"DK\", \"DO\", \"DZ\", \"EC\", \"EE\", \"EG\", \"ES\", \"FI\", \"FR\", \"GB\", \"GD\", \"GE\", \"GL\", \"GR\", \"GT\", \"GU\", \"HK\", \"HN\", \"HR\", \"HT\", \"HU\", \"ID\", \"IE\", \"IL\", \"IN\", \"IR\", \"IS\", \"IT\", \"JM\", \"JO\", \"JP\", \"KE\", \"KH\", \"KP\", \"KR\", \"KW\", \"KZ\", \"LB\", \"LI\", \"LK\", \"LT\", \"LU\", \"LV\", \"MA\", \"MC\", \"MK\", \"MO\", \"MT\", \"MX\", \"MY\", \"NL\", \"NO\", \"NP\", \"NZ\", \"OM\", \"PA\", \"PE\", \"PG\", \"PH\", \"PK\", \"PL\", \"PR\", \"PT\", \"QA\", \"RO\", \"RU\", \"SA\", \"SE\", \"SG\", \"SI\", \"SK\", \"SV\", \"SY\", \"TH\", \"TN\", \"TR\", \"TT\", \"TW\", \"UA\", \"US\", \"UY\", \"UZ\", \"VE\", \"VN\", \"YE\", \"ZA\", \"ZW\"], \"sites\": [{\"is_current_ssid\": false, \"mac\": \"ff:ff:ff:ff:ff:ff\", \"channel\": \"5180\", \"ssid\": \"SomeoneElse\", \"bars\": 2, \"secured\": false, \"wps\": false, \"unsupported\": false, \"security_mode\": \"Open/Unsecured\", \"encryption_type\": \"NONE\"}, {\"is_current_ssid\": false, \"mac\": \"ee:cc:bb:aa:bb:cc\", \"channel\": \"5180\", \"ssid\": \"SomeoneElse2\", \"bars\": 2, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}, {\"is_current_ssid\": false, \"mac\": \"cc:cc:cc:dd:aa:cc\", \"channel\": \"5180\", \"ssid\": \"SomeoneElse3\", \"bars\": 2, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}, {\"is_current_ssid\": false, \"mac\": \"bb:bb:bb:bb:bb:bb\", \"channel\": \"2462\", \"ssid\": \"SomeoneElse4\", \"bars\": 3, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}, {\"is_current_ssid\": true, \"mac\": \"aa:bb:cc:dd:ee:ff\", \"channel\": \"5180\", \"ssid\": \"MyHome\", \"bars\": 2, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}, {\"is_current_ssid\": false, \"mac\": \"ff:ff:dd:cc:aa:aa\", \"channel\": \"2412\", \"ssid\": \"SomeoneElse4\", \"bars\": 2, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}, {\"is_current_ssid\": false, \"mac\": \"cc:cc:cc:cc:cc:cc\", \"channel\": \"2462\", \"ssid\": \"SomeoneElse5\", \"bars\": 4, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"TKIP + CCMP\"}, {\"is_current_ssid\": false, \"mac\": \"aa:bb:cc:dd:ee:ff\", \"channel\": \"5260\", \"ssid\": \"SomeoneElse6\", \"bars\": 1, \"secured\": true, \"wps\": false, \"unsupported\": false, \"security_mode\": \"WPA2 Personal\", \"encryption_type\": \"CCMP\"}]}"
+                },
+                {
+                    "name": "Get Wireless Configuration (No Site Info)",
+                    "request_query": "site_info=0",
+                    "response_json": "{\"supported\": true, \"present\": true, \"configured\": true, \"up\": true, \"carrier\": true, \"current_network\": {\"ssid\": \"MyHome\", \"status\": \"connected\", \"ip_address\": \"192.168.0.100\", \"gateway_ip\": \"192.168.0.1\", \"security_mode\": \"WPA2-PSK\", \"encryption_type\": \"CCMP\", \"ap_bssid\": \"AA:BB:CC:DD:EE:FF\", \"channel\": \"36\", \"bars\": 1}, \"device_info\": {\"vendor\": \"Enphase\", \"device\": \"platform:wl18xx\", \"vendor_id\": \"\", \"device_id\": \"\", \"manufacturer\": \"Enphase\", \"model\": \"platform:wl18xx\", \"serial\": \"\", \"hw_version\": \"\", \"usb_spec\": \"\", \"usb_slot\": \"\", \"driver\": \"wl18xx_driver\", \"mac\": \"BB:BB:CC:DD:EE:FF\"}, \"ap_mode\": {\"enabled\": false, \"name\": \"ENVOY_099999\"}, \"selected_region\": \"GB\", \"regions\": [\"00\", \"AE\", \"AL\", \"AM\", \"AN\", \"AR\", \"AT\", \"AU\", \"AW\", \"AZ\", \"BA\", \"BB\", \"BD\", \"BE\", \"BG\", \"BH\", \"BL\", \"BN\", \"BO\", \"BR\", \"BY\", \"BZ\", \"CA\", \"CH\", \"CL\", \"CN\", \"CO\", \"CR\", \"CS\", \"CY\", \"CZ\", \"DE\", \"DK\", \"DO\", \"DZ\", \"EC\", \"EE\", \"EG\", \"ES\", \"FI\", \"FR\", \"GB\", \"GD\", \"GE\", \"GL\", \"GR\", \"GT\", \"GU\", \"HK\", \"HN\", \"HR\", \"HT\", \"HU\", \"ID\", \"IE\", \"IL\", \"IN\", \"IR\", \"IS\", \"IT\", \"JM\", \"JO\", \"JP\", \"KE\", \"KH\", \"KP\", \"KR\", \"KW\", \"KZ\", \"LB\", \"LI\", \"LK\", \"LT\", \"LU\", \"LV\", \"MA\", \"MC\", \"MK\", \"MO\", \"MT\", \"MX\", \"MY\", \"NL\", \"NO\", \"NP\", \"NZ\", \"OM\", \"PA\", \"PE\", \"PG\", \"PH\", \"PK\", \"PL\", \"PR\", \"PT\", \"QA\", \"RO\", \"RU\", \"SA\", \"SE\", \"SG\", \"SI\", \"SK\", \"SV\", \"SY\", \"TH\", \"TN\", \"TR\", \"TT\", \"TW\", \"UA\", \"US\", \"UY\", \"UZ\", \"VE\", \"VN\", \"YE\", \"ZA\", \"ZW\"]}"
                 }
             ],
             "uri": "admin/lib/wireless_display.json"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "ap_mode": {
+                        "description": "Details about this Gateway's (formerly \"Envoy\") access point mode.",
+                        "value_name": "APMode"
+                    },
+                    "carrier": "Whether the configured Wi-Fi network is currently available.",
+                    "configured": "Whether a Wi-Fi network is configured.",
+                    "current_network": {
+                        "description": "Details about the current connected Wi-Fi network.",
+                        "value_name": "CurrentNetwork"
+                    },
+                    "device_info": {
+                        "description": "Details about the Wi-Fi adapter.",
+                        "value_name": "DeviceInfo"
+                    },
+                    "present": "Whether the Wi-Fi adapter is currently present.",
+                    "regions": "List of available legislative regions that the Wi-Fi adapter can operate in.",
+                    "selected_region": "The selected legislative region the Wi-Fi adapter is operating in.",
+                    "sites": {
+                        "description": "A list of available Wi-Fi networks.",
+                        "value_name": "Site"
+                    },
+                    "supported": "Whether this Gateway (formerly \"Envoy\") supports connecting to Wi-Fi.",
+                    "up": "Whether the Wi-Fi interface is currently connected."
+                },
+                "APMode": {
+                    "enabled": "Whether the Gateway (formerly \"Envoy\") is currently acting as an Access Point (AP).",
+                    "name": "The broadcast name of the Gateway's (formerly \"Envoy\") Wi-Fi Access Point (AP) name."
+                },
+                "CurrentNetwork": {
+                    "ap_bssid": "The Access Point (AP)'s Basic Service Set Identifier (BSSID)",
+                    "bars": "The current signal strength in bars.",
+                    "channel": "The channel (or frequency) this Wi-Fi network is currently operating on.",
+                    "encryption_type": "The type of encryption this Wi-Fi network is operating with.",
+                    "gateway_ip": "The Internet Protocol (IP) address of the gateway",
+                    "ip_address": "The Internet Protocol (IP) address of this interface.",
+                    "security_mode": "The version of security this Wi-Fi network is operating.",
+                    "ssid": "The Wi-Fi network's Service Set IDentifier (SSID).",
+                    "status": "The status of the Wi-Fi connection."
+                },
+                "DeviceInfo": {
+                    "device": "The name of the device.",
+                    "device_id": "The device identifier.",
+                    "driver": "The name of the Wi-Fi adapter driver.",
+                    "hw_version": "The hardware version of the device.",
+                    "mac": "The Media Access Control (MAC) address of the adapter.",
+                    "manufacturer": "The manufacturer of the device.",
+                    "model": "The model of the device.",
+                    "serial": "The serial number of the device.",
+                    "usb_slot": "The USB slot the device is inserted into.",
+                    "usb_spec": "The USB specification version.",
+                    "vendor": "The vendor of the Wi-Fi adapter.",
+                    "vendor_id": "The vendor identifier."
+                },
+                "Site": {
+                    "bars": "The current signal strength in bars.",
+                    "channel": "The channel (or frequency) the Access Point is currently operating on.",
+                    "encryption_type": "The type of encryption this Wi-Fi network is operating with.",
+                    "is_current_ssid": "Is this the same Service Set IDentifier (SSID) as the current configured network.",
+                    "mac": "The Access Point (AP)'s Basic Service Set Identifier (BSSID)",
+                    "secured": "Whether or not the Wi-Fi network has any configured security.",
+                    "security_mode": "The version of security this Wi-Fi network is operating.",
+                    "ssid": "The Wi-Fi network's Service Set IDentifier (SSID).",
+                    "unsupported": "Whether this Gateway (formerly \"Envoy\") is unable to support connecting to this Wi-Fi network.",
+                    "wps": "Whether Wi-Fi Protected Setup is enabled."
+                }
+            }
         }
     },
     "Authentication - Check JSON Web Token (JWT)": {
@@ -2855,8 +2930,8 @@
                     "main_CfgLoad": "The number of times the configuration has been loaded.",
                     "main_taskUpdate": "The number of times a task has updated.",
                     "MqttClient_connect": "The number of times a connection has been made with the MQTT client to the broker.",
-                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_connect_Err": "Appears to be a duplicate of `MqttClient_connect_err`.",
+                    "MqttClient_connect_err": "The number of times the MQTT client has failed to connect.",
                     "MqttClient_create": "The number of times an instance of the MQTT client has been created.",
                     "MqttClient_live_debug": "The number of times the MQTT client has published a debug message.",
                     "MqttClient_msgarrvd": "The number of messages that have been delievered to the MQTT client.",
