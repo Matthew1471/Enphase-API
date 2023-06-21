@@ -57,76 +57,76 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`software_build_epoch`
 |Number
 |Number
-|???
+|The date and time the software was built (in epoch format).
 
 |`is_nonvoy`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the device is not a Gateway (formerly "Envoy")
 
 |`db_size`
 |Number
 |Number
-|???
+|The allocated size of the internal database.
 
 |`db_percent_full`
 |String
 |String
-|???
+|The percentage by which the internal database is full.
 
 |`timezone`
 |String
 |String
-|???
+|The configured timezone.
 
 |`current_date`
 |String
 |String
-|???
+|The current date.
 
 |`current_time`
 |String
 |String
-|???
+|The current time.
 
 |`network`
 |Object
-|`Network` object
-|???
+|`NetworkSummary` object
+|Details about the network connectivity.
 
 |`tariff`
 |String
 |String
-|???
+|The type of tariff configured.
 
 |`comm`
 |Object
-|`Comm` object
-|???
+|`CommunicationSummary` object
+|Details about the communication with the devices.
 
 |`alerts`
 |Array(Unknown)
 |Array of Unknown
-|???
+|Any alerts experienced by the system.
 
 |`update_status`
 |String
 |String
-|???
+|The update status.
 
 |`wireless_connection`
 |Array(Object)
-|Array of `Wireless_connection`
-|???
+|Array of `WirelessConnectionSummary`
+|The wireless connection details.
 
 |`enpower`
 |Object
 |`Enpower` object
-|???
+|The details about the IQ System Controller (formerly "Enpower").
 
 |===
 
-=== `Network` Object
+=== `NetworkSummary` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -138,31 +138,31 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`web_comm`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Web communication.
 
 |`ever_reported_to_enlighten`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten").
 
 |`last_enlighten_report_time`
 |Number
 |Number
-|???
+|The time this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten").
 
 |`primary_interface`
 |String
 |String
-|???
+|The primary network interface for communication.
 
 |`interfaces`
 |Array(Object)
-|Array of `Network.Interfaces`
-|???
+|Array of `NetworkInterface`
+|The list of network interfaces.
 
 |===
 
-=== `Network.Interfaces` Object
+=== `NetworkInterface` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -174,66 +174,66 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`type`
 |String
 |String
-|???
+|The network interface type.
 
 |`interface`
 |String
 |String
-|???
+|The network interface name.
 
 |`mac`
 |String
 |String
-|???
+|The Media Access Control (MAC) address for the interface.
 
 |`dhcp`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether Dynamic Host Configuration Protocol (DHCP) is configured.
 
 |`ip`
 |String
 |String
-|???
+|The Internet Protocol (IP) address.
 
 |`signal_strength`
 |Number
 |Number
-|???
+|The current signal strength.
 
 |`signal_strength_max`
 |Number
 |Number
-|???
+|The maximum observed signal strength.
 
 |`carrier`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the network is available.
 
 |`supported` (Optional)
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this Gateway (formerly "Envoy") supports this type of connection.
 
 |`present` (Optional)
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this hardware is present.
 
 |`configured` (Optional)
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this network is configured.
 
 |`status` (Optional)
 |String
 |String
-|???
+|The network interface status.
 
 |===
 
-=== `Comm` Object
+=== `CommunicationSummary` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -245,41 +245,41 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`num`
 |Number
 |Number
-|???
+|The total number of devices communicating.
 
 |`level`
 |Number
 |Number
-|???
+|The signal strength level.
 
 |`pcu`
 |Object
-|`Comm.Pcu` object
-|???
+|`CommunicationStatus` object
+|The Power Conditioning Unit (PCU, also called "microinverters") details.
 
 |`acb`
 |Object
-|`Comm.Acb` object
-|???
+|`CommunicationStatus` object
+|The AC Battery (ACB) details.
 
 |`nsrb`
 |Object
-|`Comm.Nsrb` object
-|???
+|`CommunicationStatus` object
+|The IQ Relay (formerly "Q Relay" and "Network System Relay Breaker (NSRB)") details.
 
 |`esub`
 |Object
-|`Comm.Esub` object
-|???
+|`CommunicationStatus` object
+|The Electrical SUB-panel (ESUB) details.
 
 |`encharge`
 |Array(Object)
-|Array of `Comm.Encharge`
-|???
+|Array of `CommunicationStatus`
+|The IQ Battery (formerly "Encharge Storage") details.
 
 |===
 
-=== `Comm.Pcu` Object
+=== `CommunicationStatus` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -291,110 +291,26 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`num`
 |Number
 |Number
-|???
+|The count of these devices communicating.
 
 |`level`
 |Number
 |Number
-|???
+|The signal level.
+
+|`level_24g` (Optional)
+|Number
+|Number
+|The 2.4 GHz signal level. This is only applicable to IQ Batteries (formerly "Encharge Storage").
+
+|`level_subg` (Optional)
+|Number
+|Number
+|The sub-GHz signal level. This is only applicable to IQ Batteries (formerly "Encharge Storage").
 
 |===
 
-=== `Comm.Acb` Object
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|`num`
-|Number
-|Number
-|???
-
-|`level`
-|Number
-|Number
-|???
-
-|===
-
-=== `Comm.Nsrb` Object
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|`num`
-|Number
-|Number
-|???
-
-|`level`
-|Number
-|Number
-|???
-
-|===
-
-=== `Comm.Esub` Object
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|`num`
-|Number
-|Number
-|???
-
-|`level`
-|Number
-|Number
-|???
-
-|===
-
-=== `Comm.Encharge` Object
-
-[cols="1,1,1,2", options="header"]
-|===
-|Name
-|Type
-|Values
-|Description
-
-|`num`
-|Number
-|Number
-|???
-
-|`level`
-|Number
-|Number
-|???
-
-|`level_24g`
-|Number
-|Number
-|???
-
-|`level_subg`
-|Number
-|Number
-|???
-
-|===
-
-=== `Wireless_connection` Object
+=== `WirelessConnectionSummary` Object
 
 [cols="1,1,1,2", options="header"]
 |===
@@ -406,22 +322,22 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`signal_strength`
 |Number
 |Number
-|???
+|The current signal strength.
 
 |`signal_strength_max`
 |Number
 |Number
-|???
+|The maximum observed signal strength.
 
 |`type`
 |String
 |String
-|???
+|The type of connection this summary is for.
 
 |`connected`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether this wireless connection is connected.
 
 |===
 
@@ -437,12 +353,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`connected`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether the IQ System Controller (formerly called "Enpower") is connected.
 
 |`grid_status`
 |String
 |String
-|???
+|The status of the grid relay.
 
 |===
 

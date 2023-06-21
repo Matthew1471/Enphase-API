@@ -631,6 +631,99 @@
                 }
             ],
             "uri": "home.json"
+        },
+        "response": {
+            "field_map": {
+                ".": {
+                    "alerts": "Any alerts experienced by the system.",
+                    "comm": {
+                        "description": "Details about the communication with the devices.",
+                        "value_name": "CommunicationSummary"
+                    },
+                    "current_date": "The current date.",
+                    "current_time": "The current time.",
+                    "db_percent_full": "The percentage by which the internal database is full.",
+                    "db_size": "The allocated size of the internal database.",
+                    "enpower": "The details about the IQ System Controller (formerly \"Enpower\").",
+                    "is_nonvoy": "Whether the device is not a Gateway (formerly \"Envoy\")",
+                    "network": {
+                        "description": "Details about the network connectivity.",
+                        "value_name": "NetworkSummary"
+                    },
+                    "software_build_epoch": "The date and time the software was built (in epoch format).",
+                    "tariff": "The type of tariff configured.",
+                    "timezone": "The configured timezone.",
+                    "update_status": "The update status.",
+                    "wireless_connection": {
+                        "description": "The wireless connection details.",
+                        "value_name": "WirelessConnectionSummary"
+                    }
+                },
+                "CommunicationStatus": {
+                    "level": "The signal level.",
+                    "level_24g": "The 2.4 GHz signal level. This is only applicable to IQ Batteries (formerly \"Encharge Storage\").",
+                    "level_subg": "The sub-GHz signal level. This is only applicable to IQ Batteries (formerly \"Encharge Storage\").",
+                    "num": "The count of these devices communicating."
+                },
+                "CommunicationSummary": {
+                    "acb": {
+                        "description": "The AC Battery (ACB) details.",
+                        "value_name": "CommunicationStatus"
+                    },
+                    "encharge": {
+                        "description": "The IQ Battery (formerly \"Encharge Storage\") details.",
+                        "value_name": "CommunicationStatus"
+                    },
+                    "esub": {
+                        "description": "The Electrical SUB-panel (ESUB) details.",
+                        "value_name": "CommunicationStatus"
+                    },
+                    "level": "The signal strength level.",
+                    "nsrb": {
+                        "description": "The IQ Relay (formerly \"Q Relay\" and \"Network System Relay Breaker (NSRB)\") details.",
+                        "value_name": "CommunicationStatus"
+                    },
+                    "num": "The total number of devices communicating.",
+                    "pcu": {
+                        "description": "The Power Conditioning Unit (PCU, also called \"microinverters\") details.",
+                        "value_name": "CommunicationStatus"
+                    }
+                },
+                "Enpower": {
+                    "connected": "Whether the IQ System Controller (formerly called \"Enpower\") is connected.",
+                    "grid_status": "The status of the grid relay."
+                },
+                "NetworkInterface": {
+                    "carrier": "Whether the network is available.",
+                    "configured": "Whether this network is configured.",
+                    "dhcp": "Whether Dynamic Host Configuration Protocol (DHCP) is configured.",
+                    "interface": "The network interface name.",
+                    "ip": "The Internet Protocol (IP) address.",
+                    "mac": "The Media Access Control (MAC) address for the interface.",
+                    "present": "Whether this hardware is present.",
+                    "signal_strength": "The current signal strength.",
+                    "signal_strength_max": "The maximum observed signal strength.",
+                    "status": "The network interface status.",
+                    "supported": "Whether this Gateway (formerly \"Envoy\") supports this type of connection.",
+                    "type": "The network interface type."
+                },
+                "NetworkSummary": {
+                    "ever_reported_to_enlighten": "Whether this Gateway (formerly \"Envoy\") has communicated with Enphase(R) Cloud (formerly \"Enlighten\").",
+                    "interfaces": {
+                        "description": "The list of network interfaces.",
+                        "value_name": "NetworkInterface"
+                    },
+                    "last_enlighten_report_time": "The time this Gateway (formerly \"Envoy\") has communicated with Enphase(R) Cloud (formerly \"Enlighten\").",
+                    "primary_interface": "The primary network interface for communication.",
+                    "web_comm": "Web communication."
+                },
+                "WirelessConnectionSummary": {
+                    "connected": "Whether this wireless connection is connected.",
+                    "signal_strength": "The current signal strength.",
+                    "signal_strength_max": "The maximum observed signal strength.",
+                    "type": "The type of connection this summary is for."
+                }
+            }
         }
     },
     "General - Information": {
