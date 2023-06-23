@@ -1,7 +1,7 @@
-# cp EnphaseMonitoring.service /etc/systemd/system/
+# cp EnphaseDisplay.service /etc/systemd/system/
 # sudo systemctl daemon-reload
-# sudo systemctl enable EnphaseMonitoring
-# sudo systemctl start EnphaseMonitoring
+# sudo systemctl enable EnphaseDisplay
+# sudo systemctl start EnphaseDisplay
 
 [Unit]
 
@@ -16,7 +16,7 @@ After=network-online.target
 Wants=network-online.target
 
 # Check that the Python script exists.
-ConditionPathExists=/home/pi/Enphase/gateway_amqp_meters.py
+ConditionPathExists=/home/pi/Enphase/gateway_unicorn_hat_hd.py
 
 [Service]
 
@@ -31,7 +31,7 @@ Group=pi
 ExecSearchPath=
 
 # The process to start.
-ExecStart=/usr/bin/python gateway_amqp_meters.py
+ExecStart=/usr/bin/python gateway_unicorn_hat_hd.py
 
 # The credentials file will need to be read based off the working directory.
 WorkingDirectory=/home/pi/Enphase/
@@ -107,8 +107,8 @@ BindReadOnlyPaths=/usr/bin/
 BindPaths=/home/pi/Enphase/
 
 # Redirect the StandardOutput and StandardError.
-StandardOutput=append:/home/pi/Enphase/Database.log
-StandardError=append:/home/pi/Enphase/Database.log
+StandardOutput=append:/home/pi/Enphase/Console.log
+StandardError=append:/home/pi/Enphase/Console.log
 
 [Install]
 

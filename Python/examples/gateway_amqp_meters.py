@@ -22,66 +22,12 @@ import os.path  # We check whether a file exists.
 import queue    # We use a queue as the response is buffered with no timestamps.
 import time     # We use the epoch seconds to determine the reading timestamps.
 
-import mysql.connector # Third party library; "pip install mysql-connector-python"
+import pika     # Third party library; "pip install pika"
 
 # All the shared Enphase® functions are in these packages.
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
-
-# SQL statements.
-add_meter_reading = ('INSERT INTO `MeterReading` (Timestamp, '
-                      'Production_Phase_A_ID, Production_Phase_B_ID, Production_Phase_C_ID, '
-                      'NetConsumption_Phase_A_ID, NetConsumption_Phase_B_ID, NetConsumption_Phase_C_ID, '
-                      'TotalConsumption_Phase_A_ID, TotalConsumption_Phase_B_ID, TotalConsumption_Phase_C_ID'
-                      ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
-add_meter_reading_result = ('INSERT INTO `MeterReading_Result` (p, q, s, v, i, pf, f) VALUES (%s, %s, %s, %s, %s, %s, %s)')
-
-def add_results_to_database(database_connection, database_cursor_meter_reading, database_cursor_meter_reading_result, timestamp, json_object):
-    # Take each of the meter types.
-    for meter_reading_type, meter_reading_type_result in json_object.items():
-        # Initialise to empty by default so they convert to a database NULL if not later set.
-        ph_a = None
-        ph_b = None
-        ph_c = None
-
-        # Take each of the phase readings.
-        for meter_phase, meter_reading_result in meter_reading_type_result.items():
-            # Skip empty phases.
-            if all(value == 0 for value in meter_reading_result.values()): continue
-
-            try:
-                # Add to the database the meter reading(s) (specifying a dictionary instead of a tuple prevented the query from being prepared - possibly a MySQL Connector bug).
-                database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
-            except mysql.connector.errors.DataError:
-                print(json_object)
-                raise
-
-            # Get the result ID for this phase insert.
-            if meter_phase == 'ph-a':
-                ph_a = database_cursor_meter_reading_result.lastrowid
-            elif meter_phase == 'ph-b':
-                ph_b = database_cursor_meter_reading_result.lastrowid
-            elif meter_phase == 'ph-c':
-                ph_c = database_cursor_meter_reading_result.lastrowid
-            else:
-                raise ValueError('Unexpected phase "' + meter_phase + '" in JSON.')
-
-        # Store the meter reading record IDs for this meter type.
-        if meter_reading_type == 'production':
-            production_phase_list_id = (ph_a, ph_b, ph_c)
-        elif meter_reading_type == 'net-consumption':
-            net_consumption_phase_list_id = (ph_a, ph_b, ph_c)
-        elif meter_reading_type == 'total-consumption':
-            total_consumption_phase_list_id = (ph_a, ph_b, ph_c)
-        else:
-            raise ValueError('Unexpected reading type "' + meter_reading_type + '" in JSON.')
-
-    # Add the meter reading.
-    database_cursor_meter_reading.execute(add_meter_reading, (timestamp,) + production_phase_list_id + net_consumption_phase_list_id + total_consumption_phase_list_id)
-
-    # Make sure data is committed to the database.
-    database_connection.commit()
 
 def main():
     # Load credentials.
@@ -109,18 +55,25 @@ def main():
 
     # Are we able to login to the gateway?
     if gateway.login(credentials['token']):
-        # Gather the database details from the credentials file.        
-        database_host = credentials.get('database_host', 'localhost')
-        database_username = credentials.get('database_username', 'root')
-        database_password = credentials.get('database_password', '')
-        database_database = credentials.get('database_database', 'Enphase')
+        # Gather the AMQP details from the credentials file.        
+        amqp_host = credentials.get('amqp_host', 'localhost')
+        amqp_username = credentials.get('amqp_username', 'guest')
+        amqp_password = credentials.get('amqp_password', 'guest')
 
-        # Connect to the MySQL/MariaDB database.
-        database_connection = mysql.connector.connect(host=database_host, user=database_username, password=database_password, database=database_database)
+        # Gather the AMQP credentials into a PlainCredentials object.
+        amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
 
-        # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
-        database_cursor_meter_reading = database_connection.cursor(prepared=True)
-        database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
+        # Gather the AMQP connection parameters.
+        amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials)
+
+        # Connect to the AMQP broker.
+        amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
+
+        # Get reference to the virtual channel within AMQP.
+        amqp_channel = amqp_connection.channel()
+
+        # Declare a topic exchange if one does not already exist.
+        amqp_channel.exchange_declare(exchange='Enphase', exchange_type='topic')
 
         try:
             # On a single phase system this returns almost every 21 - 23 seconds (occasionally 45 seconds), returning typically 21 - 23 results in multiple >= 701 bytes and <= 725 bytes chunks (likely a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
@@ -163,17 +116,17 @@ def main():
                                 json_object = queued_chunks.get()
 
                                 # We calculate the timestamp of the meter readings off the time the chunks were received.
-                                timestamp = chunk_first_received + counter
+                                json_object['timestamp'] = chunk_first_received + counter
 
                                 # If we calculated there was a delay to the chunks we should add that on.
                                 if chunk_delay:
-                                    timestamp += chunk_delay
+                                    json_object['timestamp'] += chunk_delay
 
-                                # Add this record to the database.
-                                add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
+                                # Add this result to the AMQP broker.
+                                amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
 
                                 # Output the reading time of the chunk and a value for timestamp debugging.
-                                #print(str(timestamp) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
+                                #print(str(json_object['timestamp']) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
 
                                 # The queue has no reliable method for determining queue size.
                                 counter+=1
@@ -261,8 +214,8 @@ def main():
                     # Update the last received time.
                     chunk_last_received = now
         finally:
-            # Close the database connection.
-            database_connection.close()
+            # Close the AMQP connection.
+            amqp_connection.close()
     else:
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
