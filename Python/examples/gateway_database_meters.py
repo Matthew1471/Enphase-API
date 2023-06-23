@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import argparse # We support command line arguments.
 import datetime # We interpret and manipulate dates and times of readings.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
@@ -84,26 +83,6 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
     database_connection.commit()
 
 def main():
-    # Create an instance of argparse to handle any command line arguments.
-    parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an Enphase® Gateway and stores the meter values in a database.')
-
-    # Arguments to control the database connection.
-    database_group = parser.add_argument_group('Database')
-    database_group.add_argument('/DBHost', '-DBHost', '--DBHost', dest='database_host', default='127.0.0.1', help='The database server host (defaults to "127.0.0.1").')
-    database_group.add_argument('/DBUsername', '-DBUsername', '--DBUsername', dest='database_username', default='root', help='The database username (defaults to "root").')
-    database_group.add_argument('/DBPassword', '-DBPassword', '--DBPassword', dest='database_password', default='', help='The database password (defaults to blank).')
-    database_group.add_argument('/DBDatabase', '-DBDatabase', '--DBDatabase', dest='database_database', default='Enphase', help='The database schema (defaults to "Enphase").')
-
-    # Arguments to control how the program generally behaves.
-    general_group = parser.add_argument_group('General')
-    general_group.add_argument('/Host', '-Host', '--Host', dest='host', help='The Enphase® Gateway URL (defaults to config or https://envoy.local).')
-
-    # We want this to appear last in the argument usage list.
-    general_group.add_argument('/?', '/Help', '/help', '-h','--help','-help', action='help', help='Show this help message and exit.')
-
-    # Handle any command line arguments.
-    args = parser.parse_args()
-
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -113,14 +92,8 @@ def main():
         # It is not valid so clear it.
         raise ValueError('No or expired token.')
 
-    # Did the user override the config or library default hostname to the Gateway?
-    if args.host:
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(args.host)
-
-        # Get an instance of the Gateway API wrapper object (using the argument hostname).
-        gateway = Gateway(args.host)
-    elif credentials.get('host'):
+    # Did the user override the library default hostname to the Gateway?
+    if credentials.get('host'):
         # Download and store the certificate from the gateway so all future requests are secure.
         if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
 
@@ -135,8 +108,14 @@ def main():
 
     # Are we able to login to the gateway?
     if gateway.login(credentials['token']):
+        # Gather the database details from the credentials file.        
+        database_host = credentials.get('database_host', 'localhost')
+        database_username = credentials.get('database_username', 'root')
+        database_password = credentials.get('database_password', '')
+        database_database = credentials.get('database_database', 'Enphase')
+
         # Connect to the MySQL/MariaDB database.
-        database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database)
+        database_connection = mysql.connector.connect(host=database_host, user=database_username, password=database_password, database=database_database)
 
         # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
         database_cursor_meter_reading = database_connection.cursor(prepared=True)
