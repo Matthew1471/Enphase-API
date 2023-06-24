@@ -84,7 +84,7 @@ class ScreenWeather:
 
         # Clear the screen while the next process runs.
         if not self.emulator:
-            unicornhathd.off()
+            self.unicornhathd.off()
 
     def draw_animation(self, filename, speed=0.25):
         # Open the requested image (and ignore any transparency values).
