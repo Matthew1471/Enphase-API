@@ -55,7 +55,7 @@ def main():
 
     # Are we able to login to the gateway?
     if gateway.login(credentials['token']):
-        # Gather the AMQP details from the credentials file.        
+        # Gather the AMQP details from the credentials file.
         amqp_host = credentials.get('amqp_host', 'localhost')
         amqp_username = credentials.get('amqp_username', 'guest')
         amqp_password = credentials.get('amqp_password', 'guest')
@@ -63,8 +63,16 @@ def main():
         # Gather the AMQP credentials into a PlainCredentials object.
         amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
 
+        # The information that is visible to the broker.
+        client_properties = {
+                             'connection_name': 'Gateway_AMQP_Meters',
+                             'product': 'Enphase-API',
+                             'version': '0.1',
+                             'information': 'https://github.com/Matthew1471/Enphase-API'
+                             }
+
         # Gather the AMQP connection parameters.
-        amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials)
+        amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
 
         # Connect to the AMQP broker.
         amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
@@ -112,21 +120,21 @@ def main():
 
                             # Flush the queue now we know how many were received in this batch.
                             while not queued_chunks.empty():
-                                # Get the first chunk from the queue.
-                                json_object = queued_chunks.get()
-
-                                # We calculate the timestamp of the meter readings off the time the chunks were received.
-                                json_object['timestamp'] = chunk_first_received + counter
+                                # We calculate the timestamp of the meter readings off the time the chunks were first received.
+                                timestamp = chunk_first_received + counter
 
                                 # If we calculated there was a delay to the chunks we should add that on.
                                 if chunk_delay:
-                                    json_object['timestamp'] += chunk_delay
+                                    timestamp += chunk_delay
+
+                                # Get the first chunk from the queue.
+                                json_object = dict({'timestamp':timestamp, 'readings':queued_chunks.get()})
 
                                 # Add this result to the AMQP broker.
                                 amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
 
                                 # Output the reading time of the chunk and a value for timestamp debugging.
-                                #print(str(json_object['timestamp']) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
+                                #print(str(json_object['timestamp']) + ' - ' + str(json_object['readings']['net-consumption']['ph-a']['p']) + ' W')
 
                                 # The queue has no reliable method for determining queue size.
                                 counter+=1

@@ -6,7 +6,7 @@
 [Unit]
 
 # Short human readable title of the unit. User-visible label to identify the unit.
-Description=Enphase Monitoring
+Description=Enphase Display
 
 # Reference to where the user can obtain more information about this service.
 Documentation=https://github.com/Matthew1471/Enphase-API/

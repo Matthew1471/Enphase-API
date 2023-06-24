@@ -1,12 +1,12 @@
-# cp EnphaseMonitoring.service /etc/systemd/system/
+# cp EnphaseDatabase.service /etc/systemd/system/
 # sudo systemctl daemon-reload
-# sudo systemctl enable EnphaseMonitoring
-# sudo systemctl start EnphaseMonitoring
+# sudo systemctl enable EnphaseDatabase
+# sudo systemctl start EnphaseDatabase
 
 [Unit]
 
 # Short human readable title of the unit. User-visible label to identify the unit.
-Description=Enphase Monitoring
+Description=Enphase Database
 
 # Reference to where the user can obtain more information about this service.
 Documentation=https://github.com/Matthew1471/Enphase-API/
@@ -16,7 +16,7 @@ After=network-online.target
 Wants=network-online.target
 
 # Check that the Python script exists.
-ConditionPathExists=/home/pi/Enphase/gateway_amqp_meters.py
+ConditionPathExists=/home/pi/Enphase/amqp_database_meters.py
 
 [Service]
 
@@ -31,7 +31,7 @@ Group=pi
 ExecSearchPath=
 
 # The process to start.
-ExecStart=/usr/bin/python gateway_amqp_meters.py
+ExecStart=/usr/bin/python amqp_database_meters.py
 
 # The credentials file will need to be read based off the working directory.
 WorkingDirectory=/home/pi/Enphase/
@@ -107,8 +107,8 @@ BindReadOnlyPaths=/usr/bin/
 BindPaths=/home/pi/Enphase/
 
 # Redirect the StandardOutput and StandardError.
-StandardOutput=append:/home/pi/Enphase/Monitoring.log
-StandardError=append:/home/pi/Enphase/Monitoring.log
+StandardOutput=append:/home/pi/Enphase/Database.log
+StandardError=append:/home/pi/Enphase/Database.log
 
 [Install]
 

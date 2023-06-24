@@ -109,7 +109,7 @@ def main():
 
     # Are we able to login to the gateway?
     if gateway.login(credentials['token']):
-        # Gather the database details from the credentials file.        
+        # Gather the database details from the credentials file.
         database_host = credentials.get('database_host', 'localhost')
         database_username = credentials.get('database_username', 'root')
         database_password = credentials.get('database_password', '')
@@ -159,17 +159,17 @@ def main():
 
                             # Flush the queue now we know how many were received in this batch.
                             while not queued_chunks.empty():
-                                # Get the first chunk from the queue.
-                                json_object = queued_chunks.get()
-
-                                # We calculate the timestamp of the meter readings off the time the chunks were received.
+                                # We calculate the timestamp of the meter readings off the time the chunks were first received.
                                 timestamp = chunk_first_received + counter
 
                                 # If we calculated there was a delay to the chunks we should add that on.
                                 if chunk_delay:
                                     timestamp += chunk_delay
 
-                                # Add this record to the database.
+                                # Get the first chunk from the queue.
+                                json_object = queued_chunks.get()
+
+                                # Add this result to the database.
                                 add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=timestamp, json_object=json_object)
 
                                 # Output the reading time of the chunk and a value for timestamp debugging.

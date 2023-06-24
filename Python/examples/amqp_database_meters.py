@@ -38,14 +38,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
     json_object = json.loads(body)
 
     # Take each of the meter types.
-    for meter_reading_type in json_object:
-        # Skip the timestamp attribute.
-        if meter_reading_type == 'timestamp':
-            continue
-
-        # Get the meter_reading_type_result.
-        meter_reading_type_result = json_object[meter_reading_type]
-
+    for meter_reading_type, meter_reading_type_result in json_object['readings'].items():
         # Initialise to empty by default so they convert to a database NULL if not later set.
         ph_a = None
         ph_b = None
@@ -94,7 +87,7 @@ def main():
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
-    # Gather the AMQP details from the credentials file.        
+    # Gather the AMQP details from the credentials file.
     amqp_host = credentials.get('amqp_host', 'localhost')
     amqp_username = credentials.get('amqp_username', 'guest')
     amqp_password = credentials.get('amqp_password', 'guest')
@@ -102,8 +95,16 @@ def main():
     # Gather the AMQP credentials into a PlainCredentials object.
     amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
 
+    # The information that is visible to the broker.
+    client_properties = {
+                         'connection_name': 'AMQP_Database_Meters',
+                         'product': 'Enphase-API',
+                         'version': '0.1',
+                         'information': 'https://github.com/Matthew1471/Enphase-API'
+                        }
+
     # Gather the AMQP connection parameters.
-    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials)
+    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
 
     # Connect to the AMQP broker.
     amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
@@ -117,7 +118,7 @@ def main():
     # Bind the queue to the exchange (if it is not already bound).
     amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
 
-    # Gather the database details from the credentials file.        
+    # Gather the database details from the credentials file.
     database_host = credentials.get('database_host', 'localhost')
     database_username = credentials.get('database_username', 'root')
     database_password = credentials.get('database_password', '')
@@ -143,7 +144,7 @@ def main():
         amqp_channel.start_consuming()
     except KeyboardInterrupt:
         print(str(datetime.datetime.now()) + ' - Closing connections.')
-    finally:            
+    finally:
         # Close the AMQP connection.
         amqp_connection.close()
 
