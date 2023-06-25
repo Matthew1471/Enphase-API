@@ -55,7 +55,8 @@ from enphase_api.local.gateway import Gateway
 
 class UnicornHATHelper:
 
-    def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed=0.05, end_time=time.time() + 60):
+    @staticmethod
+    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.05, end_time=time.time() + 60):
         # Calculate the width and height of the text when rendered by the font.
         _, font_upper, font_width, _ = font.getbbox(line)
 
@@ -98,6 +99,7 @@ class UnicornHATHelper:
             # Have we been asked to stop scrolling?
             if end_time <= time.time(): break
 
+    @staticmethod
     def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.25):
         # Open the requested image (and ignore any transparency values).
         image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
@@ -172,8 +174,24 @@ class ScreenWeather:
             self.unicornhathd.off()
 
     def get_weather_details(self, timezone='Europe%2FLondon'):
+        # Get a Y-m-d reference to today's date.
         today = datetime.datetime.today().strftime('%Y-%m-%d')
-        response = requests.get('https://api.open-meteo.com/v1/forecast?latitude=' + str(self.latitude) + '&longitude=' + str(self.longitude) + '&current_weather=true&daily=sunrise,sunset&start_date=' + today + '&end_date=' + today + '&timezone=' + timezone + '&timeformat=unixtime', headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}, timeout=5).json()
+
+        # Build the weather URL.
+        weather_url = 'https://api.open-meteo.com/v1/forecast?'
+        weather_url += 'latitude=' + str(self.latitude) 
+        weather_url += '&longitude=' + str(self.longitude) 
+        weather_url += '&current_weather=true'
+        weather_url += '&daily=sunrise,sunset'
+        weather_url += '&start_date=' + today
+        weather_url += '&end_date=' + today
+        weather_url += '&timezone=' + timezone
+        weather_url += '&timeformat=unixtime'
+
+        # Request the weather.
+        response = requests.get(weather_url, headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}, timeout=5).json()
+
+        # Return some specific components from the weather data.
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
     def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
@@ -225,13 +243,13 @@ class ScreenProduction:
         self.emulator = emulator
 
     def get_human_readable_power(self, watts, in_hours = False):
-        # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
+        # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
         if abs(round(watts)) < 1000:
             # Report the number in watts (rounded to the nearest number).
-            return '{} W{}'.format(round(watts), 'h' if in_hours else '')
+            return str(round(watts)) + ' W' + ('h' if in_hours else '')
 
         # Divide the number by a thousand and report it in kW (to 2 decimal places).
-        return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
+        return str(round(watts / 1000, 2)) + ' kW' + ('h' if in_hours else '')
 
     def draw_screen(self, number_of_microinverters, w_now, end_time):
         # Is there any power being generated?
@@ -245,11 +263,11 @@ class ScreenProduction:
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
                                                  unicornhathd=self.unicornhathd,
+                                                 screen_width=self.screen_width,
+                                                 screen_height=self.screen_height,
                                                  line=line,
                                                  color=color,
                                                  font=self.font,
-                                                 screen_width=self.screen_width,
-                                                 screen_height=self.screen_height,
                                                  speed=self.speed,
                                                  end_time=end_time
                                                 )
@@ -259,18 +277,18 @@ class ScreenProduction:
                 self.unicornhathd.off()
 
             # Wait for end time before re-trying.
-            time.sleep(end_time)
+            time.sleep(end_time - time.time())
 
 def restricted_float(number):
     # Check this is a float.
     try:
         number = float(number)
     except ValueError:
-        raise argparse.ArgumentTypeError('{!r} not a floating-point literal'.format(number))
+        raise argparse.ArgumentTypeError(str(number) + ' not a floating-point literal')
 
     # Check this is within the required range.
     if number < 0.0 or number > 1.0:
-        raise argparse.ArgumentTypeError('{!r} not in range [0.0, 1.0]'.format(number))
+        raise argparse.ArgumentTypeError(str(number) + ' not in range [0.0, 1.0]')
 
     # This should otherwise be an acceptable value.
     return number
@@ -396,7 +414,7 @@ def main():
                                            emulator=args.emulate_HAT
                                           )
         else:
-             screen_weather = None
+            screen_weather = None
 
         # Set up an instance of the production screen.
         screen_production = ScreenProduction(
@@ -412,7 +430,7 @@ def main():
         try:
             # Repeat forever unless the user presses CTRL + C.
             while True:
-                # Sometimes a request will intermittently fail and in this event we return error text.
+                # Sometimes a request will intermittently fail, in this event we return error text.
                 try:
                     # Optionally draw the weather.
                     if screen_weather:
@@ -427,23 +445,23 @@ def main():
                 # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
                 except requests.exceptions.ConnectionError as exception:
                     # Log this error.
-                    print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  exception, file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
                 # This happens generally if there are wider issues on the network.
                 except requests.exceptions.ReadTimeout:
                     # Log this non-critial often transient error.
-                    print('{} - Request timed out..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
                 except requests.exceptions.JSONDecodeError as exception:
                     # Log this non-critial often transient error.
-                    print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + exception, file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
         # Did the user press CTRL + C to attempt to quit this application?
         except KeyboardInterrupt:
             # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
