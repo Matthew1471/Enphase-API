@@ -53,6 +53,86 @@ import requests.exceptions
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
 
+class UnicornHATHelper:
+
+    def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed=0.05, end_time=time.time() + 60):
+        # Calculate the width and height of the text when rendered by the font.
+        _, font_upper, font_width, _ = font.getbbox(line)
+
+        # Create a new image in memory that can fit all the text pixels (we scroll text wider than the screen, but there's no point storing a larger height).
+        image = Image.new('RGB', (max(font_width, screen_width), screen_height), (0, 0, 0))
+
+        # Create a draw object that uses our image canvas.
+        draw = ImageDraw.Draw(image)
+
+        # Draw the text in memory onto the canvas (we set the text colour based off system production energy we're generating).
+        draw.text(xy=(0, -font_upper), text=line, fill=color, font=font)
+
+        # We want to scroll left to right multiple times (at least once).
+        while True:
+
+            # For each pixel we are scrolling forwards then backwards.
+            for scroll_x_offset in itertools.chain(range(font_width - screen_width), range(font_width - screen_width, 0, -1)):
+
+                # Take each of the pixels on the x axis.
+                for x in range(screen_width):
+
+                    # Take each of the pixels on the y axis for this position on the x axis.
+                    for y in range(screen_height):
+
+                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis scrolling offset.
+                        pixel = image.getpixel((x + scroll_x_offset, y))
+
+                        # Get the Red, Green, Blue values for this pixel.
+                        red, green, blue = [int(n) for n in pixel]
+
+                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
+                        unicornhathd.set_pixel((screen_width - 1) - x, y, red, green, blue)
+
+                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user won't watch it re-drawing).
+                unicornhathd.show()
+
+                # Pause before attempting to draw the next scrolling frame.
+                time.sleep(speed)
+
+            # Have we been asked to stop scrolling?
+            if end_time <= time.time(): break
+
+    def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.25):
+        # Open the requested image (and ignore any transparency values).
+        image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
+
+        # The images are left-to-right.
+        unicornhathd.rotation(unicornhathd.get_rotation() + 90)
+
+        # Get the image width and height.
+        image_width, image_height = image.size
+
+        # Take each of the frame x positions in the image.
+        for frame_x in range(int(image_width / screen_width)):
+            # Take each of the frame y positions in the image.
+            for frame_y in range(int(image_height / screen_height)):
+                # Take each of the pixels of the screen's x axis.
+                for x in range(screen_width):
+                    # Take each of the pixels of the screen's y axis for this position on the x axis.
+                    for y in range(screen_height):
+                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis frame offset.
+                        pixel = image.getpixel(((frame_x * screen_width) + y, (frame_y * screen_height) + x))
+
+                        # Get the Red, Green, Blue values for this pixel.
+                        red, green, blue = [int(n) for n in pixel]
+
+                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
+                        unicornhathd.set_pixel(x, y, red, green, blue)
+
+                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user will not watch it re-drawing).
+                unicornhathd.show()
+
+                # Pause before attempting to draw the next scrolling frame.
+                time.sleep(speed)
+
+        # Restore rotation.
+        unicornhathd.rotation(unicornhathd.get_rotation() - 90)
 
 class ScreenWeather:
 
@@ -79,48 +159,17 @@ class ScreenWeather:
             # We convert the weather_code, wind_speed, sunrise and sunset into a PNG filename.
             self.weather_filename = self.get_weather_filename(weather_code=weather_code, wind_speed=wind_speed, sunrise=sunrise, sunset=sunset)
 
-        # Draw the weather.
-        self.draw_animation(filename=self.weather_filename)
+        # Draw the weather animation.
+        UnicornHATHelper.draw_animation(
+                                        unicornhathd=self.unicornhathd,
+                                        screen_width=self.screen_width,
+                                        screen_height=self.screen_height,
+                                        filename=self.weather_filename
+                                       )
 
         # Clear the screen while the next process runs.
         if not self.emulator:
             self.unicornhathd.off()
-
-    def draw_animation(self, filename, speed=0.25):
-        # Open the requested image (and ignore any transparency values).
-        image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
-
-        # The images are left-to-right.
-        self.unicornhathd.rotation(self.unicornhathd.get_rotation() + 90)
-
-        # Get the image width and height.
-        image_width, image_height = image.size
-
-        # Take each of the frame x positions in the image.
-        for frame_x in range(int(image_width / self.screen_width)):
-            # Take each of the frame y positions in the image.
-            for frame_y in range(int(image_height / self.screen_height)):
-                # Take each of the pixels of the screen's x axis.
-                for x in range(self.screen_width):
-                    # Take each of the pixels of the screen's y axis for this position on the x axis.
-                    for y in range(self.screen_height):
-                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis frame offset.
-                        pixel = image.getpixel(((frame_x * self.screen_width) + y, (frame_y * self.screen_height) + x))
-
-                        # Get the Red, Green, Blue values for this pixel.
-                        red, green, blue = [int(n) for n in pixel]
-
-                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                        self.unicornhathd.set_pixel(x, y, red, green, blue)
-
-                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user will not watch it re-drawing).
-                self.unicornhathd.show()
-
-                # Pause before attempting to draw the next scrolling frame.
-                time.sleep(speed)
-
-        # Restore rotation.
-        self.unicornhathd.rotation(self.unicornhathd.get_rotation() - 90)
 
     def get_weather_details(self, timezone='Europe%2FLondon'):
         today = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -184,49 +233,6 @@ class ScreenProduction:
         # Divide the number by a thousand and report it in kW (to 2 decimal places).
         return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
 
-    def draw_scrolling_text(self, line, color, end_time=time.time() + 60):
-        # Calculate the width and height of the text when rendered by the font.
-        _, font_upper, font_width, _ = self.font.getbbox(line)
-
-        # Create a new image in memory that can fit all the text pixels (we scroll text wider than the screen, but there's no point storing a larger height).
-        image = Image.new('RGB', (max(font_width, self.screen_width), self.screen_height), (0, 0, 0))
-
-        # Create a draw object that uses our image canvas.
-        draw = ImageDraw.Draw(image)
-
-        # Draw the text in memory onto the canvas (we set the text colour based off system production energy we're generating).
-        draw.text(xy=(0, -font_upper), text=line, fill=color, font=self.font)
-
-        # We want to scroll left to right multiple times (at least once).
-        while True:
-
-            # For each pixel we are scrolling forwards then backwards.
-            for scroll_x_offset in itertools.chain(range(font_width - self.screen_width), range(font_width - self.screen_width, 0, -1)):
-
-                # Take each of the pixels on the x axis.
-                for x in range(self.screen_width):
-
-                    # Take each of the pixels on the y axis for this position on the x axis.
-                    for y in range(self.screen_height):
-
-                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis scrolling offset.
-                        pixel = image.getpixel((x + scroll_x_offset, y))
-
-                        # Get the Red, Green, Blue values for this pixel.
-                        red, green, blue = [int(n) for n in pixel]
-
-                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                        self.unicornhathd.set_pixel((self.screen_width - 1) - x, y, red, green, blue)
-
-                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user won't watch it re-drawing).
-                self.unicornhathd.show()
-
-                # Pause before attempting to draw the next scrolling frame.
-                time.sleep(self.speed)
-
-            # Have we been asked to stop scrolling?
-            if end_time <= time.time(): break
-
     def draw_screen(self, number_of_microinverters, w_now, end_time):
         # Is there any power being generated?
         if w_now > 0:
@@ -237,14 +243,23 @@ class ScreenProduction:
             color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
 
             # Display and scroll the production text on screen (until the end time).
-            self.draw_scrolling_text(line=line, color=color, end_time=end_time)
+            UnicornHATHelper.draw_scrolling_text(
+                                                 unicornhathd=self.unicornhathd,
+                                                 line=line,
+                                                 color=color,
+                                                 font=self.font,
+                                                 screen_width=self.screen_width,
+                                                 screen_height=self.screen_height,
+                                                 speed=self.speed,
+                                                 end_time=end_time
+                                                )
         else:
             # Turn off the screen.
             if not self.emulator:
                 self.unicornhathd.off()
 
-            # Wait for 60 seconds before re-trying.
-            time.sleep(60)
+            # Wait for end time before re-trying.
+            time.sleep(end_time)
 
 def restricted_float(number):
     # Check this is a float.
@@ -294,49 +309,6 @@ def get_production_details(gateway, reading_type='Meter'):
 
     # Return the response.
     return w_now, number_of_microinverters, next_reading_time
-
-def draw_scrolling_text(unicornhathd, line, color, font, screen_width, screen_height, speed=0.05, end_time=time.time() + 60):
-    # Calculate the width and height of the text when rendered by the font.
-    _, font_upper, font_width, _ = font.getbbox(line)
-
-    # Create a new image in memory that can fit all the text pixels (we scroll text wider than the screen, but there's no point storing a larger height).
-    image = Image.new('RGB', (max(font_width, screen_width), screen_height), (0, 0, 0))
-
-    # Create a draw object that uses our image canvas.
-    draw = ImageDraw.Draw(image)
-
-    # Draw the text in memory onto the canvas (we set the text colour based off system production energy we're generating).
-    draw.text(xy=(0, -font_upper), text=line, fill=color, font=font)
-
-    # We want to scroll left to right multiple times (at least once).
-    while True:
-
-        # For each pixel we are scrolling forwards then backwards.
-        for scroll_x_offset in itertools.chain(range(font_width - screen_width), range(font_width - screen_width, 0, -1)):
-
-            # Take each of the pixels on the x axis.
-            for x in range(screen_width):
-
-                # Take each of the pixels on the y axis for this position on the x axis.
-                for y in range(screen_height):
-
-                    # Get what the pixel should be according to the Pillow in memory image followed by the x axis scrolling offset.
-                    pixel = image.getpixel((x + scroll_x_offset, y))
-
-                    # Get the Red, Green, Blue values for this pixel.
-                    red, green, blue = [int(n) for n in pixel]
-
-                    # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                    unicornhathd.set_pixel((screen_width - 1) - x, y, red, green, blue)
-
-            # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user won't watch it re-drawing).
-            unicornhathd.show()
-
-            # Pause before attempting to draw the next scrolling frame.
-            time.sleep(speed)
-
-        # Have we been asked to stop scrolling?
-        if end_time <= time.time(): break
 
 def main():
     # Create an instance of argparse to handle any command line arguments.
@@ -458,20 +430,20 @@ def main():
                     print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
                 # This happens generally if there are wider issues on the network.
                 except requests.exceptions.ReadTimeout:
                     # Log this non-critial often transient error.
                     print('{} - Request timed out..'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')), file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
                 except requests.exceptions.JSONDecodeError as exception:
                     # Log this non-critial often transient error.
                     print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), exception), file=sys.stderr)
 
                     # Display and scroll the red error text on screen for 60 seconds.
-                    draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
+                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, line='Error', color=(255, 0, 0), font=font, screen_width=screen_width, screen_height=screen_height, speed=args.delay, end_time=time.time() + 60)
         # Did the user press CTRL + C to attempt to quit this application?
         except KeyboardInterrupt:
             # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
