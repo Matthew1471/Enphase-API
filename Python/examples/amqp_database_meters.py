@@ -109,7 +109,7 @@ def main():
     # Connect to the AMQP broker.
     amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
 
-    # Get reference to the virtual channel within AMQP.
+    # Get reference to the virtual connection within AMQP.
     amqp_channel = amqp_connection.channel()
 
     # Declare a queue (if it does not already exist).

@@ -49,6 +49,9 @@ import requests
 # We handle some of the exceptions we might get back.
 import requests.exceptions
 
+# Third party library; "pip install pika"
+import pika
+
 # All the shared Enphase® functions are in these packages.
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
@@ -427,17 +430,67 @@ def main():
                                              emulator=args.emulate_HAT
                                             )
 
+        # Gather the AMQP details from the credentials file.
+        amqp_host = credentials.get('amqp_host', 'localhost')
+        amqp_username = credentials.get('amqp_username', 'guest')
+        amqp_password = credentials.get('amqp_password', 'guest')
+
+        # Gather the AMQP credentials into a PlainCredentials object.
+        amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
+
+        # The information that is visible to the broker.
+        client_properties = {
+                             'connection_name': 'AMQP_Unicorn_HAT_HD',
+                             'product': 'Enphase-API',
+                             'version': '0.1',
+                             'information': 'https://github.com/Matthew1471/Enphase-API'
+                            }
+
+        # Gather the AMQP connection parameters.
+        amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
+
+        # Connect to the AMQP broker.
+        amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
+
+        # Get reference to the virtual connection within AMQP.
+        amqp_channel = amqp_connection.channel()
+
+        # Declare a queue (if it does not already exist).
+        amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
+
+        # Bind the queue to the exchange (if it is not already bound).
+        amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
+
         try:
+            # Get the production details directly from gateway (just so we know the correct number_of_microinverters).
+            w_now, number_of_microinverters, _ = get_production_details(gateway=gateway, reading_type='Meter')
+
             # Repeat forever unless the user presses CTRL + C.
             while True:
+                # Time to refresh from the queue.
+                end_time = time.time() + 20
+
                 # Sometimes a request will intermittently fail, in this event we return error text.
                 try:
                     # Optionally draw the weather.
                     if screen_weather:
                         screen_weather.draw_screen()
 
-                    # Get the production details.
-                    w_now, number_of_microinverters, end_time = get_production_details(gateway=gateway, reading_type='Meter')
+                    # AMQP get a meter response.
+                    while True:
+                        # Get a message.
+                        method_frame, header_frame, body = amqp_channel.basic_get('Enphase_Unicorn_HAT_HD', auto_ack=True)
+
+                        # Was there a message?
+                        if method_frame:
+                            # If there are more messages keep consuming until this is the last one.
+                            if method_frame.message_count > 0:
+                                continue
+
+                            w_now = json.loads(body)['readings']['production']['ph-a']['p']
+                        else:
+                            # Ran out of responses.
+                            break
 
                     # Draw the production power screen (until the end time).
                     screen_production.draw_screen(number_of_microinverters=number_of_microinverters, w_now=w_now, end_time=end_time)

@@ -16,7 +16,7 @@ After=network-online.target
 Wants=network-online.target
 
 # Check that the Python script exists.
-ConditionPathExists=/home/pi/Enphase/gateway_unicorn_hat_hd.py
+ConditionPathExists=/home/pi/Enphase/amqp_unicorn_hat_hd.py
 
 [Service]
 
@@ -31,7 +31,7 @@ Group=pi
 ExecSearchPath=
 
 # The process to start.
-ExecStart=/usr/bin/python gateway_unicorn_hat_hd.py
+ExecStart=/usr/bin/python amqp_unicorn_hat_hd.py
 
 # The credentials file will need to be read based off the working directory.
 WorkingDirectory=/home/pi/Enphase/
