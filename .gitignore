@@ -13,9 +13,7 @@ Thumbs.db
 /Python/examples/configuration/gateway.cer
 
 # Python pre-compiled cache.
-/Python/src/enphase_api/__pycache__/
-/Python/src/enphase_api/cloud/__pycache__/
-/Python/src/enphase_api/local/__pycache__/
+/Python/**/__pycache__/
 
 # Python packaging metadata.
 /Python/src/*.egg-info/
