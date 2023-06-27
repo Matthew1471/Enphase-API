@@ -271,13 +271,6 @@ class ScreenProduction:
                                                  speed=self.speed,
                                                  end_time=end_time
                                                 )
-        else:
-            # Turn off the screen.
-            if not self.emulator:
-                self.unicornhathd.off()
-
-            # Wait for end time before re-trying.
-            time.sleep(end_time - time.time())
 
 class ScreenChart:
     def __init__(self, unicornhathd, screen_width, screen_height, maximum_watts_per_panel):
@@ -327,9 +320,9 @@ class ScreenChart:
         # Take each of the pixels.
         for count in range(self.number_of_pixels):
 
-            if count <= first_pixels:
+            if count + 1 <= first_pixels:
                 color = first_color
-            elif count <= second_pixels:
+            elif count + 1 <= second_pixels:
                 color = second_color
             else:
                 # Off
@@ -526,7 +519,11 @@ def main():
 
                     # Draw the chart screen.
                     screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
-                    time.sleep(5)
+
+                    if production_power >= 1:
+                        time.sleep(5)
+                    else:
+                        time.sleep(60)
                 # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
                 except requests.exceptions.ConnectionError as exception:
                     # Log this error.

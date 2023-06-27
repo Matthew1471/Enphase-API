@@ -274,13 +274,6 @@ class ScreenProduction:
                                                  speed=self.speed,
                                                  end_time=end_time
                                                 )
-        else:
-            # Turn off the screen.
-            if not self.emulator:
-                self.unicornhathd.off()
-
-            # Wait for end time before re-trying.
-            time.sleep(end_time - time.time())
 
 class ScreenChart:
     def __init__(self, unicornhathd, screen_width, screen_height, maximum_watts_per_panel):
@@ -330,9 +323,9 @@ class ScreenChart:
         # Take each of the pixels.
         for count in range(self.number_of_pixels):
 
-            if count <= first_pixels:
+            if count + 1 <= first_pixels:
                 color = first_color
-            elif count <= second_pixels:
+            elif count + 1 <= second_pixels:
                 color = second_color
             else:
                 # Off
@@ -554,7 +547,7 @@ def main():
             # Repeat forever unless the user presses CTRL + C.
             while True:
                 # Time to refresh from the queue.
-                end_time = time.time() + 15
+                end_time = time.time() + 10
 
                 # Sometimes a request will intermittently fail, in this event we return error text.
                 try:
