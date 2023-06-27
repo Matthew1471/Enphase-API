@@ -103,7 +103,7 @@ class UnicornHATHelper:
             if end_time <= time.time(): break
 
     @staticmethod
-    def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.25):
+    def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.10):
         # Open the requested image (and ignore any transparency values).
         image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
 
@@ -182,8 +182,8 @@ class ScreenWeather:
 
         # Build the weather URL.
         weather_url = 'https://api.open-meteo.com/v1/forecast?'
-        weather_url += 'latitude=' + str(self.latitude) 
-        weather_url += '&longitude=' + str(self.longitude) 
+        weather_url += 'latitude=' + str(self.latitude)
+        weather_url += '&longitude=' + str(self.longitude)
         weather_url += '&current_weather=true'
         weather_url += '&daily=sunrise,sunset'
         weather_url += '&start_date=' + today
@@ -199,7 +199,7 @@ class ScreenWeather:
 
     def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
         # Windy.
-        if wind_speed > 15:
+        if wind_speed >= 16:
             filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
         # Clear sky.
         elif weather_code == 0:
@@ -254,14 +254,14 @@ class ScreenProduction:
         # Divide the number by a thousand and report it in kW (to 2 decimal places).
         return str(round(watts / 1000, 2)) + ' kW' + ('h' if in_hours else '')
 
-    def draw_screen(self, number_of_microinverters, w_now, end_time):
+    def draw_screen(self, number_of_microinverters, watts, end_time):
         # Is there any power being generated?
-        if w_now >= 1:
+        if watts >= 1:
             # The line of text we want to write on the screen is a wattage number to be formatted.
-            line = self.get_human_readable_power(w_now)
+            line = self.get_human_readable_power(watts)
 
             # Calculate the colour of the text based off the production wattage.
-            color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(w_now / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
+            color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(watts / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
@@ -281,6 +281,72 @@ class ScreenProduction:
 
             # Wait for end time before re-trying.
             time.sleep(end_time - time.time())
+
+class ScreenChart:
+    def __init__(self, unicornhathd, screen_width, screen_height, maximum_watts_per_panel):
+        self.unicornhathd = unicornhathd
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.maximum_watts_per_panel = maximum_watts_per_panel
+        self.number_of_pixels = self.screen_width * self.screen_height
+
+    def draw_screen(self, number_of_microinverters, production, consumption):
+        total_capacity = number_of_microinverters * self.maximum_watts_per_panel
+
+        # Have we got far more consumption than total production capacity?
+        if consumption > total_capacity:
+            # Set the total capacity to be the current consumption.
+            total_capacity = consumption
+
+        watts_per_pixel = (total_capacity / self.number_of_pixels)
+
+        number_of_production_pixels = production / watts_per_pixel
+        number_of_consumption_pixels = consumption / watts_per_pixel
+
+        # Some common RGB colours.
+        red = (255, 0, 0)
+        green = (0, 255, 0)
+
+        # More consumption than production.
+        if number_of_production_pixels < number_of_consumption_pixels:
+            # Production is smaller number of pixels.
+            first_pixels = number_of_production_pixels
+            first_color = green
+
+            second_pixels = number_of_consumption_pixels
+            second_color = red
+        # More production than consumption.
+        else:
+            # Consumption is smaller number of pixels.
+            first_pixels = number_of_consumption_pixels
+            first_color = red
+
+            second_pixels = number_of_production_pixels
+            second_color = green
+
+        # The pixels are left-to-right.
+        self.unicornhathd.rotation(self.unicornhathd.get_rotation() + 90)
+
+        # Take each of the pixels.
+        for count in range(self.number_of_pixels):
+
+            if count <= first_pixels:
+                color = first_color
+            elif count <= second_pixels:
+                color = second_color
+            else:
+                # Off
+                color = (0, 0, 0)
+
+            # X = Top to Bottom
+            # Y = Left To Right
+            self.unicornhathd.set_pixel(int(count / self.screen_height), int(count % self.screen_width), *color)
+
+        # Show the contents of the buffer.
+        self.unicornhathd.show()
+
+        # Restore rotation.
+        self.unicornhathd.rotation(self.unicornhathd.get_rotation() - 90)
 
 def restricted_float(number):
     # Check this is a float.
@@ -307,15 +373,24 @@ def get_production_details(gateway, reading_type='Meter'):
     if reading_type == 'Inverters':
         # Get a reference to just the inverters bit of the Production JSON.
         reading_json = production_json['production'][0]
+
+        # Assume no meter.
+        consumption_watts = 0
     elif reading_type == 'Meter':
         # Get a reference to just the production meter bit of the Production JSON.
         reading_json = production_json['production'][1]
+
+        # Return the consumption_watts (if consumption meter enabled).
+        if len(production_json['consumption']) > 0:
+            consumption_watts = production_json['consumption'][0]['wNow']
+        else:
+            consumption_watts = 0
     else:
         # Requested type not implemented.
         raise ValueError('Invalid reading_type specified for get_production_details().')
 
     # Get the watts being generated now by the inverters.
-    w_now = reading_json['wNow']
+    production_watts = reading_json['wNow']
 
     # The inverters are only polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
     if reading_type == 'Inverters' and reading_json['readingTime'] != 0:
@@ -329,7 +404,7 @@ def get_production_details(gateway, reading_type='Meter'):
         next_reading_time = time.time() + 60
 
     # Return the response.
-    return w_now, number_of_microinverters, next_reading_time
+    return production_watts, consumption_watts, number_of_microinverters, next_reading_time
 
 def main():
     # Create an instance of argparse to handle any command line arguments.
@@ -430,6 +505,14 @@ def main():
                                              emulator=args.emulate_HAT
                                             )
 
+        # Set up an instance of the chart screen.
+        screen_chart = ScreenChart(
+                                    unicornhathd=unicornhathd,
+                                    screen_width=screen_width,
+                                    screen_height=screen_height,
+                                    maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                  )
+
         # Gather the AMQP details from the credentials file.
         amqp_host = credentials.get('amqp_host', 'localhost')
         amqp_username = credentials.get('amqp_username', 'guest')
@@ -463,12 +546,15 @@ def main():
 
         try:
             # Get the production details directly from gateway (just so we know the correct number_of_microinverters).
-            w_now, number_of_microinverters, _ = get_production_details(gateway=gateway, reading_type='Meter')
+            production_power, consumption_power, number_of_microinverters, _ = get_production_details(gateway=gateway, reading_type='Meter')
+
+            # This data is fresh.
+            timestamp = time.time()
 
             # Repeat forever unless the user presses CTRL + C.
             while True:
                 # Time to refresh from the queue.
-                end_time = time.time() + 20
+                end_time = time.time() + 15
 
                 # Sometimes a request will intermittently fail, in this event we return error text.
                 try:
@@ -479,7 +565,7 @@ def main():
                     # AMQP get a meter response.
                     while True:
                         # Get a message.
-                        method_frame, header_frame, body = amqp_channel.basic_get('Enphase_Unicorn_HAT_HD', auto_ack=True)
+                        method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
 
                         # Was there a message?
                         if method_frame:
@@ -487,13 +573,28 @@ def main():
                             if method_frame.message_count > 0:
                                 continue
 
-                            w_now = json.loads(body)['readings']['production']['ph-a']['p']
+                            json_object = json.loads(body)
+                            timestamp = json_object['timestamp']
+                            production_power = json_object['readings']['production']['ph-a']['p']
+                            consumption_power = json_object['readings']['total-consumption']['ph-a']['p']
                         else:
                             # Ran out of responses.
                             break
 
-                    # Draw the production power screen (until the end time).
-                    screen_production.draw_screen(number_of_microinverters=number_of_microinverters, w_now=w_now, end_time=end_time)
+                    # Check the data is within the last 30 seconds.
+                    if timestamp > time.time()-30:
+                        # Draw the production power screen (until the end time).
+                        screen_production.draw_screen(number_of_microinverters=number_of_microinverters, watts=production_power, end_time=end_time)
+
+                        # Draw the chart screen.
+                        screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
+                        time.sleep(5)
+                    else:
+                        # Log this error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ')..', file=sys.stderr)
+
+                        # Display and scroll the red error text on screen for 60 seconds.
+                        UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
 
                 # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
                 except requests.exceptions.ConnectionError as exception:

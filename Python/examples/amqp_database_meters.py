@@ -137,7 +137,7 @@ def main():
             add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, body=body)
 
         # Create a consumer.
-        amqp_channel.basic_consume(queue='Enphase_Database', on_message_callback=amqp_callback, auto_ack=True, exclusive=True, consumer_tag="AMQP_Database_Meters")
+        amqp_channel.basic_consume(queue=amqp_result.method.queue, on_message_callback=amqp_callback, auto_ack=True, exclusive=True, consumer_tag="AMQP_Database_Meters")
 
         # Start consuming.
         print(str(datetime.datetime.now()) + ' - Waiting for messages. To exit press CTRL+C')
