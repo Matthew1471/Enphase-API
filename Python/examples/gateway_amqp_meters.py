@@ -16,11 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
-import queue    # We use a queue as the response is buffered with no timestamps.
-import time     # We use the epoch seconds to determine the reading timestamps.
+import time     # We use the current epoch seconds for the reading times.
 
 import pika     # Third party library; "pip install pika"
 
@@ -31,13 +29,41 @@ from enphase_api.local.gateway import Gateway
 
 def main():
     # Load credentials.
-    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
+    with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
-        # It is not valid so clear it.
-        raise ValueError('No or expired token.')
+    if credentials.get('token'):
+        # Check if the JWT is valid.
+        if (credentials.get('gatewaySerialNumber') and not Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])) and not Authentication.check_token_valid(credentials['token']):
+            # It is not valid so clear it.
+            credentials['token'] = None
+
+    # Do we still not have a Token?
+    if not credentials.get('token'):
+        # Do we have a way to obtain a token?
+        if credentials.get('enphaseUsername') and credentials.get('enphasePassword'):
+            # Create a Authentication object.
+            authentication = Authentication()
+
+            # Authenticate with Entrez (French for "Access").
+            if not authentication.authenticate(credentials['enphaseUsername'], credentials['enphasePassword']):
+                raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
+
+            # Does the user want to target a specific gateway or all uncommissioned ones?
+            if credentials.get('gatewaySerialNumber'):
+                # Get a new gateway specific token (installer = short-life, owner = long-life).
+                credentials['token'] = authentication.get_token_for_commissioned_gateway(credentials['gatewaySerialNumber'])
+            else:
+                # Get a new uncommissioned gateway specific token.
+                credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
+
+            # Update the file to include the modified token.
+            with open('configuration/credentials.json', mode='w', encoding='utf-8') as json_file:
+                json.dump(credentials, json_file, indent=4)
+        else:
+            # Let the user know why the program is exiting.
+            raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
     # Did the user override the library default hostname to the Gateway?
     if credentials.get('host'):
@@ -110,7 +136,7 @@ def main():
             amqp_connection.close()
     else:
         # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
