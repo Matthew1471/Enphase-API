@@ -125,14 +125,12 @@ def main():
         try:
             # Request the data from the meter stream.
             with gateway.api_call_stream('/stream/meter') as stream:
-
                 # The start and end strings for each chunk.
                 start_needle = 'data: '
                 end_needle = '}\r\n\r\n'
 
                 # Chunks are received when the gateway flushes its buffer.
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                                
                     # This is to be expected with Server-Sent Events (SSE).
                     if chunk.startswith(start_needle) and chunk.endswith(end_needle):
                         # Add this result to the database.

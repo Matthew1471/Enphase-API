@@ -94,14 +94,14 @@ def main():
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
                     # This is to be expected with Server-Sent Events (SSE).
                     if chunk.startswith(start_needle) and chunk.endswith(end_needle):
-                            # We calculate the timestamp of the meter readings off the time the chunk was received.
-                            json_object = dict({'timestamp':time.time(), 'readings':json.loads(chunk[len(start_needle):])})
+                        # We calculate the timestamp of the meter readings off the time the chunk was received.
+                        json_object = dict({'timestamp':time.time(), 'readings':json.loads(chunk[len(start_needle):])})
 
-                            # Add this result to the AMQP broker.
-                            amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
+                        # Add this result to the AMQP broker.
+                        amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
 
-                            # Output the reading time of the chunk and a value for timestamp debugging.
-                            #print(str(json_object['timestamp']) + ' - ' + str(json_object['readings']['net-consumption']['ph-a']['p']) + ' W')
+                        # Output the reading time of the chunk and a value for timestamp debugging.
+                        #print(str(json_object['timestamp']) + ' - ' + str(json_object['readings']['net-consumption']['ph-a']['p']) + ' W')
                     else:
                         # This is fatal.
                         raise ValueError('Bad line returned from meter stream:\r\n "' + chunk + '"')
