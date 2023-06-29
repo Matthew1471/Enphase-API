@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get meters' Current Transformer (CT) clamp settings.
+Get meters’ Current Transformer (CT) clamp settings.
 
 == Introduction
 
@@ -57,7 +57,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`{EID}`
 |Object
 |`CTClampSettings` object
-|The meter's Current Transformer (CT) clamp settings.
+|The meter’s Current Transformer (CT) clamp settings.
 
 |===
 
@@ -99,7 +99,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Meters' Current Transformer (CT) Clamp Settings
+=== Get Meters’ Current Transformer (CT) Clamp Settings
 
 .GET */ivp/meters/cts* Response
 [listing]

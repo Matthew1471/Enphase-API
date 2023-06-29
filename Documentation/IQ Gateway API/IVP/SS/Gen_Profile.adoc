@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set generator's profile. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
+Get or set generator’s profile. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 == Introduction
 
@@ -63,7 +63,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Generator's Profile
+=== Get Generator’s Profile
 
 .GET */ivp/ss/gen_profile* Response
 [source,json,subs="+quotes"]

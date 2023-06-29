@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set generator's status for toggle switch. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
+Get or set generator’s status for toggle switch. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 == Introduction
 
@@ -45,7 +45,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Generator's Status For Toggle Switch
+=== Get Generator’s Status For Toggle Switch
 
 .GET */ivp/ss/gen_mode* Response
 [source,json,subs="+quotes"]

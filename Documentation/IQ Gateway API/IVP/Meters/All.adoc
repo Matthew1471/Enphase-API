@@ -1,4 +1,4 @@
-= IVP - Meters - General - All Meters' Settings
+= IVP - Meters - General - All Meters’ Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set internal meters' settings.
+Get or set internal meters’ settings.
 
 == Introduction
 

@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get specific device's status (of a microinverter, meter etc).
+Get specific device’s status (of a microinverter, meter etc).
 
 == Introduction
 
@@ -39,7 +39,7 @@ More details on the project are available from the link:../../../../../README.ad
 
 == Request
 
-A HTTP `GET` to the `/ivp/eh/devs` endpoint provides the following response data.
+A HTTP `GET` to the `/ivp/eh/devs/{EID}` endpoint provides the following response data.
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
@@ -114,7 +114,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Get Specific Device Status
 
-.GET */ivp/eh/devs* Response
+.GET */ivp/eh/devs/553648384* Response
 [source,json,subs="+quotes"]
 ----
 [{"eid": 553648384, "devType": 1, "adminState": 1, "createdDate": 1671630660, "partnum": "800-01714-r02", "serialnum": "123456789109"}]

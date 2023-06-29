@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or update specific meter's Current Transformer (CT) clamp settings by Gateway (formerly "Envoy") record ID.
+Get or update specific meter’s Current Transformer (CT) clamp settings by Gateway (formerly "Envoy") record ID.
 
 == Introduction
 

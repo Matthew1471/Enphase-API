@@ -224,7 +224,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Meter's Readings (Production)
+=== Get Meter’s Readings (Production)
 
 .GET */ivp/meters/readings/704643328* Response
 [source,json,subs="+quotes"]

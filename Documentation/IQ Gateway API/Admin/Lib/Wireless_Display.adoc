@@ -92,7 +92,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ap_mode`
 |Object
 |`APMode` object
-|Details about this Gateway's (formerly "Envoy") access point mode.
+|Details about this Gateway’s (formerly "Envoy") access point mode.
 
 |`selected_region`
 |String
@@ -123,7 +123,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ssid`
 |String
 |String
-|The Wi-Fi network's Service Set IDentifier (SSID).
+|The Wi-Fi network’s Service Set IDentifier (SSID).
 
 |`status`
 |String
@@ -153,7 +153,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ap_bssid`
 |String
 |String
-|The Access Point (AP)'s Basic Service Set Identifier (BSSID)
+|The Access Point (AP)’s Basic Service Set Identifier (BSSID)
 
 |`channel`
 |String
@@ -255,7 +255,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`name`
 |String
 |String
-|The broadcast name of the Gateway's (formerly "Envoy") Wi-Fi Access Point (AP) name.
+|The broadcast name of the Gateway’s (formerly "Envoy") Wi-Fi Access Point (AP) name.
 
 |===
 
@@ -276,7 +276,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`mac`
 |String
 |String
-|The Access Point (AP)'s Basic Service Set Identifier (BSSID)
+|The Access Point (AP)’s Basic Service Set Identifier (BSSID)
 
 |`channel`
 |String
@@ -286,7 +286,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ssid`
 |String
 |String
-|The Wi-Fi network's Service Set IDentifier (SSID).
+|The Wi-Fi network’s Service Set IDentifier (SSID).
 
 |`bars`
 |Number

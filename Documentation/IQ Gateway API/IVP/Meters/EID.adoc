@@ -1,4 +1,4 @@
-= IVP - Meters - General - Specific Meter's Settings
+= IVP - Meters - General - Specific Meter’s Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set a specific meter's settings by Gateway (formerly "Envoy") record ID.
+Get or set a specific meter’s settings by Gateway (formerly "Envoy") record ID.
 
 == Introduction
 
@@ -117,7 +117,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 == Examples
 
-=== Get Meter's Settings (Production)
+=== Get Meter’s Settings (Production)
 
 .GET */ivp/meters/704643328* Response
 [source,json,subs="+quotes"]
