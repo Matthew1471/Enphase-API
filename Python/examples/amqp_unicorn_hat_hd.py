@@ -199,7 +199,7 @@ class ScreenWeather:
 
     def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
         # Windy.
-        if wind_speed >= 16:
+        if wind_speed >= 17:
             filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
         # Clear sky.
         elif weather_code == 0:
