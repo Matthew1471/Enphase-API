@@ -26,6 +26,7 @@
   <ItemGroup>
     <Compile Include="examples\amqp_database_meters.py" />
     <Compile Include="examples\gateway_amqp_meters.py" />
+    <Compile Include="examples\gateway_amqp_meters_old.py" />
     <Compile Include="examples\gateway_console.py" />
     <Compile Include="examples\gateway_database_meters.py" />
     <Compile Include="examples\gateway_generate_docs.py" />

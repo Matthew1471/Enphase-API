@@ -84,143 +84,27 @@ def main():
         amqp_channel.exchange_declare(exchange='Enphase', exchange_type='topic')
 
         try:
-            # On a single phase system this returns almost every 21 - 23 seconds (occasionally 45 seconds), returning typically 21 - 23 results in multiple >= 701 bytes and <= 725 bytes chunks (likely a 16 KB = 16,384 byte pre-TLS pre-HTTP server-side buffer?) across 12 TCP/IP packets, so each result could be a per-second poll interval?
+            # Request the data from the meter stream.
             with gateway.api_call_stream('/stream/meter') as stream:
-                # We use a queue as it is FIFO.
-                queued_chunks = queue.Queue()
-
-                # Statistics
-                stats_count = 0
-                stats_length = 0
-                stats_min = None
-                stats_max = None
-
-                # We calculate each meter reading time based off when the chunk batches come in.
-                chunk_first_received = None
-                chunk_delay = None
-
                 # The start and end strings for each chunk.
                 start_needle = 'data: '
                 end_needle = '}\r\n\r\n'
 
-                # We allow partial chunks.
-                partial_chunk = None
-
                 # Chunks are received when the gateway flushes its buffer.
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                    # Take a reference of the chunk received date/time.
-                    now = time.time()
+                    # This is to be expected with Server-Sent Events (SSE).
+                    if chunk.startswith(start_needle) and chunk.endswith(end_needle):
+                            # We calculate the timestamp of the meter readings off the time the chunk was received.
+                            json_object = dict({'timestamp':time.time(), 'readings':json.loads(chunk[len(start_needle):])})
 
-                    # Have we received a chunk already?
-                    if chunk_first_received:
-                        # Was the previous chunk first recieved over 10 seconds ago so the buffer has just been flushed (we add on an allowance of 10 seconds for network latency)?
-                        if chunk_first_received + 10 < now:
-                            # Preserve the count of seconds to add on to the oldest reading.
-                            counter = 0
+                            # Add this result to the AMQP broker.
+                            amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
 
-                            # Flush the queue now we know how many were received in this batch.
-                            while not queued_chunks.empty():
-                                # We calculate the timestamp of the meter readings off the time the chunks were first received.
-                                timestamp = chunk_first_received + counter
-
-                                # If we calculated there was a delay to the chunks we should add that on.
-                                if chunk_delay:
-                                    timestamp += chunk_delay
-
-                                # Get the first chunk from the queue.
-                                json_object = dict({'timestamp':timestamp, 'readings':queued_chunks.get()})
-
-                                # Add this result to the AMQP broker.
-                                amqp_channel.basic_publish(exchange='Enphase', routing_key='MeterStream', body=json.dumps(json_object))
-
-                                # Output the reading time of the chunk and a value for timestamp debugging.
-                                #print(str(json_object['timestamp']) + ' - ' + str(json_object['readings']['net-consumption']['ph-a']['p']) + ' W')
-
-                                # The queue has no reliable method for determining queue size.
-                                counter+=1
-
-                            # Print statistics.
-                            print(str(datetime.datetime.now()) + ' - Length:' + str(stats_length) + ',Count:' + str(stats_count) + ',Min:' + str(stats_min) + ',Max:' + str(stats_max) + ',Latency:' + str(chunk_delay))
-
-                            # Clear chunk latency calculations.
-                            chunk_delay = None
-
-                            # Clear statistics.
-                            stats_count = 0
-                            stats_length = 0
-                            stats_min = None
-                            stats_max = None
-
-                            # Update the chunk first received time.
-                            chunk_first_received = now
-                        # We have received a chunk recently, so calculate the delay between them.
-                        else:
-                            # Calculate the delay between this and the previous packet.
-                            delay = now - chunk_last_received
-
-                            if chunk_delay:
-                                chunk_delay += delay
-                            else:
-                                chunk_delay = delay
-                    # This is the first chunk we have received since the last buffer flush.
+                            # Output the reading time of the chunk and a value for timestamp debugging.
+                            #print(str(json_object['timestamp']) + ' - ' + str(json_object['readings']['net-consumption']['ph-a']['p']) + ' W')
                     else:
-                        # Update the chunk first received time.
-                        chunk_first_received = now
-
-                    # Add on any previous partially complete chunks.
-                    if partial_chunk:
-                        # Append the previous partial_chunk to this chunk.
-                        chunk = partial_chunk + chunk
-
-                        # Notify the user.
-                        print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.')
-
-                        # This partial is now consumed.
-                        partial_chunk = None
-
-                    # Where in the chunk to start reading from.
-                    start_position = 0
-
-                    # Repeat while there is an end-position.
-                    while start_position < len(chunk):
-                        # This is to be expected with Server-Sent Events (SSE).
-                        if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
-                            # Can the end_needle be found?
-                            end_position = chunk.find(end_needle, start_position)
-
-                            # Was the end_position found?
-                            if end_position != -1:
-                                # Start after the 'data: '.
-                                start_position += len(start_needle)
-
-                                # Add this to the queue (turning the chunk into a dict) as we will need to sort out the timestamps once all the chunks have been flushed.
-                                queued_chunks.put(json.loads(chunk[start_position:end_position+1]))
-
-                                # Gather statistics.
-                                part_length = (end_position + 1) - start_position
-                                stats_count += 1
-                                stats_length += part_length
-                                if not stats_min or part_length < stats_min: stats_min = part_length
-                                if not stats_max or part_length > stats_max: stats_max = part_length
-
-                                # The next start_position is after this current substring.
-                                start_position = end_position + len(end_needle)
-                            # Can happen when the connection is closed and the remaining data is flushed.
-                            else:
-                                # Store a reference to this ready to be consumed by the next chunk.
-                                partial_chunk = chunk[start_position:]
-
-                                # Notify the user.
-                                print(str(datetime.datetime.now()) + ' - Incomplete chunk.')
-
-                                # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
-                                break
-                        else:
-                            # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
-                            raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
-
-                    # Update the last received time.
-                    chunk_last_received = now
+                        # This is fatal.
+                        raise ValueError('Bad line returned from meter stream:\r\n "' + chunk + '"')
         finally:
             # Close the AMQP connection.
             amqp_connection.close()
