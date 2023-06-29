@@ -131,4 +131,12 @@ class Gateway:
         return response.json()
 
     def api_call_stream(self, path):
-        return self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)
+        # Call the Gateway API endpoint (expecting a stream).
+        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)
+
+        # Has the session expired?
+        if response.status_code == 401:
+            raise ValueError(response.reason)
+
+        # Return the Server-Sent-Events (SSE) response.
+        return response
