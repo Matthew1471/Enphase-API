@@ -107,8 +107,8 @@ BindReadOnlyPaths=/usr/bin/
 BindPaths=/home/pi/Enphase/
 
 # Redirect the StandardOutput and StandardError.
-StandardOutput=append:/home/pi/Enphase/Database.log
-StandardError=append:/home/pi/Enphase/Database.log
+StandardOutput=append:/home/pi/Enphase/log/Database.log
+StandardError=append:/home/pi/Enphase/log/Database.log
 
 [Install]
 
