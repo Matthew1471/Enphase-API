@@ -52,14 +52,10 @@ import requests.exceptions
 # Third party library; "pip install pika"
 import pika
 
-# All the shared Enphase® functions are in these packages.
-from enphase_api.cloud.authentication import Authentication
-from enphase_api.local.gateway import Gateway
-
 class UnicornHATHelper:
 
     @staticmethod
-    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.05, end_time=time.time() + 60):
+    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.03, end_time=time.time() + 60):
         # Calculate the width and height of the text when rendered by the font.
         _, font_upper, font_width, _ = font.getbbox(line)
 
@@ -153,8 +149,8 @@ class ScreenWeather:
         self.weather_filename = None
 
     def draw_screen(self):
-        # If the weather has not been loaded yet, or it was loaded over 30 minutes ago.
-        if not self.weather_last_updated or self.weather_last_updated + 1800 < time.time():
+        # If the weather has not been loaded yet, or it was loaded over 15 minutes ago.
+        if not self.weather_last_updated or self.weather_last_updated + 900 < time.time():
             # Get the latest weather.
             weather_code, wind_speed, sunrise, sunset = self.get_weather_details()
 
@@ -199,7 +195,7 @@ class ScreenWeather:
 
     def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
         # Windy.
-        if wind_speed >= 18:
+        if wind_speed >= 20:
             filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
         # Clear sky.
         elif weather_code == 0:
@@ -236,7 +232,7 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
-    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.05, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.03, emulator=False):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -355,50 +351,6 @@ def restricted_float(number):
     # This should otherwise be an acceptable value.
     return number
 
-def get_production_details(gateway, reading_type='Meter'):
-    # Get Gateway status.
-    production_json = gateway.api_call('/production.json')
-
-    # We generate text colours for production thresholds within the HSV scale based off the number of microinverter devices (which should correspond to overall system size).
-    number_of_microinverters = production_json['production'][0]['activeCount']
-
-    # Where to get the reading from.
-    if reading_type == 'Inverters':
-        # Get a reference to just the inverters bit of the Production JSON.
-        reading_json = production_json['production'][0]
-
-        # Assume no meter.
-        consumption_watts = 0
-    elif reading_type == 'Meter':
-        # Get a reference to just the production meter bit of the Production JSON.
-        reading_json = production_json['production'][1]
-
-        # Return the consumption_watts (if consumption meter enabled).
-        if len(production_json['consumption']) > 0:
-            consumption_watts = production_json['consumption'][0]['wNow']
-        else:
-            consumption_watts = 0
-    else:
-        # Requested type not implemented.
-        raise ValueError('Invalid reading_type specified for get_production_details().')
-
-    # Get the watts being generated now by the inverters.
-    production_watts = reading_json['wNow']
-
-    # The inverters are only polled every 5 minutes (so we can make sure we only attempt a refresh when there's likely new data).
-    if reading_type == 'Inverters' and reading_json['readingTime'] != 0:
-        # Take the reading time and add 5 minutes (300 seconds).
-        next_reading_time = reading_json['readingTime'] + 300
-
-        # If the data is already stale (happens in low light) try again in 60 seconds.
-        if next_reading_time <= time.time(): next_reading_time = time.time() + 60
-    else:
-        # We should try in 60 seconds.
-        next_reading_time = time.time() + 60
-
-    # Return the response.
-    return production_watts, consumption_watts, number_of_microinverters, next_reading_time
-
 def main():
     # Create an instance of argparse to handle any command line arguments.
     parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an Enphase® Gateway and displays the production values on a Unicorn HAT HD.')
@@ -406,11 +358,12 @@ def main():
     # Arguments to control the display of data on the Unicorn HAT HD.
     display_group = parser.add_argument_group('Display')
     display_group.add_argument('/Brightness', '-Brightness', '--Brightness', dest='brightness', type=restricted_float, help='How bright the screen should be (defaults to 0.5).')
-    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.05, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.05 which is every 50ms).')
+    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.03, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.03 which is every 30ms).')
     display_group.add_argument('/Rotate', '-Rotate', '--Rotate', dest='rotate', type=int, default=90, help='How many degress to rotate the screen by (defaults to 90).')
 
     # Arguments to control how the program generally behaves.
     general_group = parser.add_argument_group('General')
+    general_group.add_argument('/NumberOfMicroinverters', '-NumberOfMicroinverters', '--NumberOfMicroinverters', dest='number_of_microinverters', type=int, default=14, help='How many microinverters are installed (defaults to 14).')
     general_group.add_argument('/MaxWattsPerPanel', '-MaxWattsPerPanel', '--MaxWattsPerPanel', dest='maximum_watts_per_panel', type=int, default=384, help='How many watts maximum can each panel generate (defaults to 384 which is the limit of an IQ8H).')
 
     # Arguments that can overide default behaviour when testing this program.
@@ -435,193 +388,156 @@ def main():
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
-    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
-        # It is not valid so clear it.
-        raise ValueError('No or expired token.')
+    # Rotate the image (e.g. if the screen is on its side).
+    if args.rotate:
+        unicornhathd.rotation(args.rotate)
 
-    # Did the user override the library default hostname to the Gateway?
-    if credentials.get('host'):
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
+    # Set the brightness of the screen (defaults to 0.5).
+    if args.brightness:
+        unicornhathd.brightness(args.brightness)
+
+    # Get the screen dimensions for the Unicorn HAT HD.
+    screen_width, screen_height = unicornhathd.get_shape()
+
+    # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the font from the resources directory instead.
+    if os.name != 'nt':
+        # Which font to use to render the text.
+        font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
     else:
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
+        # https://ftp.gnu.org/gnu/freefont/
+        font_path = 'resources/FreeSansBold.ttf'
 
-    # Are we able to login to the gateway?
-    if gateway.login(credentials['token']):
+    # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
+    # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
+    font = ImageFont.truetype(font_path, 20)
 
-        # Rotate the image (e.g. if the screen is on its side).
-        if args.rotate:
-            unicornhathd.rotation(args.rotate)
+    # Should we display the weather?
+    if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
+        screen_weather = ScreenWeather(
+                                        unicornhathd=unicornhathd,
+                                        screen_width=screen_width,
+                                        screen_height=screen_height,
+                                        latitude=credentials['latitude'],
+                                        longitude=credentials['longitude'],
+                                        emulator=args.emulate_HAT
+                                        )
+    else:
+        screen_weather = None
 
-        # Set the brightness of the screen (defaults to 0.5).
-        if args.brightness:
-            unicornhathd.brightness(args.brightness)
+    # Set up an instance of the production screen.
+    screen_production = ScreenProduction(
+                                            unicornhathd=unicornhathd,
+                                            screen_width=screen_width,
+                                            screen_height=screen_height,
+                                            font=font,
+                                            maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                            speed=args.delay,
+                                            emulator=args.emulate_HAT
+                                        )
 
-        # Get the screen dimensions for the Unicorn HAT HD.
-        screen_width, screen_height = unicornhathd.get_shape()
+    # Set up an instance of the chart screen.
+    screen_chart = ScreenChart(
+                                unicornhathd=unicornhathd,
+                                screen_width=screen_width,
+                                screen_height=screen_height,
+                                maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                )
 
-        # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the font from the resources directory instead.
-        if os.name != 'nt':
-            # Which font to use to render the text.
-            font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
-        else:
-            # https://ftp.gnu.org/gnu/freefont/
-            font_path = 'resources/FreeSansBold.ttf'
+    # Gather the AMQP details from the credentials file.
+    amqp_host = credentials.get('amqp_host', 'localhost')
+    amqp_username = credentials.get('amqp_username', 'guest')
+    amqp_password = credentials.get('amqp_password', 'guest')
 
-        # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
-        # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
-        font = ImageFont.truetype(font_path, 20)
+    # Gather the AMQP credentials into a PlainCredentials object.
+    amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
 
-        # Should we display the weather?
-        if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
-            screen_weather = ScreenWeather(
-                                           unicornhathd=unicornhathd,
-                                           screen_width=screen_width,
-                                           screen_height=screen_height,
-                                           latitude=credentials['latitude'],
-                                           longitude=credentials['longitude'],
-                                           emulator=args.emulate_HAT
-                                          )
-        else:
-            screen_weather = None
+    # The information that is visible to the broker.
+    client_properties = {
+                            'connection_name': 'AMQP_Unicorn_HAT_HD',
+                            'product': 'Enphase-API',
+                            'version': '0.1',
+                            'information': 'https://github.com/Matthew1471/Enphase-API'
+                        }
 
-        # Set up an instance of the production screen.
-        screen_production = ScreenProduction(
-                                             unicornhathd=unicornhathd,
-                                             screen_width=screen_width,
-                                             screen_height=screen_height,
-                                             font=font,
-                                             maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                             speed=args.delay,
-                                             emulator=args.emulate_HAT
-                                            )
+    # Gather the AMQP connection parameters.
+    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
 
-        # Set up an instance of the chart screen.
-        screen_chart = ScreenChart(
-                                    unicornhathd=unicornhathd,
-                                    screen_width=screen_width,
-                                    screen_height=screen_height,
-                                    maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                  )
+    # Connect to the AMQP broker.
+    amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
 
-        # Gather the AMQP details from the credentials file.
-        amqp_host = credentials.get('amqp_host', 'localhost')
-        amqp_username = credentials.get('amqp_username', 'guest')
-        amqp_password = credentials.get('amqp_password', 'guest')
+    # Get reference to the virtual connection within AMQP.
+    amqp_channel = amqp_connection.channel()
 
-        # Gather the AMQP credentials into a PlainCredentials object.
-        amqp_credentials = pika.PlainCredentials(username=amqp_username, password=amqp_password)
+    # Declare a queue (if it does not already exist).
+    amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
 
-        # The information that is visible to the broker.
-        client_properties = {
-                             'connection_name': 'AMQP_Unicorn_HAT_HD',
-                             'product': 'Enphase-API',
-                             'version': '0.1',
-                             'information': 'https://github.com/Matthew1471/Enphase-API'
-                            }
+    # Bind the queue to the exchange (if it is not already bound).
+    amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
+    
+    # We may reference this with no messages obtained from the queue.
+    timestamp = 0
 
-        # Gather the AMQP connection parameters.
-        amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
-
-        # Connect to the AMQP broker.
-        amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
-
-        # Get reference to the virtual connection within AMQP.
-        amqp_channel = amqp_connection.channel()
-
-        # Declare a queue (if it does not already exist).
-        amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
-
-        # Bind the queue to the exchange (if it is not already bound).
-        amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
-
-        try:
-            # Get the production details directly from gateway (just so we know the correct number_of_microinverters).
-            production_power, consumption_power, number_of_microinverters, _ = get_production_details(gateway=gateway, reading_type='Meter')
-
-            # This data is fresh.
-            timestamp = time.time()
-
-            # Repeat forever unless the user presses CTRL + C.
-            while True:
-                # Time to refresh from the queue.
-                end_time = time.time() + 10
-
-                # Sometimes a request will intermittently fail, in this event we return error text.
+    try:
+        # Repeat forever unless the user presses CTRL + C.
+        while True:
+            # Optionally draw the weather.
+            if screen_weather:
+                # A weather request may fail.
                 try:
-                    # Optionally draw the weather.
-                    if screen_weather:
-                        screen_weather.draw_screen()
-
-                    # AMQP get a meter response.
-                    while True:
-                        # Get a message.
-                        method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
-
-                        # Was there a message?
-                        if method_frame:
-                            # If there are more messages keep consuming until this is the last one.
-                            if method_frame.message_count > 0:
-                                continue
-
-                            json_object = json.loads(body)
-                            timestamp = json_object['timestamp']
-                            production_power = json_object['readings']['production']['ph-a']['p']
-                            consumption_power = json_object['readings']['total-consumption']['ph-a']['p']
-                        else:
-                            # Ran out of responses.
-                            break
-
-                    # Check the data is within the last 30 seconds.
-                    if timestamp > time.time()-30:
-                        # Draw the production power screen (until the end time).
-                        screen_production.draw_screen(number_of_microinverters=number_of_microinverters, watts=production_power, end_time=end_time)
-
-                        # Draw the chart screen.
-                        screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
-                        time.sleep(5)
-                    else:
-                        # Log this error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ')..', file=sys.stderr)
-
-                        # Display and scroll the red error text on screen for 60 seconds.
-                        UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
-
-                # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
+                    screen_weather.draw_screen()
+                # Sometimes unable to connect
                 except requests.exceptions.ConnectionError as exception:
                     # Log this error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  exception, file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather..\n ' +  str(exception), file=sys.stderr)
                 # This happens generally if there are wider issues on the network.
                 except requests.exceptions.ReadTimeout:
                     # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out..', file=sys.stderr)
                 except requests.exceptions.JSONDecodeError as exception:
                     # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + exception, file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
 
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
-        # Did the user press CTRL + C to attempt to quit this application?
-        except KeyboardInterrupt:
-            # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-            unicornhathd.off()
-        # Clear the display so the LEDs are not left stuck on when this program quits.
-        finally:
-            # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-            unicornhathd.off()
+            # AMQP get a meter response.
+            while True:
+                # Get a message.
+                method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
 
-    # Token is not valid and this program will not refresh it (this program is not given the Enphase® username and password).
-    else:
-        # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+                # Was there a message?
+                if method_frame:
+                    # If there are more messages keep consuming until this is the last one.
+                    if method_frame.message_count > 0:
+                        continue
+
+                    json_object = json.loads(body)
+                    timestamp = json_object['timestamp']
+                    production_power = json_object['readings']['production']['ph-a']['p']
+                    consumption_power = json_object['readings']['total-consumption']['ph-a']['p']
+                else:
+                    # Ran out of responses.
+                    break
+
+            # Check the data is within the last 10 seconds.
+            if timestamp > time.time()-10:
+                # Draw the production power screen (until the end time).
+                screen_production.draw_screen(number_of_microinverters=args.number_of_microinverters, watts=production_power, end_time=time.time() + 10)
+
+                # Draw the chart screen (for 5 seconds).
+                screen_chart.draw_screen(number_of_microinverters=args.number_of_microinverters, production=production_power, consumption=consumption_power)
+                time.sleep(5)
+            else:
+                # Log this error.
+                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ')..', file=sys.stderr)
+
+                # Display and scroll the red error text on screen for 10 seconds.
+                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 10)
+    # Did the user press CTRL + C to attempt to quit this application?
+    except KeyboardInterrupt:
+        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
+        unicornhathd.off()
+    # Clear the display so the LEDs are not left stuck on when this program quits.
+    finally:
+        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
+        unicornhathd.off()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
