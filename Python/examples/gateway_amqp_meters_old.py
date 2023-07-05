@@ -205,7 +205,7 @@ def main():
 
                                 # The next start_position is after this current substring.
                                 start_position = end_position + len(end_needle)
-                            # Can happen when the connection is closed and the remaining data is flushed.
+                            # Can happen when the packets are delayed.
                             else:
                                 # Store a reference to this ready to be consumed by the next chunk.
                                 partial_chunk = chunk[start_position:]
@@ -216,6 +216,9 @@ def main():
                                 # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
                                 break
                         else:
+                            # Notify the user.
+                            print(str(datetime.datetime.now()) + ' - Bad line returned from meter stream.')
+
                             # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
                             raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
 

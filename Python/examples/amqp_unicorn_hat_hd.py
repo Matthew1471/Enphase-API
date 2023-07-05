@@ -55,7 +55,7 @@ import pika
 class UnicornHATHelper:
 
     @staticmethod
-    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.03, end_time=time.time() + 60):
+    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.04, end_time=time.time() + 60):
         # Calculate the width and height of the text when rendered by the font.
         _, font_upper, font_width, _ = font.getbbox(line)
 
@@ -96,7 +96,12 @@ class UnicornHATHelper:
                 time.sleep(speed)
 
             # Have we been asked to stop scrolling?
-            if end_time <= time.time(): break
+            if end_time <= time.time():
+                # Pause briefly before returning.
+                time.sleep(speed*2)
+
+                # Return.
+                break
 
     @staticmethod
     def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.10):
@@ -232,7 +237,7 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
-    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.03, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04, emulator=False):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -358,7 +363,7 @@ def main():
     # Arguments to control the display of data on the Unicorn HAT HD.
     display_group = parser.add_argument_group('Display')
     display_group.add_argument('/Brightness', '-Brightness', '--Brightness', dest='brightness', type=restricted_float, help='How bright the screen should be (defaults to 0.5).')
-    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.03, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.03 which is every 30ms).')
+    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.04, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.04 which is every 40ms).')
     display_group.add_argument('/Rotate', '-Rotate', '--Rotate', dest='rotate', type=int, default=90, help='How many degress to rotate the screen by (defaults to 90).')
 
     # Arguments to control how the program generally behaves.
@@ -474,7 +479,7 @@ def main():
     # Bind the queue to the exchange (if it is not already bound).
     amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
     
-    # We may reference this with no messages obtained from the queue.
+    # We may reference this when no messages are obtained from the queue.
     timestamp = 0
 
     try:
@@ -488,11 +493,11 @@ def main():
                 # Sometimes unable to connect
                 except requests.exceptions.ConnectionError as exception:
                     # Log this error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather..\n ' +  str(exception), file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
                 # This happens generally if there are wider issues on the network.
                 except requests.exceptions.ReadTimeout:
                     # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out..', file=sys.stderr)
+                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
                 except requests.exceptions.JSONDecodeError as exception:
                     # Log this non-critial often transient error.
                     print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
@@ -519,14 +524,14 @@ def main():
             # Check the data is within the last 10 seconds.
             if timestamp > time.time()-10:
                 # Draw the production power screen (until the end time).
-                screen_production.draw_screen(number_of_microinverters=args.number_of_microinverters, watts=production_power, end_time=time.time() + 10)
+                screen_production.draw_screen(number_of_microinverters=args.number_of_microinverters, watts=production_power, end_time=time.time() + 5)
 
                 # Draw the chart screen (for 5 seconds).
                 screen_chart.draw_screen(number_of_microinverters=args.number_of_microinverters, production=production_power, consumption=consumption_power)
                 time.sleep(5)
             else:
                 # Log this error.
-                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ')..', file=sys.stderr)
+                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ').', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 10 seconds.
                 UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 10)

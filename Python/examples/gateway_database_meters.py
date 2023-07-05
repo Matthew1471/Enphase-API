@@ -155,18 +155,61 @@ def main():
                 start_needle = 'data: '
                 end_needle = '}\r\n\r\n'
 
+                # We allow partial chunks.
+                partial_chunk = None
+
                 # Chunks are received when the gateway flushes its buffer.
                 for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                    # This is to be expected with Server-Sent Events (SSE).
-                    if chunk.startswith(start_needle) and chunk.endswith(end_needle):
-                        # Add this result to the database.
-                        add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=datetime.datetime.now(), json_object=json.loads(chunk[len(start_needle):]))
+                    # Add on any previous partially complete chunks.
+                    if partial_chunk:
+                        # Append the previous partial_chunk to this chunk.
+                        chunk = partial_chunk + chunk
 
-                        # Output the reading time of the chunk and a value for timestamp debugging.
-                        #print(str(datetime.datetime.now()) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
-                    else:
-                        # This is fatal.
-                        raise ValueError('Bad line returned from meter stream:\r\n "' + chunk + '"')
+                        # Notify the user.
+                        print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.')
+
+                        # This partial is now consumed.
+                        partial_chunk = None
+
+                    # Where in the chunk to start reading from.
+                    start_position = 0
+
+                    # Repeat while there is an end-position.
+                    while start_position < len(chunk):
+                        # This is to be expected with Server-Sent Events (SSE).
+                        if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
+                            # Can the end_needle be found?
+                            end_position = chunk.find(end_needle, start_position)
+
+                            # Was the end_position found?
+                            if end_position != -1:
+                                # Start after the 'data: '.
+                                start_position += len(start_needle)
+
+                                # Add this result to the database.
+                                add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=datetime.datetime.now(), json_object=json.loads(chunk[start_position:end_position+1]))
+
+                                # Output the reading time of the chunk and a value for timestamp debugging.
+                                #print(str(datetime.datetime.now()) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
+
+                                # The next start_position is after this current substring.
+                                start_position = end_position + len(end_needle)
+                            # Can happen when the packets are delayed.
+                            else:
+                                # Store a reference to this ready to be consumed by the next chunk.
+                                partial_chunk = chunk[start_position:]
+
+                                # Notify the user.
+                                print(str(datetime.datetime.now()) + ' - Incomplete chunk.')
+
+                                # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
+                                break
+                        else:
+                            # Notify the user.
+                            print(str(datetime.datetime.now()) + ' - Bad line returned from meter stream.')
+
+                            # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
+                            raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
         finally:
             # Close the database connection.
             database_connection.close()

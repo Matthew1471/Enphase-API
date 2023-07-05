@@ -56,7 +56,7 @@ from enphase_api.local.gateway import Gateway
 class UnicornHATHelper:
 
     @staticmethod
-    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.03, end_time=time.time() + 60):
+    def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.04, end_time=time.time() + 60):
         # Calculate the width and height of the text when rendered by the font.
         _, font_upper, font_width, _ = font.getbbox(line)
 
@@ -97,7 +97,12 @@ class UnicornHATHelper:
                 time.sleep(speed)
 
             # Have we been asked to stop scrolling?
-            if end_time <= time.time(): break
+            if end_time <= time.time():
+                # Pause briefly before returning.
+                time.sleep(speed*2)
+
+                # Return.
+                break
 
     @staticmethod
     def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.10):
@@ -233,7 +238,7 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
-    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.03, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04, emulator=False):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -403,7 +408,7 @@ def main():
     # Arguments to control the display of data on the Unicorn HAT HD.
     display_group = parser.add_argument_group('Display')
     display_group.add_argument('/Brightness', '-Brightness', '--Brightness', dest='brightness', type=restricted_float, help='How bright the screen should be (defaults to 0.5).')
-    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.03, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.03 which is every 30ms).')
+    display_group.add_argument('/Delay', '-Delay', '--Delay', dest='delay', type=float, default=0.04, help='How long to wait (in seconds) before drawing the next frame (defaults to 0.04 which is every 40ms).')
     display_group.add_argument('/Rotate', '-Rotate', '--Rotate', dest='rotate', type=int, default=90, help='How many degress to rotate the screen by (defaults to 90).')
 
     # Arguments to control how the program generally behaves.
