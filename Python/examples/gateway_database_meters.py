@@ -52,7 +52,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
                 # Add to the database the meter reading(s) (specifying a dictionary instead of a tuple prevented the query from being prepared - possibly a MySQL Connector bug).
                 database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
             except mysql.connector.errors.DataError:
-                print(json_object)
+                print(json_object, flush=True)
                 raise
 
             # Get the result ID for this phase insert.
@@ -133,89 +133,89 @@ def main():
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
-    # Are we able to login to the gateway?
-    if gateway.login(credentials['token']):
-        # Gather the database details from the credentials file.
-        database_host = credentials.get('database_host', 'localhost')
-        database_username = credentials.get('database_username', 'root')
-        database_password = credentials.get('database_password', '')
-        database_database = credentials.get('database_database', 'Enphase')
-
-        # Connect to the MySQL/MariaDB database.
-        database_connection = mysql.connector.connect(host=database_host, user=database_username, password=database_password, database=database_database)
-
-        # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
-        database_cursor_meter_reading = database_connection.cursor(prepared=True)
-        database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
-
-        try:
-            # Request the data from the meter stream.
-            with gateway.api_call_stream('/stream/meter') as stream:
-                # The start and end strings for each chunk.
-                start_needle = 'data: '
-                end_needle = '}\r\n\r\n'
-
-                # We allow partial chunks.
-                partial_chunk = None
-
-                # Chunks are received when the gateway flushes its buffer.
-                for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                    # Add on any previous partially complete chunks.
-                    if partial_chunk:
-                        # Append the previous partial_chunk to this chunk.
-                        chunk = partial_chunk + chunk
-
-                        # Notify the user.
-                        print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.')
-
-                        # This partial is now consumed.
-                        partial_chunk = None
-
-                    # Where in the chunk to start reading from.
-                    start_position = 0
-
-                    # Repeat while there is an end-position.
-                    while start_position < len(chunk):
-                        # This is to be expected with Server-Sent Events (SSE).
-                        if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
-                            # Can the end_needle be found?
-                            end_position = chunk.find(end_needle, start_position)
-
-                            # Was the end_position found?
-                            if end_position != -1:
-                                # Start after the 'data: '.
-                                start_position += len(start_needle)
-
-                                # Add this result to the database.
-                                add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=datetime.datetime.now(), json_object=json.loads(chunk[start_position:end_position+1]))
-
-                                # Output the reading time of the chunk and a value for timestamp debugging.
-                                #print(str(datetime.datetime.now()) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W')
-
-                                # The next start_position is after this current substring.
-                                start_position = end_position + len(end_needle)
-                            # Can happen when the packets are delayed.
-                            else:
-                                # Store a reference to this ready to be consumed by the next chunk.
-                                partial_chunk = chunk[start_position:]
-
-                                # Notify the user.
-                                print(str(datetime.datetime.now()) + ' - Incomplete chunk.')
-
-                                # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
-                                break
-                        else:
-                            # Notify the user.
-                            print(str(datetime.datetime.now()) + ' - Bad line returned from meter stream.')
-
-                            # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
-                            raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
-        finally:
-            # Close the database connection.
-            database_connection.close()
-    else:
+    # Are we not able to login to the gateway?
+    if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+
+    # Gather the database details from the credentials file.
+    database_host = credentials.get('database_host', 'localhost')
+    database_username = credentials.get('database_username', 'root')
+    database_password = credentials.get('database_password', '')
+    database_database = credentials.get('database_database', 'Enphase')
+
+    # Connect to the MySQL/MariaDB database.
+    database_connection = mysql.connector.connect(host=database_host, user=database_username, password=database_password, database=database_database)
+
+    # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
+    database_cursor_meter_reading = database_connection.cursor(prepared=True)
+    database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
+
+    try:
+        # Request the data from the meter stream.
+        with gateway.api_call_stream('/stream/meter') as stream:
+            # The start and end strings for each chunk.
+            start_needle = 'data: '
+            end_needle = '}\r\n\r\n'
+
+            # We allow partial chunks.
+            partial_chunk = None
+
+            # Chunks are received when the gateway flushes its buffer.
+            for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
+                # Add on any previous partially complete chunks.
+                if partial_chunk:
+                    # Append the previous partial_chunk to this chunk.
+                    chunk = partial_chunk + chunk
+
+                    # Notify the user.
+                    print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.', flush=True)
+
+                    # This partial is now consumed.
+                    partial_chunk = None
+
+                # Where in the chunk to start reading from.
+                start_position = 0
+
+                # Repeat while there is an end-position.
+                while start_position < len(chunk):
+                    # This is to be expected with Server-Sent Events (SSE).
+                    if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
+                        # Can the end_needle be found?
+                        end_position = chunk.find(end_needle, start_position)
+
+                        # Was the end_position found?
+                        if end_position != -1:
+                            # Start after the 'data: '.
+                            start_position += len(start_needle)
+
+                            # Add this result to the database.
+                            add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=datetime.datetime.now(), json_object=json.loads(chunk[start_position:end_position+1]))
+
+                            # Output the reading time of the chunk and a value for timestamp debugging.
+                            #print(str(datetime.datetime.now()) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W', flush=True)
+
+                            # The next start_position is after this current substring.
+                            start_position = end_position + len(end_needle)
+                        # Can happen when the packets are delayed.
+                        else:
+                            # Store a reference to this ready to be consumed by the next chunk.
+                            partial_chunk = chunk[start_position:]
+
+                            # Notify the user.
+                            print(str(datetime.datetime.now()) + ' - Incomplete chunk.', flush=True)
+
+                            # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
+                            break
+                    else:
+                        # Notify the user.
+                        print(str(datetime.datetime.now()) + ' - Bad line returned from meter stream.', flush=True)
+
+                        # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
+                        raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
+    finally:
+        # Close the database connection.
+        database_connection.close()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':

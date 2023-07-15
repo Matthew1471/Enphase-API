@@ -53,7 +53,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
                 # Add to the database the meter reading(s) (specifying a dictionary instead of a tuple prevented the query from being prepared - possibly a MySQL Connector bug).
                 database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
             except mysql.connector.errors.DataError:
-                print(json_object)
+                print(json_object, flush=True)
                 raise
 
             # Get the result ID for this phase insert.
@@ -140,13 +140,14 @@ def main():
         amqp_channel.basic_consume(queue=amqp_result.method.queue, on_message_callback=amqp_callback, auto_ack=True, exclusive=True, consumer_tag="AMQP_Database_Meters")
 
         # Start consuming.
-        print(str(datetime.datetime.now()) + ' - Waiting for messages. To exit press CTRL+C')
+        print(str(datetime.datetime.now()) + ' - Waiting for messages. To exit press CTRL+C', flush=True)
         amqp_channel.start_consuming()
     except KeyboardInterrupt:
-        print(str(datetime.datetime.now()) + ' - Closing connections.')
+        print(str(datetime.datetime.now()) + ' - Closing connections.', flush=True)
     finally:
         # Close the AMQP connection.
-        amqp_connection.close()
+        if amqp_connection.is_open:
+            amqp_connection.close()
 
         # Close the database connection.
         database_connection.close()

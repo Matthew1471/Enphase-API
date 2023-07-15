@@ -450,118 +450,115 @@ def main():
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
-    # Are we able to login to the gateway?
-    if gateway.login(credentials['token']):
-
-        # Rotate the image (e.g. if the screen is on its side).
-        if args.rotate:
-            unicornhathd.rotation(args.rotate)
-
-        # Set the brightness of the screen (defaults to 0.5).
-        if args.brightness:
-            unicornhathd.brightness(args.brightness)
-
-        # Get the screen dimensions for the Unicorn HAT HD.
-        screen_width, screen_height = unicornhathd.get_shape()
-
-        # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the font from the resources directory instead.
-        if os.name != 'nt':
-            # Which font to use to render the text.
-            font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
-        else:
-            # https://ftp.gnu.org/gnu/freefont/
-            font_path = 'resources/FreeSansBold.ttf'
-
-        # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
-        # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
-        font = ImageFont.truetype(font_path, 20)
-
-        # Should we display the weather?
-        if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
-            screen_weather = ScreenWeather(
-                                           unicornhathd=unicornhathd,
-                                           screen_width=screen_width,
-                                           screen_height=screen_height,
-                                           latitude=credentials['latitude'],
-                                           longitude=credentials['longitude'],
-                                           emulator=args.emulate_HAT
-                                          )
-        else:
-            screen_weather = None
-
-        # Set up an instance of the production screen.
-        screen_production = ScreenProduction(
-                                             unicornhathd=unicornhathd,
-                                             screen_width=screen_width,
-                                             screen_height=screen_height,
-                                             font=font,
-                                             maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                             speed=args.delay,
-                                             emulator=args.emulate_HAT
-                                            )
-
-        # Set up an instance of the chart screen.
-        screen_chart = ScreenChart(
-                                    unicornhathd=unicornhathd,
-                                    screen_width=screen_width,
-                                    screen_height=screen_height,
-                                    maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                  )
-        try:
-            # Repeat forever unless the user presses CTRL + C.
-            while True:
-                # Sometimes a request will intermittently fail, in this event we return error text.
-                try:
-                    # Optionally draw the weather.
-                    if screen_weather:
-                        screen_weather.draw_screen()
-
-                    # Get the production details.
-                    production_power, consumption_power, number_of_microinverters, end_time = get_production_details(gateway=gateway, reading_type='Meter')
-
-                    # Draw the production power screen (until the end time).
-                    screen_production.draw_screen(number_of_microinverters=number_of_microinverters, watts=production_power, end_time=end_time)
-
-                    # Draw the chart screen.
-                    screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
-
-                    if production_power >= 1:
-                        time.sleep(5)
-                    else:
-                        time.sleep(60)
-                # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
-                except requests.exceptions.ConnectionError as exception:
-                    # Log this error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  str(exception), file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
-                # This happens generally if there are wider issues on the network.
-                except requests.exceptions.ReadTimeout:
-                    # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
-                except requests.exceptions.JSONDecodeError as exception:
-                    # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + str(exception), file=sys.stderr)
-
-                    # Display and scroll the red error text on screen for 60 seconds.
-                    UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
-        # Did the user press CTRL + C to attempt to quit this application?
-        except KeyboardInterrupt:
-            # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-            unicornhathd.off()
-        # Clear the display so the LEDs are not left stuck on when this program quits.
-        finally:
-            # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-            unicornhathd.off()
-
-    # Token is not valid and this program will not refresh it (this program is not given the Enphase® username and password).
-    else:
+    # Are we not able to login to the gateway?
+    if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+
+    # Rotate the image (e.g. if the screen is on its side).
+    if args.rotate:
+        unicornhathd.rotation(args.rotate)
+
+    # Set the brightness of the screen (defaults to 0.5).
+    if args.brightness:
+        unicornhathd.brightness(args.brightness)
+
+    # Get the screen dimensions for the Unicorn HAT HD.
+    screen_width, screen_height = unicornhathd.get_shape()
+
+    # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the font from the resources directory instead.
+    if os.name != 'nt':
+        # Which font to use to render the text.
+        font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
+    else:
+        # https://ftp.gnu.org/gnu/freefont/
+        font_path = 'resources/FreeSansBold.ttf'
+
+    # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
+    # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
+    font = ImageFont.truetype(font_path, 20)
+
+    # Should we display the weather?
+    if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
+        screen_weather = ScreenWeather(
+                                        unicornhathd=unicornhathd,
+                                        screen_width=screen_width,
+                                        screen_height=screen_height,
+                                        latitude=credentials['latitude'],
+                                        longitude=credentials['longitude'],
+                                        emulator=args.emulate_HAT
+                                        )
+    else:
+        screen_weather = None
+
+    # Set up an instance of the production screen.
+    screen_production = ScreenProduction(
+                                            unicornhathd=unicornhathd,
+                                            screen_width=screen_width,
+                                            screen_height=screen_height,
+                                            font=font,
+                                            maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                            speed=args.delay,
+                                            emulator=args.emulate_HAT
+                                        )
+
+    # Set up an instance of the chart screen.
+    screen_chart = ScreenChart(
+                                unicornhathd=unicornhathd,
+                                screen_width=screen_width,
+                                screen_height=screen_height,
+                                maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                )
+    try:
+        # Repeat forever unless the user presses CTRL + C.
+        while True:
+            # Sometimes a request will intermittently fail, in this event we return error text.
+            try:
+                # Optionally draw the weather.
+                if screen_weather:
+                    screen_weather.draw_screen()
+
+                # Get the production details.
+                production_power, consumption_power, number_of_microinverters, end_time = get_production_details(gateway=gateway, reading_type='Meter')
+
+                # Draw the production power screen (until the end time).
+                screen_production.draw_screen(number_of_microinverters=number_of_microinverters, watts=production_power, end_time=end_time)
+
+                # Draw the chart screen.
+                screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
+
+                if production_power >= 1:
+                    time.sleep(5)
+                else:
+                    time.sleep(60)
+            # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
+            except requests.exceptions.ConnectionError as exception:
+                # Log this error.
+                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  str(exception), file=sys.stderr)
+
+                # Display and scroll the red error text on screen for 60 seconds.
+                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+            # This happens generally if there are wider issues on the network.
+            except requests.exceptions.ReadTimeout:
+                # Log this non-critial often transient error.
+                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
+
+                # Display and scroll the red error text on screen for 60 seconds.
+                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+            except requests.exceptions.JSONDecodeError as exception:
+                # Log this non-critial often transient error.
+                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + str(exception), file=sys.stderr)
+
+                # Display and scroll the red error text on screen for 60 seconds.
+                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+    # Did the user press CTRL + C to attempt to quit this application?
+    except KeyboardInterrupt:
+        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
+        unicornhathd.off()
+    # Clear the display so the LEDs are not left stuck on when this program quits.
+    finally:
+        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
+        unicornhathd.off()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':

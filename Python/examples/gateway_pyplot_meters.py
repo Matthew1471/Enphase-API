@@ -283,27 +283,27 @@ def main():
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
 
-    # Are we able to login to the gateway?
-    if gateway.login(credentials['token']):
-        # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
-        global meters_status
-        meters_status = gateway.api_call('/ivp/meters')
-
-        # Get the first result.
-        add_result_from_gateway()
-
-        # Draw the initial plot.
-        global figure
-        figure = setup_plot()
-
-        # Set a timer to animate the chart every 1 second.
-        _ = animation.FuncAnimation(figure, animate, interval=1000)
-
-        # Show the plot screen.
-        plt.show()
-    else:
+    # Are we not able to login to the gateway?
+    if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+
+    # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
+    global meters_status
+    meters_status = gateway.api_call('/ivp/meters')
+
+    # Get the first result.
+    add_result_from_gateway()
+
+    # Draw the initial plot.
+    global figure
+    figure = setup_plot()
+
+    # Set a timer to animate the chart every 1 second.
+    _ = animation.FuncAnimation(figure, animate, interval=1000)
+
+    # Show the plot screen.
+    plt.show()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
