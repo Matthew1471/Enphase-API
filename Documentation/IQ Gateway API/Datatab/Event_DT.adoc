@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records. `iDisplayLength` sets the number of records to return (defaults to 1) and if set to `-1` will return all records.
+Used by the JavaScript datatable to return event log records.
 
 == Introduction
+
+Used by the JavaScript datatable (see http://legacy.datatables.net/usage/server-side) to return event log records. `iDisplayLength` sets the number of records to return (defaults to 1) and if set to `-1` will return all records.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

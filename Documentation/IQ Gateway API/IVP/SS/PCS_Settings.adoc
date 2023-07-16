@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set Power Control System (PCS) details. PCS systems limit current and loading on the busbars and conductors supplied by the power production sources and/or energy storage systems irrespective of self-consumption. The PCS is similar to the Power Export Limit (PEL) however PCS also monitors grid import loads and will ensure a total current (before consumption) is not exceeded from grid, storage or solar production.
+Get or set Power Control System (PCS) details.
 
 == Introduction
+
+Get or set Power Control System (PCS) details. PCS systems limit current and loading on the busbars and conductors supplied by the power production sources and/or energy storage systems irrespective of self-consumption. The PCS is similar to the Power Export Limit (PEL) however PCS also monitors grid import loads and will ensure a total current (before consumption) is not exceeded from grid, storage or solar production.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

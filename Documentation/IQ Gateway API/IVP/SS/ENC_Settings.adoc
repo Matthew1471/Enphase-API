@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Update IQ Battery (formerly "Encharge") settings. This specifically enables/disables power output and sets the country.
+Update IQ Battery (formerly "Encharge") settings.
 
 == Introduction
+
+Update IQ Battery (formerly "Encharge") settings. This specifically enables/disables power output and sets the country.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

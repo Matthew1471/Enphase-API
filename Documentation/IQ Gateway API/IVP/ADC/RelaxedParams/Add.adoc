@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This allows you to override M-Series microinverter parameters.
+Overrides M-Series Parameters.
 
 == Introduction
+
+This allows you to override M-Series microinverter parameters.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

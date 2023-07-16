@@ -31,9 +31,11 @@ endif::[]
 
 Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
 
-This function is not available to European gateways (`EU`) and will only be available to North-American Gateway devices (`NA` or `NA_COM`).
-
 == Introduction
+
+Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
+
+This function is not available to European gateways (`EU`) and will only be available to North-American Gateway devices (`NA` or `NA_COM`).
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

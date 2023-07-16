@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the IQ System Controller (formerly "Enpower") generator status. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
+Get or set the IQ System Controller (formerly "Enpower") generator status.
 
 == Introduction
+
+Get or set the IQ System Controller (formerly "Enpower") generator status. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

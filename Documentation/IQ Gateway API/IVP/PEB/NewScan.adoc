@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for Power Electronics Blocks (PEB).
+Start, stop or get the results of a new scan for devices.
 
 == Introduction
+
+A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for Power Electronics Blocks (PEB).
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

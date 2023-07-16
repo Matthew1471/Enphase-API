@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This enables or disables the live data MQTT streaming functionality.
+Enable or disable live data MQTT streaming.
 
 == Introduction
+
+This enables or disables the live data MQTT streaming functionality.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

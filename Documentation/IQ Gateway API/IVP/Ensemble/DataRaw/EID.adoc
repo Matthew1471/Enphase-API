@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get Enphase(R) Energy System (formerly "Ensemble") raw data for a specific device. This includes IQ Battery (formerly "Encharge Storage") raw data or IQ System Controller (formerly "Enpower") manual override status.
+Get Enphase(R) Energy System (formerly "Ensemble") raw data for a specific device.
 
 == Introduction
+
+Get Enphase(R) Energy System (formerly "Ensemble") raw data for a specific device. This includes IQ Battery (formerly "Encharge Storage") raw data or IQ System Controller (formerly "Enpower") manual override status.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

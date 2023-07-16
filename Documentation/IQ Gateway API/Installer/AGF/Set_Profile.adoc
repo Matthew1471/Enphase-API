@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-A HTTP PUT to `/installer/agf/set_profile.json` with JSON content (sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`) can be used to set an Advanced Grid Functionality (AGF) profile.
+Set the Advanced Grid Functionality (AGF) profile.
 
 == Introduction
+
+A HTTP PUT to `/installer/agf/set_profile.json` with JSON content (sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`) can be used to set an Advanced Grid Functionality (AGF) profile.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

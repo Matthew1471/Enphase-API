@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Update IQ Battery (formerly "Encharge Storage") phase. The Gateway (formerly "Envoy") communicates with the IQ Battery (formerly "Encharge Storage") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.
+Update IQ Battery (formerly "Encharge Storage") phase.
 
 == Introduction
+
+Update IQ Battery (formerly "Encharge Storage") phase. The Gateway (formerly "Envoy") communicates with the IQ Battery (formerly "Encharge Storage") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

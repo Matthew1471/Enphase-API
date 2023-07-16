@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Delete generator. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
+Delete generator.
 
 == Introduction
+
+Delete generator. See https://enphase.com/download/generator-integration-tech-brief for details on generators.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This retrieves the information and status of the live status functionality. The MQTT client and meter states and the counters supporting it.
+Get live data MQTT streaming status.
 
 == Introduction
+
+This retrieves the information and status of the live status functionality. The MQTT client and meter states and the counters supporting it.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

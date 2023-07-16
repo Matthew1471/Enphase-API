@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-This endpoint obtains the Distributed Energy Resources (DER) parameters for the multi-mode inverter when it is running on-grid.
+Get or set the profile for the multi-mode inverter when running on-grid.
 
 == Introduction
+
+This endpoint obtains the Distributed Energy Resources (DER) parameters for the multi-mode inverter when it is running on-grid.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

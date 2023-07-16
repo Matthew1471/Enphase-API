@@ -29,9 +29,11 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get the Energy System (formerly "Ensemble") status using Zigbee Security Control (SecCtrl) messages. The Gateway (formerly "Envoy") communicates with both the IQ System Controller (formerly "Enpower") before version 3 and the IQ Battery (formerly "Encharge") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using encrypted Zigbee.
+Get the Energy System (formerly "Ensemble") status using Zigbee Security Control (SecCtrl) messages.
 
 == Introduction
+
+Get the Energy System (formerly "Ensemble") status using Zigbee Security Control (SecCtrl) messages. The Gateway (formerly "Envoy") communicates with both the IQ System Controller (formerly "Enpower") before version 3 and the IQ Battery (formerly "Encharge") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using encrypted Zigbee.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
