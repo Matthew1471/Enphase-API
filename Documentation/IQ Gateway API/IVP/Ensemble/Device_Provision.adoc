@@ -33,7 +33,7 @@ Provision an Enphase(R) Energy System (formerly "Ensemble") CAN device.
 
 == Introduction
 
-Provision an Enphase(R) Energy System (formerly "Ensemble") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P). Enphase call the CAN bus the "Controller wire".
+Provision an Enphase(R) Energy System (formerly "Ensemble") CAN device (3rd-Generation, such as IQ System Controller 3 or IQ Battery 5P). Enphase(R) call the CAN bus the "Controller wire".
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

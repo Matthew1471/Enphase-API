@@ -143,12 +143,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`ever_reported_to_enlighten`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Whether this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten").
+|Whether this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten(R)").
 
 |`last_enlighten_report_time`
 |Number
 |Number
-|The time this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten").
+|The time this Gateway (formerly "Envoy") has communicated with Enphase(R) Cloud (formerly "Enlighten(R)").
 
 |`primary_interface`
 |String

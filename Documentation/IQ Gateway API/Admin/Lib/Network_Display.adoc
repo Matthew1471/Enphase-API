@@ -120,22 +120,22 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`connectivity_enlighten` (Optional)
 |String
 |String
-|Whether connectivity to Enlighten could be established. This is only available when performing a network connectivity check.
+|Whether connectivity to Enlighten(R) could be established. This is only available when performing a network connectivity check.
 
 |`connectivity_enphase` (Optional)
 |String
 |String
-|Whether connectivity to Enphase could be established. This is only available when performing a network connectivity check.
+|Whether connectivity to Enphase(R) could be established. This is only available when performing a network connectivity check.
 
 |`enlighten_dns_lookup` (Optional)
 |String
 |String
-|Whether a DNS lookup for Enlighten could be performed. This is only available when performing a network connectivity check.
+|Whether a DNS lookup for Enlighten(R) could be performed. This is only available when performing a network connectivity check.
 
 |`enphase_dns_lookup` (Optional)
 |String
 |String
-|Whether a DNS lookup for Enphase could be performed. This is only available when performing a network connectivity check.
+|Whether a DNS lookup for Enphase(R) could be performed. This is only available when performing a network connectivity check.
 
 |`google_dns_lookup` (Optional)
 |String

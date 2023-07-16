@@ -149,7 +149,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`chaneid`
 |Number
 |Number
-|The channel Enphase ID.
+|The channel Enphase(R) ID.
 
 |`device_control`
 |Array(Object)

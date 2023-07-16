@@ -33,7 +33,7 @@ Get or set the Enphase(R) De-Bug Access (DBA) tunnel state.
 
 == Introduction
 
-Get or set the Enphase(R) De-Bug Access (DBA) tunnel state. This creates a secure connection so Enphase support personnel can troubleshoot this system remotely.
+Get or set the Enphase(R) De-Bug Access (DBA) tunnel state. This creates a secure connection so Enphase(R) support personnel can troubleshoot this system remotely.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

@@ -29,11 +29,13 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten Cloud").
+Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten(R) Cloud").
 
 == Introduction
 
-Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten Cloud"). The JSON PUT data is sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`. The diagnostic mode may also be enabled, which temporarily sets the `bandwidth` to `high`.
+Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten(R) Cloud").
+
+The JSON PUT data is sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`. A diagnostic mode may also be enabled, which temporarily sets the `bandwidth` to `high`.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
@@ -74,7 +76,7 @@ When making a `PUT` request:
 |`reportsettings`
 |Object
 |Object
-|The Enphase(R) Cloud (formerly "Enlighten Cloud") report settings. This is actually a JSON object but treated as form data.
+|The Enphase(R) Cloud (formerly "Enlighten(R) Cloud") report settings. This is actually a JSON object but incorrectly sent as form data.
 
 |===
 
@@ -90,7 +92,7 @@ When making a `PUT` request:
 |`bandwidth`
 |String
 |`Bandwidth` (e.g. `high`)
-|The amount of bandwidth the Gateway (formerly "Envoy") can use to report to Enphase(R) Cloud (formerly "Enlighten Cloud"). In the format `Bandwidth`.
+|The amount of bandwidth the Gateway (formerly "Envoy") can use to report to Enphase(R) Cloud (formerly "Enlighten(R) Cloud"). In the format `Bandwidth`.
 
 |`diag_duration_mins`
 |Number
@@ -113,7 +115,7 @@ When making a `PUT` request:
 |`reportsettings`
 |Object
 |`ReportSettings` object
-|The Enphase(R) Cloud (formerly "Enlighten Cloud") report settings.
+|The Enphase(R) Cloud (formerly "Enlighten(R) Cloud") report settings.
 
 |===
 
@@ -129,7 +131,7 @@ When making a `PUT` request:
 |`bandwidth`
 |String
 |`Bandwidth` (e.g. `high`)
-|The amount of bandwidth the Gateway (formerly "Envoy") can use to report to Enphase(R) Cloud (formerly "Enlighten Cloud"). In the format `Bandwidth`.
+|The amount of bandwidth the Gateway (formerly "Envoy") can use to report to Enphase(R) Cloud (formerly "Enlighten(R) Cloud"). In the format `Bandwidth`.
 
 |`diag_duration_mins`
 |Number
@@ -155,11 +157,11 @@ When making a `PUT` request:
 
 |`high`
 |Standard
-|Standard reporting, which typically reports 5-minute interval data to Enphase(R) Cloud (formerly "Enlighten Cloud") every 5 minutes during daylight hours.
+|Standard reporting, which typically reports 5-minute interval data to Enphase(R) Cloud (formerly "Enlighten(R) Cloud") every 5 minutes during daylight hours.
 
 |`low`
 |Low-Bandwidth
-|Low-bandwidth reporting, which reports 15-minute interval data to Enphase(R) Cloud (formerly "Enlighten Cloud") four times per day.
+|Low-bandwidth reporting, which reports 15-minute interval data to Enphase(R) Cloud (formerly "Enlighten(R) Cloud") four times per day.
 
 |===
 

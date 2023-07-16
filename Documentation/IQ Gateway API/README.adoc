@@ -589,7 +589,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/PEB/ReportSettings.adoc[Report Settings]`
 |`/ivp/peb/reportsettings`
-|Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten Cloud").
+|Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten(R) Cloud").
 
 |===
 
