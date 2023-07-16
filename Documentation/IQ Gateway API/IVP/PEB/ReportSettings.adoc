@@ -60,6 +60,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Message Body
 
+When making a `PUT` request:
+
 ==== Root
 
 [cols="1,1,1,2", options="header"]
@@ -72,7 +74,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`reportsettings`
 |Object
 |Object
-|The Enphase(R) Cloud (formerly "Enlighten Cloud") report settings.
+|The Enphase(R) Cloud (formerly "Enlighten Cloud") report settings. This is actually a JSON object but treated as form data.
 
 |===
 

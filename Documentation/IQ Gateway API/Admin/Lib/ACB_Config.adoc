@@ -61,6 +61,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 === Message Body
 
+When making a `DELETE` or `PUT` request:
+
 ==== Root
 
 [cols="1,1,1,2", options="header"]
