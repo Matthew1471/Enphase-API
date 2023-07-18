@@ -281,60 +281,79 @@ class ScreenChart:
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.maximum_watts_per_panel = maximum_watts_per_panel
+        self.maximum_peak_watts_per_panel = maximum_watts_per_panel
+
+        # IQ7A Detected.
+        if maximum_watts_per_panel == 366:
+            self.maximum_continuous_watts_per_panel = 349
+        # Unknown.
+        else:
+            self.maximum_continuous_watts_per_panel = None
+
         self.number_of_pixels = self.screen_width * self.screen_height
 
     def draw_screen(self, number_of_microinverters, production, consumption):
-        total_capacity = number_of_microinverters * self.maximum_watts_per_panel
+        total_capacity = number_of_microinverters * self.maximum_peak_watts_per_panel
 
-        # Have we got far more consumption than total production capacity?
+        # Check the maxium_watts_per_panel setting is correct.
+        if production > total_capacity:
+            raise ValueError('Production (' + production + ') exceeds the total capacity (' + total_capacity + '), check maximum_watts_per_panel setting.')
+
+        # Have we got more consumption than total production capacity?
         if consumption > total_capacity:
             # Set the total capacity to be the current consumption.
             total_capacity = consumption
 
+        # Calculate how many watts each pixel represents.
         watts_per_pixel = (total_capacity / self.number_of_pixels)
 
-        number_of_production_pixels = production / watts_per_pixel
-        number_of_consumption_pixels = consumption / watts_per_pixel
+        # Calculate how many pixels of production and consumption we have.
+        number_of_production_pixels = int(production / watts_per_pixel)
+        number_of_consumption_pixels = int(consumption / watts_per_pixel)
 
         # Some common RGB colours.
         red = (255, 0, 0)
         green = (0, 255, 0)
+        light_green = (0, 150, 0)
 
-        # More consumption than production.
-        if number_of_production_pixels < number_of_consumption_pixels:
-            # Production is smaller number of pixels.
-            first_pixels = number_of_production_pixels
-            first_color = green
+        # Add the consumption pixels.
+        pixels = [(number_of_consumption_pixels,red)]
 
-            second_pixels = number_of_consumption_pixels
-            second_color = red
-        # More production than consumption.
+        # The microinverters can only support a certain continuous load.
+        if self.maximum_continuous_watts_per_panel:
+            total_continuous_capacity = number_of_microinverters * self.maximum_continuous_watts_per_panel
+
+            # Is the production exceeding the continuous output power?
+            if production > total_continuous_capacity:
+                number_of_continuous_pixels = int(total_continuous_capacity / watts_per_pixel)
+                pixels.append((number_of_continuous_pixels,green))
+                pixels.append((number_of_production_pixels,light_green))
+            else:
+                pixels.append((number_of_production_pixels,green))
         else:
-            # Consumption is smaller number of pixels.
-            first_pixels = number_of_consumption_pixels
-            first_color = red
+            pixels.append((number_of_production_pixels,green))
 
-            second_pixels = number_of_production_pixels
-            second_color = green
+        # Sort the pixels (in ascending order).
+        pixels.sort()
+
+        # By default the remaining pixels are off.
+        if pixels[-1][0] < self.number_of_pixels:
+            pixels.append((self.number_of_pixels,(0, 0, 0)))
 
         # The pixels are left-to-right.
         self.unicornhathd.rotation(self.unicornhathd.get_rotation() + 90)
 
-        # Take each of the pixels.
-        for count in range(self.number_of_pixels):
+        # Take each of the sorted pixel ranges.
+        previous_index = 0
+        for pixel_count, pixel_color in pixels:
+            # Take each of the pixels within this range.
+            for count in range(previous_index, pixel_count):
+                # X = Top to Bottom
+                # Y = Left To Right
+                self.unicornhathd.set_pixel(int(count / self.screen_height), int(count % self.screen_width), *pixel_color)
 
-            if count + 1 <= first_pixels:
-                color = first_color
-            elif count + 1 <= second_pixels:
-                color = second_color
-            else:
-                # Off
-                color = (0, 0, 0)
-
-            # X = Top to Bottom
-            # Y = Left To Right
-            self.unicornhathd.set_pixel(int(count / self.screen_height), int(count % self.screen_width), *color)
+            # This is the start pixel of the next iteration.
+            previous_index = pixel_count
 
         # Show the contents of the buffer.
         self.unicornhathd.show()
@@ -521,19 +540,16 @@ def main():
                     # Ran out of responses.
                     break
 
-            # Check the data is within the last 10 seconds.
-            if timestamp > time.time()-10:
+            # Check the data is within the last 5 seconds.
+            if timestamp > time.time()-5:
                 # Draw the production power screen (until the end time).
                 screen_production.draw_screen(number_of_microinverters=args.number_of_microinverters, watts=production_power, end_time=time.time() + 5)
 
                 # Draw the chart screen (for 5 seconds).
                 screen_chart.draw_screen(number_of_microinverters=args.number_of_microinverters, production=production_power, consumption=consumption_power)
                 time.sleep(5)
-            else:
-                # Log this error.
-                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Stale data (Timestamp: ' + str(timestamp) + ').', file=sys.stderr)
-
-                # Display and scroll the red error text on screen for 10 seconds.
+            elif not screen_weather:
+                # Display and scroll the red error text on screen for 10 seconds (if the weather won't otherwise loop).
                 UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 10)
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
