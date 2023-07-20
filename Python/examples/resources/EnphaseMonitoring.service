@@ -18,6 +18,10 @@ Wants=network-online.target
 # Check that the Python script exists.
 ConditionPathExists=/home/pi/Enphase/gateway_amqp_meters.py
 
+# Do not restart more than 5 times in 300 seconds.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
 [Service]
 
 # Runs the executable and if it is alive will assume the service is running.
@@ -27,14 +31,26 @@ Type=simple
 User=pi
 Group=pi
 
-# Delete the $PATH environment.
-ExecSearchPath=
+# Delete the $PATH environment (V250+).
+#ExecSearchPath=
 
 # The process to start.
 ExecStart=/usr/bin/python gateway_amqp_meters.py
 
 # The credentials file will need to be read based off the working directory.
 WorkingDirectory=/home/pi/Enphase/
+
+# The time to sleep before restarting the service.
+RestartSec=1s
+
+# The number of steps to take to increase the interval of auto-restarts from RestartSec= to RestartMaxDelaySec= (V254+).
+#RestartSteps=5
+
+# The longest time to sleep before restarting a service as the interval goes up with RestartSteps= (V254+).
+#RestartMaxDelaySec=5m
+
+# The service will be restarted if the process fails.
+Restart=on-failure
 
 # When set to "invisible" processes owned by other users are hidden from /proc/.
 ProtectProc=invisible
@@ -54,8 +70,8 @@ ReadOnlyPaths=/
 # But allow the script to write to its configuration folder.
 ReadWritePaths=/home/pi/Enphase/configuration/
 
-# Do not allow the script to run any new applications.
-NoExecPaths=/
+# Do not allow the script to run any new applications (V248+).
+#NoExecPaths=/
 
 # Prevent the user from accessing anything other than "pi".
 PrivateUsers=True

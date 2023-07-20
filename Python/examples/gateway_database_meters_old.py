@@ -266,6 +266,12 @@ def main():
 
                 # Update the last received time.
                 chunk_last_received = now
+    except Exception:
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+        # Re-raise.
+        raise
     finally:
         # Close the database connection.
         database_connection.close()

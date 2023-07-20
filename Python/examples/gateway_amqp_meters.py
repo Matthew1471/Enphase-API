@@ -102,7 +102,7 @@ def main():
                             }
 
     # Gather the AMQP connection parameters.
-    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, heartbeat=120, client_properties=client_properties)
+    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, heartbeat=180, client_properties=client_properties)
 
     # Connect to the AMQP broker.
     amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
@@ -182,6 +182,12 @@ def main():
 
                         # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
                         raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
+    except Exception:
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+        # Re-raise.
+        raise
     finally:
         # Close the AMQP connection.
         if amqp_connection.is_open:

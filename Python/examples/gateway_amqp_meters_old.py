@@ -227,6 +227,12 @@ def main():
 
                 # Update the last received time.
                 chunk_last_received = now
+    except Exception:
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+        # Re-raise.
+        raise
     finally:
         # Close the AMQP connection.
         if amqp_connection.is_open:

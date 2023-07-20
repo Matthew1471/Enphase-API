@@ -213,6 +213,12 @@ def main():
 
                         # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
                         raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
+    except Exception:
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+        # Re-raise.
+        raise
     finally:
         # Close the database connection.
         database_connection.close()

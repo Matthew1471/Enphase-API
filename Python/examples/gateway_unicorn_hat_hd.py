@@ -278,23 +278,17 @@ class ScreenProduction:
                                                 )
 
 class ScreenChart:
-    def __init__(self, unicornhathd, screen_width, screen_height, maximum_watts_per_panel):
+    def __init__(self, unicornhathd, screen_width, screen_height, watts_per_panel, maximum_watts_per_panel):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.maximum_peak_watts_per_panel = maximum_watts_per_panel
-
-        # IQ7A Detected.
-        if maximum_watts_per_panel == 366:
-            self.maximum_continuous_watts_per_panel = 349
-        # Unknown.
-        else:
-            self.maximum_continuous_watts_per_panel = None
-
+        self.watts_per_panel = watts_per_panel
+        self.maximum_watts_per_panel = maximum_watts_per_panel
         self.number_of_pixels = self.screen_width * self.screen_height
 
     def draw_screen(self, number_of_microinverters, production, consumption):
-        total_capacity = number_of_microinverters * self.maximum_peak_watts_per_panel
+        # Calculate the peak production capacity.
+        total_capacity = number_of_microinverters * self.maximum_watts_per_panel
 
         # Check the maxium_watts_per_panel setting is correct.
         if production > total_capacity:
@@ -309,8 +303,8 @@ class ScreenChart:
         watts_per_pixel = (total_capacity / self.number_of_pixels)
 
         # Calculate how many pixels of production and consumption we have.
-        number_of_production_pixels = int(production / watts_per_pixel)
-        number_of_consumption_pixels = int(consumption / watts_per_pixel)
+        number_of_production_pixels = production / watts_per_pixel
+        number_of_consumption_pixels = consumption / watts_per_pixel
 
         # Some common RGB colours.
         red = (255, 0, 0)
@@ -321,16 +315,13 @@ class ScreenChart:
         pixels = [(number_of_consumption_pixels,red)]
 
         # The microinverters can only support a certain continuous load.
-        if self.maximum_continuous_watts_per_panel:
-            total_continuous_capacity = number_of_microinverters * self.maximum_continuous_watts_per_panel
+        total_continuous_capacity = number_of_microinverters * self.watts_per_panel
 
-            # Is the production exceeding the continuous output power?
-            if production > total_continuous_capacity:
-                number_of_continuous_pixels = int(total_continuous_capacity / watts_per_pixel)
-                pixels.append((number_of_continuous_pixels,green))
-                pixels.append((number_of_production_pixels,light_green))
-            else:
-                pixels.append((number_of_production_pixels,green))
+        # Is the production exceeding the continuous output power?
+        if production > total_continuous_capacity:
+            number_of_continuous_pixels = total_continuous_capacity / watts_per_pixel
+            pixels.append((number_of_continuous_pixels,green))
+            pixels.append((number_of_production_pixels,light_green))
         else:
             pixels.append((number_of_production_pixels,green))
 
@@ -345,16 +336,16 @@ class ScreenChart:
         self.unicornhathd.rotation(self.unicornhathd.get_rotation() + 90)
 
         # Take each of the sorted pixel ranges.
-        previous_index = 0
+        previous_count = 0
         for pixel_count, pixel_color in pixels:
             # Take each of the pixels within this range.
-            for count in range(previous_index, pixel_count):
+            for count in range(int(previous_count), int(pixel_count)):
                 # X = Top to Bottom
                 # Y = Left To Right
                 self.unicornhathd.set_pixel(int(count / self.screen_height), int(count % self.screen_width), *pixel_color)
 
             # This is the start pixel of the next iteration.
-            previous_index = pixel_count
+            previous_count = pixel_count
 
         # Show the contents of the buffer.
         self.unicornhathd.show()
@@ -432,6 +423,7 @@ def main():
 
     # Arguments to control how the program generally behaves.
     general_group = parser.add_argument_group('General')
+    general_group.add_argument('/WattsPerPanel', '-WattsPerPanel', '--WattsPerPanel', dest='watts_per_panel', type=int, default=380, help='How many watts can each panel comfortably generate (defaults to 380 which is the limit of an IQ8H).')
     general_group.add_argument('/MaxWattsPerPanel', '-MaxWattsPerPanel', '--MaxWattsPerPanel', dest='maximum_watts_per_panel', type=int, default=384, help='How many watts maximum can each panel generate (defaults to 384 which is the limit of an IQ8H).')
 
     # Arguments that can overide default behaviour when testing this program.
@@ -526,7 +518,8 @@ def main():
                                 unicornhathd=unicornhathd,
                                 screen_width=screen_width,
                                 screen_height=screen_height,
-                                maximum_watts_per_panel=args.maximum_watts_per_panel,
+                                watts_per_panel=args.watts_per_panel,
+                                maximum_watts_per_panel=args.maximum_watts_per_panel
                                 )
     try:
         # Repeat forever unless the user presses CTRL + C.
