@@ -63,16 +63,16 @@ class Gateway:
 
     @staticmethod
     def trust_gateway(host='https://envoy.local'):
-        # get_server_certificate needs the host and port as a tuple not a URL.
-        parsed_host = urllib3.util.parse_url(host)
-
         # Create the configuration folder if it does not already exist.
         if not os.path.exists('configuration/'): os.makedirs('configuration/')
 
         # Save the Gateway's public certificate to disk.
         with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
+            # get_server_certificate needs the host and port as a tuple not a URL.
+            parsed_url = urllib3.util.parse_url(host)
+
             # Download the certificate from the host.
-            file.write(ssl.get_server_certificate(addr=(parsed_host.hostname, parsed_host.port or 443)))
+            file.write(ssl.get_server_certificate(addr=(parsed_url.host, parsed_url.port or 443)))
 
     def login(self, token):
         # Create a copy of the original header dictionary.
