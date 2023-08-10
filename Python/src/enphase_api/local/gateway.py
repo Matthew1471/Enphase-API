@@ -28,10 +28,6 @@ import urllib3
 # Third party library; "pip install requests" if getting import errors.
 import requests
 
-# Third party library; we use a proper OAuth2 library ("pip install requests-oauthlib" if not already installed).
-import oauthlib.oauth2
-import requests_oauthlib.oauth2_auth
-
 # We implement our own Requests adapter to amend TLS certificate hostname checking (Gateway is self-signed).
 import enphase_api.local.ignore_hostname_adapter
 
@@ -41,22 +37,18 @@ class Gateway:
     STEALTHY_HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
     STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 
-    # This sets a 5 second connect and a 15 second read timeout.
-    TIMEOUT = (5,15)
+    # This sets a 5 minute connect and read timeout.
+    TIMEOUT = 300
 
     def __init__(self, host='https://envoy.local'):
         # The Gateway host (or if the network supports mDNS, "https://envoy.local").
         self.host = host
-
-        # We use a proper OAuth2 library (rather than just appending the Authorization header on ourselves) in case the device uses more OAuth features in future.
-        self.client = oauthlib.oauth2.MobileApplicationClient('')
 
         # Using a session means Requests supports keep-alive.
         self.session = requests.Session()
 
         # If there is a Gateway.cer file already available then we implement certificate pinning.
         if os.path.exists('configuration/gateway.cer'):
-
             # Make the session verify all HTTPS requests with trust for this certficiate.
             self.session.verify = 'configuration/gateway.cer'
 
@@ -83,8 +75,14 @@ class Gateway:
             file.write(ssl.get_server_certificate(addr=(parsed_host.hostname, parsed_host.port or 443)))
 
     def login(self, token):
-        # If successful this will return a "sessionid" cookie that validates our access to the gateway.
-        response = self.session.post(self.host + '/auth/check_jwt', headers=Gateway.STEALTHY_HEADERS, auth=requests_oauthlib.oauth2_auth.OAuth2(client=self.client, token={'access_token': token}))
+        # Create a copy of the original header dictionary.
+        headers = Gateway.STEALTHY_HEADERS.copy()
+
+        # We append an OAuth2 bearer token.
+        headers["Authorization"] = "Bearer " + token
+
+        # If successful this will return a "sessionid" cookie that validates our access to the IQ Gateway.
+        response = self.session.post(self.host + '/auth/check_jwt', headers=headers)
 
         # Check the response is positive.
         return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
@@ -100,7 +98,7 @@ class Gateway:
         elif method == 'DELETE':
             response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
 
-        # Has the session expired?
+        # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
             raise ValueError(response.reason)
 
@@ -111,7 +109,7 @@ class Gateway:
         else:
             # This is a raw response.
             return response.text
-    
+
     def api_call_form(self, path, method='GET', data=None):
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
@@ -123,7 +121,7 @@ class Gateway:
         elif method == 'DELETE':
             response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
 
-        # Has the session expired?
+        # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
             raise ValueError(response.reason)
 
@@ -132,9 +130,9 @@ class Gateway:
 
     def api_call_stream(self, path):
         # Call the Gateway API endpoint (expecting a stream).
-        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True)
+        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True, timeout=Gateway.TIMEOUT)
 
-        # Has the session expired?
+        # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
             raise ValueError(response.reason)
 
