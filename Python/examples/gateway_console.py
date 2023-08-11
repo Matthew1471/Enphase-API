@@ -77,13 +77,15 @@ def main():
     # Did the user override the library default hostname to the Gateway?
     if credentials.get('host'):
         # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+        if not os.path.exists('configuration/gateway.cer'):
+            Gateway.trust_gateway(credentials['host'])
 
         # Get an instance of the Gateway API wrapper object (using the config specified hostname).
         gateway = Gateway(credentials['host'])
     else:
         # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+        if not os.path.exists('configuration/gateway.cer'):
+            Gateway.trust_gateway()
 
         # Get an instance of the Gateway API wrapper object (using the library default hostname).
         gateway = Gateway()
@@ -158,7 +160,8 @@ def main():
         status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(string_names['Microinverter'], inverter_statistic['lastReportWatts'], inverter_statistic['serialNumber'], datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']))
 
         # Used to calculate the microinverter polling interval (gateway polls microinverters every 5 minutes).
-        if not most_recent_inverter_data or most_recent_inverter_data < datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']): most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
+        if not most_recent_inverter_data or most_recent_inverter_data < datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']):
+            most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
 
     # This will always be present (even without a production meter).
     status += '\n{} Total Generated {}'.format(string_names['Lifetime'], get_human_readable_power(production_statistics_inverters['whLifetime'], True))
@@ -174,7 +177,8 @@ def main():
             status += ' ({} Today'.format(get_human_readable_power(eim_production_wh_today, True))
 
             # The production meter has to have been running for at least 7 days for this to be non-zero.
-            if eim_production_wh_last_seven_days: status += ' / {} Last 7 Days'.format(get_human_readable_power(eim_production_wh_last_seven_days, True))
+            if eim_production_wh_last_seven_days:
+                status += ' / {} Last 7 Days'.format(get_human_readable_power(eim_production_wh_last_seven_days, True))
 
             status += ')'
 
@@ -183,7 +187,8 @@ def main():
         status += '\n{} Current Consumption {}'.format(string_names['Meter'], get_human_readable_power(eim_consumption_w_now).rjust(8, ' '))
 
         # The consumption meter needs to have been running for at least a day for this to be non-zero.
-        if eim_consumption_wh_today: status += ' ({} today)'.format(get_human_readable_power(eim_consumption_wh_today, True))
+        if eim_consumption_wh_today:
+            status += ' ({} today)'.format(get_human_readable_power(eim_consumption_wh_today, True))
 
     # This was when the poll of all the microinverters had completed.
     inverters_reading_time = production_statistics_inverters['readingTime']
