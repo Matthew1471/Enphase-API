@@ -23,7 +23,7 @@ import random
 import string
 import urllib.parse
 
-# We can check JWT claims/expiration first before making a request to prevent annoying Enphase® ("pip install pyjwt" if not already installed).
+# We can check JWT claims/expiration first before making a request ("pip install pyjwt" if not already installed).
 import jwt
 
 # Third party library for making HTTP(S) requests; "pip install requests" if getting import errors.
@@ -42,11 +42,31 @@ class Authentication:
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
     STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
+    # This sets a 5 minute connect and read timeout.
+    TIMEOUT = 300
+
     # Holds the session cookie which contains the session token.
     session_cookies = None
 
     @staticmethod
     def _extract_token_from_response(response):
+        """
+        Extract the access token from the HTML response of the Entrez authentication server.
+
+        This internal method searches for the access token within the HTML response
+        using predefined markers. If the markers change, the method may need to be updated.
+
+        Args:
+            response (str): The HTML response from the Entrez authentication server.
+
+        Returns:
+            str: The extracted access token.
+
+        Raises:
+            ValueError: If the access token cannot be found in the response.
+                        This may indicate changes in the response structure.
+        """
+
         # The text that indicates the beginning of a token, if this changes a lot we may have to turn this into a regular expression.
         start_needle = '<textarea name="accessToken" id="JWTToken" cols="30" rows="10" >'
 
@@ -74,14 +94,26 @@ class Authentication:
 
     def authenticate(self, username, password):
         """
-        Authenticates with Entrez (with a username and password) and maintains a session.
+        Authenticate with Entrez (with a username and password) and maintains a session.
+
+        Args:
+            username (str): The user's Enphase® username for authentication.
+            password (str): The user's Enphase® password for authentication.
+
+        Returns:
+            bool: True if authentication is successful, False otherwise.
         """
 
         # Build the login request payload.
-        payload = {'username':username, 'password':password}
+        data = {'username':username, 'password':password}
 
         # Send the login request.
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/login', headers=Authentication.STEALTHY_HEADERS_FORM, data=payload)
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/login',
+            headers=Authentication.STEALTHY_HEADERS_FORM,
+            data=data,
+            timeout=Authentication.TIMEOUT
+        )
 
         # There's only 1 cookie value that is important to maintain session once we are authenticated.
         # SESSION - This links our future requests to our existing login session on this server.
@@ -93,38 +125,62 @@ class Authentication:
     @staticmethod
     def authenticate_oauth(username, password, gateway_serial_number='un-commissioned'):
         """
-        Authenticates with Entrez (with a username and password) using the OAuth 2.0 "Authorization Code Flow with Proof Key for Code Exchange (PKCE)" grant.
+        Authenticate with Entrez (with a username and password) using OAuth 2.0.
+        This is currently using the "Authorization Code Flow with Proof Key for Code Exchange (PKCE)" grant.
+
+        Args:
+            username (str): The user's Enphase® username for authentication.
+            password (str): The user's Enphase® password for authentication.
+            gateway_serial_number (str, optional): The serial number of the gateway. Defaults to 'un-commissioned'.
+
+        Returns:
+            tuple: A tuple containing the authorisation code and code verifier.
         """
 
         # OAuth 2.0 Proof Key for Code Exchange (PKCE) in case response is intercepted.
         uri_unreserved_characters = string.ascii_letters + string.digits + '-._~'
         code_verifier = ''.join(random.choices(uri_unreserved_characters, k=40))
 
-        # This is sent in the initial request hashed (before the auth server knows the plaintext to prove the request came from us).
-        code_challenge = base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode('ascii')).digest()).decode('ascii').rstrip('=')
+        # This is sent in the initial request hashed
+        # (before the auth server knows the plaintext to prove the request came from us).
+        sha256_digest = hashlib.sha256(code_verifier.encode('ascii')).digest()
+        code_challenge = base64.urlsafe_b64encode(sha256_digest).decode('ascii').rstrip('=')
 
         # Build the login and authorisation code request (with PKCE) payload.
         data = {
-                   'username':username,
-                   'password':password,
-                   'codeChallenge':code_challenge,
-                   'redirectUri':'https://envoy.local/auth/callback',
-                   'client':'envoy-ui',
-                   'clientId':'envoy-ui-client',
-                   'authFlow':'oauth',
-                   'serialNum':gateway_serial_number,
-                   #'grantType':'authorize',
-                   #'invalidSerialNum':''
-               }
+            'username':username,
+            'password':password,
+            'codeChallenge':code_challenge,
+            'redirectUri':'https://envoy.local/auth/callback',
+            'client':'envoy-ui',
+            'clientId':'envoy-ui-client',
+            'authFlow':'oauth',
+            'serialNum':gateway_serial_number,
+            #'grantType':'authorize',
+            #'invalidSerialNum':''
+        }
 
         # Send the login request.
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/login', headers=Authentication.STEALTHY_HEADERS_FORM, data=data, allow_redirects=False)
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/login',
+            headers=Authentication.STEALTHY_HEADERS_FORM,
+            data=data,
+            timeout=Authentication.TIMEOUT,
+            allow_redirects=False
+        )
 
+        # If succesful the authentication server will recommend a redirect to the redirectUri.
         if response.status_code == 302 and 'location' in response.headers:
+            # What is the URL it is redirecting to?
             redirect = response.headers['location']
+
+            # Split out the component parts of the URL.
             parsed_url = urllib.parse.urlparse(redirect)
+
+            # Parse the query string components.
             query_params = urllib.parse.parse_qs(parsed_url.query)
 
+            # Was there a "code" query string key?
             if 'code' in query_params:
                 # Return the code and the code_verifier.
                 return query_params.get('code')[0], code_verifier
@@ -133,55 +189,183 @@ class Authentication:
         raise ValueError('Unable to authenticate using OAuth 2.0.')
 
     def get_site(self, site_name):
-        return requests.get(Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(site_name, safe=''), headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies).json()
+        """
+        Get site details (site ID number, full site name and associated gateway serial numbers) from a partial site name.
+
+        Args:
+            site_name (str): The partial site name.
+
+        Returns:
+            dict: The JSON response containing the site details.
+        """
+
+        # Send the site details request.
+        response = requests.get(
+            url=Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(site_name, safe=''),
+            headers=Authentication.STEALTHY_HEADERS,
+            cookies=self.session_cookies,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Return the response.
+        return response.json()
 
     def get_token_for_commissioned_gateway(self, gateway_serial_number):
-        # The actual website also seems to set "uncommissioned" to "on", but this is not necessary or correct for commissioned gateways. Site name also is passed but not required.
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/entrez_tokens', headers=Authentication.STEALTHY_HEADERS_FORM, cookies=self.session_cookies, data={'serialNum': gateway_serial_number})
+        """
+        Get a JWT token for a specific gateway which has been commissioned.
+
+        Args:
+            gateway_serial_number (str): The serial number of a commissioned gateway.
+
+        Returns:
+            str: The JWT token.
+        """
+
+        # Build the request payload.
+        data = {'serialNum': gateway_serial_number}
+
+        # The actual website sends additional keys but they are not required.
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
+            headers=Authentication.STEALTHY_HEADERS_FORM,
+            cookies=self.session_cookies,
+            data=data,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Return just the token.
         return self._extract_token_from_response(response.text)
 
     def get_token_for_uncommissioned_gateway(self):
+        """
+        Get a JWT token for all gateways which have not yet been commissioned.
+
+        Returns:
+            str: The JWT token.
+        """
+
+        # Build the request payload.
+        data = {'uncommissioned': 'true'}
+
         # The actual website also sets an empty "Site" key, but this is not necessary for uncommissioned gateway access.
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/entrez_tokens', headers=Authentication.STEALTHY_HEADERS_FORM, cookies=self.session_cookies, data={'uncommissioned': 'true'})
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
+            headers=Authentication.STEALTHY_HEADERS_FORM,
+            cookies=self.session_cookies,
+            data=data,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Return just the token.
         return self._extract_token_from_response(response.text)
 
     def get_token_from_enlighten_session_id(self, enlighten_session_id, gateway_serial_number, username):
+        """
+        Get a JWT token for a specific gateway using an Enlighten session ID.
+
+        Args:
+            enlighten_session_id (str): The Enlighten session ID.
+            gateway_serial_number (str): The serial number of the gateway.
+            username (str): The Enphase® username associated with the session.
+
+        Returns:
+            bytes: The token content.
+        """
+
+        # Build the request payload.
+        json = {
+            'session_id': enlighten_session_id,
+            'serial_num': gateway_serial_number,
+            'username': username
+        }
+
         # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
-        return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies, json={'session_id': enlighten_session_id, 'serial_num': gateway_serial_number, 'username': username}).content
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/tokens',
+            headers=Authentication.STEALTHY_HEADERS,
+            cookies=self.session_cookies,
+            json=json,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Return just the token.
+        return response.content
 
     @staticmethod
     def get_token_from_oauth(code, code_verifier):
+        """
+        Perform an OAuth 2.0 authorisation code exchange for a token (with PKCE).
+        This method does not require an open session on the authentication serer.
+
+        Args:
+            code (str): The authorisation code.
+            code_verifier (str): The PKCE code verifier.
+
+        Returns:
+            dict: The JSON response containing the token information.
+        """
+
         # Build the exchange authorisation code for a token (with PKCE) request payload.
         data = {
-                 'code': code,
-                 'code_verifier': code_verifier,
-                 'redirect_uri': 'https://envoy.local/auth/callback',
-                 'client_id':'envoy-ui-1',
-                 'grant_type':'authorization_code'
-               }
+            'code': code,
+            'code_verifier': code_verifier,
+            'redirect_uri': 'https://envoy.local/auth/callback',
+            'client_id':'envoy-ui-1',
+            'grant_type':'authorization_code'
+        }
 
         # This is used internally by the gateway to exchange an authorisation code for a token.
-        return requests.post(Authentication.AUTHENTICATION_HOST + '/oauth/token', headers=Authentication.STEALTHY_HEADERS_FORM, data=data).json()
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/oauth/token',
+            headers=Authentication.STEALTHY_HEADERS_FORM,
+            data=data,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Return the JSON response.
+        return response.json()
 
     @staticmethod
     def check_token_valid(token, gateway_serial_number=None, verify_signature=False):
+        """
+        This performs JWT token validation to confirm whether a token would likely be valid for a local API authentication call.
+
+        Args:
+            token (str): The JWT token.
+            gateway_serial_number (str, optional): The serial number of the gateway. Defaults to None.
+            verify_signature (bool, optional): Whether to verify the token signature. Defaults to False.
+
+        Returns:
+            bool: True if the token is valid, False otherwise.
+        """
+
         # An installer is always allowed to access any uncommissioned Gateway serial number (currently for a shorter time however).
         if gateway_serial_number:
             calculated_audience = [gateway_serial_number, 'un-commissioned']
         else:
             calculated_audience = ['un-commissioned']
 
+        # We require "aud", "iss", "enphaseUser", "exp", "iat", "jti" and "username" values.
+        require = ['aud', 'iss', 'enphaseUser', 'exp', 'iat', 'jti', 'username']
+
         try:
             # PyJWT requires "cryptography" to be able to support ES256.
             if verify_signature:
                 # The Entrez production JWT public key.
-                public_key = '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6PhAU3Mk4W7Ara5hCWPHDtv8LY0CtBwEVj4k4Tu8KRBMOhbTcHHnxYJ3UKppIKyraB2GFUmOhGP9O2jmcb4UAw==\n-----END PUBLIC KEY-----'
+                public_key = (
+                    '-----BEGIN PUBLIC KEY-----\n'
+                    'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6PhAU3Mk4W7Ara5hCWPHDtv8LY0CtBwEVj4k4Tu8KRBMOhbTcHHnxYJ3UKppIKyraB2GFUmOhGP9O2jmcb4UAw==\n'
+                    '-----END PUBLIC KEY-----'
+                )
 
                 # Is the token still valid?
-                jwt.decode(token, key=public_key, algorithms='ES256', options={'require':['aud', 'iss', 'enphaseUser', 'exp', 'iat', 'jti', 'username']}, audience=calculated_audience, issuer='Entrez')
+                jwt.decode(token, key=public_key, algorithms='ES256', options={'require':require}, audience=calculated_audience, issuer='Entrez')
             else:
+                # While the signature itself is not verified, we enforce required fields and validate "aud", "iss", "exp" and "iat" values.
+                options = {'verify_signature':False, 'require':require, 'verify_aud':True, 'verify_iss':True, 'verify_exp':True, 'verify_iat':True}
+
                 # Is the token still valid?
-                jwt.decode(token, options={'verify_signature':False, 'require':['aud', 'iss', 'enphaseUser', 'exp', 'iat', 'jti', 'username'], 'verify_aud':True, 'verify_iss':True, 'verify_exp':True, 'verify_iat':True}, audience=calculated_audience, issuer='Entrez')
+                jwt.decode(token, options=options, audience=calculated_audience, issuer='Entrez')
 
             # If we got to this line then no exceptions were generated by the above.
             return True
@@ -191,19 +375,36 @@ class Authentication:
             raise
 
         # We mask the specific reason and just ultimately inform the user that the token is invalid.
-        except (jwt.exceptions.InvalidTokenError,
-                jwt.exceptions.DecodeError,
-                jwt.exceptions.InvalidSignatureError,
-                jwt.exceptions.ExpiredSignatureError,
-                jwt.exceptions.InvalidAudienceError,
-                jwt.exceptions.InvalidIssuerError,
-                jwt.exceptions.InvalidIssuedAtError,
-                jwt.exceptions.InvalidAlgorithmError,
-                jwt.exceptions.MissingRequiredClaimError):
+        except (
+            jwt.exceptions.InvalidTokenError,
+            jwt.exceptions.DecodeError,
+            jwt.exceptions.InvalidSignatureError,
+            jwt.exceptions.ExpiredSignatureError,
+            jwt.exceptions.InvalidAudienceError,
+            jwt.exceptions.InvalidIssuerError,
+            jwt.exceptions.InvalidIssuedAtError,
+            jwt.exceptions.InvalidAlgorithmError,
+            jwt.exceptions.MissingRequiredClaimError
+        ):
 
             # The token is invalid.
             return False
 
     def logout(self):
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/logout', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies)
+        """
+        Close the current session to the authentication server.
+
+        Returns:
+            bool: True if logout is successful, False otherwise.
+        """
+
+        # Send the logout request.
+        response = requests.post(
+            url=Authentication.AUTHENTICATION_HOST + '/logout',
+            headers=Authentication.STEALTHY_HEADERS,
+            cookies=self.session_cookies,
+            timeout=Authentication.TIMEOUT
+        )
+
+        # Just return whether this call was successful or not.
         return response.status_code == 200

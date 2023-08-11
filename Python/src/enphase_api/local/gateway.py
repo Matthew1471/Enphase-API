@@ -32,6 +32,11 @@ import requests
 import enphase_api.local.ignore_hostname_adapter
 
 class Gateway:
+    """
+    A class to talk locally to Enphase®'s IQ Gateway.
+    This supports maintaining an authenticated session between API calls.
+    """
+
     # This prevents the requests module from creating its own user-agent.
     STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
     STEALTHY_HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
@@ -41,6 +46,19 @@ class Gateway:
     TIMEOUT = 300
 
     def __init__(self, host='https://envoy.local'):
+        """
+        Initialize an Enphase® IQ Gateway instance.
+
+        Args:
+            host (str, optional):
+                The host URL of the Enphase® IQ Gateway (including the protocol).
+                Defaults to 'https://envoy.local'.
+
+        Notes:
+            - If a 'configuration/gateway.cer' file is available, certificate pinning is implemented.
+            - If no certificate file is found, HTTPS requests will be made with reduced security.
+        """
+
         # The Gateway host (or if the network supports mDNS, "https://envoy.local").
         self.host = host
 
@@ -53,7 +71,10 @@ class Gateway:
             self.session.verify = 'configuration/gateway.cer'
 
             # Requests to this host will ignore the hostname in the certificate being incorrect.
-            self.session.mount(self.host, enphase_api.local.ignore_hostname_adapter.IgnoreHostnameAdapter())
+            self.session.mount(
+                prefix=self.host,
+                adapter=enphase_api.local.ignore_hostname_adapter.IgnoreHostnameAdapter()
+            )
         else:
             # Disable the warnings about making an insecure request.
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -63,6 +84,15 @@ class Gateway:
 
     @staticmethod
     def trust_gateway(host='https://envoy.local'):
+        """
+        Download and save the Gateway's public certificate to configuration/gateway.cer for certificate pinning.
+
+        Args:
+            host (str, optional):
+                The host URL of the Enphase® IQ Gateway (including the protocol).
+                Defaults to 'https://envoy.local'.
+        """
+
         # Create the configuration folder if it does not already exist.
         if not os.path.exists('configuration/'): os.makedirs('configuration/')
 
@@ -78,7 +108,14 @@ class Gateway:
         """
         Authenticates with the IQ Gateway (with a JWT token).
         The IQ Gateway does not require Internet connectivity.
+
+        Args:
+            token (str): JWT token for authentication.
+
+        Returns:
+            bool: True if login is successful, False otherwise.
         """
+
         # Create a copy of the original header dictionary.
         headers = Gateway.STEALTHY_HEADERS.copy()
 
@@ -95,6 +132,13 @@ class Gateway:
         """
         Authenticates with the IQ Gateway (with an OAuth 2.0 authorisation code).
         The IQ Gateway will require Internet connectivity.
+
+        Args:
+            code (str): Authorisation code.
+            code_verifier (str): PKCE code verifier.
+
+        Returns:
+            bool: True if authentication is successful, False otherwise.
         """
 
         # We skip calling /auth/callback as that's just client-side JS to perform the HTTP POST
@@ -102,12 +146,12 @@ class Gateway:
 
         # Build the authorisation code request payload.
         json = {
-                'client_id':'envoy-ui-1',
-                #'grant_type':'authorization_code',
-                'redirect_uri':'https://envoy.local/auth/callback',
-                'code_verifier':code_verifier,
-                'code':code
-               }
+            'client_id':'envoy-ui-1',
+            #'grant_type':'authorization_code',
+            'redirect_uri':'https://envoy.local/auth/callback',
+            'code_verifier':code_verifier,
+            'code':code
+        }
 
         # In my opinion, the gateway should never return the access token to the end user,
         # a valid gateway "sessionId" cookie should be returned instead.
@@ -130,6 +174,19 @@ class Gateway:
             raise ValueError('Error exchanging authorisation code for an access token.')
 
     def api_call(self, path, method='GET', json=None, response_raw=False):
+        """
+        Make an API call to the Gateway.
+
+        Args:
+            path (str): The API endpoint path.
+            method (str, optional): The HTTP method for the request. Defaults to 'GET'.
+            json (dict, optional): JSON data for the request body. Defaults to None.
+            response_raw (bool, optional): If True, return the raw response. Defaults to False.
+
+        Returns:
+            dict or str: JSON response if response_raw is False, raw response if response_raw is True.
+        """
+
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
             response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
@@ -153,6 +210,18 @@ class Gateway:
             return response.text
 
     def api_call_form(self, path, method='GET', data=None):
+        """
+        Make an API call to the Gateway using form data.
+
+        Args:
+            path (str): The API endpoint path.
+            method (str, optional): The HTTP method for the request. Defaults to 'GET'.
+            data (dict, optional): Form data for the request body. Defaults to None.
+
+        Returns:
+            dict: JSON response.
+        """
+
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
             response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
@@ -171,6 +240,16 @@ class Gateway:
         return response.json()
 
     def api_call_stream(self, path):
+        """
+        Make a streaming API call to the Gateway.
+
+        Args:
+            path (str): The API endpoint path.
+
+        Returns:
+            requests.Response: Server-Sent-Events (SSE) response.
+        """
+
         # Call the Gateway API endpoint (expecting a stream).
         response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True, timeout=Gateway.TIMEOUT)
 
