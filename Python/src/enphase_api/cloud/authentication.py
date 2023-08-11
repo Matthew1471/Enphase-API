@@ -90,7 +90,8 @@ class Authentication:
         # Return a true/false on whether login was successful.
         return response.status_code == 200
 
-    def authenticate_oauth(self, username, password, gateway_serial_number):
+    @staticmethod
+    def authenticate_oauth(username, password, gateway_serial_number='un-commissioned'):
         """
         Authenticates with Entrez (with a username and password) using the OAuth 2.0 "Authorization Code Flow with Proof Key for Code Exchange (PKCE)" grant.
         """
@@ -102,8 +103,8 @@ class Authentication:
         # This is sent in the initial request hashed (before the auth server knows the plaintext to prove the request came from us).
         code_challenge = base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode('ascii')).digest()).decode('ascii').rstrip('=')
 
-        # Build the login request payload.
-        payload = {
+        # Build the login and authorisation code request (with PKCE) payload.
+        data = {
                    'username':username,
                    'password':password,
                    'codeChallenge':code_challenge,
@@ -114,10 +115,10 @@ class Authentication:
                    'serialNum':gateway_serial_number,
                    #'grantType':'authorize',
                    #'invalidSerialNum':''
-                  }
+               }
 
         # Send the login request.
-        response = requests.post(Authentication.AUTHENTICATION_HOST + '/login', headers=Authentication.STEALTHY_HEADERS_FORM, data=payload, allow_redirects=False)
+        response = requests.post(Authentication.AUTHENTICATION_HOST + '/login', headers=Authentication.STEALTHY_HEADERS_FORM, data=data, allow_redirects=False)
 
         if response.status_code == 302 and 'location' in response.headers:
             redirect = response.headers['location']
@@ -147,6 +148,20 @@ class Authentication:
     def get_token_from_enlighten_session_id(self, enlighten_session_id, gateway_serial_number, username):
         # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
         return requests.post(Authentication.AUTHENTICATION_HOST + '/tokens', headers=Authentication.STEALTHY_HEADERS, cookies=self.session_cookies, json={'session_id': enlighten_session_id, 'serial_num': gateway_serial_number, 'username': username}).content
+
+    @staticmethod
+    def get_token_from_oauth(code, code_verifier):
+        # Build the exchange authorisation code for a token (with PKCE) request payload.
+        data = {
+                 'code': code,
+                 'code_verifier': code_verifier,
+                 'redirect_uri': 'https://envoy.local/auth/callback',
+                 'client_id':'envoy-ui-1',
+                 'grant_type':'authorization_code'
+               }
+
+        # This is used internally by the gateway to exchange an authorisation code for a token.
+        return requests.post(Authentication.AUTHENTICATION_HOST + '/oauth/token', headers=Authentication.STEALTHY_HEADERS_FORM, data=data).json()
 
     @staticmethod
     def check_token_valid(token, gateway_serial_number=None, verify_signature=False):
