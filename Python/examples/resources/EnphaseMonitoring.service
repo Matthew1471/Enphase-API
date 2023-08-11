@@ -18,9 +18,9 @@ Wants=network-online.target
 # Check that the Python script exists.
 ConditionPathExists=/home/pi/Enphase/gateway_amqp_meters.py
 
-# Do not restart more than 5 times in 300 seconds.
+# Do not restart more than 240 times in 300 seconds.
 StartLimitIntervalSec=300
-StartLimitBurst=5
+StartLimitBurst=240
 
 [Service]
 

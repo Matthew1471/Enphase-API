@@ -75,17 +75,59 @@ class Gateway:
             file.write(ssl.get_server_certificate(addr=(parsed_url.host, parsed_url.port or 443)))
 
     def login(self, token):
+        """
+        Authenticates with the IQ Gateway (with a JWT token).
+        The IQ Gateway does not require Internet connectivity.
+        """
         # Create a copy of the original header dictionary.
         headers = Gateway.STEALTHY_HEADERS.copy()
 
-        # We append an OAuth2 bearer token.
+        # We append an OAuth 2.0 bearer token.
         headers["Authorization"] = "Bearer " + token
 
-        # If successful this will return a "sessionid" cookie that validates our access to the IQ Gateway.
-        response = self.session.post(self.host + '/auth/check_jwt', headers=headers)
+        # If successful this will return a "sessionId" cookie that validates our access to the gateway.
+        response = self.session.post(self.host + '/auth/check_jwt', headers=headers, timeout=Gateway.TIMEOUT)
 
         # Check the response is positive.
         return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
+
+    def login_oauth_code(self, code, code_verifier):
+        """
+        Authenticates with the IQ Gateway (with an OAuth 2.0 authorisation code).
+        The IQ Gateway will require Internet connectivity.
+        """
+
+        # We skip calling /auth/callback as that's just client-side JS to perform the HTTP POST
+        # to /auth/get_jwt with the correct code and code_verifier and then /auth/check_jwt.
+
+        # Build the authorisation code request payload.
+        json = {
+                'client_id':'envoy-ui-1',
+                #'grant_type':'authorization_code',
+                'redirect_uri':'https://envoy.local/auth/callback',
+                'code_verifier':code_verifier,
+                'code':code
+               }
+
+        # In my opinion, the gateway should never return the access token to the end user,
+        # a valid gateway "sessionId" cookie should be returned instead.
+        #
+        # The gateway is a trusted application / "confidential client" capable of holding the
+        # JWT itself. This call should therefore be made internally,
+        # thus preventing the user from accidentally leaking the access token.
+        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT).json()
+
+        # Did the gateway return an error?
+        if 'message' in response:
+            raise ValueError('Error exchanging authorisation code for an access token.') from ValueError(response['message'])
+
+        # The gateway must have returned an access token.
+        if 'access_token' in response:
+            # Login with the JWT (in my opinion the gateway should have internally made this call for us).
+            return self.login(response['access_token'])
+        # Should never happen (gateway should always return an error or an access_token).
+        else:
+            raise ValueError('Error exchanging authorisation code for an access token.')
 
     def api_call(self, path, method='GET', json=None, response_raw=False):
         # Call the Gateway API endpoint.
