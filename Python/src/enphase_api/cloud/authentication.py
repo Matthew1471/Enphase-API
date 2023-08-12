@@ -39,8 +39,8 @@ class Authentication:
     AUTHENTICATION_HOST = 'https://entrez.enphaseenergy.com'
 
     # This prevents the requests module from creating its own user-agent (and ask to not be included in analytics).
-    STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
-    STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
+    HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
+    HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -110,7 +110,7 @@ class Authentication:
         # Send the login request.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/login',
-            headers=Authentication.STEALTHY_HEADERS_FORM,
+            headers=Authentication.HEADERS_FORM,
             data=data,
             timeout=Authentication.TIMEOUT
         )
@@ -163,7 +163,7 @@ class Authentication:
         # Send the login request.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/login',
-            headers=Authentication.STEALTHY_HEADERS_FORM,
+            headers=Authentication.HEADERS_FORM,
             data=data,
             timeout=Authentication.TIMEOUT,
             allow_redirects=False
@@ -202,7 +202,7 @@ class Authentication:
         # Send the site details request.
         response = requests.get(
             url=Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(site_name, safe=''),
-            headers=Authentication.STEALTHY_HEADERS,
+            headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             timeout=Authentication.TIMEOUT
         )
@@ -227,7 +227,7 @@ class Authentication:
         # The actual website sends additional keys but they are not required.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
-            headers=Authentication.STEALTHY_HEADERS_FORM,
+            headers=Authentication.HEADERS_FORM,
             cookies=self.session_cookies,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -250,7 +250,7 @@ class Authentication:
         # The actual website also sets an empty "Site" key, but this is not necessary for uncommissioned gateway access.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
-            headers=Authentication.STEALTHY_HEADERS_FORM,
+            headers=Authentication.HEADERS_FORM,
             cookies=self.session_cookies,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -282,7 +282,7 @@ class Authentication:
         # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/tokens',
-            headers=Authentication.STEALTHY_HEADERS,
+            headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             json=json,
             timeout=Authentication.TIMEOUT
@@ -317,7 +317,7 @@ class Authentication:
         # This is used internally by the gateway to exchange an authorisation code for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/oauth/token',
-            headers=Authentication.STEALTHY_HEADERS_FORM,
+            headers=Authentication.HEADERS_FORM,
             data=data,
             timeout=Authentication.TIMEOUT
         )
@@ -401,7 +401,7 @@ class Authentication:
         # Send the logout request.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/logout',
-            headers=Authentication.STEALTHY_HEADERS,
+            headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             timeout=Authentication.TIMEOUT
         )

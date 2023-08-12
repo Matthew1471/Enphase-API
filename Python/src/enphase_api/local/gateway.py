@@ -38,9 +38,9 @@ class Gateway:
     """
 
     # This prevents the requests module from creating its own user-agent.
-    STEALTHY_HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
-    STEALTHY_HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
-    STEALTHY_HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+    HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
+    HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
+    HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -117,7 +117,7 @@ class Gateway:
         """
 
         # Create a copy of the original header dictionary.
-        headers = Gateway.STEALTHY_HEADERS.copy()
+        headers = Gateway.HEADERS.copy()
 
         # We append an OAuth 2.0 bearer token.
         headers["Authorization"] = "Bearer " + token
@@ -159,7 +159,7 @@ class Gateway:
         # The gateway is a trusted application / "confidential client" capable of holding the
         # JWT itself. This call should therefore be made internally,
         # thus preventing the user from accidentally leaking the access token.
-        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT).json()
+        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT).json()
 
         # Did the gateway return an error?
         if 'message' in response:
@@ -189,13 +189,13 @@ class Gateway:
 
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
-            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
+            response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
         elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.put(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.post(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.delete(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
@@ -224,13 +224,13 @@ class Gateway:
 
         # Call the Gateway API endpoint.
         if method is None or method == 'GET':
-            response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, timeout=Gateway.TIMEOUT)
+            response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
         elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.put(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
         elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.post(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
         elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.STEALTHY_HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.delete(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
@@ -251,7 +251,7 @@ class Gateway:
         """
 
         # Call the Gateway API endpoint (expecting a stream).
-        response = self.session.get(self.host + path, headers=Gateway.STEALTHY_HEADERS, stream=True, timeout=Gateway.TIMEOUT)
+        response = self.session.get(self.host + path, headers=Gateway.HEADERS, stream=True, timeout=Gateway.TIMEOUT)
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
