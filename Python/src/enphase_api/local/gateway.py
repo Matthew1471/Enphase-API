@@ -22,7 +22,7 @@ import os
 # We optionally can download the certificate to provide security to future requests.
 import ssl
 
-# Disable the warning about insecure HTTPS requests.
+# Disable the warning about insecure HTTPS requests (and skip automatic user-agent header).
 import urllib3
 
 # Third party library; "pip install requests" if getting import errors.
@@ -37,10 +37,10 @@ class Gateway:
     This supports maintaining an authenticated session between API calls.
     """
 
-    # This prevents the requests module from creating its own user-agent.
-    HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
-    HEADERS_JSON = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
-    HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+    # This prevents the requests + urllib3 module from creating its own user-agent.
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
+    HEADERS_JSON = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
+    HEADERS_FORM = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300

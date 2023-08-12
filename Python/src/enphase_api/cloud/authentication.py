@@ -23,6 +23,9 @@ import random
 import string
 import urllib.parse
 
+# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671)
+import urllib3
+
 # We can check JWT claims/expiration first before making a request ("pip install pyjwt" if not already installed).
 import jwt
 
@@ -38,9 +41,9 @@ class Authentication:
     # Authentication host, Entrez (French for "Access").
     AUTHENTICATION_HOST = 'https://entrez.enphaseenergy.com'
 
-    # This prevents the requests module from creating its own user-agent (and ask to not be included in analytics).
-    HEADERS = {'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}
-    HEADERS_FORM = {'User-Agent': None, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
+    # This prevents the requests + urllib3 module from creating its own user-agent (and ask to not be included in analytics).
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
+    HEADERS_FORM = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -222,9 +225,10 @@ class Authentication:
         """
 
         # Build the request payload.
+        # The official form sends additional keys but they are not required.
         data = {'serialNum': gateway_serial_number}
 
-        # The actual website sends additional keys but they are not required.
+        # Send the form request for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
             headers=Authentication.HEADERS_FORM,
@@ -245,9 +249,10 @@ class Authentication:
         """
 
         # Build the request payload.
+        # The official form sends additional keys but they are not required.
         data = {'uncommissioned': 'true'}
 
-        # The actual website also sets an empty "Site" key, but this is not necessary for uncommissioned gateway access.
+        # Send the form request for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
             headers=Authentication.HEADERS_FORM,
