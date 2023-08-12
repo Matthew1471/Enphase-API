@@ -39,13 +39,11 @@ class Gateway:
 
     # This prevents the requests + urllib3 module from creating its own user-agent.
     HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
-    HEADERS_JSON = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/json'}
-    HEADERS_FORM = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1', 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
 
-    def __init__(self, host='https://envoy.local'):
+    def __init__(self, host=None):
         """
         Initialize an Enphase® IQ Gateway instance.
 
@@ -60,7 +58,7 @@ class Gateway:
         """
 
         # The Gateway host (or if the network supports mDNS, "https://envoy.local").
-        self.host = host
+        self.host = 'https://envoy.local' if host is None else host
 
         # Using a session means Requests supports keep-alive.
         self.session = requests.Session()
@@ -83,7 +81,7 @@ class Gateway:
             self.session.verify = False
 
     @staticmethod
-    def trust_gateway(host='https://envoy.local'):
+    def trust_gateway(host=None):
         """
         Download and save the Gateway's public certificate to configuration/gateway.cer for certificate pinning.
 
@@ -99,7 +97,7 @@ class Gateway:
         # Save the Gateway's public certificate to disk.
         with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
             # get_server_certificate needs the host and port as a tuple not a URL.
-            parsed_url = urllib3.util.parse_url(host)
+            parsed_url = urllib3.util.parse_url('https://envoy.local' if host is None else host)
 
             # Download the certificate from the host.
             file.write(ssl.get_server_certificate(addr=(parsed_url.host, parsed_url.port or 443)))
@@ -159,7 +157,7 @@ class Gateway:
         # The gateway is a trusted application / "confidential client" capable of holding the
         # JWT itself. This call should therefore be made internally,
         # thus preventing the user from accidentally leaking the access token.
-        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT).json()
+        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT).json()
 
         # Did the gateway return an error?
         if 'message' in response:
@@ -191,11 +189,11 @@ class Gateway:
         if method is None or method == 'GET':
             response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
         elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.put(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.post(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
         elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.HEADERS_JSON, json=json, timeout=Gateway.TIMEOUT)
+            response = self.session.delete(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
@@ -226,11 +224,11 @@ class Gateway:
         if method is None or method == 'GET':
             response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
         elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.put(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
         elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.post(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
         elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.HEADERS_FORM, data=data, timeout=Gateway.TIMEOUT)
+            response = self.session.delete(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:

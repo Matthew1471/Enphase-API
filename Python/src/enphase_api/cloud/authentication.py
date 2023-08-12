@@ -43,7 +43,6 @@ class Authentication:
 
     # This prevents the requests + urllib3 module from creating its own user-agent (and ask to not be included in analytics).
     HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
-    HEADERS_FORM = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'Content-Type':'application/x-www-form-urlencoded', 'DNT':'1'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -113,7 +112,7 @@ class Authentication:
         # Send the login request.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/login',
-            headers=Authentication.HEADERS_FORM,
+            headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT
         )
@@ -166,7 +165,7 @@ class Authentication:
         # Send the login request.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/login',
-            headers=Authentication.HEADERS_FORM,
+            headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT,
             allow_redirects=False
@@ -231,7 +230,7 @@ class Authentication:
         # Send the form request for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
-            headers=Authentication.HEADERS_FORM,
+            headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -255,7 +254,7 @@ class Authentication:
         # Send the form request for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
-            headers=Authentication.HEADERS_FORM,
+            headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -322,7 +321,7 @@ class Authentication:
         # This is used internally by the gateway to exchange an authorisation code for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/oauth/token',
-            headers=Authentication.HEADERS_FORM,
+            headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT
         )
