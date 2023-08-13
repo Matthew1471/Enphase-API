@@ -52,6 +52,9 @@ import requests.exceptions
 # Third party library; "pip install pika"
 import pika
 
+# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671), "pip install urllib3" if getting import errors.
+import urllib3
+
 class UnicornHATHelper:
 
     @staticmethod
@@ -142,13 +145,12 @@ class UnicornHATHelper:
 
 class ScreenWeather:
 
-    def __init__(self, unicornhathd, screen_width, screen_height, latitude, longitude, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, latitude, longitude):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.latitude = latitude
         self.longitude = longitude
-        self.emulator = emulator
 
         self.weather_last_updated = None
         self.weather_filename = None
@@ -167,11 +169,11 @@ class ScreenWeather:
 
         # Draw the weather animation.
         UnicornHATHelper.draw_animation(
-                                        unicornhathd=self.unicornhathd,
-                                        screen_width=self.screen_width,
-                                        screen_height=self.screen_height,
-                                        filename=self.weather_filename
-                                       )
+            unicornhathd=self.unicornhathd,
+            screen_width=self.screen_width,
+            screen_height=self.screen_height,
+            filename=self.weather_filename
+        )
 
     def get_weather_details(self, timezone='Europe%2FLondon'):
         # Get a Y-m-d reference to today's date.
@@ -189,7 +191,11 @@ class ScreenWeather:
         weather_url += '&timeformat=unixtime'
 
         # Request the weather.
-        response = requests.get(weather_url, headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}, timeout=5).json()
+        response = requests.get(
+            url=weather_url,
+            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'},
+            timeout=5
+        ).json()
 
         # Return some specific components from the weather data.
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
@@ -233,14 +239,13 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
-    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.font = font
         self.maximum_watts_per_panel = maximum_watts_per_panel
         self.speed = speed
-        self.emulator = emulator
 
     def get_human_readable_power(self, watts, in_hours = False):
         # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
@@ -262,15 +267,15 @@ class ScreenProduction:
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
-                                                 unicornhathd=self.unicornhathd,
-                                                 screen_width=self.screen_width,
-                                                 screen_height=self.screen_height,
-                                                 line=line,
-                                                 color=color,
-                                                 font=self.font,
-                                                 speed=self.speed,
-                                                 end_time=end_time
-                                                )
+                unicornhathd=self.unicornhathd,
+                screen_width=self.screen_width,
+                screen_height=self.screen_height,
+                line=line,
+                color=color,
+                font=self.font,
+                speed=self.speed,
+                end_time=end_time
+            )
 
 class ScreenChart:
     def __init__(self, unicornhathd, screen_width, screen_height, watts_per_panel, maximum_watts_per_panel):
@@ -426,35 +431,33 @@ def main():
     # Should we display the weather?
     if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
         screen_weather = ScreenWeather(
-                                        unicornhathd=unicornhathd,
-                                        screen_width=screen_width,
-                                        screen_height=screen_height,
-                                        latitude=credentials['latitude'],
-                                        longitude=credentials['longitude'],
-                                        emulator=args.emulate_HAT
-                                        )
+            unicornhathd=unicornhathd,
+            screen_width=screen_width,
+            screen_height=screen_height,
+            latitude=credentials['latitude'],
+            longitude=credentials['longitude']
+        )
     else:
         screen_weather = None
 
     # Set up an instance of the production screen.
     screen_production = ScreenProduction(
-                                            unicornhathd=unicornhathd,
-                                            screen_width=screen_width,
-                                            screen_height=screen_height,
-                                            font=font,
-                                            maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                            speed=args.delay,
-                                            emulator=args.emulate_HAT
-                                        )
+        unicornhathd=unicornhathd,
+        screen_width=screen_width,
+        screen_height=screen_height,
+        font=font,
+        maximum_watts_per_panel=args.maximum_watts_per_panel,
+        speed=args.delay
+    )
 
     # Set up an instance of the chart screen.
     screen_chart = ScreenChart(
-                                unicornhathd=unicornhathd,
-                                screen_width=screen_width,
-                                screen_height=screen_height,
-                                watts_per_panel=args.watts_per_panel,
-                                maximum_watts_per_panel=args.maximum_watts_per_panel
-                                )
+        unicornhathd=unicornhathd,
+        screen_width=screen_width,
+        screen_height=screen_height,
+        watts_per_panel=args.watts_per_panel,
+        maximum_watts_per_panel=args.maximum_watts_per_panel
+    )
 
     # Gather the AMQP details from the credentials file.
     amqp_host = credentials.get('amqp_host', 'localhost')
@@ -466,84 +469,121 @@ def main():
 
     # The information that is visible to the broker.
     client_properties = {
-                            'connection_name': 'AMQP_Unicorn_HAT_HD',
-                            'product': 'Enphase-API',
-                            'version': '0.1',
-                            'information': 'https://github.com/Matthew1471/Enphase-API'
-                        }
+        'connection_name': 'AMQP_Unicorn_HAT_HD',
+        'product': 'Enphase-API',
+        'version': '0.1',
+        'information': 'https://github.com/Matthew1471/Enphase-API'
+    }
 
     # Gather the AMQP connection parameters.
-    amqp_parameters = pika.ConnectionParameters(host=amqp_host, credentials=amqp_credentials, client_properties=client_properties)
-
-    # Connect to the AMQP broker.
-    amqp_connection = pika.BlockingConnection(parameters=amqp_parameters)
-
-    # Get reference to the virtual connection within AMQP.
-    amqp_channel = amqp_connection.channel()
-
-    # Declare a queue (if it does not already exist).
-    amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
-
-    # Bind the queue to the exchange (if it is not already bound).
-    amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
-
-    # We may reference this when no messages are obtained from the queue.
-    timestamp = 0
+    amqp_parameters = pika.ConnectionParameters(
+        host=amqp_host,
+        credentials=amqp_credentials,
+        client_properties=client_properties
+    )
 
     try:
-        # Repeat forever unless the user presses CTRL + C.
-        while True:
-            # Optionally draw the weather.
-            if screen_weather:
-                # A weather request may fail.
-                try:
-                    screen_weather.draw_screen()
-                # Sometimes unable to connect
-                except requests.exceptions.ConnectionError as exception:
-                    # Log this error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
-                # This happens generally if there are wider issues on the network.
-                except requests.exceptions.ReadTimeout:
-                    # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
-                except requests.exceptions.JSONDecodeError as exception:
-                    # Log this non-critial often transient error.
-                    print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
+        # Connect to the AMQP broker.
+        with pika.BlockingConnection(parameters=amqp_parameters) as amqp_connection:
 
-            # AMQP get a meter response.
+            # Get reference to the virtual connection within AMQP.
+            amqp_channel = amqp_connection.channel()
+
+            # Declare a queue (if it does not already exist).
+            amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
+
+            # Bind the queue to the exchange (if it is not already bound).
+            amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
+
+            # We may reference this when no messages are obtained from the queue.
+            timestamp = 0
+
+            # Repeat forever unless the user presses CTRL + C.
             while True:
-                # Get a message.
-                method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
+                # Optionally draw the weather.
+                if screen_weather:
+                    # A weather request may fail.
+                    try:
+                        screen_weather.draw_screen()
+                    # Sometimes unable to connect
+                    except requests.exceptions.ConnectionError as exception:
+                        # Log this error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
+                    # This happens generally if there are wider issues on the network.
+                    except requests.exceptions.ReadTimeout:
+                        # Log this non-critial often transient error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
+                    except requests.exceptions.JSONDecodeError as exception:
+                        # Log this non-critial often transient error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
 
-                # Was there a message?
-                if method_frame:
-                    # If there are more messages keep consuming until this is the last one.
-                    if method_frame.message_count > 0:
-                        continue
+                # AMQP get a meter response.
+                while True:
+                    # Get a message.
+                    method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
 
-                    json_object = json.loads(body)
-                    timestamp = json_object['timestamp']
-                    production_power = json_object['readings']['production']['ph-a']['p']
-                    consumption_power = json_object['readings']['total-consumption']['ph-a']['p']
-                else:
-                    # Ran out of responses.
-                    break
+                    # Was there a message?
+                    if method_frame:
+                        # If there are more messages keep consuming until this is the last one.
+                        if method_frame.message_count > 0:
+                            continue
 
-            # Check the data is within the last 5 seconds.
-            if timestamp > time.time()-5:
-                # Draw the production power screen (until the end time).
-                screen_production.draw_screen(number_of_microinverters=args.number_of_microinverters, watts=production_power, end_time=time.time() + 5)
+                        json_object = json.loads(body)
+                        timestamp = json_object['timestamp']
 
-                # Draw the chart screen (for 5 seconds).
-                screen_chart.draw_screen(number_of_microinverters=args.number_of_microinverters, production=production_power, consumption=consumption_power)
-                time.sleep(5)
-            elif not screen_weather:
-                # Display and scroll the red error text on screen for 10 seconds (if the weather won't otherwise loop).
-                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 10)
+                        # Each of the array items are either production, net-consumption or total-consumption.
+                        for meter_readings in json_object['readings']:
+                            # Is the current array item for production?
+                            if meter_readings['reportType'] == 'production':
+                                # Take the cumulative values across all phases.
+                                production_power = meter_readings['cumulative']['actPower']
+                            # Is the current array item for consumption?
+                            elif meter_readings['reportType'] == 'total-consumption':
+                                # Take the cumulative values across all phases.
+                                consumption_power = meter_readings['cumulative']['actPower']
+                    else:
+                        # Ran out of responses.
+                        break
+
+                # Check the data is within the last 5 seconds.
+                if timestamp > time.time()-5:
+                    # Draw the production power screen (until the end time).
+                    screen_production.draw_screen(
+                        number_of_microinverters=args.number_of_microinverters,
+                        watts=production_power,
+                        end_time=time.time() + 5
+                    )
+
+                    # Draw the chart screen.
+                    screen_chart.draw_screen(
+                        number_of_microinverters=args.number_of_microinverters,
+                        production=production_power,
+                        consumption=consumption_power
+                    )
+
+                    # Pause on the last screen for 5 seconds.
+                    time.sleep(5)
+                elif not screen_weather:
+                    # Display and scroll the red error text on screen for 10 seconds (if the weather won't otherwise loop).
+                    UnicornHATHelper.draw_scrolling_text(
+                        unicornhathd=unicornhathd,
+                        screen_width=screen_width,
+                        screen_height=screen_height,
+                        line='Error',
+                        color=(255, 0, 0),
+                        font=font,
+                        speed=args.delay,
+                        end_time=time.time() + 10
+                    )
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
-        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-        unicornhathd.off()
+        print(str(datetime.datetime.now()) + ' - Closing connections.', flush=True)
+    except Exception:
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+        # Re-raise.
+        raise
     # Clear the display so the LEDs are not left stuck on when this program quits.
     finally:
         # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.

@@ -49,6 +49,9 @@ import requests
 # We handle some of the exceptions we might get back.
 import requests.exceptions
 
+# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671), "pip install urllib3" if getting import errors.
+import urllib3
+
 # All the shared Enphase® functions are in these packages.
 from enphase_api.cloud.authentication import Authentication
 from enphase_api.local.gateway import Gateway
@@ -143,13 +146,12 @@ class UnicornHATHelper:
 
 class ScreenWeather:
 
-    def __init__(self, unicornhathd, screen_width, screen_height, latitude, longitude, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, latitude, longitude):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.latitude = latitude
         self.longitude = longitude
-        self.emulator = emulator
 
         self.weather_last_updated = None
         self.weather_filename = None
@@ -168,15 +170,11 @@ class ScreenWeather:
 
         # Draw the weather animation.
         UnicornHATHelper.draw_animation(
-                                        unicornhathd=self.unicornhathd,
-                                        screen_width=self.screen_width,
-                                        screen_height=self.screen_height,
-                                        filename=self.weather_filename
-                                       )
-
-        # Clear the screen while the next process runs.
-        if not self.emulator:
-            self.unicornhathd.off()
+            unicornhathd=self.unicornhathd,
+            screen_width=self.screen_width,
+            screen_height=self.screen_height,
+            filename=self.weather_filename
+        )
 
     def get_weather_details(self, timezone='Europe%2FLondon'):
         # Get a Y-m-d reference to today's date.
@@ -194,7 +192,11 @@ class ScreenWeather:
         weather_url += '&timeformat=unixtime'
 
         # Request the weather.
-        response = requests.get(weather_url, headers={'User-Agent': None, 'Accept':'application/json', 'DNT':'1'}, timeout=5).json()
+        response = requests.get(
+            url=weather_url,
+            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'},
+            timeout=5
+        ).json()
 
         # Return some specific components from the weather data.
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
@@ -238,14 +240,13 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
-    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04, emulator=False):
+    def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.font = font
         self.maximum_watts_per_panel = maximum_watts_per_panel
         self.speed = speed
-        self.emulator = emulator
 
     def get_human_readable_power(self, watts, in_hours = False):
         # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
@@ -267,15 +268,15 @@ class ScreenProduction:
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
-                                                 unicornhathd=self.unicornhathd,
-                                                 screen_width=self.screen_width,
-                                                 screen_height=self.screen_height,
-                                                 line=line,
-                                                 color=color,
-                                                 font=self.font,
-                                                 speed=self.speed,
-                                                 end_time=end_time
-                                                )
+                unicornhathd=self.unicornhathd,
+                screen_width=self.screen_width,
+                screen_height=self.screen_height,
+                line=line,
+                color=color,
+                font=self.font,
+                speed=self.speed,
+                end_time=end_time
+            )
 
 class ScreenChart:
     def __init__(self, unicornhathd, screen_width, screen_height, watts_per_panel, maximum_watts_per_panel):
@@ -411,6 +412,30 @@ def get_production_details(gateway, reading_type='Meter'):
     # Return the response.
     return production_watts, consumption_watts, number_of_microinverters, next_reading_time
 
+def get_secure_gateway_session(credentials):
+    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+        # It is either not present or not valid.
+        raise ValueError('No or expired token.')
+
+    # Did the user override the library default hostname to the Gateway?
+    host = credentials.get('host')
+
+    # Download and store the certificate from the gateway so all future requests are secure.
+    if not os.path.exists('configuration/gateway.cer'):
+        Gateway.trust_gateway(host)
+
+    # Instantiate the Gateway API wrapper (with the default library hostname if None provided).
+    gateway = Gateway(host)
+
+    # Are we not able to login to the gateway?
+    if not gateway.login(credentials['token']):
+        # Let the user know why the program is exiting.
+        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+
+    # Return the initialised gateway object.
+    return gateway
+
 def main():
     # Create an instance of argparse to handle any command line arguments.
     parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an Enphase® Gateway and displays the production values on a Unicorn HAT HD.')
@@ -448,23 +473,8 @@ def main():
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
-    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
-        # It is not valid so clear it.
-        raise ValueError('No or expired token.')
-
-    # Did the user override the library default hostname to the Gateway?
-    if credentials.get('host'):
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
-    else:
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
-
-    # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
-        # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+    # Use a secure gateway initialisation flow.
+    gateway = get_secure_gateway_session(credentials)
 
     # Rotate the image (e.g. if the screen is on its side).
     if args.rotate:
@@ -492,35 +502,34 @@ def main():
     # Should we display the weather?
     if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
         screen_weather = ScreenWeather(
-                                        unicornhathd=unicornhathd,
-                                        screen_width=screen_width,
-                                        screen_height=screen_height,
-                                        latitude=credentials['latitude'],
-                                        longitude=credentials['longitude'],
-                                        emulator=args.emulate_HAT
-                                        )
+            unicornhathd=unicornhathd,
+            screen_width=screen_width,
+            screen_height=screen_height,
+            latitude=credentials['latitude'],
+            longitude=credentials['longitude']
+        )
     else:
         screen_weather = None
 
     # Set up an instance of the production screen.
     screen_production = ScreenProduction(
-                                            unicornhathd=unicornhathd,
-                                            screen_width=screen_width,
-                                            screen_height=screen_height,
-                                            font=font,
-                                            maximum_watts_per_panel=args.maximum_watts_per_panel,
-                                            speed=args.delay,
-                                            emulator=args.emulate_HAT
-                                        )
+        unicornhathd=unicornhathd,
+        screen_width=screen_width,
+        screen_height=screen_height,
+        font=font,
+        maximum_watts_per_panel=args.maximum_watts_per_panel,
+        speed=args.delay
+    )
 
     # Set up an instance of the chart screen.
     screen_chart = ScreenChart(
-                                unicornhathd=unicornhathd,
-                                screen_width=screen_width,
-                                screen_height=screen_height,
-                                watts_per_panel=args.watts_per_panel,
-                                maximum_watts_per_panel=args.maximum_watts_per_panel
-                                )
+        unicornhathd=unicornhathd,
+        screen_width=screen_width,
+        screen_height=screen_height,
+        watts_per_panel=args.watts_per_panel,
+        maximum_watts_per_panel=args.maximum_watts_per_panel
+    )
+
     try:
         # Repeat forever unless the user presses CTRL + C.
         while True:
@@ -528,45 +537,94 @@ def main():
             try:
                 # Optionally draw the weather.
                 if screen_weather:
-                    screen_weather.draw_screen()
+                    # A weather request may fail.
+                    try:
+                        screen_weather.draw_screen()
+                    # Sometimes unable to connect
+                    except requests.exceptions.ConnectionError as exception:
+                        # Log this error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
+                    # This happens generally if there are wider issues on the network.
+                    except requests.exceptions.ReadTimeout:
+                        # Log this non-critial often transient error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
+                    except requests.exceptions.JSONDecodeError as exception:
+                        # Log this non-critial often transient error.
+                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
+
+                    # Clear the screen while the next process runs (there can be a delay).
+                    if not args.emulate_HAT:
+                        unicornhathd.off()
 
                 # Get the production details.
                 production_power, consumption_power, number_of_microinverters, end_time = get_production_details(gateway=gateway, reading_type='Meter')
 
                 # Draw the production power screen (until the end time).
-                screen_production.draw_screen(number_of_microinverters=number_of_microinverters, watts=production_power, end_time=end_time)
+                screen_production.draw_screen(
+                    number_of_microinverters=number_of_microinverters,
+                    watts=production_power,
+                    end_time=end_time
+                )
 
                 # Draw the chart screen.
-                screen_chart.draw_screen(number_of_microinverters=number_of_microinverters, production=production_power, consumption=consumption_power)
-
-                if production_power >= 1:
-                    time.sleep(5)
-                else:
-                    time.sleep(60)
+                screen_chart.draw_screen(
+                    number_of_microinverters=number_of_microinverters,
+                    production=production_power,
+                    consumption=consumption_power
+                )
+                
+                # Pause on the last screen for 5 seconds.
+                time.sleep(5)
             # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
             except requests.exceptions.ConnectionError as exception:
                 # Log this error.
                 print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  str(exception), file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
-                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+                UnicornHATHelper.draw_scrolling_text(
+                    unicornhathd=unicornhathd,
+                    screen_width=screen_width,
+                    screen_height=screen_height,
+                    line='Error',
+                    color=(255, 0, 0),
+                    font=font,
+                    speed=args.delay,
+                    end_time=time.time() + 60
+                )
             # This happens generally if there are wider issues on the network.
             except requests.exceptions.ReadTimeout:
                 # Log this non-critial often transient error.
                 print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
-                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+                UnicornHATHelper.draw_scrolling_text(
+                    unicornhathd=unicornhathd,
+                    screen_width=screen_width,
+                    screen_height=screen_height,
+                    line='Error',
+                    color=(255, 0, 0),
+                    font=font,
+                    speed=args.delay,
+                    end_time=time.time() + 60
+                )
             except requests.exceptions.JSONDecodeError as exception:
                 # Log this non-critial often transient error.
                 print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + str(exception), file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
-                UnicornHATHelper.draw_scrolling_text(unicornhathd=unicornhathd, screen_width=screen_width, screen_height=screen_height, line='Error', color=(255, 0, 0), font=font, speed=args.delay, end_time=time.time() + 60)
+                UnicornHATHelper.draw_scrolling_text(
+                    unicornhathd=unicornhathd,
+                    screen_width=screen_width,
+                    screen_height=screen_height,
+                    line='Error', color=(255, 0, 0),
+                    font=font,
+                    speed=args.delay,
+                    end_time=time.time() + 60
+                )
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
-        # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.
-        unicornhathd.off()
+        # Do not log any exceptions just silently quit.
+        pass
     # Clear the display so the LEDs are not left stuck on when this program quits.
     finally:
         # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.

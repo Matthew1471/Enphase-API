@@ -258,35 +258,38 @@ def animate(_):
             axes.set_xlim(old_x_lim)
             axes.set_ylim(old_y_lim)
 
-def main():
-    # Load credentials.
-    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
-        credentials = json.load(json_file)
-
+def get_secure_gateway_session(credentials):
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
-        # It is not valid so clear it.
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+        # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    global gateway
-    if credentials.get('host'):
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+    host = credentials.get('host')
 
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
-    else:
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+    # Download and store the certificate from the gateway so all future requests are secure.
+    if not os.path.exists('configuration/gateway.cer'):
+        Gateway.trust_gateway(host)
 
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
+    # Instantiate the Gateway API wrapper (with the default library hostname if None provided).
+    gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
     if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+
+    # Return the initialised gateway object.
+    return gateway
+
+def main():
+    # Load credentials.
+    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
+        credentials = json.load(json_file)
+
+    # Use a secure gateway initialisation flow.
+    global gateway
+    gateway = get_secure_gateway_session(credentials)
 
     # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
     global meters_status

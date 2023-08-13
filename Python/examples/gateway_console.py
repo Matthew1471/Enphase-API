@@ -36,17 +36,11 @@ def get_human_readable_power(watts, in_hours = False):
     # Divide the number by a thousand and report it in kW (to 2 decimal places).
     return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
 
-def main():
-    # Load credentials.
-    with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
-        credentials = json.load(json_file)
-
+def get_secure_gateway_session(credentials):
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if credentials.get('token'):
-        # Check if the JWT is valid.
-        if (credentials.get('gatewaySerialNumber') and not Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])) and not Authentication.check_token_valid(credentials['token']):
-            # It is not valid so clear it.
-            credentials['token'] = None
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+        # It is not valid so clear it.
+        credentials['token'] = None
 
     # Do we still not have a Token?
     if not credentials.get('token'):
@@ -75,25 +69,30 @@ def main():
             raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
     # Did the user override the library default hostname to the Gateway?
-    if credentials.get('host'):
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'):
-            Gateway.trust_gateway(credentials['host'])
+    host = credentials.get('host')
 
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
-    else:
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'):
-            Gateway.trust_gateway()
+    # Download and store the certificate from the gateway so all future requests are secure.
+    if not os.path.exists('configuration/gateway.cer'):
+        Gateway.trust_gateway(host)
 
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
+    # Instantiate the Gateway API wrapper (with the default library hostname if None provided).
+    gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
     if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+
+    # Return the initialised gateway object.
+    return gateway
+
+def main():
+    # Load credentials.
+    with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
+        credentials = json.load(json_file)
+
+    # Use a secure gateway initialisation flow.
+    gateway = get_secure_gateway_session(credentials)
 
     # We can force the gateway to poll the inverters early (by default it only does this automatically every 5 minutes).
     #gateway.api_call('/installer/pcu_comm_check')

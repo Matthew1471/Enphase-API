@@ -37,13 +37,12 @@ More general details on the project are available from the link:../../../README.
 
 == Getting Started
 
-The wrapper uses 3 main third-party libraries. These can be installed by typing into your terminal:
+The wrapper uses 2 main third-party libraries. These can be installed by typing into your terminal:
 
 [source,bash]
 ----
 pip install PyJWT
 pip install requests
-pip install requests-oauthlib
 ----
 
 The main wrapper lives in the `src\enphase_api` folder and the files in the `examples` directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and considered fairly protection ready, so they can be used as applications in their own right.
@@ -56,41 +55,76 @@ WARNING: A token behaves like a time limited version of your username and passwo
 
 == Examples
 
-[cols="1,1,1,2", options="header"] 
+[cols="1,1,1,1,1,2", options="header"] 
 |===
 |Filename
 |Config File
-|Notes
+|Dependencies
+|Source Data
+|Output Data
 |Description
 
-|`gateway_console.py`
-|`credentials.json`
-|Will attempt to refresh any expired tokens.
-|Displays production data on the console/terminal then exits.
-
-|`gateway_database_meters.py`
+|link:../../../Python/examples/amqp_database_meters.py[`amqp_database_meters.py`]
 |`credentials_token.json`
-|Requires an existing valid token, will not refresh it. Requires `mysql.connector` package.
-|Obtains meter information and stores it in a MySQL/mariadb database (schema is in the resources folder) for consumption and statistics in other systems.
+|`mysql.connector` and `pika`
+|AMQP
+|MySQL/mariadb
+|Consumes meter messages from AMQP and stores it in a MySQL/mariadb database (schema is in the resources folder).
 
-|`gateway_generate_docs.py`
+|link:../../../Python/examples/amqp_unicorn_hat_hd.py[`amqp_unicorn_hat_hd.py`]
 |`credentials_token.json`
-|Requires an existing valid token, will not refresh it.
-|This is a project resource to semi-automatically generate the documentation files.
+|`pika` and `unicornhathd`
+|AMQP
+|https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD]
+|Consumes meter messages from AMQP and displays production and consumption data on a https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD] running on a https://www.raspberrypi.com/products/[Raspberry Pi].
 
-|`gateway_pyplot_database.py`
+|link:../../../Python/examples/database_pyplot_meters.py[`database_pyplot_meters.py`]
 |None
-|Requires `mysql.connector` package. Also requires MySQL/mariadb connection details on the command line.
+|`mysql.connector` and `matplotlib`
+|MySQL/mariadb
+|PyPlot
+|Displays meter production and consumption databased data in a chart using PyPlot.
+
+|link:../../../Python/examples/gateway_amqp_meters.py[`gateway_amqp_meters.py`]
+|`credentials_token.json`
+|`pika`
+|IQ Gateway
+|AMQP
+|Obtains meter information and publishes it to AMQP for consumption and statistics in other systems.
+
+|link:../../../Python/examples/gateway_console.py[`gateway_console.py`]
+|`credentials.json`
+|None
+|IQ Gateway
+|Console
+|Displays production data on the console/terminal then exits. Will attempt to refresh any expired tokens.
+
+|link:../../../Python/examples/gateway_database_meters.py[`gateway_database_meters.py`]
+|`credentials_token.json`
+|`mysql.connector`
+|IQ Gateway
+|MySQL/mariadb
+|Obtains meter information and stores it in a MySQL/mariadb database (schema is in the resources folder).
+
+|link:../../../Python/examples/gateway_generate_docs.py[`gateway_generate_docs.py`]
+|`credentials.json`
+|None
+|IQ Gateway
+|Documentation Files
+|This is a project resource to semi-automatically generate the documentation files. Will attempt to refresh any expired tokens.
+
+|link:../../../Python/examples/gateway_pyplot_meters.py[`gateway_pyplot_meters.py`]
+|`credentials_token.json`
+|`matplotlib`
+|IQ Gateway
+|PyPlot
 |Displays production and consumption data in a chart using PyPlot.
 
-|`gateway_pyplot_meters.py`
+|link:../../../Python/examples/gateway_unicorn_hat_hd.py[`gateway_unicorn_hat_hd.py`]
 |`credentials_token.json`
-|Requires an existing valid token, will not refresh it. Requires `matplotlib` package.
-|Displays production and consumption data in a chart using PyPlot.
-
-|`gateway_unicorn_hat_hd.py`
-|`credentials_token.json`
-|Requires an existing valid token, will not refresh it. Requires `pillow` and `unicornhathd` packages.
-|Displays production data on a https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD] running on a https://www.raspberrypi.com/products/[Raspberry Pi].
+|`pillow` and `unicornhathd`
+|IQ Gateway
+|https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD]
+|Displays production and consumption data on a https://shop.pimoroni.com/products/unicorn-hat-hd[Unicorn HAT HD] running on a https://www.raspberrypi.com/products/[Raspberry Pi].
 
 |===

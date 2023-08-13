@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import datetime # We use the current date/time for the reading times.
+import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
+import time     # We use the current epoch seconds for reading times and to delay.
 
-import mysql.connector # Third party library; "pip install mysql-connector-python"
+import mysql.connector # Third party library; "pip install mysql-connector-python".
 
 # All the shared Enphase® functions are in these packages.
 from enphase_api.cloud.authentication import Authentication
@@ -28,115 +29,104 @@ from enphase_api.local.gateway import Gateway
 
 
 # SQL statements.
-add_meter_reading = ('INSERT INTO `MeterReading` (Timestamp, '
-                      'Production_Phase_A_ID, Production_Phase_B_ID, Production_Phase_C_ID, '
-                      'NetConsumption_Phase_A_ID, NetConsumption_Phase_B_ID, NetConsumption_Phase_C_ID, '
-                      'TotalConsumption_Phase_A_ID, TotalConsumption_Phase_B_ID, TotalConsumption_Phase_C_ID'
-                      ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
-add_meter_reading_result = ('INSERT INTO `MeterReading_Result` (p, q, s, v, i, pf, f) VALUES (%s, %s, %s, %s, %s, %s, %s)')
+ADD_METER_READING = (
+    'INSERT INTO `MeterReading` (Timestamp, '
+    'Production_Phase_A_ID, Production_Phase_B_ID, Production_Phase_C_ID, '
+    'NetConsumption_Phase_A_ID, NetConsumption_Phase_B_ID, NetConsumption_Phase_C_ID, '
+    'TotalConsumption_Phase_A_ID, TotalConsumption_Phase_B_ID, TotalConsumption_Phase_C_ID'
+    ') VALUES (FROM_UNIXTIME(%s), %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+)
+
+ADD_METER_READING_RESULT = (
+    'INSERT INTO `MeterReading_Result` (p, q, s, v, i, pf, f) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+)
+
+# Maps each type of inserted meter reading record ID to the relevant place in our SQL parameters.
+OFFSET_MAPPING = {
+    'production': 0,
+    'net-consumption': 1,
+    'total-consumption': 2,
+}
 
 def add_results_to_database(database_connection, database_cursor_meter_reading, database_cursor_meter_reading_result, timestamp, json_object):
+    # Initialise to empty by default so they convert to a database NULL if not later set.
+    report_ids = [None] * 9
+
     # Take each of the meter types.
-    for meter_reading_type, meter_reading_type_result in json_object.items():
-        # Initialise to empty by default so they convert to a database NULL if not later set.
-        ph_a = None
-        ph_b = None
-        ph_c = None
+    for meter_readings in json_object:
+
+        # Get the parameter index offset for this meters' meter type.
+        offset = OFFSET_MAPPING.get(meter_readings['reportType'])
+        if offset is None:
+            raise ValueError('Unexpected meter reading report type "' + report_type + '" in JSON.')
 
         # Take each of the phase readings.
-        for meter_phase, meter_reading_result in meter_reading_type_result.items():
-            # Skip empty phases.
-            if all(value == 0 for value in meter_reading_result.values()): continue
+        for phase_count, meter_reading_result in enumerate(meter_readings['lines']):
+
+            # Too many phases?
+            if phase_count > 2:
+                raise ValueError('Unexpected phase #' + phase_count + ' in JSON.')
+
+            # Map each of the JSON values to our database columns.
+            meter_reading_values = (
+                meter_reading_result['actPower'],
+                meter_reading_result['reactPwr'],
+                meter_reading_result['apprntPwr'],
+                meter_reading_result['rmsVoltage'],
+                meter_reading_result['rmsCurrent'],
+                meter_reading_result['pwrFactor'],
+                meter_reading_result['freqHz']
+            )
 
             try:
-                # Add to the database the meter reading(s) (specifying a dictionary instead of a tuple prevented the query from being prepared - possibly a MySQL Connector bug).
-                database_cursor_meter_reading_result.execute(add_meter_reading_result, (meter_reading_result['p'], meter_reading_result['q'], meter_reading_result['s'], meter_reading_result['v'], meter_reading_result['i'], meter_reading_result['pf'], meter_reading_result['f']))
+                # Add to the database the meter reading(s).
+                # Using a dictionary instead of a tuple prevented query preparation,
+                # possibly due to a MySQL Connector bug.
+                database_cursor_meter_reading_result.execute(ADD_METER_READING_RESULT, meter_reading_values)
             except mysql.connector.errors.DataError:
                 print(json_object, flush=True)
                 raise
 
             # Get the result ID for this phase insert.
-            if meter_phase == 'ph-a':
-                ph_a = database_cursor_meter_reading_result.lastrowid
-            elif meter_phase == 'ph-b':
-                ph_b = database_cursor_meter_reading_result.lastrowid
-            elif meter_phase == 'ph-c':
-                ph_c = database_cursor_meter_reading_result.lastrowid
-            else:
-                raise ValueError('Unexpected phase "' + meter_phase + '" in JSON.')
+            report_ids[(offset*3)+phase_count] = database_cursor_meter_reading_result.lastrowid
 
-        # Store the meter reading record IDs for this meter type.
-        if meter_reading_type == 'production':
-            production_phase_list_id = (ph_a, ph_b, ph_c)
-        elif meter_reading_type == 'net-consumption':
-            net_consumption_phase_list_id = (ph_a, ph_b, ph_c)
-        elif meter_reading_type == 'total-consumption':
-            total_consumption_phase_list_id = (ph_a, ph_b, ph_c)
-        else:
-            raise ValueError('Unexpected reading type "' + meter_reading_type + '" in JSON.')
-
-    # Add the meter reading.
-    database_cursor_meter_reading.execute(add_meter_reading, (timestamp,) + production_phase_list_id + net_consumption_phase_list_id + total_consumption_phase_list_id)
+    # Add the meters' readings.
+    database_cursor_meter_reading.execute(ADD_METER_READING, (timestamp,) + tuple(report_ids))
 
     # Make sure data is committed to the database.
     database_connection.commit()
 
-def main():
-    # Load credentials.
-    with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
-        credentials = json.load(json_file)
-
+def get_secure_gateway_session(credentials):
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if credentials.get('token'):
-        # Check if the JWT is valid.
-        if (credentials.get('gatewaySerialNumber') and not Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])) and not Authentication.check_token_valid(credentials['token']):
-            # It is not valid so clear it.
-            credentials['token'] = None
-
-    # Do we still not have a Token?
-    if not credentials.get('token'):
-        # Do we have a way to obtain a token?
-        if credentials.get('enphaseUsername') and credentials.get('enphasePassword'):
-            # Create a Authentication object.
-            authentication = Authentication()
-
-            # Authenticate with Entrez (French for "Access").
-            if not authentication.authenticate(credentials['enphaseUsername'], credentials['enphasePassword']):
-                raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
-
-            # Does the user want to target a specific gateway or all uncommissioned ones?
-            if credentials.get('gatewaySerialNumber'):
-                # Get a new gateway specific token (installer = short-life, owner = long-life).
-                credentials['token'] = authentication.get_token_for_commissioned_gateway(credentials['gatewaySerialNumber'])
-            else:
-                # Get a new uncommissioned gateway specific token.
-                credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
-
-            # Update the file to include the modified token.
-            with open('configuration/credentials.json', mode='w', encoding='utf-8') as json_file:
-                json.dump(credentials, json_file, indent=4)
-        else:
-            # Let the user know why the program is exiting.
-            raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+        # It is either not present or not valid.
+        raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    if credentials.get('host'):
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway(credentials['host'])
+    host = credentials.get('host')
 
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
-    else:
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'): Gateway.trust_gateway()
+    # Download and store the certificate from the gateway so all future requests are secure.
+    if not os.path.exists('configuration/gateway.cer'):
+        Gateway.trust_gateway(host)
 
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
+    # Instantiate the Gateway API wrapper (with the default library hostname if None provided).
+    gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
     if not gateway.login(credentials['token']):
         # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
+
+    # Return the initialised gateway object.
+    return gateway
+
+def main():
+    # Load credentials.
+    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
+        credentials = json.load(json_file)
+
+    # Use a secure gateway initialisation flow.
+    gateway = get_secure_gateway_session(credentials)
 
     # Gather the database details from the credentials file.
     database_host = credentials.get('database_host', 'localhost')
@@ -145,83 +135,46 @@ def main():
     database_database = credentials.get('database_database', 'Enphase')
 
     # Connect to the MySQL/MariaDB database.
-    database_connection = mysql.connector.connect(host=database_host, user=database_username, password=database_password, database=database_database)
+    with mysql.connector.connect(
+        host=database_host,
+        user=database_username,
+        password=database_password,
+        database=database_database
+    ) as database_connection:
 
-    # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
-    database_cursor_meter_reading = database_connection.cursor(prepared=True)
-    database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
+        # Get references to 2 database cursors (that will PREPARE duplicate SQL statements).
+        database_cursor_meter_reading = database_connection.cursor(prepared=True)
+        database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
-    try:
-        # Request the data from the meter stream.
-        with gateway.api_call_stream('/stream/meter') as stream:
-            # The start and end strings for each chunk.
-            start_needle = 'data: '
-            end_needle = '}\r\n\r\n'
-
-            # We allow partial chunks.
-            partial_chunk = None
-
-            # Chunks are received when the gateway flushes its buffer.
-            for chunk in stream.iter_content(chunk_size=1024, decode_unicode=True):
-                # Add on any previous partially complete chunks.
-                if partial_chunk:
-                    # Append the previous partial_chunk to this chunk.
-                    chunk = partial_chunk + chunk
-
-                    # Notify the user.
-                    print(str(datetime.datetime.now()) + ' - Merging chunk with existing partial.', flush=True)
-
-                    # This partial is now consumed.
-                    partial_chunk = None
-
-                # Where in the chunk to start reading from.
-                start_position = 0
-
-                # Repeat while there is an end-position.
-                while start_position < len(chunk):
-                    # This is to be expected with Server-Sent Events (SSE).
-                    if chunk.startswith(start_needle, start_position) or (len(chunk) - start_position) < len(start_needle):
-                        # Can the end_needle be found?
-                        end_position = chunk.find(end_needle, start_position)
-
-                        # Was the end_position found?
-                        if end_position != -1:
-                            # Start after the 'data: '.
-                            start_position += len(start_needle)
-
-                            # Add this result to the database.
-                            add_results_to_database(database_connection=database_connection, database_cursor_meter_reading=database_cursor_meter_reading, database_cursor_meter_reading_result=database_cursor_meter_reading_result, timestamp=datetime.datetime.now(), json_object=json.loads(chunk[start_position:end_position+1]))
-
-                            # Output the reading time of the chunk and a value for timestamp debugging.
-                            #print(str(datetime.datetime.now()) + ' - ' + str(json_object['net-consumption']['ph-a']['p']) + ' W', flush=True)
-
-                            # The next start_position is after this current substring.
-                            start_position = end_position + len(end_needle)
-                        # Can happen when the packets are delayed.
-                        else:
-                            # Store a reference to this ready to be consumed by the next chunk.
-                            partial_chunk = chunk[start_position:]
-
-                            # Notify the user.
-                            print(str(datetime.datetime.now()) + ' - Incomplete chunk.', flush=True)
-
-                            # This completes the chunk iteration loop as this now consumes from the start to the end as there was no end_position.
-                            break
-                    else:
-                        # Notify the user.
-                        print(str(datetime.datetime.now()) + ' - Bad line returned from meter stream.', flush=True)
-
-                        # This is fatal, this is not going to be a valid chunk irrespective of how much appending of future chunks we perform.
-                        raise ValueError('Bad line returned from meter stream:\r\n "' + chunk[start_position:] + '"')
-    except Exception:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+        print(str(datetime.datetime.now()) + ' - Collecting meter readings. To exit press CTRL+C', flush=True)
 
-        # Re-raise.
-        raise
-    finally:
-        # Close the database connection.
-        database_connection.close()
+        try:
+            # Repeat forever unless the user presses CTRL + C.
+            while True:
+                # Request the data from the meter reports.
+                response = gateway.api_call('/ivp/meters/reports')
+
+                # Add this result to the database.
+                add_results_to_database(
+                    database_connection=database_connection,
+                    database_cursor_meter_reading=database_cursor_meter_reading,
+                    database_cursor_meter_reading_result=database_cursor_meter_reading_result,
+                    timestamp=time.time(),
+                    json_object=response
+                )
+
+                # Capture interval, in fractional seconds.
+                time.sleep(0.99)
+        except KeyboardInterrupt:
+            # Notify the user.
+            print(str(datetime.datetime.now()) + ' - Closing connections.', flush=True)
+        except Exception:
+            # Notify the user.
+            print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+
+            # Re-raise.
+            raise
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':

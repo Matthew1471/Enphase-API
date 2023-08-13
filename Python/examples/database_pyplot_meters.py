@@ -36,9 +36,6 @@ database_cursor = None
 # The matplotlib figure.
 figure = None
 
-# The reference to the Gateway wrapper itself.
-gateway = None
-
 # The lists which will hold the underlying raw data.
 timestamp_data = []
 production_data = []
@@ -60,16 +57,18 @@ legend_map = {}
 last_seen_reading_id = 0
 
 # SQL statement.
-get_meter_readings_sql = ('SELECT ReadingID, Timestamp, Production_P, NetConsumption_P, TotalConsumption_P '
-                          'FROM MeterReading_SinglePhase_View '
-                          'WHERE ReadingID > %s '
-                          'ORDER BY ReadingID ASC')
+GET_METER_READINGS_SQL = (
+    'SELECT ReadingID, Timestamp, Production_P, NetConsumption_P, TotalConsumption_P '
+    'FROM MeterReading_SinglePhase_View '
+    'WHERE ReadingID > %s '
+    'ORDER BY ReadingID ASC'
+)
 
 def add_results_from_database():
     global last_seen_reading_id
 
     # Get the meter readings.
-    database_cursor.execute(get_meter_readings_sql, (last_seen_reading_id,))
+    database_cursor.execute(GET_METER_READINGS_SQL, (last_seen_reading_id,))
 
     # A flag to determine if there were any new records added.
     found_records = False
@@ -254,34 +253,38 @@ def main():
     args = parser.parse_args()
 
     # Connect to the MySQL/MariaDB database.
-    database_connection = mysql.connector.connect(user=args.database_username, password=args.database_password, host=args.database_host, database=args.database_database, autocommit=True)
+    with mysql.connector.connect(
+        user=args.database_username,
+        password=args.database_password,
+        host=args.database_host,
+        database=args.database_database,
+        autocommit=True
+    ) as database_connection:
+    
+            # Get reference to the database cursor (that will PREPARE duplicate SQL statements).
+            global database_cursor
+            database_cursor = database_connection.cursor(prepared=True)
 
-    try:
-        # Get reference to the database cursor (that will PREPARE duplicate SQL statements).
-        global database_cursor
-        database_cursor = database_connection.cursor(prepared=True)
+            # Allow the user to change the start from timestamp.
+            global last_seen_reading_id
+            if args.start_from:
+                last_seen_reading_id = args.start_from
 
-        # Allow the user to change the start from timestamp.
-        global last_seen_reading_id
-        if args.start_from: last_seen_reading_id = args.start_from
+            # Add the inital batch of records from the database to the lists.
+            print('Loading existing records in database (this may take a while).')
+            add_results_from_database()
+            print('Loaded existing records.')
 
-        # Add the inital batch of records from the database to the lists.
-        print('Loading existing records in database (this may take a while).')
-        add_results_from_database()
-        print('Loaded existing records.')
+            # Draw the initial plot.
+            global figure
+            figure = setup_plot()
 
-        # Draw the initial plot.
-        global figure
-        figure = setup_plot()
+            # Set a timer to animate the chart every 5 seconds.
+            if args.animate:
+                _ = animation.FuncAnimation(figure, animate, interval=5000)
 
-        # Set a timer to animate the chart every 15 seconds.
-        if args.animate: _ = animation.FuncAnimation(figure, animate, interval=5000)
-
-        # Show the plot screen.
-        plt.show()
-    finally:
-        # Close the database connection.
-        database_connection.close()
+            # Show the plot screen.
+            plt.show()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
