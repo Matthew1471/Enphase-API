@@ -58,7 +58,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
         # Get the parameter index offset for this meters' meter type.
         offset = OFFSET_MAPPING.get(meter_readings['reportType'])
         if offset is None:
-            raise ValueError('Unexpected meter reading report type "' + report_type + '" in JSON.')
+            raise ValueError('Unexpected meter reading report type "' + meter_readings['reportType'] + '" in JSON.')
 
         # Take each of the phase readings.
         for phase_count, meter_reading_result in enumerate(meter_readings['lines']):

@@ -260,31 +260,31 @@ def main():
         database=args.database_database,
         autocommit=True
     ) as database_connection:
-    
-            # Get reference to the database cursor (that will PREPARE duplicate SQL statements).
-            global database_cursor
-            database_cursor = database_connection.cursor(prepared=True)
 
-            # Allow the user to change the start from timestamp.
-            global last_seen_reading_id
-            if args.start_from:
-                last_seen_reading_id = args.start_from
+        # Get reference to the database cursor (that will PREPARE duplicate SQL statements).
+        global database_cursor
+        database_cursor = database_connection.cursor(prepared=True)
 
-            # Add the inital batch of records from the database to the lists.
-            print('Loading existing records in database (this may take a while).')
-            add_results_from_database()
-            print('Loaded existing records.')
+        # Allow the user to change the start from timestamp.
+        global last_seen_reading_id
+        if args.start_from:
+            last_seen_reading_id = args.start_from
 
-            # Draw the initial plot.
-            global figure
-            figure = setup_plot()
+        # Add the inital batch of records from the database to the lists.
+        print('Loading existing records in database (this may take a while).')
+        add_results_from_database()
+        print('Loaded existing records.')
 
-            # Set a timer to animate the chart every 5 seconds.
-            if args.animate:
-                _ = animation.FuncAnimation(figure, animate, interval=5000)
+        # Draw the initial plot.
+        global figure
+        figure = setup_plot()
 
-            # Show the plot screen.
-            plt.show()
+        # Set a timer to animate the chart every 5 seconds.
+        if args.animate:
+            _ = animation.FuncAnimation(figure, animate, interval=5000)
+
+        # Show the plot screen.
+        plt.show()
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':

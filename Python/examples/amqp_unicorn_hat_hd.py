@@ -300,7 +300,7 @@ class ScreenChart:
             total_capacity = consumption
 
         # Calculate how many watts each pixel represents.
-        watts_per_pixel = (total_capacity / self.number_of_pixels)
+        watts_per_pixel = total_capacity / self.number_of_pixels
 
         # Calculate how many pixels of production and consumption we have.
         number_of_production_pixels = production / watts_per_pixel

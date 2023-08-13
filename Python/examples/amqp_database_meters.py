@@ -18,7 +18,6 @@
 
 import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
-import os.path  # We check whether a file exists.
 
 import mysql.connector # Third party library; "pip install mysql-connector-python".
 import pika            # Third party library; "pip install pika".
@@ -54,7 +53,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
         # Get the parameter index offset for this meters' meter type.
         offset = OFFSET_MAPPING.get(meter_readings['reportType'])
         if offset is None:
-            raise ValueError('Unexpected meter reading report type "' + report_type + '" in JSON.')
+            raise ValueError('Unexpected meter reading report type "' + meter_readings['reportType'] + '" in JSON.')
 
         # Take each of the phase readings.
         for phase_count, meter_reading_result in enumerate(meter_readings['lines']):

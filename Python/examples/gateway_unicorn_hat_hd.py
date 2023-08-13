@@ -301,7 +301,7 @@ class ScreenChart:
             total_capacity = consumption
 
         # Calculate how many watts each pixel represents.
-        watts_per_pixel = (total_capacity / self.number_of_pixels)
+        watts_per_pixel = total_capacity / self.number_of_pixels
 
         # Calculate how many pixels of production and consumption we have.
         number_of_production_pixels = production / watts_per_pixel
@@ -404,7 +404,8 @@ def get_production_details(gateway, reading_type='Meter'):
         next_reading_time = reading_json['readingTime'] + 300
 
         # If the data is already stale (happens in low light) try again in 60 seconds.
-        if next_reading_time <= time.time(): next_reading_time = time.time() + 60
+        if next_reading_time <= time.time():
+            next_reading_time = time.time() + 60
     else:
         # We should try in 60 seconds.
         next_reading_time = time.time() + 60
@@ -572,7 +573,7 @@ def main():
                     production=production_power,
                     consumption=consumption_power
                 )
-                
+
                 # Pause on the last screen for 5 seconds.
                 time.sleep(5)
             # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
