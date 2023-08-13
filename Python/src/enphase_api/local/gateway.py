@@ -92,7 +92,8 @@ class Gateway:
         """
 
         # Create the configuration folder if it does not already exist.
-        if not os.path.exists('configuration/'): os.makedirs('configuration/')
+        if not os.path.exists('configuration/'):
+            os.makedirs('configuration/')
 
         # Save the Gateway's public certificate to disk.
         with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
@@ -163,13 +164,13 @@ class Gateway:
         if 'message' in response:
             raise ValueError('Error exchanging authorisation code for an access token.') from ValueError(response['message'])
 
-        # The gateway must have returned an access token.
-        if 'access_token' in response:
-            # Login with the JWT (in my opinion the gateway should have internally made this call for us).
-            return self.login(response['access_token'])
         # Should never happen (gateway should always return an error or an access_token).
-        else:
+        if 'access_token' not in response:
             raise ValueError('Error exchanging authorisation code for an access token.')
+
+        # The gateway must have returned an access token.
+        # Login with the JWT (in my opinion the gateway should have internally made this call for us).
+        return self.login(response['access_token'])
 
     def api_call(self, path, method='GET', json=None, response_raw=False):
         """
@@ -200,12 +201,12 @@ class Gateway:
             raise ValueError(response.reason)
 
         # Some requests might not be JSON responses.
-        if not response_raw:
-             # Return the JSON response.
-            return response.json() if len(response.content) > 0 else None
-        else:
+        if response_raw:
             # This is a raw response.
             return response.text
+
+        # Return the JSON response.
+        return response.json() if len(response.content) > 0 else None
 
     def api_call_form(self, path, method='GET', data=None):
         """
