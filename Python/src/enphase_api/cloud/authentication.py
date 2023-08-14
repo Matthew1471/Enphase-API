@@ -21,16 +21,19 @@ import base64
 import hashlib
 import random
 import string
-import urllib.parse
 
-# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671)
-import urllib3
+# We extract the code from the returned OAuth 2.0 URL.
+import urllib.parse
 
 # We can check JWT claims/expiration first before making a request ("pip install pyjwt" if not already installed).
 import jwt
 
 # Third party library for making HTTP(S) requests; "pip install requests" if getting import errors.
 import requests
+
+# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671)
+import urllib3
+
 
 class Authentication:
     """

@@ -31,6 +31,7 @@ import requests
 # We implement our own Requests adapter to amend TLS certificate hostname checking (Gateway is self-signed).
 import enphase_api.local.ignore_hostname_adapter
 
+
 class Gateway:
     """
     A class to talk locally to Enphase®'s IQ Gateway.

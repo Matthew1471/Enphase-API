@@ -40,6 +40,9 @@ import sys
 # We use the sleep function to pause between screen draws.
 import time
 
+# Third party library; "pip install pika"
+import pika
+
 # Unicorn HAT HD uses pillow to generate images to then draw on the LEDs of the Unicorn HAT HD ("pip install pillow" if getting import errors).
 from PIL import Image, ImageDraw, ImageFont
 
@@ -49,11 +52,9 @@ import requests
 # We handle some of the exceptions we might get back.
 import requests.exceptions
 
-# Third party library; "pip install pika"
-import pika
-
 # Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671), "pip install urllib3" if getting import errors.
 import urllib3
+
 
 class UnicornHATHelper:
 
