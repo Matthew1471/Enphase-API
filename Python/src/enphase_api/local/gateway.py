@@ -22,11 +22,11 @@ import os
 # We optionally can download the certificate to provide security to future requests.
 import ssl
 
-# Disable the warning about insecure HTTPS requests (and skip automatic user-agent header).
-import urllib3
-
 # Third party library; "pip install requests" if getting import errors.
 import requests
+
+# Disable the warning about insecure HTTPS requests (and skip automatic user-agent header).
+import urllib3
 
 # We implement our own Requests adapter to amend TLS certificate hostname checking (Gateway is self-signed).
 import enphase_api.local.ignore_hostname_adapter
