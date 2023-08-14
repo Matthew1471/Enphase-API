@@ -123,7 +123,11 @@ class Gateway:
         headers["Authorization"] = "Bearer " + token
 
         # If successful this will return a "sessionId" cookie that validates our access to the gateway.
-        response = self.session.post(self.host + '/auth/check_jwt', headers=headers, timeout=Gateway.TIMEOUT)
+        response = self.session.post(
+            url=self.host + '/auth/check_jwt',
+            headers=headers,
+            timeout=Gateway.TIMEOUT
+        )
 
         # Check the response is positive.
         return response.status_code == 200 and response.text == '<!DOCTYPE html><h2>Valid token.</h2>\n'
@@ -159,7 +163,12 @@ class Gateway:
         # The gateway is a trusted application / "confidential client" capable of holding the
         # JWT itself. This call should therefore be made internally,
         # thus preventing the user from accidentally leaking the access token.
-        response = self.session.post(self.host + '/auth/get_jwt', headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT).json()
+        response = self.session.post(
+            url=self.host + '/auth/get_jwt',
+            headers=Gateway.HEADERS,
+            json=json,
+            timeout=Gateway.TIMEOUT
+        ).json()
 
         # Did the gateway return an error?
         if 'message' in response:
@@ -187,15 +196,14 @@ class Gateway:
             dict or str: JSON response if response_raw is False, raw response if response_raw is True.
         """
 
-        # Call the Gateway API endpoint.
-        if method is None or method == 'GET':
-            response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
-        elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
-        elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
-        elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.HEADERS, json=json, timeout=Gateway.TIMEOUT)
+        # Call the Gateway API endpoint (with JSON).
+        response = self.session.request(
+            method=method,
+            url=self.host + path,
+            headers=Gateway.HEADERS,
+            json=json,
+            timeout=Gateway.TIMEOUT
+        )
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
@@ -222,15 +230,14 @@ class Gateway:
             dict: JSON response.
         """
 
-        # Call the Gateway API endpoint.
-        if method is None or method == 'GET':
-            response = self.session.get(self.host + path, headers=Gateway.HEADERS, timeout=Gateway.TIMEOUT)
-        elif method == 'PUT':
-            response = self.session.put(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
-        elif method == 'POST':
-            response = self.session.post(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
-        elif method == 'DELETE':
-            response = self.session.delete(self.host + path, headers=Gateway.HEADERS, data=data, timeout=Gateway.TIMEOUT)
+        # Call the Gateway API endpoint (with form data).
+        response = self.session.request(
+            method=method,
+            url=self.host + path,
+            headers=Gateway.HEADERS,
+            data=data,
+            timeout=Gateway.TIMEOUT
+        )
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
@@ -251,7 +258,12 @@ class Gateway:
         """
 
         # Call the Gateway API endpoint (expecting a stream).
-        response = self.session.get(self.host + path, headers=Gateway.HEADERS, stream=True, timeout=Gateway.TIMEOUT)
+        response = self.session.get(
+            url=self.host + path,
+            headers=Gateway.HEADERS,
+            stream=True,
+            timeout=Gateway.TIMEOUT
+        )
 
         # Has the session expired (after 10 minutes inactivity)?
         if response.status_code == 401:
