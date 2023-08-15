@@ -11,9 +11,9 @@ Description=Enphase Monitoring
 # Reference to where the user can obtain more information about this service.
 Documentation=https://github.com/Matthew1471/Enphase-API/
 
-# This service will start once the network interfaces are ready for data.
-After=network-online.target
-Wants=network-online.target
+# This service will start once the system is ready for data.
+Requires=network-online.target rabbitmq-server.service
+After=network-online.target rabbitmq-server.service
 
 # Check that the Python script exists.
 ConditionPathExists=/home/pi/Enphase/gateway_amqp_meters.py
