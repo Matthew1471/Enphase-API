@@ -15,7 +15,7 @@ name = "Enphase-API"  # Required
 # https://www.python.org/dev/peps/pep-0440/
 #
 # For a discussion on single-sourcing the version, see https://packaging.python.org/guides/single-sourcing-package-version/
-version = "0.0.1"  # Required
+version = "1.0.0"  # Required
 
 # This is a one-line description or tagline of what your project does.
 # This corresponds to the "Summary" metadata field:
@@ -63,7 +63,7 @@ classifiers = [  # Optional
   #   3 - Alpha
   #   4 - Beta
   #   5 - Production/Stable
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
 
   # Indicate who your project is intended for.
   "Intended Audience :: Developers",
