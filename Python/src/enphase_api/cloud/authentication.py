@@ -16,6 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+Enphase-API Authentication Module
+This module provides classes and methods for interacting with the Enphase® authentication server.
+It supports maintaining an authenticated session and generating JWT tokens for use with an IQ Gateway.
+"""
+
 # Used to generate an OAuth 2.0 Proof Key for Code Exchange (PKCE) code verifier.
 import base64
 import hashlib
@@ -38,14 +44,14 @@ import urllib3
 class Authentication:
     """
     A class to talk to Enphase®'s Cloud based Authentication Server, Entrez (French for "Access").
-    This server also supports granting tokens for local access to the Gateway.
+    This server also supports granting tokens for local access to an IQ Gateway.
     """
 
     # Authentication host, Entrez (French for "Access").
     AUTHENTICATION_HOST = 'https://entrez.enphaseenergy.com'
 
-    # This prevents the requests + urllib3 module from creating its own user-agent (and ask to not be included in analytics).
-    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
+    # This prevents the requests + urllib3 module from creating its own user-agent.
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -136,7 +142,7 @@ class Authentication:
         Args:
             username (str): The user's Enphase® username for authentication.
             password (str): The user's Enphase® password for authentication.
-            gateway_serial_number (str, optional): The serial number of the gateway. Defaults to 'un-commissioned'.
+            gateway_serial_number (str, optional): The serial number of the IQ Gateway. Defaults to 'un-commissioned'.
 
         Returns:
             tuple: A tuple containing the authorisation code and code verifier.
@@ -160,9 +166,7 @@ class Authentication:
             'client':'envoy-ui',
             'clientId':'envoy-ui-client',
             'authFlow':'oauth',
-            'serialNum':gateway_serial_number,
-            #'grantType':'authorize',
-            #'invalidSerialNum':''
+            'serialNum':gateway_serial_number
         }
 
         # Send the login request.
@@ -195,7 +199,7 @@ class Authentication:
 
     def get_site(self, site_name):
         """
-        Get site details (site ID number, full site name and associated gateway serial numbers) from a partial site name.
+        Get site details (site ID number, full site name and associated IQ Gateway serial numbers) from a partial site name.
 
         Args:
             site_name (str): The partial site name.
@@ -217,10 +221,10 @@ class Authentication:
 
     def get_token_for_commissioned_gateway(self, gateway_serial_number):
         """
-        Get a JWT token for a specific gateway which has been commissioned.
+        Get a JWT token for a specific IQ Gateway which has been commissioned.
 
         Args:
-            gateway_serial_number (str): The serial number of a commissioned gateway.
+            gateway_serial_number (str): The serial number of a commissioned IQ Gateway.
 
         Returns:
             str: The JWT token.
@@ -244,7 +248,7 @@ class Authentication:
 
     def get_token_for_uncommissioned_gateway(self):
         """
-        Get a JWT token for all gateways which have not yet been commissioned.
+        Get a JWT token for all IQ Gateways which have yet to be commissioned.
 
         Returns:
             str: The JWT token.
@@ -268,11 +272,11 @@ class Authentication:
 
     def get_token_from_enlighten_session_id(self, enlighten_session_id, gateway_serial_number, username):
         """
-        Get a JWT token for a specific gateway using an Enlighten session ID.
+        Get a JWT token for a specific IQ Gateway using an Enlighten session ID.
 
         Args:
             enlighten_session_id (str): The Enlighten session ID.
-            gateway_serial_number (str): The serial number of the gateway.
+            gateway_serial_number (str): The serial number of the IQ Gateway.
             username (str): The Enphase® username associated with the session.
 
         Returns:
@@ -321,7 +325,7 @@ class Authentication:
             'grant_type':'authorization_code'
         }
 
-        # This is used internally by the gateway to exchange an authorisation code for a token.
+        # This is used internally by the IQ Gateway to exchange an authorisation code for a token.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/oauth/token',
             headers=Authentication.HEADERS,
@@ -339,14 +343,14 @@ class Authentication:
 
         Args:
             token (str): The JWT token.
-            gateway_serial_number (str, optional): The serial number of the gateway. Defaults to None.
+            gateway_serial_number (str, optional): The serial number of the IQ Gateway. Defaults to None.
             verify_signature (bool, optional): Whether to verify the token signature. Defaults to False.
 
         Returns:
             bool: True if the token is valid, False otherwise.
         """
 
-        # An installer is always allowed to access any uncommissioned Gateway serial number (currently for a shorter time however).
+        # An installer is always allowed to access any uncommissioned IQ Gateway serial number (for a shorter time however).
         if gateway_serial_number:
             calculated_audience = [gateway_serial_number, 'un-commissioned']
         else:

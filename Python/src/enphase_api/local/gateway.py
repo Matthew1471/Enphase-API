@@ -16,7 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# We check if a file exists.
+"""
+Enphase-API Gateway Module
+This module provides classes and methods for interacting locally with an Enphase® IQ Gateway.
+It supports maintaining an authenticated session between API calls and handles communication with the gateway.
+"""
+
+# We check if a file exists and extract paths or create directories.
 import os
 
 # We optionally can download the certificate to provide security to future requests.
@@ -38,13 +44,16 @@ class Gateway:
     This supports maintaining an authenticated session between API calls.
     """
 
+    # This is the default file path for the trusted gateway certificate.
+    DEFAULT_CERT_FILE = 'configuration/gateway.cer'
+
     # This prevents the requests + urllib3 module from creating its own user-agent.
-    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'}
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
 
-    def __init__(self, host=None):
+    def __init__(self, host=None, cert_file=DEFAULT_CERT_FILE):
         """
         Initialize an Enphase® IQ Gateway instance.
 
@@ -52,22 +61,25 @@ class Gateway:
             host (str, optional):
                 The host URL of the Enphase® IQ Gateway (including the protocol).
                 Defaults to 'https://envoy.local'.
+            cert_file (str, optional):
+                The file path of the trusted certificate for the Enphase® IQ Gateway.
+                Defaults to DEFAULT_CERT_FILE.
 
         Notes:
-            - If a 'configuration/gateway.cer' file is available, certificate pinning is implemented.
+            - If the certificate file is available, certificate pinning is implemented.
             - If no certificate file is found, HTTPS requests will be made with reduced security.
         """
 
-        # The Gateway host (or if the network supports mDNS, "https://envoy.local").
+        # The IQ Gateway host (or if the network supports mDNS, "https://envoy.local").
         self.host = 'https://envoy.local' if host is None else host
 
         # Using a session means Requests supports keep-alive.
         self.session = requests.Session()
 
-        # If there is a Gateway.cer file already available then we implement certificate pinning.
-        if os.path.exists('configuration/gateway.cer'):
+        # If there is a certificate file already available then we implement certificate pinning.
+        if os.path.exists(cert_file):
             # Make the session verify all HTTPS requests with trust for this certficiate.
-            self.session.verify = 'configuration/gateway.cer'
+            self.session.verify = cert_file
 
             # Requests to this host will ignore the hostname in the certificate being incorrect.
             self.session.mount(
@@ -82,23 +94,29 @@ class Gateway:
             self.session.verify = False
 
     @staticmethod
-    def trust_gateway(host=None):
+    def trust_gateway(host=None, cert_file=DEFAULT_CERT_FILE):
         """
-        Download and save the Gateway's public certificate to configuration/gateway.cer for certificate pinning.
+        Download and save the IQ Gateway's public certificate for certificate pinning.
 
         Args:
             host (str, optional):
                 The host URL of the Enphase® IQ Gateway (including the protocol).
                 Defaults to 'https://envoy.local'.
+            cert_file (str, optional):
+                The file path to store the Enphase® IQ Gateway certificate in.
+                Defaults to DEFAULT_CERT_FILE.
         """
 
-        # Create the configuration folder if it does not already exist.
-        if not os.path.exists('configuration/'):
-            os.makedirs('configuration/')
+        # Obtain the directory of the certificate file.
+        cert_directory = os.path.dirname(cert_file)
 
-        # Save the Gateway's public certificate to disk.
-        with open('configuration/gateway.cer', mode='w', encoding='utf-8') as file:
-            # get_server_certificate needs the host and port as a tuple not a URL.
+        # Create the directories for the certificate (if it does not already exist).
+        if not os.path.exists(cert_directory):
+            os.makedirs(cert_directory)
+
+        # Save the IQ Gateway's public certificate to disk.
+        with open(cert_file, mode='w', encoding='utf-8') as file:
+            # ssl.get_server_certificate() needs the host and port as a tuple not a URL.
             parsed_url = urllib3.util.parse_url('https://envoy.local' if host is None else host)
 
             # Download the certificate from the host.
@@ -122,7 +140,7 @@ class Gateway:
         # We append an OAuth 2.0 bearer token.
         headers["Authorization"] = "Bearer " + token
 
-        # If successful this will return a "sessionId" cookie that validates our access to the gateway.
+        # If successful this will return a "sessionId" cookie that validates our access to the IQ Gateway.
         response = self.session.post(
             url=self.host + '/auth/check_jwt',
             headers=headers,
@@ -160,7 +178,7 @@ class Gateway:
         # In my opinion, the gateway should never return the access token to the end user,
         # a valid gateway "sessionId" cookie should be returned instead.
         #
-        # The gateway is a trusted application / "confidential client" capable of holding the
+        # The IQ Gateway is a trusted application / "confidential client" capable of holding the
         # JWT itself. This call should therefore be made internally,
         # thus preventing the user from accidentally leaking the access token.
         response = self.session.post(
@@ -182,13 +200,14 @@ class Gateway:
         # Login with the JWT (in my opinion the gateway should have internally made this call for us).
         return self.login(response['access_token'])
 
-    def api_call(self, path, method='GET', json=None, response_raw=False):
+    def api_call(self, path, method='GET', data=None, json=None, response_raw=False):
         """
-        Make an API call to the Gateway.
+        Make an API call (HTML form or JSON data) to the IQ Gateway.
 
         Args:
             path (str): The API endpoint path.
             method (str, optional): The HTTP method for the request. Defaults to 'GET'.
+            data (dict, optional): HTML form data for the request body. Defaults to None.
             json (dict, optional): JSON data for the request body. Defaults to None.
             response_raw (bool, optional): If True, return the raw response. Defaults to False.
 
@@ -196,11 +215,12 @@ class Gateway:
             dict or str: JSON response if response_raw is False, raw response if response_raw is True.
         """
 
-        # Call the Gateway API endpoint (with JSON).
+        # Call the IQ Gateway API endpoint (optionally with form or JSON data).
         response = self.session.request(
             method=method,
             url=self.host + path,
             headers=Gateway.HEADERS,
+            data=data,
             json=json,
             timeout=Gateway.TIMEOUT
         )
@@ -209,7 +229,7 @@ class Gateway:
         if response.status_code == 401:
             raise ValueError(response.reason)
 
-        # Some requests might not be JSON responses.
+        # Some requests might not have JSON responses.
         if response_raw:
             # This is a raw response.
             return response.text
@@ -217,38 +237,9 @@ class Gateway:
         # Return the JSON response.
         return response.json() if len(response.content) > 0 else None
 
-    def api_call_form(self, path, method='GET', data=None):
-        """
-        Make an API call to the Gateway using form data.
-
-        Args:
-            path (str): The API endpoint path.
-            method (str, optional): The HTTP method for the request. Defaults to 'GET'.
-            data (dict, optional): Form data for the request body. Defaults to None.
-
-        Returns:
-            dict: JSON response.
-        """
-
-        # Call the Gateway API endpoint (with form data).
-        response = self.session.request(
-            method=method,
-            url=self.host + path,
-            headers=Gateway.HEADERS,
-            data=data,
-            timeout=Gateway.TIMEOUT
-        )
-
-        # Has the session expired (after 10 minutes inactivity)?
-        if response.status_code == 401:
-            raise ValueError(response.reason)
-
-        # Return the JSON response.
-        return response.json()
-
     def api_call_stream(self, path):
         """
-        Make a streaming API call to the Gateway.
+        Make a streaming API call to the IQ Gateway.
 
         Args:
             path (str): The API endpoint path.
@@ -257,7 +248,7 @@ class Gateway:
             requests.Response: Server-Sent-Events (SSE) response.
         """
 
-        # Call the Gateway API endpoint (expecting a stream).
+        # Call the IQ Gateway API endpoint (expecting a stream).
         response = self.session.get(
             url=self.host + path,
             headers=Gateway.HEADERS,
