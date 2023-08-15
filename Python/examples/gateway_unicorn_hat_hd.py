@@ -194,7 +194,7 @@ class ScreenWeather:
         # Request the weather.
         response = requests.get(
             url=weather_url,
-            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json', 'DNT':'1'},
+            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'},
             timeout=5
         ).json()
 
@@ -462,6 +462,9 @@ def main():
     # Handle any command line arguments.
     args = parser.parse_args()
 
+    # Notify the user.
+    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+
     # We allow emulation of the Unicorn HAT HD if requested via command line arguments.
     if not args.emulate_HAT:
         # This program requires a Unicorn HAT HD (https://shop.pimoroni.com/products/unicorn-hat-hd)
@@ -624,8 +627,8 @@ def main():
                 )
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
-        # Do not log any exceptions just silently quit.
-        pass
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
     # Clear the display so the LEDs are not left stuck on when this program quits.
     finally:
         # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.

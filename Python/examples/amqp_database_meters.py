@@ -92,6 +92,9 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
     database_connection.commit()
 
 def main():
+    # Notify the user.
+    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -172,11 +175,14 @@ def main():
                     consumer_tag="AMQP_Database_Meters"
                 )
 
-                # Start consuming.
+                # Notify the user.
                 print(str(datetime.datetime.now()) + ' - Waiting for messages. To exit press CTRL+C', flush=True)
+
+                # Start consuming.
                 amqp_channel.start_consuming()
     except KeyboardInterrupt:
-        print(str(datetime.datetime.now()) + ' - Closing connections.', flush=True)
+        # Notify the user.
+        print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
     except Exception:
         # Notify the user.
         print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)

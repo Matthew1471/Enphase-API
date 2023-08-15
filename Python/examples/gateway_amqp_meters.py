@@ -53,6 +53,9 @@ def get_secure_gateway_session(credentials):
     return gateway
 
 def main():
+    # Notify the user.
+    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -112,7 +115,7 @@ def main():
                 time.sleep(0.99)
         except KeyboardInterrupt:
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Closing connections.', flush=True)
+            print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
         except Exception:
             # Notify the user.
             print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
