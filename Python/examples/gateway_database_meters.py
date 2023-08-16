@@ -50,48 +50,48 @@ OFFSET_MAPPING = {
 
 def add_results_to_database(database_connection, database_cursor_meter_reading, database_cursor_meter_reading_result, timestamp, json_object):
     # Initialise to empty by default so they convert to a database NULL if not later set.
-    report_ids = [None] * 9
+    result_ids = [None] * 9
 
     # Take each of the meter types.
     for meter_readings in json_object:
 
         # Get the parameter index offset for this meters' meter type.
-        offset = OFFSET_MAPPING.get(meter_readings['reportType'])
-        if offset is None:
+        meter_type_offset = OFFSET_MAPPING.get(meter_readings['reportType'])
+        if meter_type_offset is None:
             raise ValueError('Unexpected meter reading report type "' + meter_readings['reportType'] + '" in JSON.')
 
         # Take each of the phase readings.
-        for phase_count, meter_reading_result in enumerate(meter_readings['lines']):
+        for phase_index, phase_result in enumerate(meter_readings['lines']):
 
             # Too many phases?
-            if phase_count > 2:
-                raise ValueError('Unexpected phase #' + phase_count + ' in JSON.')
+            if phase_index > 2:
+                raise ValueError('Unexpected phase #' + phase_index + ' in JSON.')
 
             # Map each of the JSON values to our database columns.
-            meter_reading_values = (
-                meter_reading_result['actPower'],
-                meter_reading_result['reactPwr'],
-                meter_reading_result['apprntPwr'],
-                meter_reading_result['rmsVoltage'],
-                meter_reading_result['rmsCurrent'],
-                meter_reading_result['pwrFactor'],
-                meter_reading_result['freqHz']
+            meter_reading_result = (
+                phase_result['actPower'],
+                phase_result['reactPwr'],
+                phase_result['apprntPwr'],
+                phase_result['rmsVoltage'],
+                phase_result['rmsCurrent'],
+                phase_result['pwrFactor'],
+                phase_result['freqHz']
             )
 
             try:
                 # Add to the database the meter reading(s).
                 # Using a dictionary instead of a tuple prevented query preparation,
                 # possibly due to a MySQL Connector bug.
-                database_cursor_meter_reading_result.execute(ADD_METER_READING_RESULT, meter_reading_values)
+                database_cursor_meter_reading_result.execute(ADD_METER_READING_RESULT, meter_reading_result)
             except mysql.connector.errors.DataError:
                 print(json_object, flush=True)
                 raise
 
             # Get the result ID for this phase insert.
-            report_ids[(offset*3)+phase_count] = database_cursor_meter_reading_result.lastrowid
+            result_ids[(meter_type_offset*3)+phase_index] = database_cursor_meter_reading_result.lastrowid
 
     # Add the meters' readings.
-    database_cursor_meter_reading.execute(ADD_METER_READING, (timestamp,) + tuple(report_ids))
+    database_cursor_meter_reading.execute(ADD_METER_READING, (timestamp,) + tuple(result_ids))
 
     # Make sure data is committed to the database.
     database_connection.commit()
