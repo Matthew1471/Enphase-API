@@ -26,8 +26,9 @@ This module takes:
 - Writes the documentation of the endpoint to disk.
 """
 
-import json     # This script makes heavy use of JSON parsing.
-import os.path  # We check whether a file exists and manipulate filepaths.
+import json         # This script makes heavy use of JSON parsing.
+import os.path      # We check whether a file exists and manipulate filepaths.
+import urllib.parse # We URL encode URLs.
 
 # All the shared Enphase® functions are in these packages.
 from enphase_api.cloud.authentication import Authentication
@@ -264,24 +265,9 @@ class JSONSchema:
 
         return tables
 
-def get_header_section(name, endpoint, file_depth=0):
-    """
-    Returns a string with the AsciiDoc heading.
-
-    Takes:
-    - The provided name.
-    - An endpoint.
-    - How many sub-directories deep the file will be stored in.
-    """
-
-    # Heading.
-    result = '= ' + name + '\n'
-
-    # Table of Contents.
-    result += ':toc: preamble\n'
-
+def get_header_settings_and_variables():
     # Reference.
-    result += 'Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;\n\n'
+    result = 'Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;\n\n'
 
     # Document Settings.
     result += '// Document Settings:\n\n'
@@ -318,23 +304,79 @@ def get_header_section(name, endpoint, file_depth=0):
     result += ':url-repo: {url-org}/Enphase-API\n'
     result += ':url-contributors: {url-repo}/graphs/contributors\n\n'
 
-    # Page Description.
-    if 'description' in endpoint:
-        description = endpoint['description']
-        result += (description['long'] if 'long' in description else description['short']) + '\n'
-    else:
-        print('Warning : ' + endpoint['name'] + " does not have a description.")
-        result += 'This endpoint and its purpose has not been fully documented yet.\n'
+    return result
 
+def get_introduction_section(description=None, file_depth=0):
     # Heading.
-    result += '\n== Introduction\n\n'
+    result = '== Introduction\n\n'
 
-    # Introduction.
+    if description:
+        result += description + '\n\n'
+
     result += 'Enphase-API is an unofficial project providing an API wrapper and the documentation '
     result += 'for Enphase(R)\'s products and services.\n\n'
 
     result += 'More details on the project are available from the link:'
     result += ('../' * (file_depth + 1)) + 'README.adoc[project\'s homepage].\n'
+
+    return result
+
+def get_endpoint_header_section(name, endpoint, file_depth=0):
+    """
+    Returns a string with the AsciiDoc heading.
+
+    Takes:
+    - The provided name.
+    - An endpoint.
+    - How many sub-directories deep the file will be stored in.
+    """
+
+    # Heading.
+    result = '= ' + name + '\n'
+
+    # Table of Contents.
+    result += ':toc: preamble\n'
+
+    # Shared block of data.
+    result += get_header_settings_and_variables()
+
+    # Page Description.
+    long_description = None
+    if 'description' in endpoint:
+        description = endpoint['description']
+        result += description['short'] + '\n\n'
+
+        # We can add the long description later.
+        if 'long' in description:
+            long_description = description['long']
+    else:
+        print('Warning : "' + name + '" does not have a description.')
+        result += 'This endpoint and its purpose has not been fully documented yet.\n\n'
+
+    # Introduction.
+    result += get_introduction_section(description=long_description, file_depth=file_depth)
+
+    return result
+
+def get_index_header_section(file_depth=1):
+    """
+    Returns a string with the AsciiDoc index heading.
+
+    Takes:
+    - How many sub-directories deep the file will be stored in.
+    """
+
+    # Heading.
+    result = '= IQ Gateway API\n'
+
+    # Table of Contents.
+    result += ':toc:\n'
+
+    # Shared block of data.
+    result += get_header_settings_and_variables()
+
+    # Introduction.
+    result += get_introduction_section(file_depth=file_depth)
 
     return result
 
@@ -378,6 +420,21 @@ def get_request_section(request_json, file_depth=0, type_map=None):
     if (field_map := request_json.get('field_map')):
         # Ouput all the request content tables.
         result += '\n=== Message Body\n'
+
+        # Some API endpoints may not have all available methods declared yet.
+        if 'methods' in request_json:
+            result += '\nWhen making a '
+
+            already_output_method = False
+            for method in request_json['methods']:
+                if method == 'GET':
+                    continue
+                if already_output_method:
+                    result += ' or '
+                result += '`' + method + '`'
+                already_output_method = True
+
+            result += ' request:\n'
 
         # Add each of the tables from the derived json_schema.
         for table_name, table in field_map.items():
@@ -502,11 +559,11 @@ def get_table_row(field_name, field_metadata=None, type_map=None, short_booleans
         result += field_metadata['value']
     # Did the user provide further details about this field in the field map?
     elif type(field_metadata) is dict and field_type not in ('Object','Array(Object)','Array(Unknown)') and (value_name := field_metadata.get('value_name')):
-            result += '`' + value_name + '`'
+        result += '`' + value_name + '`'
 
-            # Add an example value if available.
-            if type_map and value_name in type_map and len(type_map[value_name]) > 0:
-                result += ' (e.g. `' + str(type_map[value_name][0]['value']) + '`)'
+        # Add an example value if available.
+        if type_map and value_name in type_map and len(type_map[value_name]) > 0:
+            result += ' (e.g. `' + str(type_map[value_name][0]['value']) + '`)'
     else:
         result += field_type
 
@@ -604,7 +661,7 @@ def get_example_section(uri, example_item):
 
     # Add the response.
     if not 'response_raw' in example_item:
-        if example_item['response'] != None:
+        if example_item['response'] is not None:
             example_output['Response'] = json.dumps(example_item['response'])
         else:
             example_item['response_raw'] = 'No data was returned.'
@@ -668,14 +725,11 @@ def process_single_endpoint(gateway, key, endpoint):
         print('Warning : Skipping \'' + key + '\' due to lack of \'documentation\' filepath.')
         return False
 
-    # This script currently exclusively writes "IQ Gateway API" documents.
-    endpoint['documentation'] = 'IQ Gateway API/' + endpoint['documentation']
-
-    # Count how many sub-folders this file will be under.
-    file_depth = endpoint['documentation'].count('/')
+    # Count how many sub-folders this file will be under (including the "IQ Gateway API/").
+    file_depth = endpoint['documentation'].count('/') + 1
 
     # Add the documentation header.
-    output = get_header_section(name=key, endpoint=endpoint, file_depth=file_depth)
+    output = get_endpoint_header_section(name=key.replace('/','-'), endpoint=endpoint, file_depth=file_depth)
 
     # We can specify the custom types of some values.
     type_map = (endpoint['type_map'] if 'type_map' in endpoint else None)
@@ -734,14 +788,27 @@ def process_single_endpoint(gateway, key, endpoint):
 
                         if 'response_raw' not in example:
                             # Perform a request on the resource (with a JSON response).
-                            example['response'] = gateway.api_call(path=request_uri, method=example.get('method'), json=data)
+                            example['response'] = gateway.api_call(
+                                path=request_uri,
+                                method=example.get('method'),
+                                json=data
+                            )
                         else:
                             # Perform a request on the resource (but with a raw response).
                             example['response'] = None
-                            example['response_raw'] = gateway.api_call(path=request_uri, method=example.get('method'), json=data, response_raw=True)
+                            example['response_raw'] = gateway.api_call(
+                                path=request_uri,
+                                method=example.get('method'),
+                                json=data,
+                                response_raw=True
+                            )
                     else:
                         # This is a legacy form API request.
-                        example['response'] = gateway.api_call_form(path=request_uri, method=example.get('method'), data=example['request_form'])
+                        example['response'] = gateway.api_call(
+                            path=request_uri,
+                            method=example.get('method'),
+                            data=example['request_form']
+                        )
 
                     # This variable can be inspected to hardcode a sample in API_Details.
                     if 'response_raw' not in example:
@@ -870,7 +937,7 @@ def process_single_endpoint(gateway, key, endpoint):
         output += get_not_yet_documented()
 
     # Generate a suitable filename to store our documentation in.
-    filename = '../../Documentation/' + endpoint['documentation']
+    filename = '../../Documentation/IQ Gateway API/' + endpoint['documentation']
 
     # Create any required sub-directories.
     os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -880,6 +947,125 @@ def process_single_endpoint(gateway, key, endpoint):
         text_file.write(output)
 
     return True
+
+def create_index(endpoint_metadata):
+    # Generate a suitable filename to store our documentation in.
+    filename = '../../Documentation/' + 'IQ Gateway API/README.adoc'
+
+    # Create any required sub-directories.
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+    # Build the output.
+    output = get_index_header_section()
+
+    # Heading.
+    output += '\n== Endpoints\n\n'
+
+    # We store a reference to the previous path.
+    previous_path = None
+    table_open = False
+
+    # Write each of the endpoints.
+    for key in sorted(endpoint_metadata, key=str.casefold):
+
+        metadata = endpoint_metadata[key]
+        path = key.split(' / ')
+
+        # Add any headers.
+        for count, item in enumerate(path[:-1]):
+            if previous_path is None or len(previous_path)-1 < count or previous_path[count] != path[count]:
+
+                # Finish off any previous table.
+                if table_open:
+                    output += '|===\n\n'
+                    table_open = False
+
+                output += ('='*(3+count)) + ' ' + ' - '.join(path[:count+1]) + '\n\n'
+
+        # Add any tables.
+        if previous_path is None or previous_path[:-1] != path[:-1]:
+            output += '[cols="1,1,2", options="header"]\n'
+            output += '|===\n'
+            output += '|Name\n'
+            output += '|URI\n'
+            output += '|Description\n\n'
+
+            table_open = True
+
+        previous_path = path
+
+        # Add the item.
+        output += '|`link:' + urllib.parse.quote(metadata['documentation']) + '[' + path[-1] + ']`\n'
+
+        output += '|`'
+        if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
+            output += '+++<s>+++'
+        output += '/' + metadata['request']['uri']
+        if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
+            output += '+++</s>+++'
+
+        if 'uri2' in metadata['request']:
+            output += '` and `/' + metadata['request']['uri2']
+
+        output += '`\n'
+
+        output += '|' + metadata['description']['short'] + '\n\n'
+
+    output += '|==='
+
+    # Write the output to the file.
+    with open(filename, mode='w', encoding='utf-8') as text_file:
+        text_file.write(output)
+
+def get_secure_gateway_session(credentials):
+    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
+    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+        # It is not valid so clear it.
+        credentials['token'] = None
+
+    # Do we still not have a Token?
+    if not credentials.get('token'):
+        # Do we have a way to obtain a token?
+        if credentials.get('enphaseUsername') and credentials.get('enphasePassword'):
+            # Create a Authentication object.
+            authentication = Authentication()
+
+            # Authenticate with Entrez (French for "Access").
+            if not authentication.authenticate(credentials['enphaseUsername'], credentials['enphasePassword']):
+                raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
+
+            # Does the user want to target a specific gateway or all uncommissioned ones?
+            if credentials.get('gatewaySerialNumber'):
+                # Get a new gateway specific token (installer = short-life, owner = long-life).
+                credentials['token'] = authentication.get_token_for_commissioned_gateway(credentials['gatewaySerialNumber'])
+            else:
+                # Get a new uncommissioned gateway specific token.
+                credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
+
+            # Update the file to include the modified token.
+            with open('configuration/credentials.json', mode='w', encoding='utf-8') as json_file:
+                json.dump(credentials, json_file, indent=4)
+        else:
+            # Let the user know why the program is exiting.
+            raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+
+    # Did the user override the library default hostname to the Gateway?
+    host = credentials.get('host')
+
+    # Download and store the certificate from the gateway so all future requests are secure.
+    if not os.path.exists('configuration/gateway.cer'):
+        Gateway.trust_gateway(host)
+
+    # Instantiate the Gateway API wrapper (with the default library hostname if None provided).
+    gateway = Gateway(host)
+
+    # Are we not able to login to the gateway?
+    if not gateway.login(credentials['token']):
+        # Let the user know why the program is exiting.
+        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+
+    # Return the initialised gateway object.
+    return gateway
 
 def main():
     """
@@ -898,43 +1084,23 @@ def main():
     print(hyphens + banner + hyphens)
 
     # Load credentials.
-    with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
+    with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
 
-    # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not TEST_ONLY and not (credentials.get('token') or Authentication.check_token_valid(credentials['token'], credentials['gatewaySerialNumber'])):
-        # It is not valid so clear it.
-        raise ValueError('No or expired token.')
+    # Use a secure gateway initialisation flow.
+    gateway = None if TEST_ONLY else get_secure_gateway_session(credentials)
 
-    # Did the user override the config or library default hostname to the Gateway?
-    if credentials.get('host'):
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'):
-            Gateway.trust_gateway(credentials['host'])
+    # Load endpoints.
+    with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
+        endpoint_metadata = json.load(json_file)
 
-        # Get an instance of the Gateway API wrapper object (using the config specified hostname).
-        gateway = Gateway(credentials['host'])
-    else:
-        # Download and store the certificate from the gateway so all future requests are secure.
-        if not os.path.exists('configuration/gateway.cer'):
-            Gateway.trust_gateway()
+    # Take each endpoint in the metadata.
+    for key, endpoint in endpoint_metadata.items():
+        # Process this endpoint.
+        process_single_endpoint(gateway=gateway, key=key, endpoint=endpoint)
 
-        # Get an instance of the Gateway API wrapper object (using the library default hostname).
-        gateway = Gateway()
-
-    # Are we able to login to the gateway?
-    if TEST_ONLY or gateway.login(credentials['token']):
-        # Load endpoints.
-        with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
-            endpoint_metadata = json.load(json_file)
-
-        # Take each endpoint in the metadata.
-        for key, endpoint in endpoint_metadata.items():
-            # Process this endpoint.
-            process_single_endpoint(gateway=gateway, key=key, endpoint=endpoint)
-    else:
-        # Let the user know why the program is exiting.
-        raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
+    # Create index page.
+    create_index(endpoint_metadata)
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
