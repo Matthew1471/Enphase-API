@@ -27,6 +27,7 @@
     <Compile Include="examples\amqp_database_meters.py" />
     <Compile Include="examples\amqp_unicorn_hat_hd.py" />
     <Compile Include="examples\database_pyplot_meters.py" />
+    <Compile Include="examples\emulate_power_meter_unit.py" />
     <Compile Include="examples\gateway_amqp_meters.py" />
     <Compile Include="examples\gateway_console.py" />
     <Compile Include="examples\gateway_database_meters.py" />
