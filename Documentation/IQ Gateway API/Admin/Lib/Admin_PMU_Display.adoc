@@ -1,4 +1,4 @@
-= Admin - Lib - Administer Phasor Measurement Unit (PMU)
+= Admin - Lib - Administer Power Meter Unit (PMU)
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Add, read or remove a Phasor Measurement Unit (PMU).
+Add, read or remove a Power Meter Unit (PMU).
 
 == Introduction
 
@@ -48,10 +48,10 @@ The `/admin/lib/admin_pmu_display.json` endpoint supports the following:
 |Description
 
 |`GET`
-|Read a Phasor Measurement Unit (PMU).
+|Read a Power Meter Unit (PMU).
 
 |`POST`
-|Add/Remove a Phasor Measurement Unit (PMU).
+|Add/Remove a Power Meter Unit (PMU).
 
 |===
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
@@ -70,18 +70,18 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`available_pmus`
 |Array(Unknown)
 |Array of Unknown
-|Detected available Phasor Measurement Unit (PMU) devices.
+|Detected available Power Meter Unit (PMU) devices.
 
 |`associated_pmus`
 |Array(Unknown)
 |Array of Unknown
-|Currently added Phasor Measurement Unit (PMU) devices.
+|Currently added Power Meter Unit (PMU) devices.
 
 |===
 
 == Examples
 
-=== Read a Phasor Measurement Unit (PMU)
+=== Read a Power Meter Unit (PMU)
 
 .GET */admin/lib/admin_pmu_display.json* Response
 [source,json,subs="+quotes"]
@@ -89,7 +89,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 {"available_pmus": [], "associated_pmus": []}
 ----
 
-=== Add a Phasor Measurement Unit (PMU)
+=== Add a Power Meter Unit (PMU)
 
 .POST */admin/lib/admin_pmu_display.json* Request
 [source,http]
@@ -102,7 +102,7 @@ fname=accept&ip_addresses=192.168.1.254
 {"available_pmus": [], "associated_pmus": []}
 ----
 
-=== Delete a Phasor Measurement Unit (PMU)
+=== Delete a Power Meter Unit (PMU)
 
 .POST */admin/lib/admin_pmu_display.json* Request
 [source,http]

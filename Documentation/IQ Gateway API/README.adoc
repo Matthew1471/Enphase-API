@@ -55,9 +55,9 @@ More details on the project are available from the link:../../README.adoc[projec
 |`/admin/lib/admin_dcc_display.json`
 |Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
 
-|`link:Admin/Lib/Admin_PMU_Display.adoc[Administer Phasor Measurement Unit (PMU)]`
+|`link:Admin/Lib/Admin_PMU_Display.adoc[Administer Power Meter Unit (PMU)]`
 |`/admin/lib/admin_pmu_display.json`
-|Add, read or remove a Phasor Measurement Unit (PMU).
+|Add, read or remove a Power Meter Unit (PMU).
 
 |`link:Admin/Lib/Date_Time_Display.adoc[Date and Time Settings]`
 |`/admin/lib/date_time_display.json`

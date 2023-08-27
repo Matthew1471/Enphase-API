@@ -333,8 +333,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |An external Zigbee Revenue Grade Meter (RGM) such as the RGM-MTR-01. This is also known as the General Electric (GE) i210+ meter.
 
 |`pmus`
-|Phasor Measurement Unit
-|A Phasor Measurement Unit (PMU) is an external device that produces synchronized phasor, frequency, and rate of change of frequency (ROCOF) estimates from voltage and/or current signals and a time synchronizing signal.
+|Power Meter Unit
+|A Power Meter Unit (PMU) is an external device (such as WEM-MX 5V or WEM-MX 333mV) that measures energy consumption but is revenue grade compliant to ANSI C12.20 (0.2% accuracy).
 
 |===
 
