@@ -16,6 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example responds to the Enphase® IQ Gateway probing for a Power Meter Unit (PMU)
+so that alternative meter readings can be provided for those where an IQ Gateway is not configured
+with a meter (such as IQ Gateway Standard).
+"""
+
 # We output the current date/time for debugging.
 import datetime
 
@@ -28,7 +34,7 @@ METER_IP_ADDRESS = '192.168.0.100'
 METER_SOFTWARE_VERSION = '1.0.0'
 METER_MAC_ADDRESS = 'aa:bb:cc:dd:ee:ff'
 
-def respond_to_PMU_probes():
+def respond_to_power_meter_unit_probes():
     # Create a UDP socket.
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 
@@ -57,6 +63,6 @@ def respond_to_PMU_probes():
             # Send a response back.
             sock.sendto(bytes('IP: ' + METER_IP_ADDRESS + ' Ver: '+ METER_SOFTWARE_VERSION + ' MAC: ' + METER_MAC_ADDRESS, 'utf-8'), address)
 
-# Launch the respond_to_PMU_probes function if invoked directly.
+# Launch the respond_to_power_meter_unit_probes function if invoked directly.
 if __name__ == '__main__':
-    respond_to_PMU_probes()
+    respond_to_power_meter_unit_probes()

@@ -16,6 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to interact with an AMQP broker (such as RabbitMQ®)
+that contains solar energy production and consumption data and store that data in a
+MySQL®/MariaDB® database.
+
+The functions in this module allow you to:
+- Establish an AMQP connection
+- Fetch production/consumption data from AMQP
+- Store this data in a database
+"""
+
 import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
 
@@ -44,6 +55,32 @@ OFFSET_MAPPING = {
 }
 
 def add_results_to_database(database_connection, database_cursor_meter_reading, database_cursor_meter_reading_result, timestamp, json_object):
+    """
+    Adds meter readings and their results for each phase to the database.
+
+    This function takes the following arguments and adds meter readings along with their results
+    for each phase to the database:
+
+    Args:
+        database_connection (MySQLConnection):
+            The database connection.
+        database_cursor_meter_reading (MySQLCursorPrepared):
+            The cursor for inserting meter readings.
+        database_cursor_meter_reading_result (MySQLCursorPrepared):
+            The cursor for inserting meter reading results.
+        timestamp (datetime.datetime):
+            The timestamp for the meter readings.
+        json_object (list):
+            A JSON object containing meter readings and their results.
+
+    Raises:
+        ValueError:
+            If an unexpected meter reading report type or phase is encountered in the JSON.
+
+    Returns:
+        None
+    """
+
     # Initialise to empty by default so they convert to a database NULL if not later set.
     result_ids = [None] * 9
 
@@ -92,6 +129,19 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
     database_connection.commit()
 
 def main():
+    """
+    Main function for the Enphase API data processing and AMQP messaging.
+
+    This function is the main entry point of the script. It establishes a connection to the AMQP
+    broker, listens for incoming messages on the 'Enphase_Database' queue, processes the messages,
+    and adds the data to the database using the add_results_to_database function.
+
+    It handles exceptions and keyboard interrupts for graceful shutdown.
+
+    Returns:
+        None
+    """
+
     # Notify the user.
     print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
 
@@ -133,7 +183,11 @@ def main():
             amqp_result = amqp_channel.queue_declare(queue='Enphase_Database', durable=True)
 
             # Bind the queue to the exchange (if it is not already bound).
-            amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
+            amqp_channel.queue_bind(
+                exchange='Enphase',
+                queue=amqp_result.method.queue,
+                routing_key='#'
+            )
 
             # Gather the database details from the credentials file.
             database_host = credentials.get('database_host', 'localhost')
@@ -141,7 +195,7 @@ def main():
             database_password = credentials.get('database_password', '')
             database_database = credentials.get('database_database', 'Enphase')
 
-            # Connect to the MySQL/MariaDB database.
+            # Connect to the MySQL®/MariaDB® database.
             with mysql.connector.connect(
                 host=database_host,
                 user=database_username,
@@ -153,7 +207,17 @@ def main():
                 database_cursor_meter_reading = database_connection.cursor(prepared=True)
                 database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
-                def amqp_callback(ch, method, properties, body):
+                def amqp_callback(channel, method, properties, body):
+                    """
+                    Callback function that handles incoming messages from an AMQP channel.
+
+                    Args:
+                        channel (pika.channel.Channel): The channel object.
+                        method (pika.spec.Basic.Deliver): Delivery information.
+                        properties (pika.spec.BasicProperties): Message properties.
+                        body (bytes): The message body (payload).
+                    """
+
                     # Convert the string back to JSON.
                     json_object = json.loads(body)
 

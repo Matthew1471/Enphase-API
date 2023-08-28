@@ -16,6 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to interact with an AMQP broker (such as RabbitMQ®)
+that contains solar energy production and consumption data and show that data on a
+Unicorn HAT HD display on a Raspberry Pi.
+
+The functions in this module allow you to:
+- Establish an AMQP connection
+- Fetch production/consumption data from AMQP
+- Show this data on the screen
+"""
+
 # We support command line arguments.
 import argparse
 
@@ -43,7 +54,8 @@ import time
 # Third party library; "pip install pika"
 import pika
 
-# Unicorn HAT HD uses pillow to generate images to then draw on the LEDs of the Unicorn HAT HD ("pip install pillow" if getting import errors).
+# Unicorn HAT HD uses pillow to generate images to then draw on the LEDs of the Unicorn HAT HD
+# ("pip install pillow" if getting import errors).
 from PIL import Image, ImageDraw, ImageFont
 
 # We look-up the weather.
@@ -52,24 +64,62 @@ import requests
 # We handle some of the exceptions we might get back.
 import requests.exceptions
 
-# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671), "pip install urllib3" if getting import errors.
+# Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671),
+# "pip install urllib3" if getting import errors.
 import urllib3
 
 
 class UnicornHATHelper:
+    """
+    A utility class for drawing scrolling text and animations on a Unicorn HAT HD display.
+    """
 
     @staticmethod
     def draw_scrolling_text(unicornhathd, screen_width, screen_height, line, color, font, speed=0.04, end_time=time.time() + 60):
+        """
+        Draw scrolling text on the Unicorn HAT HD using a specified font.
+
+        Args:
+            unicornhathd (UnicornHAT HD):
+                An instance of the Unicorn HAT HD library.
+            screen_width (int):
+                Width of the screen in pixels.
+            screen_height (int):
+                Height of the screen in pixels.
+            line (str):
+                The text to display.
+            color (tuple):
+                The RGB color tuple (red, green, blue) for the text.
+            font (PIL ImageFont):
+                The font to use for rendering the text.
+            speed (float, optional):
+                The time delay between scrolling frames in seconds. Default is 0.04.
+            end_time (float, optional):
+                The timestamp indicating when to stop scrolling.
+                Default is current time + 60 seconds.
+
+        Returns:
+            None
+
+        Note:
+            This method draws scrolling text on the Unicorn HAT HD using the specified font.
+            The text scrolls horizontally left to right multiple times until the end_time is
+            reached or the method is manually interrupted. The text color, font, and speed
+            of scrolling can be customized.
+        """
+
         # Calculate the width and height of the text when rendered by the font.
         _, font_upper, font_width, _ = font.getbbox(line)
 
-        # Create a new image in memory that can fit all the text pixels (we scroll text wider than the screen, but there's no point storing a larger height).
+        # Create a new image in memory that can fit all the text pixels
+        # (we scroll text wider than the screen, but there's no point storing a larger height).
         image = Image.new('RGB', (max(font_width, screen_width), screen_height), (0, 0, 0))
 
         # Create a draw object that uses our image canvas.
         draw = ImageDraw.Draw(image)
 
-        # Draw the text in memory onto the canvas (we set the text colour based off system production energy we're generating).
+        # Draw the text in memory onto the canvas
+        # (we set the text colour based off system production energy we're generating).
         draw.text(xy=(0, -font_upper), text=line, fill=color, font=font)
 
         # We want to scroll left to right multiple times (at least once).
@@ -79,21 +129,24 @@ class UnicornHATHelper:
             for scroll_x_offset in itertools.chain(range(font_width - screen_width), range(font_width - screen_width, 0, -1)):
 
                 # Take each of the pixels on the x axis.
-                for x in range(screen_width):
+                for x_pixel in range(screen_width):
 
                     # Take each of the pixels on the y axis for this position on the x axis.
-                    for y in range(screen_height):
+                    for y_pixel in range(screen_height):
 
-                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis scrolling offset.
-                        pixel = image.getpixel((x + scroll_x_offset, y))
+                        # Get what the pixel should be according to the Pillow in memory image
+                        # followed by the x axis scrolling offset.
+                        pixel = image.getpixel((x_pixel + scroll_x_offset, y_pixel))
 
                         # Get the Red, Green, Blue values for this pixel.
                         red, green, blue = [int(n) for n in pixel]
 
-                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                        unicornhathd.set_pixel((screen_width - 1) - x, y, red, green, blue)
+                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the
+                        # same as the Pillow in memory image pixel.
+                        unicornhathd.set_pixel((screen_width - 1) - x_pixel, y_pixel, red, green, blue)
 
-                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user won't watch it re-drawing).
+                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to
+                # reflect the buffer (so the user won't watch it re-drawing).
                 unicornhathd.show()
 
                 # Pause before attempting to draw the next scrolling frame.
@@ -109,6 +162,30 @@ class UnicornHATHelper:
 
     @staticmethod
     def draw_animation(unicornhathd, screen_width, screen_height, filename, speed=0.10):
+        """
+        Draw an animation on the Unicorn HAT HD using scrolling frames from an image.
+
+        Args:
+            unicornhathd (UnicornHAT HD):
+                An instance of the Unicorn HAT HD library.
+            screen_width (int):
+                Width of the screen in pixels.
+            screen_height (int):
+                Height of the screen in pixels.
+            filename (str):
+                The name of the image file (without the extension) to use for animation frames.
+            speed (float, optional):
+                The time delay between frames in seconds.
+
+        Returns:
+            None
+
+        Note:
+            This method scrolls through the provided image file, breaking it into frames of the
+            screen size.
+            It updates the Unicorn HAT HD display with each frame, creating a scrolling animation.
+        """
+
         # Open the requested image (and ignore any transparency values).
         image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
 
@@ -122,20 +199,23 @@ class UnicornHATHelper:
         for frame_x in range(int(image_width / screen_width)):
             # Take each of the frame y positions in the image.
             for frame_y in range(int(image_height / screen_height)):
-                # Take each of the pixels of the screen's x axis.
-                for x in range(screen_width):
-                    # Take each of the pixels of the screen's y axis for this position on the x axis.
-                    for y in range(screen_height):
-                        # Get what the pixel should be according to the Pillow in memory image followed by the x axis frame offset.
-                        pixel = image.getpixel(((frame_x * screen_width) + y, (frame_y * screen_height) + x))
+                # Take each of the screen's x axis pixels.
+                for x_pixel in range(screen_width):
+                    # Take each of the screen's y axis pixels for this position on the x axis.
+                    for y_pixel in range(screen_height):
+                        # Get what the pixel should be according to the Pillow in memory image
+                        # followed by the x axis frame offset.
+                        pixel = image.getpixel(((frame_x * screen_width) + y_pixel, (frame_y * screen_height) + x_pixel))
 
                         # Get the Red, Green, Blue values for this pixel.
                         red, green, blue = [int(n) for n in pixel]
 
-                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the same as the Pillow in memory image pixel.
-                        unicornhathd.set_pixel(x, y, red, green, blue)
+                        # Tell the Unicorn HAT HD to set the LED pixel buffer to be set to the
+                        # same as the Pillow in memory image pixel.
+                        unicornhathd.set_pixel(x_pixel, y_pixel, red, green, blue)
 
-                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to reflect the buffer (so the user will not watch it re-drawing).
+                # The screen has been re-drawn in the buffer so now set the Unicorn HAT HD to
+                # reflect the buffer (so the user will not watch it re-drawing).
                 unicornhathd.show()
 
                 # Pause before attempting to draw the next scrolling frame.
@@ -145,6 +225,9 @@ class UnicornHATHelper:
         unicornhathd.rotation(unicornhathd.get_rotation() - 90)
 
 class ScreenWeather:
+    """
+    A class for displaying weather information on a Unicorn HAT HD.
+    """
 
     def __init__(self, unicornhathd, screen_width, screen_height, latitude, longitude):
         self.unicornhathd = unicornhathd
@@ -157,6 +240,13 @@ class ScreenWeather:
         self.weather_filename = None
 
     def draw_screen(self):
+        """
+        Draw the weather animation on the Unicorn HAT HD display.
+
+        Returns:
+            None
+        """
+
         # If the weather has not been loaded yet, or it was loaded over 15 minutes ago.
         if not self.weather_last_updated or self.weather_last_updated + 900 < time.time():
             # Get the latest weather.
@@ -166,7 +256,12 @@ class ScreenWeather:
             self.weather_last_updated = time.time()
 
             # We convert the weather_code, wind_speed, sunrise and sunset into a PNG filename.
-            self.weather_filename = self.get_weather_filename(weather_code=weather_code, wind_speed=wind_speed, sunrise=sunrise, sunset=sunset)
+            self.weather_filename = self.get_weather_filename(
+                weather_code=weather_code,
+                wind_speed=wind_speed,
+                sunrise=sunrise,
+                sunset=sunset
+            )
 
         # Draw the weather animation.
         UnicornHATHelper.draw_animation(
@@ -177,6 +272,18 @@ class ScreenWeather:
         )
 
     def get_weather_details(self, timezone='Europe%2FLondon'):
+        """
+        Retrieve weather details from an API.
+
+        Args:
+            timezone (str, optional):
+                Timezone for weather data. Default is 'Europe%2FLondon'.
+
+        Returns:
+            tuple:
+                Tuple containing weather code, wind speed, sunrise, and sunset.
+        """
+
         # Get a Y-m-d reference to today's date.
         today = datetime.datetime.today().strftime('%Y-%m-%d')
 
@@ -202,6 +309,24 @@ class ScreenWeather:
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
     def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
+        """
+        Generate a filename based on weather conditions.
+
+        Args:
+            weather_code (int):
+                Numeric code representing weather condition.
+            wind_speed (float):
+                Wind speed in meters per second.
+            sunrise (int):
+                Unix timestamp of sunrise.
+            sunset (int):
+                Unix timestamp of sunset.
+
+        Returns:
+            str:
+                Generated filename for the weather animation.
+        """
+
         # Windy.
         if wind_speed >= 20:
             filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
@@ -217,7 +342,10 @@ class ScreenWeather:
         # Fog and depositing rime fog.
         elif 45 <= weather_code <= 48:
             filename = 'fog'
-        # Drizzle: Light, moderate, and dense intensity, Freezing Drizzle: Light and dense intensity, Rain: Slight, moderate and heavy intensity and Freezing Rain: Light and heavy intensity.
+        # Drizzle: Light, moderate, and dense intensity,
+        # Freezing Drizzle: Light and dense intensity,
+        # Rain: Slight, moderate and heavy intensity
+        # and Freezing Rain: Light and heavy intensity.
         elif 51 <= weather_code <= 67:
             filename = 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
         # Snow fall: Slight, moderate, and heavy intensity and Snow grains.
@@ -240,6 +368,10 @@ class ScreenWeather:
         return filename
 
 class ScreenProduction:
+    """
+    A class for displaying solar power production information on a Unicorn HAT HD.
+    """
+
     def __init__(self, unicornhathd, screen_width, screen_height, font, maximum_watts_per_panel, speed=0.04):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
@@ -249,6 +381,20 @@ class ScreenProduction:
         self.speed = speed
 
     def get_human_readable_power(self, watts, in_hours = False):
+        """
+        Convert power value to a human-readable format.
+
+        Args:
+            watts (float):
+                Power value in watts.
+            in_hours (bool, optional):
+                If True, append 'h' to indicate hours. Default is False.
+
+        Returns:
+            str:
+                Human-readable power value with unit (W or kW).
+        """
+
         # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
         if abs(round(watts)) < 1000:
             # Report the number in watts (rounded to the nearest number).
@@ -258,13 +404,28 @@ class ScreenProduction:
         return str(round(watts / 1000, 2)) + ' kW' + ('h' if in_hours else '')
 
     def draw_screen(self, number_of_microinverters, watts, end_time):
+        """
+        Draw the production information on the Unicorn HAT HD display.
+
+        Args:
+            number_of_microinverters (int):
+                Total number of microinverters.
+            watts (float):
+                Power value in watts.
+            end_time (float):
+                Unix timestamp for animation end time.
+
+        Returns:
+            None
+        """
+
         # Is there any power being generated?
         if watts >= 1:
             # The line of text we want to write on the screen is a wattage number to be formatted.
             line = self.get_human_readable_power(watts)
 
             # Calculate the colour of the text based off the production wattage.
-            color = tuple([int(n * 255) for n in colorsys.hsv_to_rgb(int(watts / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0)])
+            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb(int(watts / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0))
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
@@ -279,6 +440,10 @@ class ScreenProduction:
             )
 
 class ScreenChart:
+    """
+    A class for displaying power production and consumption as a bar chart on a Unicorn HAT HD.
+    """
+
     def __init__(self, unicornhathd, screen_width, screen_height, watts_per_panel, maximum_watts_per_panel):
         self.unicornhathd = unicornhathd
         self.screen_width = screen_width
@@ -288,6 +453,21 @@ class ScreenChart:
         self.number_of_pixels = self.screen_width * self.screen_height
 
     def draw_screen(self, number_of_microinverters, production, consumption):
+        """
+        Draw the power production and consumption as a bar chart on the Unicorn HAT HD display.
+
+        Args:
+            number_of_microinverters (int):
+                Total number of microinverters.
+            production (float):
+                Power production value in watts.
+            consumption (float):
+                Power consumption value in watts.
+
+        Returns:
+            None
+        """
+
         # Calculate the peak production capacity.
         total_capacity = number_of_microinverters * self.maximum_watts_per_panel
 
@@ -355,6 +535,22 @@ class ScreenChart:
         self.unicornhathd.rotation(self.unicornhathd.get_rotation() - 90)
 
 def restricted_float(number):
+    """
+    Validate and convert a floating-point number within the range [0.0, 1.0].
+
+    Args:
+        number (str):
+            Input number as a string.
+
+    Returns:
+        float:
+            The converted floating-point number.
+
+    Raises:
+        argparse.ArgumentTypeError:
+            If the input is not a valid floating-point number within the specified range.
+    """
+
     # Check this is a float.
     try:
         number = float(number)
@@ -369,6 +565,20 @@ def restricted_float(number):
     return number
 
 def main():
+    """
+    Main function for the Enphase API data processing and Unicorn HAT HD display.
+
+    This function is the main entry point of the script. It handles command line arguments, sets
+    up the display, connects to the AMQP broker, listens for incoming messages, processes the
+    data, and displays it on the Unicorn HAT HD.
+
+    It also handles exceptions, keyboard interrupts and ensures the display is turned off when
+    the program exits.
+
+    Returns:
+        None
+    """
+
     # Create an instance of argparse to handle any command line arguments.
     parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an Enphase® Gateway and displays the production values on a Unicorn HAT HD.')
 
@@ -420,7 +630,8 @@ def main():
     # Get the screen dimensions for the Unicorn HAT HD.
     screen_width, screen_height = unicornhathd.get_shape()
 
-    # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the font from the resources directory instead.
+    # If running on Microsoft Windows® instead of a Raspberry Pi (such as when developing) get the
+    # font from the resources directory instead.
     if os.name != 'nt':
         # Which font to use to render the text.
         font_path = '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
@@ -428,12 +639,14 @@ def main():
         # https://ftp.gnu.org/gnu/freefont/
         font_path = 'resources/FreeSansBold.ttf'
 
-    # Use `fc-list` to show a list of installed fonts on your system, or "ls /usr/share/fonts/" and explore.
+    # Use `fc-list` to show a list of installed fonts on your system,
+    # or "ls /usr/share/fonts/" and explore.
     # There's also more fonts in apt packages "fonts-droid" and "fonts-roboto".
     font = ImageFont.truetype(font_path, 20)
 
     # Should we display the weather?
-    if credentials.get('latitude') and credentials.get('longitude') and os.path.exists('resources/icons/'):
+    if (credentials.get('latitude') and credentials.get('longitude')
+            and os.path.exists('resources/icons/')):
         screen_weather = ScreenWeather(
             unicornhathd=unicornhathd,
             screen_width=screen_width,
@@ -494,10 +707,19 @@ def main():
             amqp_channel = amqp_connection.channel()
 
             # Declare a queue (if it does not already exist).
-            amqp_result = amqp_channel.queue_declare(queue='Enphase_Unicorn_HAT_HD', durable=False, exclusive=True, auto_delete=True)
+            amqp_result = amqp_channel.queue_declare(
+                queue='Enphase_Unicorn_HAT_HD',
+                durable=False,
+                exclusive=True,
+                auto_delete=True
+            )
 
             # Bind the queue to the exchange (if it is not already bound).
-            amqp_channel.queue_bind(exchange='Enphase', queue=amqp_result.method.queue, routing_key='#')
+            amqp_channel.queue_bind(
+                exchange='Enphase',
+                queue=amqp_result.method.queue,
+                routing_key='#'
+            )
 
             # We may reference this when no messages are obtained from the queue.
             timestamp = 0
@@ -524,18 +746,21 @@ def main():
                 # AMQP get a meter response.
                 while True:
                     # Get a message.
-                    method_frame, header_frame, body = amqp_channel.basic_get(amqp_result.method.queue, auto_ack=True)
+                    method, properties, body = amqp_channel.basic_get(
+                        queue=amqp_result.method.queue,
+                        auto_ack=True
+                    )
 
                     # Was there a message?
-                    if method_frame:
+                    if method:
                         # If there are more messages keep consuming until this is the last one.
-                        if method_frame.message_count > 0:
+                        if method.message_count > 0:
                             continue
 
                         json_object = json.loads(body)
                         timestamp = json_object['timestamp']
 
-                        # Each of the array items are either production, net-consumption or total-consumption.
+                        # Each of the items are production, net-consumption or total-consumption.
                         for meter_readings in json_object['readings']:
                             # Is the current array item for production?
                             if meter_readings['reportType'] == 'production':
@@ -568,7 +793,8 @@ def main():
                     # Pause on the last screen for 5 seconds.
                     time.sleep(5)
                 elif not screen_weather:
-                    # Display and scroll the red error text on screen for 10 seconds (if the weather won't otherwise loop).
+                    # Display and scroll the red error text on screen for 10 seconds
+                    # (if the weather won't otherwise loop).
                     UnicornHATHelper.draw_scrolling_text(
                         unicornhathd=unicornhathd,
                         screen_width=screen_width,

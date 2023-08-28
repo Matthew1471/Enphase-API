@@ -16,6 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to interact with the Enphase® IQ Gateway API for monitoring
+solar energy production and consumption data on the command line.
+
+The functions in this module allow you to:
+- Establish a secure gateway session
+- Fetch production, consumption, and storage status from Enphase IQ Gateway devices
+- Retrieve human-readable power values
+"""
+
 import datetime # We manipulate dates and times.
 import json     # This script makes heavy use of JSON parsing.
 import locale   # We play with encodings so it's good to check what we are set to support.
@@ -28,6 +38,19 @@ from enphase_api.local.gateway import Gateway
 
 
 def get_human_readable_power(watts, in_hours = False):
+    """
+    Convert power value to a human-readable format.
+
+    Args:
+        watts (float):
+            Power value in watts.
+        in_hours (bool, optional):
+            If True, append 'h' to indicate hours. Default is False.
+
+    Returns:
+        str:
+            Human-readable power value with unit (W or kW).
+    """
     # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
     if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
@@ -37,8 +60,32 @@ def get_human_readable_power(watts, in_hours = False):
     return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
 
 def get_secure_gateway_session(credentials):
+    """
+    Establishes a secure session with the Enphase® IQ Gateway API.
+
+    This function manages the authentication process to establish a secure session with
+    an Enphase® IQ Gateway.
+
+    It handles JWT validation, token acquisition (if required) and initialises
+    the Gateway API wrapper for subsequent interactions.
+
+    It also downloads and stores the certificate from the gateway for secure communication.
+
+    Args:
+        credentials (dict): A dictionary containing the required credentials.
+
+    Returns:
+        Gateway: An initialised Gateway API wrapper object for interacting with the gateway.
+
+    Raises:
+        ValueError: If authentication fails or if required credentials are missing.
+    """
+
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+    if not (credentials.get('token')
+                and Authentication.check_token_valid(
+                    token=credentials['token'],
+                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
         # It is not valid so clear it.
         credentials['token'] = None
 
@@ -50,13 +97,17 @@ def get_secure_gateway_session(credentials):
             authentication = Authentication()
 
             # Authenticate with Entrez (French for "Access").
-            if not authentication.authenticate(credentials['enphaseUsername'], credentials['enphasePassword']):
+            if not authentication.authenticate(
+                username=credentials['enphaseUsername'],
+                password=credentials['enphasePassword']):
                 raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
 
             # Does the user want to target a specific gateway or all uncommissioned ones?
             if credentials.get('gatewaySerialNumber'):
                 # Get a new gateway specific token (installer = short-life, owner = long-life).
-                credentials['token'] = authentication.get_token_for_commissioned_gateway(credentials['gatewaySerialNumber'])
+                credentials['token'] = authentication.get_token_for_commissioned_gateway(
+                    gateway_serial_number=credentials['gatewaySerialNumber']
+                )
             else:
                 # Get a new uncommissioned gateway specific token.
                 credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
@@ -87,6 +138,20 @@ def get_secure_gateway_session(credentials):
     return gateway
 
 def main():
+    """
+    Main function for collecting and displaying Enphase Gateway and inverter status.
+
+    This function loads credentials from a JSON file, initializes a secure session with the Enphase
+    Gateway API, retrieves production and meter statistics, and displays the status information to
+    the console.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     # Load credentials.
     with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -94,23 +159,28 @@ def main():
     # Use a secure gateway initialisation flow.
     gateway = get_secure_gateway_session(credentials)
 
-    # We can force the gateway to poll the inverters early (by default it only does this automatically every 5 minutes).
+    # We can force the gateway to poll the inverters early
+    # (by default it only does this automatically every 5 minutes).
     #gateway.api_call('/installer/pcu_comm_check')
 
     # Get gateway production, consumption and storage status.
     production_statistics = gateway.api_call('/production.json')
 
-    # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
+    # The meter status tells us if they are enabled and what mode they are operating in
+    # (production for production meters but net-consumption or total-consumption for consumption
+    # meters).
     meters_status = gateway.api_call('/ivp/meters')
 
-    # The Production meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
+    # The Production meters can be not present (not Gateway Metered) or individually turned off
+    # (and they require a working CT clamp).
     eim_production_w_now = None
     eim_production_wh_today = None
     eim_production_wh_last_seven_days = None
 
     meter_statistics_production = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'production'][0]
     if meter_statistics_production['state'] == 'enabled':
-        # Get the Production section of the Production Statistics JSON that matches the configured meter mode.
+        # Get the Production section of the Production Statistics JSON that matches the configured
+        # meter mode.
         production_statistics_production_eim = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
 
         # Is the production meter responding?
@@ -120,7 +190,8 @@ def main():
             eim_production_wh_today = production_statistics_production_eim['whToday']
             eim_production_wh_last_seven_days = production_statistics_production_eim.get('whLastSevenDays')
 
-    # The Consumption meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
+    # The Consumption meters can be not present (not Gateway Metered) or individually turned off
+    # (and they require a working CT clamp).
     eim_consumption_w_now = None
     eim_consumption_wh_today = None
 
@@ -148,7 +219,8 @@ def main():
     # Generate the status (with emojis if runtime is utf-8 capable).
     status  = '\n{} Inverters {} ({} Inverters)'.format(string_names['Production'], get_human_readable_power(production_statistics_inverters['wNow']), production_statistics_inverters['activeCount'])
 
-    # Used to calculate the microinverter automatic polling interval (gateway polls microinverters automatically every 5 minutes).
+    # Used to calculate the microinverter automatic polling interval
+    # (gateway polls microinverters automatically every 5 minutes).
     most_recent_inverter_data = None
 
     # Get Inverters status.
@@ -158,7 +230,8 @@ def main():
     for inverter_statistic in inverters_statistics:
         status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(string_names['Microinverter'], inverter_statistic['lastReportWatts'], inverter_statistic['serialNumber'], datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']))
 
-        # Used to calculate the microinverter polling interval (gateway polls microinverters every 5 minutes).
+        # Used to calculate the microinverter polling interval
+        # (gateway polls microinverters every 5 minutes).
         if not most_recent_inverter_data or most_recent_inverter_data < datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']):
             most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
 
@@ -168,14 +241,15 @@ def main():
     # This requires a configured Production meter.
     if eim_production_w_now is not None:
 
-        # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
+        # The current Production meter reading can read < 0 if energy (often a trace amount) is
+        # actually flowing the other way from the grid.
         status += '\n\n{} Current Production {}'.format(string_names['Meter'], get_human_readable_power(max(0, eim_production_w_now)).rjust(9, ' '))
 
-        # The production meter needs to have been running for at least a day for this to be non-zero.
+        # The production meter needs to have run for at least a day for this to be non-zero.
         if eim_production_wh_today:
             status += ' ({} Today'.format(get_human_readable_power(eim_production_wh_today, True))
 
-            # The production meter has to have been running for at least 7 days for this to be non-zero.
+            # The production meter has to have run for at least 7 days for this to be non-zero.
             if eim_production_wh_last_seven_days:
                 status += ' / {} Last 7 Days'.format(get_human_readable_power(eim_production_wh_last_seven_days, True))
 
@@ -185,7 +259,7 @@ def main():
     if eim_consumption_w_now:
         status += '\n{} Current Consumption {}'.format(string_names['Meter'], get_human_readable_power(eim_consumption_w_now).rjust(8, ' '))
 
-        # The consumption meter needs to have been running for at least a day for this to be non-zero.
+        # The consumption meter needs to have run for at least a day for this to be non-zero.
         if eim_consumption_wh_today:
             status += ' ({} today)'.format(get_human_readable_power(eim_consumption_wh_today, True))
 
@@ -194,7 +268,8 @@ def main():
 
     # Microinverters do not power up in very low light.
     if inverters_reading_time != 0:
-        # Microinverters are only automatically polled by the gateway every 5 minutes (and they do not respond in very low light).
+        # Microinverters are only automatically polled by the gateway every 5 minutes
+        # (and they do not respond in very low light).
         next_refresh_time = datetime.datetime.fromtimestamp(inverters_reading_time) + datetime.timedelta(minutes=5)
 
         # Print when the next update will be available.

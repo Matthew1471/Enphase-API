@@ -16,6 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to interact with the Enphase® IQ Gateway API for monitoring
+solar energy production and consumption data and store it in a MySQL®/MariaDB® database.
+
+The functions in this module allow you to:
+- Establish a secure gateway session
+- Fetch production and consumption from Enphase® IQ Gateway devices
+- Store this data in a database
+"""
+
 import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
@@ -49,6 +59,32 @@ OFFSET_MAPPING = {
 }
 
 def add_results_to_database(database_connection, database_cursor_meter_reading, database_cursor_meter_reading_result, timestamp, json_object):
+    """
+    Adds meter readings and their results for each phase to the database.
+
+    This function takes the following arguments and adds meter readings along with their results
+    for each phase to the database:
+
+    Args:
+        database_connection (MySQLConnection):
+            The database connection.
+        database_cursor_meter_reading (MySQLCursorPrepared):
+            The cursor for inserting meter readings.
+        database_cursor_meter_reading_result (MySQLCursorPrepared):
+            The cursor for inserting meter reading results.
+        timestamp (datetime.datetime):
+            The timestamp for the meter readings.
+        json_object (list):
+            A JSON object containing meter readings and their results.
+
+    Raises:
+        ValueError:
+            If an unexpected meter reading report type or phase is encountered in the JSON.
+
+    Returns:
+        None
+    """
+
     # Initialise to empty by default so they convert to a database NULL if not later set.
     result_ids = [None] * 9
 
@@ -97,8 +133,31 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
     database_connection.commit()
 
 def get_secure_gateway_session(credentials):
+    """
+    Establishes a secure session with the Enphase® IQ Gateway API.
+
+    This function manages the authentication process to establish a secure session with
+    an Enphase® IQ Gateway.
+
+    It handles JWT validation and initialises the Gateway API wrapper for subsequent interactions.
+
+    It also downloads and stores the certificate from the gateway for secure communication.
+
+    Args:
+        credentials (dict): A dictionary containing the required credentials.
+
+    Returns:
+        Gateway: An initialised Gateway API wrapper object for interacting with the gateway.
+
+    Raises:
+        ValueError: If the token is missing/expired/invalid, or if there's an issue with login.
+    """
+
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+    if not (credentials.get('token')
+                and Authentication.check_token_valid(
+                    token=credentials['token'],
+                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
@@ -121,6 +180,20 @@ def get_secure_gateway_session(credentials):
     return gateway
 
 def main():
+    """
+    Main function for collecting and storing Enphase meter readings to a MySQL®/MariaDB® database.
+
+    This function loads credentials from a JSON file, initializes a secure session with the
+    Enphase Gateway API, retrieves meter reports, connects to a MySQL®/MariaDB® database, and stores
+    the collected data in the database.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     # Notify the user.
     print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
 
@@ -137,7 +210,7 @@ def main():
     database_password = credentials.get('database_password', '')
     database_database = credentials.get('database_database', 'Enphase')
 
-    # Connect to the MySQL/MariaDB database.
+    # Connect to the MySQL®/MariaDB® database.
     with mysql.connector.connect(
         host=database_host,
         user=database_username,

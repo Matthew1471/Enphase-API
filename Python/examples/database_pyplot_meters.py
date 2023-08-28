@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to connect to a MySQL®/MariaDB® database and plot meter values
+graphically using Matplotlib.
+"""
+
 import argparse # We support command line arguments.
 
 import matplotlib.pyplot as plt          # Third party library; "pip install matplotlib"
@@ -65,6 +70,17 @@ GET_METER_READINGS_SQL = (
 )
 
 def add_results_from_database():
+    """
+    Fetches and adds new meter readings from the database to the data lists.
+
+    This function retrieves new meter readings from the database using the global cursor
+    'database_cursor' and the global SQL statement 'GET_METER_READINGS_SQL'. It then processes the
+    retrieved data and appends relevant information to the respective data lists.
+
+    Returns:
+        bool: True if new records were found and added, False otherwise.
+    """
+
     global last_seen_reading_id
 
     # Get the meter readings.
@@ -78,7 +94,8 @@ def add_results_from_database():
         # Add the current date/time to the sample for the x-axis.
         timestamp_data.append(timestamp)
 
-        # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
+        # The current Production meter reading can read < 0 if energy (often a trace amount) is
+        # actually flowing the other way from the grid.
         production_data.append(max(0, production_p))
 
         # Consumption statistics.
@@ -94,6 +111,22 @@ def add_results_from_database():
     return found_records
 
 def on_pick(event):
+    """
+    Toggles the visibility of a plot and its associated annotation based on a legend line pick
+    event.
+
+    This function is called when a legend line is picked (clicked) on the plot. It toggles the
+    visibility of the associated plot and its annotation. It also changes the alpha of the legend
+    line to indicate whether the line is visible or hidden. Finally, it triggers a redraw of the
+    chart.
+
+    Args:
+        event (PickEvent): The pick event triggered by clicking a legend line.
+
+    Returns:
+        None
+    """
+
     # On the pick event, take the line in the legend.
     legend_line = event.artist
 
@@ -111,6 +144,17 @@ def on_pick(event):
     figure.canvas.draw()
 
 def setup_plot():
+    """
+    Sets up the initial plot layout, including axes, legends, annotations, and plot data.
+
+    This function configures the initial appearance of the plot, including creating the figure,
+    connecting click events, setting axes labels and titles, plotting data, adding annotations,
+    legends, and configuring grid lines.
+
+    Returns:
+        Figure: The created figure.
+    """
+
     # The figure.
     figure = plt.figure('Enphase® Gateway Meters', figsize=(12,6), facecolor='#DEDEDE')
 
@@ -179,6 +223,16 @@ def setup_plot():
     return figure
 
 def update_axes():
+    """
+    Updates the plot data and annotations.
+
+    This function updates the plot data based on the latest data in the global data lists.
+    It also updates the annotations that display the most recent values on the plot.
+
+    Returns:
+        None
+    """
+
     # Plot the data.
     production_plot.set_data(timestamp_data, production_data)
     consumption_total_plot.set_data(timestamp_data, consumption_total_data)
@@ -195,6 +249,22 @@ def update_axes():
     consumption_net_annotation.set_text(str(consumption_net_data[-1]) + ' W')
 
 def animate(_):
+    """
+    Animates the chart by updating data, re-scaling, and refreshing the plot.
+
+    This function is used by the animation to update the chart's data, re-scale the axes, and
+    refresh the plot to reflect new data. It checks for new meter readings using
+    'add_results_from_database()' and updates the axes if new data is found.
+
+    It also manages the zoom behavior for the x-axis.
+
+    Args:
+        _: Dummy argument for the animation function.
+
+    Returns:
+        None
+    """
+
     # Store this before it is potentially over-written.
     most_recent_timestamp = timestamp_data[-1]
 
@@ -207,7 +277,8 @@ def animate(_):
         old_x_lim = axes.get_xlim()
         old_y_lim = axes.get_ylim()
 
-        # Check whether the current zoom included the old end datapoint (i.e. user appeared deliberately interested in fresh data).
+        # Check whether the current zoom included the old end datapoint
+        # (i.e. user appeared deliberately interested in fresh data).
         user_viewing_recent_data = (old_x_lim[0] <= matplotlib.dates.date2num(most_recent_timestamp) <= old_x_lim[1])
 
         # Check whether the newest added data would now fall out of the old zoom view.
@@ -221,15 +292,30 @@ def animate(_):
         figure.canvas.toolbar.update()
         figure.canvas.toolbar.push_current()
 
-        # Was the user looking at old data before we added more data or were they looking at fresh data that now wil be outside of their view.
-        if not user_viewing_recent_data or (user_viewing_recent_data and new_data_visible_in_old_view):
-            # Restore old axis zoom (recent datapoint was never in zoom range anyway or zoom range still covers the new data).
+        # Was the user looking at old data before we added more data or were they looking at fresh
+        # data that now will be outside of their view.
+        if (not user_viewing_recent_data
+                or (user_viewing_recent_data and new_data_visible_in_old_view)):
+            # Restore old axis zoom (recent datapoint was never in zoom range anyway or zoom range
+            # still covers the new data).
             axes.set_xlim(old_x_lim)
             axes.set_ylim(old_y_lim)
 
 def main():
+    """
+    Main function for connecting to a MySQL®/MariaDB® database and plotting meter values
+    graphically.
+
+    This function is the main entry point of the script. It handles command line arguments,
+    connects to the database, retrieves existing records, sets up the plot, and animates the chart
+    if specified. It then displays the plot.
+
+    Returns:
+        None
+    """
+
     # Create an instance of argparse to handle any command line arguments.
-    parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an MySQL/MariaDB® database and plots the meter values graphically.')
+    parser = argparse.ArgumentParser(prefix_chars='/-', add_help=False, description='A program that connects to an MySQL®/MariaDB® database and plots the meter values graphically.')
 
     # Arguments to control the database connection.
     database_group = parser.add_argument_group('Database')
@@ -252,7 +338,7 @@ def main():
     global args
     args = parser.parse_args()
 
-    # Connect to the MySQL/MariaDB database.
+    # Connect to the MySQL®/MariaDB® database.
     with mysql.connector.connect(
         user=args.database_username,
         password=args.database_password,

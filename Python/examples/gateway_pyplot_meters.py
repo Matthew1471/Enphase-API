@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to connect to an Enphase® IQ Gateway and plot meter values
+graphically using Matplotlib.
+"""
+
 import datetime    # We timestamp any errors.
 import json        # This script makes heavy use of JSON parsing.
 import os.path     # We check whether a file exists.
@@ -65,6 +70,18 @@ legend_map = {}
 number_of_inverters = 0
 
 def add_result_from_gateway():
+    """
+    Retrieves and processes energy production and consumption data from the Enphase Gateway API.
+
+    This function requests production and consumption data from the Enphase Gateway API, processes
+    the data, and updates global data lists for timestamps, production, and consumption.
+
+    It handles cases where the API request fails due to connection issues or JSON decoding errors.
+
+    Returns:
+        bool: True if data was successfully added, False if an error occurred.
+    """
+
     # Sometimes a request will intermittently fail and in this event we retry.
     try:
         # Get gateway production, consumption and storage status.
@@ -91,18 +108,22 @@ def add_result_from_gateway():
     global number_of_inverters
     number_of_inverters = production_statistics_production['activeCount']
 
-    # The Production meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
+    # The Production meters can be not present (not Gateway Metered) or individually turned off
+    # (and they require a working CT clamp).
     meter_statistics_production = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'production'][0]
     if meter_statistics_production['state'] == 'enabled':
-        # Get the Production section of the Production Statistics JSON that matches the configured meter mode.
+        # Get the Production section of the Production Statistics JSON that matches the configured
+        # meter mode.
         production_statistics_production_eim = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'eim' and production_statistic['measurementType'] == meter_statistics_production['measurementType']][0]
 
-        # The current Production meter reading can read < 0 if energy (often a trace amount) is actually flowing the other way from the grid.
+        # The current Production meter reading can read < 0 if energy (often a trace amount) is
+        # actually flowing the other way from the grid.
         production_data.append(max(0, production_statistics_production_eim['wNow']) if production_statistics_production_eim['activeCount'] > 0 else 0)
     else:
         production_data.append(0)
 
-    # The Consumption meter can be not present (not Gateway Metered) or individually turned off (and they require a working CT clamp).
+    # The Consumption meters can be not present (not Gateway Metered) or individually turned off
+    # (and they require a working CT clamp).
     meter_statistics_consumption = [meter_status for meter_status in meters_status if meter_status['measurementType'] == 'net-consumption' or meter_status['measurementType'] == 'total-consumption'][0]
     if meter_statistics_consumption['state'] == 'enabled':
         # Get the Consumption section for each meter of the Production Statistics JSON.
@@ -128,6 +149,22 @@ def add_result_from_gateway():
     return True
 
 def on_pick(event):
+    """
+    Toggles the visibility of a plot and its associated annotation based on a legend line pick
+    event.
+
+    This function is called when a legend line is picked (clicked) on the plot. It toggles the
+    visibility of the associated plot and its annotation. It also changes the alpha of the legend
+    line to indicate whether the line is visible or hidden. Finally, it triggers a redraw of the
+    chart.
+
+    Args:
+        event (PickEvent): The pick event triggered by clicking a legend line.
+
+    Returns:
+        None
+    """
+
     # On the pick event, take the line in the legend.
     legend_line = event.artist
 
@@ -145,6 +182,17 @@ def on_pick(event):
     figure.canvas.draw()
 
 def setup_plot():
+    """
+    Sets up the initial plot layout, including axes, legends, annotations, and plot data.
+
+    This function configures the initial appearance of the plot, including creating the figure,
+    connecting click events, setting axes labels and titles, plotting data, adding annotations,
+    legends, and configuring grid lines.
+
+    Returns:
+        Figure: The created figure.
+    """
+
     # The figure.
     figure = plt.figure('Enphase® Gateway Meters', figsize=(12,6), facecolor='#DEDEDE')
 
@@ -210,6 +258,16 @@ def setup_plot():
     return figure
 
 def update_axes():
+    """
+    Updates the plot data and annotations.
+
+    This function updates the plot data based on the latest data in the global data lists.
+    It also updates the annotations that display the most recent values on the plot.
+
+    Returns:
+        None
+    """
+
     # Plot the data.
     production_plot.set_data(timestamp_data, production_data)
     consumption_total_plot.set_data(timestamp_data, consumption_total_data)
@@ -226,6 +284,22 @@ def update_axes():
     consumption_net_annotation.set_text(str(consumption_net_data[-1]) + ' W')
 
 def animate(_):
+    """
+    Animates the chart by updating data, re-scaling, and refreshing the plot.
+
+    This function is used by the animation to update the chart's data, re-scale the axes, and
+    refresh the plot to reflect new data. It checks for new meter readings using
+    'add_results_from_database()' and updates the axes if new data is found.
+
+    It also manages the zoom behavior for the x-axis.
+
+    Args:
+        _: Dummy argument for the animation function.
+
+    Returns:
+        None
+    """
+
     # Store this before it is potentially over-written.
     most_recent_timestamp = timestamp_data[-1]
 
@@ -238,7 +312,8 @@ def animate(_):
         old_x_lim = axes.get_xlim()
         old_y_lim = axes.get_ylim()
 
-        # Check whether the current zoom included the old end datapoint (i.e. user appeared deliberately interested in fresh data).
+        # Check whether the current zoom included the old end datapoint
+        # (i.e. user appeared deliberately interested in fresh data).
         user_viewing_recent_data = (old_x_lim[0] <= matplotlib.dates.date2num(most_recent_timestamp) <= old_x_lim[1])
 
         # Check whether the newest added data would now fall out of the old zoom view.
@@ -252,15 +327,41 @@ def animate(_):
         figure.canvas.toolbar.update()
         figure.canvas.toolbar.push_current()
 
-        # Was the user looking at old data before we added more data or were they looking at fresh data that now wil be outside of their view.
-        if not user_viewing_recent_data or (user_viewing_recent_data and new_data_visible_in_old_view):
-            # Restore old axis zoom (recent datapoint was never in zoom range anyway or zoom range still covers the new data).
+        # Was the user looking at old data before we added more data or were they looking at fresh
+        # data that now will be outside of their view.
+        if (not user_viewing_recent_data
+                or (user_viewing_recent_data and new_data_visible_in_old_view)):
+            # Restore old axis zoom (recent datapoint was never in zoom range anyway or zoom range
+            # still covers the new data).
             axes.set_xlim(old_x_lim)
             axes.set_ylim(old_y_lim)
 
 def get_secure_gateway_session(credentials):
+    """
+    Establishes a secure session with the Enphase® IQ Gateway API.
+
+    This function manages the authentication process to establish a secure session with
+    an Enphase® IQ Gateway.
+
+    It handles JWT validation and initialises the Gateway API wrapper for subsequent interactions.
+
+    It also downloads and stores the certificate from the gateway for secure communication.
+
+    Args:
+        credentials (dict): A dictionary containing the required credentials.
+
+    Returns:
+        Gateway: An initialised Gateway API wrapper object for interacting with the gateway.
+
+    Raises:
+        ValueError: If the token is missing/expired/invalid, or if there's an issue with login.
+    """
+
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+    if not (credentials.get('token')
+                and Authentication.check_token_valid(
+                    token=credentials['token'],
+                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
@@ -283,6 +384,20 @@ def get_secure_gateway_session(credentials):
     return gateway
 
 def main():
+    """
+    Main function for real-time plotting of Enphase meter readings.
+
+    This function loads credentials from a JSON file, initializes a secure session with the
+    Enphase Gateway API, retrieves meter status, collects the first result from the gateway, sets
+    up a real-time plot, and displays the plot.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
         credentials = json.load(json_file)
@@ -291,7 +406,9 @@ def main():
     global gateway
     gateway = get_secure_gateway_session(credentials)
 
-    # The meter status tells us if they are enabled and what mode they are operating in (production for production meter but net-consumption or total-consumption for consumption meter).
+    # The meter status tells us if they are enabled and what mode they are operating in
+    # (production for production meters but net-consumption or total-consumption for consumption
+    # meters).
     global meters_status
     meters_status = gateway.api_call('/ivp/meters')
 

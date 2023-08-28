@@ -16,6 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This example provides functionality to interact with the Enphase® IQ Gateway API for monitoring
+solar energy production and consumption data and publish that data to an AMQP broker
+(such as RabbitMQ®) for consumption by other example scripts.
+"""
+
 import datetime # We output the current date/time for debugging.
 import json     # This script makes heavy use of JSON parsing.
 import os.path  # We check whether a file exists.
@@ -29,8 +35,31 @@ from enphase_api.local.gateway import Gateway
 
 
 def get_secure_gateway_session(credentials):
+    """
+    Establishes a secure session with the Enphase® IQ Gateway API.
+
+    This function manages the authentication process to establish a secure session with
+    an Enphase® IQ Gateway.
+
+    It handles JWT validation and initialises the Gateway API wrapper for subsequent interactions.
+
+    It also downloads and stores the certificate from the gateway for secure communication.
+
+    Args:
+        credentials (dict): A dictionary containing the required credentials.
+
+    Returns:
+        Gateway: An initialised Gateway API wrapper object for interacting with the gateway.
+
+    Raises:
+        ValueError: If the token is missing/expired/invalid, or if there's an issue with login.
+    """
+
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token') and Authentication.check_token_valid(credentials['token'], credentials.get('gatewaySerialNumber'))):
+    if not (credentials.get('token')
+                and Authentication.check_token_valid(
+                    token=credentials['token'],
+                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
@@ -53,6 +82,24 @@ def get_secure_gateway_session(credentials):
     return gateway
 
 def main():
+    """
+    Main function for collecting and transmitting meter readings from Enphase Gateway to AMQP
+    broker.
+
+    This function initializes a secure session with the Enphase Gateway API, gathers AMQP details
+    from credentials, establishes a connection to the AMQP broker, and repeatedly collects meter
+    readings from the API. The collected data is then published to the AMQP broker for
+    consumption.
+
+    The process continues until interrupted by the user (CTRL + C).
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     # Notify the user.
     print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
 
