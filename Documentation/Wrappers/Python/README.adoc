@@ -73,7 +73,7 @@ ENPHASE_USERNAME = 'barry@example.com'
 ENPHASE_PASSWORD = 'mySecretPassW0rd!'
 IQ_GATEWAY_SERIAL_NUMBER = '123456'
 
-# Authenticate with Enphase's authentication server and get a token.
+# Authenticate with Enphase®'s authentication server and get a token.
 authentication = Authentication()
 authentication.authenticate(ENPHASE_USERNAME, ENPHASE_PASSWORD)
 token = authentication.get_token_for_commissioned_gateway(IQ_GATEWAY_SERIAL_NUMBER)
@@ -123,7 +123,7 @@ The IQ Gateway API endpoints are documented in the xref:../../IQ Gateway API/REA
 
 == Examples
 
-[cols="1,1,1,1,1,2", options="header"] 
+[cols="1,1,1,1,1,2", options="header"]
 |===
 |Filename
 |Config File
@@ -136,8 +136,8 @@ The IQ Gateway API endpoints are documented in the xref:../../IQ Gateway API/REA
 |`credentials_token.json`
 |`mysql.connector` and `pika`
 |AMQP
-|MySQL/mariadb
-|Consumes meter messages from AMQP and stores it in a MySQL/mariadb database (schema is in the resources folder).
+|MySQL(R)/MariaDB(R)
+|Consumes meter messages from AMQP and stores it in a MySQL(R)/MariaDB(R) database (schema is in the resources folder).
 
 |link:../../../Python/examples/amqp_unicorn_hat_hd.py[`amqp_unicorn_hat_hd.py`]
 |`credentials_token.json`
@@ -149,7 +149,7 @@ The IQ Gateway API endpoints are documented in the xref:../../IQ Gateway API/REA
 |link:../../../Python/examples/database_pyplot_meters.py[`database_pyplot_meters.py`]
 |None
 |`mysql.connector` and `matplotlib`
-|MySQL/mariadb
+|MySQL(R)/MariaDB(R)
 |PyPlot
 |Displays meter production and consumption databased data in a chart using PyPlot.
 
@@ -171,8 +171,8 @@ The IQ Gateway API endpoints are documented in the xref:../../IQ Gateway API/REA
 |`credentials_token.json`
 |`mysql.connector`
 |IQ Gateway
-|MySQL/mariadb
-|Obtains meter information and stores it in a MySQL/mariadb database (schema is in the resources folder).
+|MySQL(R)/MariaDB(R)
+|Obtains meter information and stores it in a MySQL(R)/MariaDB(R) database (schema is in the resources folder).
 
 |link:../../../Python/examples/gateway_generate_docs.py[`gateway_generate_docs.py`]
 |`credentials.json`
