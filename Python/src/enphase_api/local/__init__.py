@@ -16,5 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+A module for interacting with the Enphase IQ Gateway API.
+
+This module provides functionalities to interact with the Enphase IQ Gateway API, allowing
+users to access and manage Enphase solar energy system data locally without Internet access.
+"""
+
 # Declare what should be offered in the Public API.
 __all__ = ['Gateway']

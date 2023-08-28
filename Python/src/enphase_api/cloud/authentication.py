@@ -19,7 +19,8 @@
 """
 Enphase-API Authentication Module
 This module provides classes and methods for interacting with the Enphase® authentication server.
-It supports maintaining an authenticated session and generating JWT tokens for use with an IQ Gateway.
+It supports maintaining an authenticated session and generating JWT tokens for use with an IQ
+Gateway.
 """
 
 # Used to generate an OAuth 2.0 Proof Key for Code Exchange (PKCE) code verifier.
@@ -31,10 +32,12 @@ import string
 # We extract the code from the returned OAuth 2.0 URL.
 import urllib.parse
 
-# We can check JWT claims/expiration first before making a request ("pip install pyjwt" if not already installed).
+# We can check JWT claims/expiration first before making a request
+# ("pip install pyjwt" if not already installed).
 import jwt
 
-# Third party library for making HTTP(S) requests; "pip install requests" if getting import errors.
+# Third party library for making HTTP(S) requests;
+# "pip install requests" if getting import errors.
 import requests
 
 # Remove urllib3 added user-agent (https://github.com/psf/requests/issues/5671)
@@ -78,7 +81,8 @@ class Authentication:
                         This may indicate changes in the response structure.
         """
 
-        # The text that indicates the beginning of a token, if this changes a lot we may have to turn this into a regular expression.
+        # The text that indicates the beginning of a token, if this changes a lot we may have to
+        # turn this into a regular expression.
         start_needle = '<textarea name="accessToken" id="JWTToken" cols="30" rows="10" >'
 
         # Look for the start token text.
@@ -126,7 +130,7 @@ class Authentication:
             timeout=Authentication.TIMEOUT
         )
 
-        # There's only 1 cookie value that is important to maintain session once we are authenticated.
+        # There's only 1 cookie that is important to maintain a session once we are authenticated.
         # SESSION - This links our future requests to our existing login session on this server.
         self.session_cookies = {'SESSION': response.cookies.get('SESSION')}
 
@@ -137,12 +141,14 @@ class Authentication:
     def authenticate_oauth(username, password, gateway_serial_number='un-commissioned'):
         """
         Authenticate with Entrez (with a username and password) using OAuth 2.0.
-        This is currently using the "Authorization Code Flow with Proof Key for Code Exchange (PKCE)" grant.
+        This is currently using the "Authorization Code Flow with Proof Key for Code Exchange
+        (PKCE)" grant.
 
         Args:
             username (str): The user's Enphase® username for authentication.
             password (str): The user's Enphase® password for authentication.
-            gateway_serial_number (str, optional): The serial number of the IQ Gateway. Defaults to 'un-commissioned'.
+            gateway_serial_number (str, optional): The serial number of the IQ Gateway.
+                Defaults to 'un-commissioned'.
 
         Returns:
             tuple: A tuple containing the authorisation code and code verifier.
@@ -199,7 +205,8 @@ class Authentication:
 
     def get_site(self, site_name):
         """
-        Get site details (site ID number, full site name and associated IQ Gateway serial numbers) from a partial site name.
+        Get site details (site ID number, full site name and associated IQ Gateway serial numbers)
+        from a partial site name.
 
         Args:
             site_name (str): The partial site name.
@@ -290,7 +297,8 @@ class Authentication:
             'username': username
         }
 
-        # This is probably used internally by the Enlighten website itself to authorise sessions via Entrez.
+        # This is probably also used internally by the Enlighten website to authorise sessions
+        # via Entrez.
         response = requests.post(
             url=Authentication.AUTHENTICATION_HOST + '/tokens',
             headers=Authentication.HEADERS,
@@ -339,18 +347,23 @@ class Authentication:
     @staticmethod
     def check_token_valid(token, gateway_serial_number=None, verify_signature=False):
         """
-        This performs JWT token validation to confirm whether a token would likely be valid for a local API authentication call.
+        This performs JWT token validation to confirm whether a token would likely be valid for a
+        local API authentication call.
 
         Args:
-            token (str): The JWT token.
-            gateway_serial_number (str, optional): The serial number of the IQ Gateway. Defaults to None.
-            verify_signature (bool, optional): Whether to verify the token signature. Defaults to False.
+            token (str):
+                The JWT token.
+            gateway_serial_number (str, optional):
+                The serial number of the IQ Gateway. Defaults to None.
+            verify_signature (bool, optional):
+                Whether to verify the token signature. Defaults to False.
 
         Returns:
             bool: True if the token is valid, False otherwise.
         """
 
-        # An installer is always allowed to access any uncommissioned IQ Gateway serial number (for a shorter time however).
+        # An installer is always allowed to access any uncommissioned IQ Gateway serial number
+        # (for a shorter time however).
         if gateway_serial_number:
             calculated_audience = [gateway_serial_number, 'un-commissioned']
         else:
@@ -370,13 +383,33 @@ class Authentication:
                 )
 
                 # Is the token still valid?
-                jwt.decode(token, key=public_key, algorithms='ES256', options={'require':require}, audience=calculated_audience, issuer='Entrez')
+                jwt.decode(
+                    jwt=token,
+                    key=public_key,
+                    algorithms='ES256',
+                    options={'require':require},
+                    audience=calculated_audience,
+                    issuer='Entrez'
+                )
             else:
-                # While the signature itself is not verified, we enforce required fields and validate "aud", "iss", "exp" and "iat" values.
-                options = {'verify_signature':False, 'require':require, 'verify_aud':True, 'verify_iss':True, 'verify_exp':True, 'verify_iat':True}
+                # While the signature itself is not verified, we enforce required fields and
+                # validate "aud", "iss", "exp" and "iat" values.
+                options = {
+                    'verify_signature':False,
+                    'require':require,
+                    'verify_aud':True,
+                    'verify_iss':True,
+                    'verify_exp':True,
+                    'verify_iat':True
+                }
 
                 # Is the token still valid?
-                jwt.decode(token, options=options, audience=calculated_audience, issuer='Entrez')
+                jwt.decode(
+                    jwt=token,
+                    options=options,
+                    audience=calculated_audience,
+                    issuer='Entrez'
+                )
 
             # If we got to this line then no exceptions were generated by the above.
             return True

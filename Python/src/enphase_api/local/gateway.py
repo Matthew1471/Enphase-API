@@ -19,7 +19,8 @@
 """
 Enphase-API Gateway Module
 This module provides classes and methods for interacting locally with an Enphase® IQ Gateway.
-It supports maintaining an authenticated session between API calls and handles communication with the gateway.
+It supports maintaining an authenticated session between API calls and handles communication with
+the gateway.
 """
 
 # We check if a file exists and extract paths or create directories.
@@ -34,7 +35,8 @@ import requests
 # Disable the warning about insecure HTTPS requests (and skip automatic user-agent header).
 import urllib3
 
-# We implement our own Requests adapter to amend TLS certificate hostname checking (Gateway is self-signed).
+# We implement our own Requests adapter to amend TLS certificate hostname checking
+# (IQ Gateway is self-signed).
 import enphase_api.local.ignore_hostname_adapter
 
 
@@ -140,7 +142,7 @@ class Gateway:
         # We append an OAuth 2.0 bearer token.
         headers["Authorization"] = "Bearer " + token
 
-        # If successful this will return a "sessionId" cookie that validates our access to the IQ Gateway.
+        # Returns a "sessionId" cookie if successful that validates access to the IQ Gateway.
         response = self.session.post(
             url=self.host + '/auth/check_jwt',
             headers=headers,
@@ -197,7 +199,7 @@ class Gateway:
             raise ValueError('Error exchanging authorisation code for an access token.')
 
         # The gateway must have returned an access token.
-        # Login with the JWT (in my opinion the gateway should have internally made this call for us).
+        # Login with the JWT (in my opinion the IQ Gateway should have internally made this call).
         return self.login(response['access_token'])
 
     def api_call(self, path, method='GET', data=None, json=None, response_raw=False):
@@ -212,7 +214,8 @@ class Gateway:
             response_raw (bool, optional): If True, return the raw response. Defaults to False.
 
         Returns:
-            dict or str: JSON response if response_raw is False, raw response if response_raw is True.
+            dict or str:
+                JSON response if response_raw is False, raw response if response_raw is True.
         """
 
         # Call the IQ Gateway API endpoint (optionally with form or JSON data).

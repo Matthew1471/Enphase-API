@@ -16,6 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""
+This module provides an HTTP adapter that can be used with the Requests library to create
+TLS/SSL connections that disregard hostname verification. This is useful when you need to
+disable hostname verification in specific cases, such as with self-signed certificates or
+when testing in certain environments.
+
+Classes:
+    IgnoreHostnameAdapter (HTTPAdapter):
+        An HTTP adapter that ignores hostname verification for TLS/SSL connections.
+
+Usage Example:
+    import requests
+    from Enphase_API import IgnoreHostnameAdapter
+
+    session = requests.Session()
+    session.mount('https://', IgnoreHostnameAdapter())
+
+    response = session.get('https://envoy.local')
+"""
+
 # Requests references passed from calling code.
 from requests.adapters import HTTPAdapter, DEFAULT_POOLBLOCK
 
@@ -36,18 +56,29 @@ class IgnoreHostnameAdapter(HTTPAdapter):
         """
         Initialize the connection pool manager with disabled hostname verification.
 
-        Overrides the init_poolmanager method of the base HTTPAdapter class to
-        set the 'assert_hostname' parameter to False in order to disable hostname
-        verification for TLS/SSL connections.
+        Overrides the init_poolmanager method of the base HTTPAdapter class to set the
+        'assert_hostname' parameter to False in order to disable hostname verification
+        for TLS/SSL connections.
 
         Args:
-            connections (int): The maximum number of connections allowed in the pool.
-            maxsize (int): The maximum number of connections to keep in the pool.
-            block (bool, optional): Whether to block when the pool is full. Defaults to DEFAULT_POOLBLOCK.
-            **pool_kwargs: Additional keyword arguments to pass to the pool manager.
+            connections (int):
+                The maximum number of connections allowed in the pool.
+            maxsize (int):
+                The maximum number of connections to keep in the pool.
+            block (bool, optional):
+                Whether to block when the pool is full. Defaults to DEFAULT_POOLBLOCK.
+            **pool_kwargs:
+                Additional keyword arguments to pass to the pool manager.
 
         Returns:
             None
         """
+
         pool_kwargs['assert_hostname'] = False
-        super(IgnoreHostnameAdapter, self).init_poolmanager(connections=connections, maxsize=maxsize, block=block, **pool_kwargs)
+
+        super(IgnoreHostnameAdapter, self).init_poolmanager(
+            connections=connections,
+            maxsize=maxsize,
+            block=block,
+            **pool_kwargs
+        )
