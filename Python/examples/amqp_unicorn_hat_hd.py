@@ -716,9 +716,9 @@ def main():
 
             # Bind the queue to the exchange (if it is not already bound).
             amqp_channel.queue_bind(
-                exchange='Enphase',
                 queue=amqp_result.method.queue,
-                routing_key='#'
+                exchange='Enphase',
+                routing_key='MeterStream'
             )
 
             # We may reference this when no messages are obtained from the queue.

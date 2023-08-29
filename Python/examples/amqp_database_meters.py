@@ -184,9 +184,9 @@ def main():
 
             # Bind the queue to the exchange (if it is not already bound).
             amqp_channel.queue_bind(
-                exchange='Enphase',
                 queue=amqp_result.method.queue,
-                routing_key='#'
+                exchange='Enphase',
+                routing_key='MeterStream'
             )
 
             # Gather the database details from the credentials file.
