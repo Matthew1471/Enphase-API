@@ -54,7 +54,7 @@ class Authentication:
     AUTHENTICATION_HOST = 'https://entrez.enphaseenergy.com'
 
     # This prevents the requests + urllib3 module from creating its own user-agent.
-    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'}
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept': 'application/json'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -165,14 +165,14 @@ class Authentication:
 
         # Build the login and authorisation code request (with PKCE) payload.
         data = {
-            'username':username,
-            'password':password,
-            'codeChallenge':code_challenge,
-            'redirectUri':'https://envoy.local/auth/callback',
-            'client':'envoy-ui',
-            'clientId':'envoy-ui-client',
-            'authFlow':'oauth',
-            'serialNum':gateway_serial_number
+            'username': username,
+            'password': password,
+            'codeChallenge': code_challenge,
+            'redirectUri': 'https://envoy.local/auth/callback',
+            'client': 'envoy-ui',
+            'clientId': 'envoy-ui-client',
+            'authFlow': 'oauth',
+            'serialNum': gateway_serial_number
         }
 
         # Send the login request.
@@ -329,8 +329,8 @@ class Authentication:
             'code': code,
             'code_verifier': code_verifier,
             'redirect_uri': 'https://envoy.local/auth/callback',
-            'client_id':'envoy-ui-1',
-            'grant_type':'authorization_code'
+            'client_id': 'envoy-ui-1',
+            'grant_type': 'authorization_code'
         }
 
         # This is used internally by the IQ Gateway to exchange an authorisation code for a token.

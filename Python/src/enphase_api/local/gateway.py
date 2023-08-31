@@ -50,7 +50,7 @@ class Gateway:
     DEFAULT_CERT_FILE = 'configuration/gateway.cer'
 
     # This prevents the requests + urllib3 module from creating its own user-agent.
-    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'}
+    HEADERS = {'User-Agent': urllib3.util.SKIP_HEADER, 'Accept': 'application/json'}
 
     # This sets a 5 minute connect and read timeout.
     TIMEOUT = 300
@@ -170,11 +170,11 @@ class Gateway:
 
         # Build the authorisation code request payload.
         json = {
-            'client_id':'envoy-ui-1',
-            #'grant_type':'authorization_code',
-            'redirect_uri':'https://envoy.local/auth/callback',
-            'code_verifier':code_verifier,
-            'code':code
+            'client_id': 'envoy-ui-1',
+            #'grant_type': 'authorization_code',
+            'redirect_uri': 'https://envoy.local/auth/callback',
+            'code_verifier': code_verifier,
+            'code': code
         }
 
         # In my opinion, the gateway should never return the access token to the end user,
