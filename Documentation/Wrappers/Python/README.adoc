@@ -57,7 +57,7 @@ Some examples use `credentials.json` as they are then able to repeatedly request
 
 WARNING: A token behaves like a time limited version of your username and password and so reasonable effort should be taken to protect any obtained tokens as they will have access to your account and device.
 
-Some of the examples either put or get messages from an https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol[Advanced Message Queuing Protocol (AMQP)] server/broker, this is because the IQ Gateway is not designed for a large number of requests, so it is better to query the data once and then make it available for other consuming clients via a message queue rather than have multiple scripts repeatedly query the same data. A free, open source and recommended AMQP server that runs on a variety of platforms is https://www.rabbitmq.com/download.html[RabbitMQ]
+Some of the examples either put or get messages from an https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol[Advanced Message Queuing Protocol (AMQP)] server/broker, this is because the IQ Gateway is not designed for a large number of requests, so it is better to query the data once and then make it available for other consuming clients via a message queue rather than have multiple scripts repeatedly query the same data. A free, open source and recommended AMQP server that runs on a variety of platforms is https://www.rabbitmq.com/download.html[RabbitMQ(R)]
 
 === Sample Code
 

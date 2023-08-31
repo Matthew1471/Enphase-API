@@ -47,7 +47,7 @@ Wrappers for the APIs are currently provided in the following languages:
 
 The following documentation is provided by this project:
 
-* link:IQ%20Gateway%20API/README.adoc[IQ Gateway API] 
+* link:IQ%20Gateway%20API/README.adoc[IQ Gateway API]
 
 Enphase(R) also have a brief document on the local API at link:https://enphase.com/download/accessing-iq-gateway-local-apis-or-local-ui-token-based-authentication[Accessing IQ Gateway local APIs or local UI with token-based authentication] but not all of the API or any of the fields are described.
 
