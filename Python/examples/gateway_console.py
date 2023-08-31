@@ -22,7 +22,7 @@ solar energy production and consumption data on the command line.
 
 The functions in this module allow you to:
 - Establish a secure gateway session
-- Fetch production, consumption, and storage status from Enphase IQ Gateway devices
+- Fetch production, consumption, and storage status from Enphase® IQ Gateway devices
 - Retrieve human-readable power values
 """
 
@@ -51,13 +51,13 @@ def get_human_readable_power(watts, in_hours = False):
         str:
             Human-readable power value with unit (W or kW).
     """
-    # Is the significant number of watts (i.e. positive or negative number) less than a thousand?
+    # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
     if abs(round(watts)) < 1000:
         # Report the number in watts (rounded to the nearest number).
-        return '{} W{}'.format(round(watts), 'h' if in_hours else '')
+        return f'{watts:.0f} W{"h" if in_hours else ""}'
 
     # Divide the number by a thousand and report it in kW (to 2 decimal places).
-    return '{} kW{}'.format(round(watts / 1000, 2), 'h' if in_hours else '')
+    return f'{watts/1000:.2f} kW{"h" if in_hours else ""}'
 
 def get_secure_gateway_session(credentials):
     """
@@ -82,35 +82,35 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is not valid so clear it.
-        credentials['token'] = None
+        credentials['gateway_token'] = None
 
     # Do we still not have a Token?
-    if not credentials.get('token'):
+    if not credentials.get('gateway_token'):
         # Do we have a way to obtain a token?
-        if credentials.get('enphaseUsername') and credentials.get('enphasePassword'):
+        if credentials.get('enphase_username') and credentials.get('enphase_password'):
             # Create a Authentication object.
             authentication = Authentication()
 
             # Authenticate with Entrez (French for "Access").
             if not authentication.authenticate(
-                username=credentials['enphaseUsername'],
-                password=credentials['enphasePassword']):
-                raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
+                username=credentials['enphase_username'],
+                password=credentials['enphase_password']):
+                raise ValueError('Failed to login to Enphase® Authentication server ("Entrez")')
 
             # Does the user want to target a specific gateway or all uncommissioned ones?
-            if credentials.get('gatewaySerialNumber'):
+            if credentials.get('gateway_serial_number'):
                 # Get a new gateway specific token (installer = short-life, owner = long-life).
-                credentials['token'] = authentication.get_token_for_commissioned_gateway(
-                    gateway_serial_number=credentials['gatewaySerialNumber']
+                credentials['gateway_token'] = authentication.get_token_for_commissioned_gateway(
+                    gateway_serial_number=credentials['gateway_serial_number']
                 )
             else:
                 # Get a new uncommissioned gateway specific token.
-                credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
+                credentials['gateway_token'] = authentication.get_token_for_uncommissioned_gateway()
 
             # Update the file to include the modified token.
             with open('configuration/credentials.json', mode='w', encoding='utf-8') as json_file:
@@ -120,7 +120,7 @@ def get_secure_gateway_session(credentials):
             raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -130,7 +130,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
@@ -139,7 +139,7 @@ def get_secure_gateway_session(credentials):
 
 def main():
     """
-    Main function for collecting and displaying Enphase Gateway and inverter status.
+    Main function for collecting and displaying Enphase® Gateway and inverter status.
 
     This function loads credentials from a JSON file, initializes a secure session with the Enphase
     Gateway API, retrieves production and meter statistics, and displays the status information to
@@ -217,7 +217,7 @@ def main():
     production_statistics_inverters = [production_statistic for production_statistic in production_statistics['production'] if production_statistic['type'] == 'inverters'][0]
 
     # Generate the status (with emojis if runtime is utf-8 capable).
-    status  = '\n{} Inverters {} ({} Inverters)'.format(string_names['Production'], get_human_readable_power(production_statistics_inverters['wNow']), production_statistics_inverters['activeCount'])
+    status  = f'\n{string_names["Production"]} Inverters {get_human_readable_power(production_statistics_inverters["wNow"])} ({production_statistics_inverters["activeCount"]} Inverters)'
 
     # Used to calculate the microinverter automatic polling interval
     # (gateway polls microinverters automatically every 5 minutes).
@@ -228,7 +228,7 @@ def main():
 
     # Get panel by panel status.
     for inverter_statistic in inverters_statistics:
-        status += '\n  {} {} W (Serial: {}, Last Seen: {})'.format(string_names['Microinverter'], inverter_statistic['lastReportWatts'], inverter_statistic['serialNumber'], datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']))
+        status += f'\n  {string_names["Microinverter"]} {inverter_statistic["lastReportWatts"]} W (Serial: {inverter_statistic["serialNumber"]}, Last Seen: {datetime.datetime.fromtimestamp(inverter_statistic["lastReportDate"])})'
 
         # Used to calculate the microinverter polling interval
         # (gateway polls microinverters every 5 minutes).
@@ -236,32 +236,32 @@ def main():
             most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
 
     # This will always be present (even without a production meter).
-    status += '\n{} Total Generated {}'.format(string_names['Lifetime'], get_human_readable_power(production_statistics_inverters['whLifetime'], True))
+    status += f'\n{string_names["Lifetime"]} Total Generated {get_human_readable_power(production_statistics_inverters["whLifetime"], True)}'
 
     # This requires a configured Production meter.
     if eim_production_w_now is not None:
 
         # The current Production meter reading can read < 0 if energy (often a trace amount) is
         # actually flowing the other way from the grid.
-        status += '\n\n{} Current Production {}'.format(string_names['Meter'], get_human_readable_power(max(0, eim_production_w_now)).rjust(9, ' '))
+        status += f'\n\n{string_names["Meter"]} Current Production {get_human_readable_power(max(0, eim_production_w_now)).rjust(9, " ")}'
 
         # The production meter needs to have run for at least a day for this to be non-zero.
         if eim_production_wh_today:
-            status += ' ({} Today'.format(get_human_readable_power(eim_production_wh_today, True))
+            status += f' ({get_human_readable_power(eim_production_wh_today, True)} Today'
 
             # The production meter has to have run for at least 7 days for this to be non-zero.
             if eim_production_wh_last_seven_days:
-                status += ' / {} Last 7 Days'.format(get_human_readable_power(eim_production_wh_last_seven_days, True))
+                status += f' / {get_human_readable_power(eim_production_wh_last_seven_days, True)} Last 7 Days'
 
             status += ')'
 
     # This requires a configured Consumption meter.
     if eim_consumption_w_now:
-        status += '\n{} Current Consumption {}'.format(string_names['Meter'], get_human_readable_power(eim_consumption_w_now).rjust(8, ' '))
+        status += f'\n{string_names["Meter"]} Current Consumption {get_human_readable_power(eim_consumption_w_now).rjust(8, " ")}'
 
         # The consumption meter needs to have run for at least a day for this to be non-zero.
         if eim_consumption_wh_today:
-            status += ' ({} today)'.format(get_human_readable_power(eim_consumption_wh_today, True))
+            status += f' ({get_human_readable_power(eim_consumption_wh_today, True)} today)'
 
     # This was when the poll of all the microinverters had completed.
     inverters_reading_time = production_statistics_inverters['readingTime']
@@ -273,10 +273,10 @@ def main():
         next_refresh_time = datetime.datetime.fromtimestamp(inverters_reading_time) + datetime.timedelta(minutes=5)
 
         # Print when the next update will be available.
-        status += '\n\n{}Data Will Next Be Refreshed At {}'.format(string_names['Details'], next_refresh_time.time())
+        status += f'\n\n{string_names["Details"]}Data Will Next Be Refreshed At {next_refresh_time.time()}'
     else:
         # Print when the last microinverter reported back to the gateway.
-        status += '\n\n{}The Last Microinverter Reported At {}'.format(string_names['Details'], most_recent_inverter_data)
+        status += f'\n\n{string_names["Details"]}The Last Microinverter Reported At {most_recent_inverter_data}'
 
     # Output to the console.
     print(status)

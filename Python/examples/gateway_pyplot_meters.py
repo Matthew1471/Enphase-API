@@ -71,10 +71,10 @@ number_of_inverters = 0
 
 def add_result_from_gateway():
     """
-    Retrieves and processes energy production and consumption data from the Enphase Gateway API.
+    Retrieves and processes energy production and consumption data from the Enphase® Gateway API.
 
-    This function requests production and consumption data from the Enphase Gateway API, processes
-    the data, and updates global data lists for timestamps, production, and consumption.
+    This function requests production and consumption data from the Enphase® Gateway API,
+    processes the data, and updates global data lists for timestamps, production, and consumption.
 
     It handles cases where the API request fails due to connection issues or JSON decoding errors.
 
@@ -89,13 +89,13 @@ def add_result_from_gateway():
     # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
     except requests.exceptions.ConnectionError as exception:
         # Log this error.
-        print('{} - Problem connecting..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), str(exception)), file=sys.stderr)
+        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting..\n {exception}', file=sys.stderr)
 
         # No point continuing this function.
         return False
     except requests.exceptions.JSONDecodeError as exception:
         # Log this non-critial often transient error.
-        print('{} - The Gateway returned bad JSON..\n {}'.format(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'), str(exception)), file=sys.stderr)
+        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
 
         # No point continuing this function.
         return False
@@ -138,9 +138,9 @@ def add_result_from_gateway():
                     # Total consumption statistics.
                     consumption_total_data.append(0-production_statistics_consumption['wNow'] if production_statistics_consumption['activeCount'] > 0 else 0)
                 else:
-                    raise ValueError('Unknown measurementType : ' + production_statistics_consumption['measurementType'])
+                    raise ValueError(f'Unknown measurementType : {production_statistics_consumption["measurementType"]}')
             else:
-                print('Warning : Ignoring unknown consumption type: ' + production_statistics_consumption['type'])
+                print(f'Warning : Ignoring unknown consumption type: {production_statistics_consumption["type"]}')
     else:
         consumption_net_data.append(0)
         consumption_total_data.append(0)
@@ -224,9 +224,9 @@ def setup_plot():
 
     # Label the most recent result (at the end).
     global production_annotation, consumption_total_annotation, consumption_net_annotation
-    production_annotation = axes.annotate(str(production_data[-1]) + ' W', xy=(timestamp_data[-1], production_data[-1]), xytext=(0, 5), textcoords='offset points')
-    consumption_total_annotation = axes.annotate(str(consumption_total_data[-1]) + ' W', xy=(timestamp_data[-1], consumption_total_data[-1]), xytext=(0, 5), textcoords='offset points')
-    consumption_net_annotation = axes.annotate(str(consumption_net_data[-1]) + ' W', xy=(timestamp_data[-1], consumption_net_data[-1]), xytext=(0, 5), textcoords='offset points', visible=False)
+    production_annotation = axes.annotate(f'{production_data[-1]} W', xy=(timestamp_data[-1], production_data[-1]), xytext=(0, 5), textcoords='offset points')
+    consumption_total_annotation = axes.annotate(f'{consumption_total_data[-1]} W', xy=(timestamp_data[-1], consumption_total_data[-1]), xytext=(0, 5), textcoords='offset points')
+    consumption_net_annotation = axes.annotate(f'{consumption_net_data[-1]} W', xy=(timestamp_data[-1], consumption_net_data[-1]), xytext=(0, 5), textcoords='offset points', visible=False)
 
     # Display the legend.
     legend = axes.legend()
@@ -275,13 +275,13 @@ def update_axes():
 
     # Update the annotations.
     production_annotation.xy = (timestamp_data[-1], production_data[-1])
-    production_annotation.set_text(str(production_data[-1]) + ' W')
+    production_annotation.set_text(f'{production_data[-1]} W')
 
     consumption_total_annotation.xy = (timestamp_data[-1], consumption_total_data[-1])
-    consumption_total_annotation.set_text(str(consumption_total_data[-1]) + ' W')
+    consumption_total_annotation.set_text(f'{consumption_total_data[-1]} W')
 
     consumption_net_annotation.xy = (timestamp_data[-1], consumption_net_data[-1])
-    consumption_net_annotation.set_text(str(consumption_net_data[-1]) + ' W')
+    consumption_net_annotation.set_text(f'{consumption_net_data[-1]} W')
 
 def animate(_):
     """
@@ -358,15 +358,15 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -376,7 +376,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
 
@@ -385,10 +385,10 @@ def get_secure_gateway_session(credentials):
 
 def main():
     """
-    Main function for real-time plotting of Enphase meter readings.
+    Main function for real-time plotting of Enphase® meter readings.
 
     This function loads credentials from a JSON file, initializes a secure session with the
-    Enphase Gateway API, retrieves meter status, collects the first result from the gateway, sets
+    Enphase® Gateway API, retrieves meter status, collects the first result from the gateway, sets
     up a real-time plot, and displays the plot.
 
     Args:

@@ -90,14 +90,14 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
         # Get the parameter index offset for this meters' meter type.
         meter_type_offset = OFFSET_MAPPING.get(meter_readings['reportType'])
         if meter_type_offset is None:
-            raise ValueError('Unexpected meter reading report type "' + meter_readings['reportType'] + '" in JSON.')
+            raise ValueError(f'Unexpected meter reading report type "{meter_readings["reportType"]}" in JSON.')
 
         # Take each of the phase readings.
         for phase_index, phase_result in enumerate(meter_readings['lines']):
 
             # Too many phases?
             if phase_index > 2:
-                raise ValueError('Unexpected phase #' + phase_index + ' in JSON.')
+                raise ValueError(f'Unexpected phase #{phase_index} in JSON.')
 
             # Map each of the JSON values to our database columns.
             meter_reading_result = (
@@ -130,7 +130,7 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
 
 def main():
     """
-    Main function for the Enphase API data processing and AMQP messaging.
+    Main function for the Enphase® API data processing and AMQP messaging.
 
     This function is the main entry point of the script. It establishes a connection to the AMQP
     broker, listens for incoming messages on the 'Enphase_Database' queue, processes the messages,
@@ -143,7 +143,7 @@ def main():
     """
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+    print(f'{datetime.datetime.now()} - Starting up.', flush=True)
 
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
@@ -236,20 +236,20 @@ def main():
                     on_message_callback=amqp_callback,
                     auto_ack=True,
                     exclusive=True,
-                    consumer_tag="AMQP_Database_Meters"
+                    consumer_tag='AMQP_Database_Meters'
                 )
 
                 # Notify the user.
-                print(str(datetime.datetime.now()) + ' - Waiting for messages. To exit press CTRL+C', flush=True)
+                print(f'{datetime.datetime.now()} - Waiting for messages. To exit press CTRL+C', flush=True)
 
                 # Start consuming.
                 amqp_channel.start_consuming()
     except KeyboardInterrupt:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
+        print(f'{datetime.datetime.now()} - Shutting down.', flush=True)
     except Exception:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+        print(f'{datetime.datetime.now()} - Exception occurred.', flush=True)
 
         # Re-raise.
         raise

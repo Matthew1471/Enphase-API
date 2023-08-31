@@ -159,7 +159,7 @@ SELECT
  NetConsumption_Phase_A.i AS 'NetConsumption_i',
  NetConsumption_Phase_A.pf AS 'NetConsumption_pf',
  NetConsumption_Phase_A.f AS 'NetConsumption_f',
- 
+
  TotalConsumption_Phase_A.p AS 'TotalConsumption_p',
  TotalConsumption_Phase_A.q AS 'TotalConsumption_q',
  TotalConsumption_Phase_A.s AS 'TotalConsumption_s',

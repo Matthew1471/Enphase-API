@@ -45,7 +45,7 @@ def respond_to_power_meter_unit_probes():
     sock.bind(('0.0.0.0', 12345))
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Waiting for Power Meter Unit (PMU) probes from an IQ Gateway.', flush=True)
+    print(f'{datetime.datetime.now()} - Waiting for Power Meter Unit (PMU) probes from an IQ Gateway.', flush=True)
 
     # Repeat indefinitely.
     while True:
@@ -55,13 +55,13 @@ def respond_to_power_meter_unit_probes():
         # Was this a Power Meter Unit (PMU) "SendData" probe?
         if data.decode('utf-8') == 'SendData':
             # Format the address in the conventional IP:PORT format.
-            formatted_address = str(address[0]) + ':' + str(address[1])
+            formatted_address = f'{address[0]}:{address[1]}'
 
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Responding to a Power Meter Unit (PMU) probe from ' + formatted_address + '.', flush=True)
+            print(f'{datetime.datetime.now()} - Responding to a Power Meter Unit (PMU) probe from {formatted_address}.', flush=True)
 
             # Send a response back.
-            sock.sendto(bytes('IP: ' + METER_IP_ADDRESS + ' Ver: '+ METER_SOFTWARE_VERSION + ' MAC: ' + METER_MAC_ADDRESS, 'utf-8'), address)
+            sock.sendto(bytes(f'IP: {METER_IP_ADDRESS} Ver: {METER_SOFTWARE_VERSION} MAC: {METER_MAC_ADDRESS}', 'utf-8'), address)
 
 # Launch the respond_to_power_meter_unit_probes function if invoked directly.
 if __name__ == '__main__':

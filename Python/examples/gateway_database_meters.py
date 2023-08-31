@@ -94,14 +94,14 @@ def add_results_to_database(database_connection, database_cursor_meter_reading, 
         # Get the parameter index offset for this meters' meter type.
         meter_type_offset = OFFSET_MAPPING.get(meter_readings['reportType'])
         if meter_type_offset is None:
-            raise ValueError('Unexpected meter reading report type "' + meter_readings['reportType'] + '" in JSON.')
+            raise ValueError(f'Unexpected meter reading report type "{meter_readings["reportType"]}" in JSON.')
 
         # Take each of the phase readings.
         for phase_index, phase_result in enumerate(meter_readings['lines']):
 
             # Too many phases?
             if phase_index > 2:
-                raise ValueError('Unexpected phase #' + phase_index + ' in JSON.')
+                raise ValueError(f'Unexpected phase #{phase_index} in JSON.')
 
             # Map each of the JSON values to our database columns.
             meter_reading_result = (
@@ -154,15 +154,15 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -172,7 +172,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
 
@@ -181,11 +181,11 @@ def get_secure_gateway_session(credentials):
 
 def main():
     """
-    Main function for collecting and storing Enphase meter readings to a MySQL®/MariaDB® database.
+    Main function for collecting and storing Enphase® meter readings to a MySQL®/MariaDB® database.
 
     This function loads credentials from a JSON file, initializes a secure session with the
-    Enphase Gateway API, retrieves meter reports, connects to a MySQL®/MariaDB® database, and stores
-    the collected data in the database.
+    Enphase® Gateway API, retrieves meter reports, connects to a MySQL®/MariaDB® database, and
+    stores the collected data in the database.
 
     Args:
         None
@@ -195,7 +195,7 @@ def main():
     """
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+    print(f'{datetime.datetime.now()} - Starting up.', flush=True)
 
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
@@ -223,7 +223,7 @@ def main():
         database_cursor_meter_reading_result = database_connection.cursor(prepared=True)
 
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Collecting meter readings. To exit press CTRL+C', flush=True)
+        print(f'{datetime.datetime.now()} - Collecting meter readings. To exit press CTRL+C', flush=True)
 
         try:
             # Repeat forever unless the user presses CTRL + C.
@@ -244,10 +244,10 @@ def main():
                 time.sleep(0.99)
         except KeyboardInterrupt:
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
+            print(f'{datetime.datetime.now()} - Shutting down.', flush=True)
         except Exception:
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+            print(f'{datetime.datetime.now()} - Exception occurred.', flush=True)
 
             # Re-raise.
             raise

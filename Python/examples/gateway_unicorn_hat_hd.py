@@ -187,7 +187,7 @@ class UnicornHATHelper:
         """
 
         # Open the requested image (and ignore any transparency values).
-        image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
+        image = Image.open(f'resources/icons/{filename}.png').convert('RGB')
 
         # The images are left-to-right.
         unicornhathd.rotation(unicornhathd.get_rotation() + 90)
@@ -289,13 +289,13 @@ class ScreenWeather:
 
         # Build the weather URL.
         weather_url = 'https://api.open-meteo.com/v1/forecast?'
-        weather_url += 'latitude=' + str(self.latitude)
-        weather_url += '&longitude=' + str(self.longitude)
+        weather_url += f'latitude={self.latitude}'
+        weather_url += f'&longitude={self.longitude}'
         weather_url += '&current_weather=true'
         weather_url += '&daily=sunrise,sunset'
-        weather_url += '&start_date=' + today
-        weather_url += '&end_date=' + today
-        weather_url += '&timezone=' + timezone
+        weather_url += f'&start_date={today}'
+        weather_url += f'&end_date={today}'
+        weather_url += f'&timezone={timezone}'
         weather_url += '&timeformat=unixtime'
 
         # Request the weather.
@@ -308,7 +308,8 @@ class ScreenWeather:
         # Return some specific components from the weather data.
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
-    def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
+    @staticmethod
+    def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
         """
         Generate a filename based on weather conditions.
 
@@ -380,7 +381,8 @@ class ScreenProduction:
         self.maximum_watts_per_panel = maximum_watts_per_panel
         self.speed = speed
 
-    def get_human_readable_power(self, watts, in_hours = False):
+    @staticmethod
+    def get_human_readable_power(watts, in_hours = False):
         """
         Convert power value to a human-readable format.
 
@@ -398,10 +400,10 @@ class ScreenProduction:
         # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
         if abs(round(watts)) < 1000:
             # Report the number in watts (rounded to the nearest number).
-            return str(round(watts)) + ' W' + ('h' if in_hours else '')
+            return f'{watts:.0f} W{"h" if in_hours else ""}'
 
         # Divide the number by a thousand and report it in kW (to 2 decimal places).
-        return str(round(watts / 1000, 2)) + ' kW' + ('h' if in_hours else '')
+        return f'{watts/1000:.2f} kW{"h" if in_hours else ""}'
 
     def draw_screen(self, number_of_microinverters, watts, end_time):
         """
@@ -424,8 +426,9 @@ class ScreenProduction:
             # The line of text we want to write on the screen is a wattage number to be formatted.
             line = self.get_human_readable_power(watts)
 
-            # Calculate the colour of the text based off the production wattage.
-            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb(int(watts / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0))
+            # Calculate the colour of the text based off the production wattage
+            # (we scale to 91.667% of the HSV colour wheel e.g. up to hue 330).
+            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb((watts * 0.91667) / (self.maximum_watts_per_panel * number_of_microinverters), 1.0, 1.0))
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
@@ -473,7 +476,7 @@ class ScreenChart:
 
         # Check the maxium_watts_per_panel setting is correct.
         if production > total_capacity:
-            raise ValueError('Production (' + production + ') exceeds the total capacity (' + total_capacity + '), check maximum_watts_per_panel setting.')
+            raise ValueError(f'Production ({production}) exceeds the total capacity ({total_capacity}), check maximum_watts_per_panel setting.')
 
         # Have we got more consumption than total production capacity?
         if consumption > total_capacity:
@@ -555,11 +558,11 @@ def restricted_float(number):
     try:
         number = float(number)
     except ValueError:
-        raise argparse.ArgumentTypeError(str(number) + ' not a floating-point literal')
+        raise argparse.ArgumentTypeError(f'{number} not a floating-point literal')
 
     # Check this is within the required range.
     if number < 0.0 or number > 1.0:
-        raise argparse.ArgumentTypeError(str(number) + ' not in range [0.0, 1.0]')
+        raise argparse.ArgumentTypeError(f'{number} not in range [0.0, 1.0]')
 
     # This should otherwise be an acceptable value.
     return number
@@ -649,15 +652,15 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -667,7 +670,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
 
@@ -676,7 +679,7 @@ def get_secure_gateway_session(credentials):
 
 def main():
     """
-    Main function for displaying Enphase production data on a Unicorn HAT HD.
+    Main function for displaying Enphase® production data on a Unicorn HAT HD.
 
     This function handles command line arguments, initializes a secure session with the Enphase
     Gateway API, sets up the display settings, draws weather and production information on the
@@ -715,7 +718,7 @@ def main():
     args = parser.parse_args()
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+    print(f'{datetime.datetime.now()} - Starting up.', flush=True)
 
     # We allow emulation of the Unicorn HAT HD if requested via command line arguments.
     if not args.emulate_HAT:
@@ -802,14 +805,14 @@ def main():
                     # Sometimes unable to connect
                     except requests.exceptions.ConnectionError as exception:
                         # Log this error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
                     # This happens generally if there are wider issues on the network.
                     except requests.exceptions.ReadTimeout:
                         # Log this non-critial often transient error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather request timed out.', file=sys.stderr)
                     except requests.exceptions.JSONDecodeError as exception:
                         # Log this non-critial often transient error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
 
                     # Clear the screen while the next process runs (there can be a delay).
                     if not args.emulate_HAT:
@@ -840,7 +843,7 @@ def main():
             # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
             except requests.exceptions.ConnectionError as exception:
                 # Log this error.
-                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting..\n ' +  str(exception), file=sys.stderr)
+                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting..\n {exception}', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(
@@ -856,7 +859,7 @@ def main():
             # This happens generally if there are wider issues on the network.
             except requests.exceptions.ReadTimeout:
                 # Log this non-critial often transient error.
-                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Request timed out..', file=sys.stderr)
+                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Request timed out..', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(
@@ -871,7 +874,7 @@ def main():
                 )
             except requests.exceptions.JSONDecodeError as exception:
                 # Log this non-critial often transient error.
-                print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The Gateway returned bad JSON..\n ' + str(exception), file=sys.stderr)
+                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(
@@ -886,7 +889,7 @@ def main():
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
+        print(f'{datetime.datetime.now()} - Shutting down.', flush=True)
     # Clear the display so the LEDs are not left stuck on when this program quits.
     finally:
         # Clear the buffer, immediately update Unicorn HAT HD to turn off all the pixels.

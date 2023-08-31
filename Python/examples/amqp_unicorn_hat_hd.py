@@ -187,7 +187,7 @@ class UnicornHATHelper:
         """
 
         # Open the requested image (and ignore any transparency values).
-        image = Image.open('resources/icons/' + filename + '.png').convert("RGB")
+        image = Image.open(f'resources/icons/{filename}.png').convert('RGB')
 
         # The images are left-to-right.
         unicornhathd.rotation(unicornhathd.get_rotation() + 90)
@@ -289,13 +289,13 @@ class ScreenWeather:
 
         # Build the weather URL.
         weather_url = 'https://api.open-meteo.com/v1/forecast?'
-        weather_url += 'latitude=' + str(self.latitude)
-        weather_url += '&longitude=' + str(self.longitude)
+        weather_url += f'latitude={self.latitude}'
+        weather_url += f'&longitude={self.longitude}'
         weather_url += '&current_weather=true'
         weather_url += '&daily=sunrise,sunset'
-        weather_url += '&start_date=' + today
-        weather_url += '&end_date=' + today
-        weather_url += '&timezone=' + timezone
+        weather_url += f'&start_date={today}'
+        weather_url += f'&end_date={today}'
+        weather_url += f'&timezone={timezone}'
         weather_url += '&timeformat=unixtime'
 
         # Request the weather.
@@ -308,7 +308,8 @@ class ScreenWeather:
         # Return some specific components from the weather data.
         return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
 
-    def get_weather_filename(self, weather_code, wind_speed, sunrise, sunset):
+    @staticmethod
+    def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
         """
         Generate a filename based on weather conditions.
 
@@ -380,7 +381,8 @@ class ScreenProduction:
         self.maximum_watts_per_panel = maximum_watts_per_panel
         self.speed = speed
 
-    def get_human_readable_power(self, watts, in_hours = False):
+    @staticmethod
+    def get_human_readable_power(watts, in_hours = False):
         """
         Convert power value to a human-readable format.
 
@@ -398,10 +400,10 @@ class ScreenProduction:
         # Is the significant number of watts (i.e. positive or negative number) less than 1,000?
         if abs(round(watts)) < 1000:
             # Report the number in watts (rounded to the nearest number).
-            return str(round(watts)) + ' W' + ('h' if in_hours else '')
+            return f'{watts:.0f} W{"h" if in_hours else ""}'
 
         # Divide the number by a thousand and report it in kW (to 2 decimal places).
-        return str(round(watts / 1000, 2)) + ' kW' + ('h' if in_hours else '')
+        return f'{watts/1000:.2f} kW{"h" if in_hours else ""}'
 
     def draw_screen(self, number_of_microinverters, watts, end_time):
         """
@@ -424,8 +426,9 @@ class ScreenProduction:
             # The line of text we want to write on the screen is a wattage number to be formatted.
             line = self.get_human_readable_power(watts)
 
-            # Calculate the colour of the text based off the production wattage.
-            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb(int(watts / self.maximum_watts_per_panel) / number_of_microinverters, 1.0, 1.0))
+            # Calculate the colour of the text based off the production wattage
+            # (we scale to 91.667% of the HSV colour wheel e.g. up to hue 330).
+            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb((watts * 0.91667) / (self.maximum_watts_per_panel * number_of_microinverters), 1.0, 1.0))
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
@@ -473,7 +476,7 @@ class ScreenChart:
 
         # Check the maxium_watts_per_panel setting is correct.
         if production > total_capacity:
-            raise ValueError('Production (' + production + ') exceeds the total capacity (' + total_capacity + '), check maximum_watts_per_panel setting.')
+            raise ValueError(f'Production ({production}) exceeds the total capacity ({total_capacity}), check maximum_watts_per_panel setting.')
 
         # Have we got more consumption than total production capacity?
         if consumption > total_capacity:
@@ -555,18 +558,18 @@ def restricted_float(number):
     try:
         number = float(number)
     except ValueError:
-        raise argparse.ArgumentTypeError(str(number) + ' not a floating-point literal')
+        raise argparse.ArgumentTypeError(f'{number} not a floating-point literal')
 
     # Check this is within the required range.
     if number < 0.0 or number > 1.0:
-        raise argparse.ArgumentTypeError(str(number) + ' not in range [0.0, 1.0]')
+        raise argparse.ArgumentTypeError(f'{number} not in range [0.0, 1.0]')
 
     # This should otherwise be an acceptable value.
     return number
 
 def main():
     """
-    Main function for the Enphase API data processing and Unicorn HAT HD display.
+    Main function for the Enphase® API data processing and Unicorn HAT HD display.
 
     This function is the main entry point of the script. It handles command line arguments, sets
     up the display, connects to the AMQP broker, listens for incoming messages, processes the
@@ -605,7 +608,7 @@ def main():
     args = parser.parse_args()
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+    print(f'{datetime.datetime.now()} - Starting up.', flush=True)
 
     # We allow emulation of the Unicorn HAT HD if requested via command line arguments.
     if not args.emulate_HAT:
@@ -734,14 +737,14 @@ def main():
                     # Sometimes unable to connect
                     except requests.exceptions.ConnectionError as exception:
                         # Log this error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - Problem connecting for the weather.\n ' +  str(exception), file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
                     # This happens generally if there are wider issues on the network.
                     except requests.exceptions.ReadTimeout:
                         # Log this non-critial often transient error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather request timed out.', file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather request timed out.', file=sys.stderr)
                     except requests.exceptions.JSONDecodeError as exception:
                         # Log this non-critial often transient error.
-                        print(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S') + ' - The weather returned bad JSON..\n ' + str(exception), file=sys.stderr)
+                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
 
                 # AMQP get a meter response.
                 while True:
@@ -776,6 +779,7 @@ def main():
 
                 # Check the data is within the last 5 seconds.
                 if timestamp > time.time()-5:
+
                     # Draw the production power screen (until the end time).
                     screen_production.draw_screen(
                         number_of_microinverters=args.number_of_microinverters,
@@ -808,10 +812,10 @@ def main():
     # Did the user press CTRL + C to attempt to quit this application?
     except KeyboardInterrupt:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
+        print(f'{datetime.datetime.now()} - Shutting down.', flush=True)
     except Exception:
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+        print(f'{datetime.datetime.now()} - Exception occurred.', flush=True)
 
         # Re-raise.
         raise

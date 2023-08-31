@@ -56,15 +56,15 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is either not present or not valid.
         raise ValueError('No or expired token.')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -74,7 +74,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials_token.json).')
 
@@ -83,12 +83,12 @@ def get_secure_gateway_session(credentials):
 
 def main():
     """
-    Main function for collecting and transmitting meter readings from Enphase Gateway to AMQP
+    Main function for collecting and transmitting meter readings from Enphase® IQ Gateway to AMQP
     broker.
 
-    This function initializes a secure session with the Enphase Gateway API, gathers AMQP details
-    from credentials, establishes a connection to the AMQP broker, and repeatedly collects meter
-    readings from the API. The collected data is then published to the AMQP broker for
+    This function initializes a secure session with the Enphase® IQ Gateway API, gathers AMQP
+    details from credentials, establishes a connection to the AMQP broker, and repeatedly collects
+    meter readings from the API. The collected data is then published to the AMQP broker for
     consumption.
 
     The process continues until interrupted by the user (CTRL + C).
@@ -101,7 +101,7 @@ def main():
     """
 
     # Notify the user.
-    print(str(datetime.datetime.now()) + ' - Starting up.', flush=True)
+    print(f'{datetime.datetime.now()} - Starting up.', flush=True)
 
     # Load credentials.
     with open('configuration/credentials_token.json', mode='r', encoding='utf-8') as json_file:
@@ -143,7 +143,7 @@ def main():
         amqp_channel.exchange_declare(exchange='Enphase', exchange_type='topic')
 
         # Notify the user.
-        print(str(datetime.datetime.now()) + ' - Collecting meter readings. To exit press CTRL+C', flush=True)
+        print(f'{datetime.datetime.now()} - Collecting meter readings. To exit press CTRL+C', flush=True)
 
         try:
             # Repeat forever unless the user presses CTRL + C.
@@ -155,17 +155,17 @@ def main():
                 amqp_channel.basic_publish(
                     exchange='Enphase',
                     routing_key='MeterStream',
-                    body=json.dumps(dict({'timestamp':time.time(), 'readings':response}))
+                    body=json.dumps({'timestamp': time.time(), 'readings': response})
                 )
 
                 # Capture interval, in fractional seconds.
                 time.sleep(0.99)
         except KeyboardInterrupt:
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Shutting down.', flush=True)
+            print(f'{datetime.datetime.now()} - Shutting down.', flush=True)
         except Exception:
             # Notify the user.
-            print(str(datetime.datetime.now()) + ' - Exception occurred.', flush=True)
+            print(f'{datetime.datetime.now()} - Exception occurred.', flush=True)
 
             # Re-raise.
             raise

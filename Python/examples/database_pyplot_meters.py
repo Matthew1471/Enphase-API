@@ -189,9 +189,9 @@ def setup_plot():
 
     # Label the most recent result (at the end).
     global production_annotation, consumption_total_annotation, consumption_net_annotation
-    production_annotation = axes.annotate(str(production_data[-1]) + ' W', xy=(timestamp_data[-1], production_data[-1]), xytext=(0, 5), textcoords='offset points')
-    consumption_total_annotation = axes.annotate(str(consumption_total_data[-1]) + ' W', xy=(timestamp_data[-1], consumption_total_data[-1]), xytext=(0, 5), textcoords='offset points')
-    consumption_net_annotation = axes.annotate(str(consumption_net_data[-1]) + ' W', xy=(timestamp_data[-1], consumption_net_data[-1]), xytext=(0, 5), textcoords='offset points', visible=False)
+    production_annotation = axes.annotate(f'{production_data[-1]} W', xy=(timestamp_data[-1], production_data[-1]), xytext=(0, 5), textcoords='offset points')
+    consumption_total_annotation = axes.annotate(f'{consumption_total_data[-1]} W', xy=(timestamp_data[-1], consumption_total_data[-1]), xytext=(0, 5), textcoords='offset points')
+    consumption_net_annotation = axes.annotate(f'{consumption_net_data[-1]} W', xy=(timestamp_data[-1], consumption_net_data[-1]), xytext=(0, 5), textcoords='offset points', visible=False)
 
     # Display the legend.
     legend = axes.legend()
@@ -240,13 +240,13 @@ def update_axes():
 
     # Update the annotations.
     production_annotation.xy = (timestamp_data[-1], production_data[-1])
-    production_annotation.set_text(str(production_data[-1]) + ' W')
+    production_annotation.set_text(f'{production_data[-1]} W')
 
     consumption_total_annotation.xy = (timestamp_data[-1], consumption_total_data[-1])
-    consumption_total_annotation.set_text(str(consumption_total_data[-1]) + ' W')
+    consumption_total_annotation.set_text(f'{consumption_total_data[-1]} W')
 
     consumption_net_annotation.xy = (timestamp_data[-1], consumption_net_data[-1])
-    consumption_net_annotation.set_text(str(consumption_net_data[-1]) + ' W')
+    consumption_net_annotation.set_text(f'{consumption_net_data[-1]} W')
 
 def animate(_):
     """
