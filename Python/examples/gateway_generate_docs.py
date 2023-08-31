@@ -93,10 +93,10 @@ class JSONSchema:
         # Otherwise, is this not the root table?
         if original_table_name and original_table_name != '.':
             # Get a sensible default name for this table (that preserves its JSON scope).
-            return original_table_name + '.' + str(json_key).capitalize()
+            return f'{original_table_name}.{json_key.capitalize()}'
 
         # Return just the capitalised JSON key.
-        return str(json_key).capitalize()
+        return json_key.capitalize()
 
     @staticmethod
     # pylint: disable=unidiomatic-typecheck
@@ -161,7 +161,7 @@ class JSONSchema:
                 # Do the types not otherwise match?
                 else:
                     # Error as data loss could occur.
-                    raise ValueError('Conflict at ' + ('.'.join(path + [str(key)])))
+                    raise ValueError(f'Conflict at {".".join(path + [key])}')
             # It doesn't exist in 'a', so just add it.
             else:
                 # We can record where a value was optional.
@@ -213,7 +213,7 @@ class JSONSchema:
 
         # If there is no root element (anonymous array) we must add one.
         if type(json_object) is list:
-            json_object = { '.': json_object }
+            json_object = {'.': json_object}
 
         # Take each key and value of the current table.
         for json_key, json_value in json_object.items():
@@ -245,8 +245,8 @@ class JSONSchema:
 
                 # Add the type of this key.
                 current_table_fields[json_key] = {
-                    'type':'Object',
-                    'value':'`' + child_table_name + '` object'
+                    'type': 'Object',
+                    'value': f'`{child_table_name}` object'
                 }
 
             # Is this a list of values?
@@ -285,16 +285,16 @@ class JSONSchema:
 
                         # Add the type of this key.
                         current_table_fields[json_key] = {
-                            'type':'Array(Object)',
-                            'value':'Array of `' + child_table_name + '`'
+                            'type': 'Array(Object)',
+                            'value': f'Array of `{child_table_name}`'
                         }
                     # The first value must be a primitive type.
                     else:
                         # Add the type of the key.
                         type_string = JSONSchema.get_type_string(json_value[0])
                         current_table_fields[json_key] = {
-                            'type':'Array(' + type_string + ')',
-                            'value': 'Array of ' + type_string
+                            'type': f'Array({type_string})',
+                            'value': f'Array of {type_string}'
                         }
 
                 # This is just an array of standard JSON types.
@@ -302,14 +302,14 @@ class JSONSchema:
                     # Add the type of this key.
                     type_string = JSONSchema.get_type_string(json_value)
                     current_table_fields[json_key] = {
-                        'type':'Array(' + type_string + ')',
-                        'value': 'Array of ' + type_string
+                        'type': f'Array({type_string})',
+                        'value': f'Array of {type_string}'
                     }
 
             # This is just a standard JSON type.
             else:
                 # Add the type of this key.
-                current_table_fields[json_key] = {'type':JSONSchema.get_type_string(json_value)}
+                current_table_fields[json_key] = {'type': JSONSchema.get_type_string(json_value)}
 
         # Prepend this parent table (all its fields have been explored for nested objects).
         tables = {}
@@ -401,13 +401,13 @@ class DocumentationGenerator:
         result = '== Introduction\n\n'
 
         if description:
-            result += description + '\n\n'
+            result += f'{description}\n\n'
 
         result += 'Enphase-API is an unofficial project providing an API wrapper and the '
         result += 'documentation for Enphase(R)\'s products and services.\n\n'
 
         result += 'More details on the project are available from the link:'
-        result += ('../' * (file_depth + 1)) + 'README.adoc[project\'s homepage].\n'
+        result += f'{"../" * (file_depth + 1)}README.adoc[project\'s homepage].\n'
 
         return result
 
@@ -435,7 +435,7 @@ class EndpointDocumentationGenerator:
         """
 
         # Heading.
-        result = '= ' + name + '\n'
+        result = f'= {name}\n'
 
         # Table of Contents.
         result += ':toc: preamble\n'
@@ -447,13 +447,13 @@ class EndpointDocumentationGenerator:
         long_description = None
         if 'description' in endpoint:
             description = endpoint['description']
-            result += description['short'] + '\n\n'
+            result += f'{description["short"]}\n\n'
 
             # We can add the long description later.
             if 'long' in description:
                 long_description = description['long']
         else:
-            print('Warning : "' + name + '" does not have a description.')
+            print(f'Warning : "{name}" does not have a description.')
             result += 'This endpoint and its purpose has not been fully documented yet.\n\n'
 
         # Introduction.
@@ -492,16 +492,16 @@ class EndpointDocumentationGenerator:
 
         # List available methods.
         if 'methods' in request_json:
-            result += 'The `/' + request_json['uri'] + '` endpoint supports the following:\n'
+            result += f'The `/{request_json["uri"]}` endpoint supports the following:\n'
             result += EndpointDocumentationGenerator.get_methods_section(request_json['methods'])
         else:
-            result += 'A HTTP `GET` to the `/' + request_json['uri'] + '` endpoint provides the following response data.\n\n'
+            result += f'A HTTP `GET` to the `/{request_json["uri"]}` endpoint provides the following response data.\n\n'
 
         # Some IQ Gateway API requests now require authorisation.
         if 'auth_required' not in request_json or request_json['auth_required'] is not False:
             result += 'As of recent Gateway software versions this request requires a valid '
             result += '`sessionid` cookie obtained by link:'
-            result += ('../' * file_depth) + 'Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
+            result += f'{"../" * file_depth}Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
 
         # Get the request querystring table.
         if 'query' in request_json:
@@ -532,7 +532,7 @@ class EndpointDocumentationGenerator:
                         continue
                     if already_output_method:
                         result += ' or '
-                    result += '`' + method + '`'
+                    result += f'`{method}`'
                     already_output_method = True
 
                 result += ' request:\n'
@@ -541,7 +541,7 @@ class EndpointDocumentationGenerator:
             for table_name, table in field_map.items():
                 # Format the table_name.
                 if table_name and table_name != '.':
-                    table_name = '`' + table_name + '` Object'
+                    table_name = f'`{table_name}` Object'
                 else:
                     table_name = 'Root'
 
@@ -597,10 +597,10 @@ class EndpointDocumentationGenerator:
         # Take each method.
         for method, description in methods.items():
             # Method Name.
-            result += '|`' + method + '`\n'
+            result += f'|`{method}`\n'
 
             # Method Description.
-            result += '|' + description + '\n\n'
+            result += f'|{description}\n\n'
 
         # End of Table.
         result += '|===\n'
@@ -630,7 +630,7 @@ class EndpointDocumentationGenerator:
         """
 
         # Sub Heading.
-        result = '\n\n=== ' + example_item['name'] + '\n'
+        result = f'\n\n=== {example_item["name"]}\n'
 
         # We use a dictionary to store requests and/or responses for output as part of a loop.
         example_output = {}
@@ -658,10 +658,10 @@ class EndpointDocumentationGenerator:
             # List the example request/response details.
             result += '\n.'
             result += (example_item['method'] if 'method' in example_item else 'GET')
-            result += ' */' + uri
+            result += f' */{uri}'
             if 'request_query' in example_item:
-                result += '?' + example_item['request_query']
-            result += '* ' + example_type + '\n'
+                result += f'?{example_item["request_query"]}'
+            result += f'* {example_type}\n'
 
             # We can override JSON responses and present raw text instead.
             if (example_type == 'Request' and 'request_form' in example_item):
@@ -673,7 +673,7 @@ class EndpointDocumentationGenerator:
 
             # Add the example content (JSON or raw).
             result += '\n----\n'
-            result += example_content + '\n'
+            result += f'{example_content}\n'
             result += '----'
 
         return result
@@ -704,7 +704,7 @@ class EndpointDocumentationGenerator:
             # Check the custom_type is defined.
             if custom_type := type_map.get(used_custom_type):
                 # Type Sub Heading.
-                result += '\n=== `' + used_custom_type + '` Type\n\n'
+                result += f'\n=== `{used_custom_type}` Type\n\n'
 
                 # Type Table Header.
                 result += '[cols=\"1,1,2\", options=\"header\"]\n'
@@ -716,16 +716,16 @@ class EndpointDocumentationGenerator:
                 # Type Table Rows.
                 for current_field in custom_type:
                     # Field Value.
-                    result += '|`' + str(current_field['value']) + '`'
+                    result += f'|`{current_field["value"]}`'
                     if 'uncertain' in current_field:
                         result += '?'
                     result += '\n'
 
                     # Field Name.
-                    result += '|' + current_field['name'] + '\n'
+                    result += f'|{current_field["name"]}\n'
 
                     # Field Description.
-                    result += '|' + current_field['description'] + '\n\n'
+                    result += f'|{current_field["description"]}\n\n'
 
                 # End of Table.
                 result += '|===\n'
@@ -758,7 +758,7 @@ class EndpointDocumentationGenerator:
         """
 
         # Field Name.
-        result = '|`' + field_name + '`'
+        result = f'|`{field_name}`'
         if field_metadata and 'optional' in field_metadata and field_metadata['optional']:
             result += ' (Optional)'
         result += '\n'
@@ -768,7 +768,7 @@ class EndpointDocumentationGenerator:
             field_type = (field_metadata['type'] if 'type' in field_metadata else 'Unknown')
         else:
             field_type = 'Unknown'
-        result += '|' + field_type + '\n'
+        result += f'|{field_type}\n'
 
         # Field Value.
         result += '|'
@@ -778,11 +778,11 @@ class EndpointDocumentationGenerator:
         elif (type(field_metadata) is dict
                 and field_type not in ('Object','Array(Object)','Array(Unknown)')
                 and (value_name := field_metadata.get('value_name'))):
-            result += '`' + value_name + '`'
+            result += f'`{value_name}`'
 
             # Add an example value if available.
             if type_map and value_name in type_map and len(type_map[value_name]) > 0:
-                result += ' (e.g. `' + str(type_map[value_name][0]['value']) + '`)'
+                result += f' (e.g. `{type_map[value_name][0]["value"]}`)'
         else:
             result += field_type
 
@@ -791,7 +791,7 @@ class EndpointDocumentationGenerator:
                 result += ' (> 0)'
             # Booleans will always be 0 or 1.
             elif field_type == 'Boolean':
-                result += ' (e.g. `' + ('0` or `1' if short_booleans else 'true` or `false') + '`)'
+                result += f' (e.g. `{"0` or `1" if short_booleans else "true` or `false"}`)'
 
         result += '\n'
 
@@ -807,7 +807,7 @@ class EndpointDocumentationGenerator:
             if (field_type not in ('Object','Array(Object)','Array(Unknown)')
                     and (field_value_name:= field_metadata.get('value_name'))):
                 # Update the description to mark the type.
-                result += ' In the format `' + field_value_name + '`.'
+                result += f' In the format `{field_value_name}`.'
         else:
             # This field is not currently documented.
             result += '???'
@@ -841,7 +841,7 @@ class EndpointDocumentationGenerator:
         """
 
         # Sub Heading.
-        result = '\n' + ('=' * level) + ' ' + table_name + '\n\n'
+        result = f'\n{"=" * level} {table_name}\n\n'
 
         # Table Header.
         result += '[cols=\"1,1,1,2\", options=\"header\"]\n'
@@ -921,7 +921,7 @@ class EndpointDocumentationGenerator:
 
         # Skip if the endpoint is not meant to be documented.
         if not 'documentation' in endpoint:
-            print('Warning : Skipping \'' + key + '\' due to lack of \'documentation\' filepath.')
+            print(f'Warning : Skipping \'{key}\' due to lack of \'documentation\' filepath.')
             return False
 
         # Count how many sub-folders this file will be under (including the "IQ Gateway API/").
@@ -970,16 +970,16 @@ class EndpointDocumentationGenerator:
                             example['response'] = None
                     # The user can disable requesting data for a specific endpoint example.
                     elif 'disabled' in example:
-                        print('Warning : Skipping disabled example \'' + example['name'] + '\' for \'' + key + '\'.')
+                        print(f'Warning : Skipping disabled example \'{example["name"]}\' for \'{key}\'.')
                         continue
                     elif not TEST_ONLY:
                         # Notify the user we are about to query the API.
-                        print('Requesting example \'' + example['name'] + '\' for \'' + key + '\'.')
+                        print(f'Requesting example \'{example["name"]}\' for \'{key}\'.')
 
                         # Build the URI.
-                        request_uri = '/' + endpoint_uri
+                        request_uri = f'/{endpoint_uri}'
                         if 'request_query' in example:
-                            request_uri += '?' + example['request_query']
+                            request_uri += f'?{example["request_query"]}'
 
                         # The API supports a mixture of JSON and form payloads.
                         if 'request_form' not in example:
@@ -1028,7 +1028,7 @@ class EndpointDocumentationGenerator:
                         # This is a good place to set a breakpoint to cache the response.
                         set_breakpoint_here = debug_variable
                     else:
-                        print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' as no sample JSON defined and TEST_ONLY is True.')
+                        print(f'Warning : Skipping example \'{example["name"]}\' for \'{key}\' as no sample JSON defined and TEST_ONLY is True.')
                         continue
 
                     # It's possible for an API endpoint to return nothing.
@@ -1128,7 +1128,7 @@ class EndpointDocumentationGenerator:
                 for table_name, table in endpoint_response['field_map'].items():
                     # Format the table_name.
                     if table_name and table_name != '.':
-                        table_name = '`' + table_name + '` Object'
+                        table_name = f'`{table_name}` Object'
                     else:
                         table_name = 'Root'
 
@@ -1164,13 +1164,13 @@ class EndpointDocumentationGenerator:
                 for example in endpoint_request['examples']:
                     # We cannot output an example without a name.
                     if not 'name' in example:
-                        print('Warning : Skipping a \'' + key + '\' example as missing its name.')
+                        print(f'Warning : Skipping a \'{key}\' example as missing its name.')
                         continue
 
                     # We cannot output an example without a response
                     # (either from querying the API earlier or hardcoding one).
                     if not 'response' in example:
-                        print('Warning : Skipping example \'' + example['name'] + '\' for \'' + key + '\' due to lack of response.')
+                        print(f'Warning : Skipping example \'{example["name"]}\' for \'{key}\' due to lack of response.')
                         continue
 
                     # Take the obtained JSON as an example.
@@ -1183,7 +1183,7 @@ class EndpointDocumentationGenerator:
             output += EndpointDocumentationGenerator.get_not_yet_documented()
 
         # Generate a suitable filename to store our documentation in.
-        filename = '../../Documentation/IQ Gateway API/' + endpoint['documentation']
+        filename = f'../../Documentation/IQ Gateway API/{endpoint["documentation"]}'
 
         # Create any required sub-directories.
         os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -1245,7 +1245,7 @@ class IndexDocumentationGenerator:
         """
 
         # Generate a suitable filename to store our documentation in.
-        filename = '../../Documentation/' + 'IQ Gateway API/README.adoc'
+        filename = '../../Documentation/IQ Gateway API/README.adoc'
 
         # Create any required sub-directories.
         os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -1277,7 +1277,7 @@ class IndexDocumentationGenerator:
                         output += '|===\n\n'
                         table_open = False
 
-                    output += ('='*(3+count)) + ' ' + ' - '.join(path[:count+1]) + '\n\n'
+                    output += f'{"="*(3+count)} {" - ".join(path[:count+1])}\n\n'
 
             # Add any tables.
             if previous_path is None or previous_path[:-1] != path[:-1]:
@@ -1292,21 +1292,21 @@ class IndexDocumentationGenerator:
             previous_path = path
 
             # Add the item.
-            output += '|`link:' + urllib.parse.quote(metadata['documentation']) + '[' + path[-1] + ']`\n'
+            output += f'|`link:{urllib.parse.quote(metadata["documentation"])}[{path[-1]}]`\n'
 
             output += '|`'
             if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
                 output += '+++<s>+++'
-            output += '/' + metadata['request']['uri']
+            output += f'/{metadata["request"]["uri"]}'
             if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
                 output += '+++</s>+++'
 
             if 'uri2' in metadata['request']:
-                output += '` and `/' + metadata['request']['uri2']
+                output += f'` and `/{metadata["request"]["uri2"]}'
 
             output += '`\n'
 
-            output += '|' + metadata['description']['short'] + '\n\n'
+            output += f'|{metadata["description"]["short"]}\n\n'
 
         output += '|==='
 
@@ -1337,35 +1337,35 @@ def get_secure_gateway_session(credentials):
     """
 
     # Do we have a valid JSON Web Token (JWT) to be able to use the service?
-    if not (credentials.get('token')
+    if not (credentials.get('gateway_token')
                 and Authentication.check_token_valid(
-                    token=credentials['token'],
-                    gateway_serial_number=credentials.get('gatewaySerialNumber'))):
+                    token=credentials['gateway_token'],
+                    gateway_serial_number=credentials.get('gateway_serial_number'))):
         # It is not valid so clear it.
-        credentials['token'] = None
+        credentials['gateway_token'] = None
 
     # Do we still not have a Token?
-    if not credentials.get('token'):
+    if not credentials.get('gateway_token'):
         # Do we have a way to obtain a token?
-        if credentials.get('enphaseUsername') and credentials.get('enphasePassword'):
+        if credentials.get('enphase_username') and credentials.get('enphase_password'):
             # Create a Authentication object.
             authentication = Authentication()
 
             # Authenticate with Entrez (French for "Access").
             if not authentication.authenticate(
-                username=credentials['enphaseUsername'],
-                password=credentials['enphasePassword']):
-                raise ValueError('Failed to login to Enphase Authentication server ("Entrez")')
+                username=credentials['enphase_username'],
+                password=credentials['enphase_password']):
+                raise ValueError('Failed to login to Enphase® Authentication server ("Entrez")')
 
             # Does the user want to target a specific gateway or all uncommissioned ones?
-            if credentials.get('gatewaySerialNumber'):
+            if credentials.get('gateway_serial_number'):
                 # Get a new gateway specific token (installer = short-life, owner = long-life).
-                credentials['token'] = authentication.get_token_for_commissioned_gateway(
-                    gateway_serial_number=credentials['gatewaySerialNumber']
+                credentials['gateway_token'] = authentication.get_token_for_commissioned_gateway(
+                    gateway_serial_number=credentials['gateway_serial_number']
                 )
             else:
                 # Get a new uncommissioned gateway specific token.
-                credentials['token'] = authentication.get_token_for_uncommissioned_gateway()
+                credentials['gateway_token'] = authentication.get_token_for_uncommissioned_gateway()
 
             # Update the file to include the modified token.
             with open('configuration/credentials.json', mode='w', encoding='utf-8') as json_file:
@@ -1375,7 +1375,7 @@ def get_secure_gateway_session(credentials):
             raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
     # Did the user override the library default hostname to the Gateway?
-    host = credentials.get('host')
+    host = credentials.get('gateway_host')
 
     # Download and store the certificate from the gateway so all future requests are secure.
     if not os.path.exists('configuration/gateway.cer'):
@@ -1385,7 +1385,7 @@ def get_secure_gateway_session(credentials):
     gateway = Gateway(host)
 
     # Are we not able to login to the gateway?
-    if not gateway.login(credentials['token']):
+    if not gateway.login(credentials['gateway_token']):
         # Let the user know why the program is exiting.
         raise ValueError('Unable to login to the gateway (bad, expired or missing token in credentials.json).')
 
@@ -1409,9 +1409,9 @@ def main():
     """
 
     # Output program banner.
-    banner = 'Gateway Generate Documentation V' + str(VERSION) + '\n'
-    hyphens = '-' * len(banner) + '\n'
-    print(hyphens + banner + hyphens)
+    banner = f'Gateway Generate Documentation V{VERSION}\n'
+    hyphens = f'{"-" * len(banner)}\n'
+    print(f'{hyphens}{banner}{hyphens}')
 
     # Load credentials.
     with open('configuration/credentials.json', mode='r', encoding='utf-8') as json_file:
