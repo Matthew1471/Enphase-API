@@ -428,7 +428,11 @@ class ScreenProduction:
 
             # Calculate the colour of the text based off the production wattage
             # (we scale to 91.667% of the HSV colour wheel e.g. up to hue 330).
-            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb((watts * 0.91667) / (self.maximum_watts_per_panel * number_of_microinverters), 1.0, 1.0))
+            color = tuple(int(n * 255) for n in colorsys.hsv_to_rgb(
+                h=(watts * 0.91667) / (self.maximum_watts_per_panel * number_of_microinverters),
+                s=1.0,
+                v=1.0
+            ))
 
             # Display and scroll the production text on screen (until the end time).
             UnicornHATHelper.draw_scrolling_text(
