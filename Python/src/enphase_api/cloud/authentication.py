@@ -124,7 +124,7 @@ class Authentication:
 
         # Send the login request.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/login',
+            url=f'{Authentication.AUTHENTICATION_HOST}/login',
             headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -177,7 +177,7 @@ class Authentication:
 
         # Send the login request.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/login',
+            url=f'{Authentication.AUTHENTICATION_HOST}/login',
             headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT,
@@ -217,7 +217,7 @@ class Authentication:
 
         # Send the site details request.
         response = requests.get(
-            url=Authentication.AUTHENTICATION_HOST + '/site/' + requests.utils.quote(site_name, safe=''),
+            url=f'{Authentication.AUTHENTICATION_HOST}/site/{requests.utils.quote(site_name, safe="")}',
             headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             timeout=Authentication.TIMEOUT
@@ -243,7 +243,7 @@ class Authentication:
 
         # Send the form request for a token.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
+            url=f'{Authentication.AUTHENTICATION_HOST}/entrez_tokens',
             headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             data=data,
@@ -267,7 +267,7 @@ class Authentication:
 
         # Send the form request for a token.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/entrez_tokens',
+            url=f'{Authentication.AUTHENTICATION_HOST}/entrez_tokens',
             headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             data=data,
@@ -300,7 +300,7 @@ class Authentication:
         # This is probably also used internally by the Enlighten website to authorise sessions
         # via Entrez.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/tokens',
+            url=f'{Authentication.AUTHENTICATION_HOST}/tokens',
             headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             json=json,
@@ -335,7 +335,7 @@ class Authentication:
 
         # This is used internally by the IQ Gateway to exchange an authorisation code for a token.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/oauth/token',
+            url=f'{Authentication.AUTHENTICATION_HOST}/oauth/token',
             headers=Authentication.HEADERS,
             data=data,
             timeout=Authentication.TIMEOUT
@@ -440,7 +440,7 @@ class Authentication:
 
         # Send the logout request.
         response = requests.post(
-            url=Authentication.AUTHENTICATION_HOST + '/logout',
+            url=f'{Authentication.AUTHENTICATION_HOST}/logout',
             headers=Authentication.HEADERS,
             cookies=self.session_cookies,
             timeout=Authentication.TIMEOUT

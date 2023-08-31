@@ -76,7 +76,7 @@ class IgnoreHostnameAdapter(HTTPAdapter):
 
         pool_kwargs['assert_hostname'] = False
 
-        super(IgnoreHostnameAdapter, self).init_poolmanager(
+        super().init_poolmanager(
             connections=connections,
             maxsize=maxsize,
             block=block,

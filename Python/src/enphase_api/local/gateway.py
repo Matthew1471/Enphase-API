@@ -140,11 +140,11 @@ class Gateway:
         headers = Gateway.HEADERS.copy()
 
         # We append an OAuth 2.0 bearer token.
-        headers["Authorization"] = "Bearer " + token
+        headers['Authorization'] = f'Bearer {token}'
 
         # Returns a "sessionId" cookie if successful that validates access to the IQ Gateway.
         response = self.session.post(
-            url=self.host + '/auth/check_jwt',
+            url=f'{self.host}/auth/check_jwt',
             headers=headers,
             timeout=Gateway.TIMEOUT
         )
@@ -184,7 +184,7 @@ class Gateway:
         # JWT itself. This call should therefore be made internally,
         # thus preventing the user from accidentally leaking the access token.
         response = self.session.post(
-            url=self.host + '/auth/get_jwt',
+            url=f'{self.host}/auth/get_jwt',
             headers=Gateway.HEADERS,
             json=json,
             timeout=Gateway.TIMEOUT
@@ -221,7 +221,7 @@ class Gateway:
         # Call the IQ Gateway API endpoint (optionally with form or JSON data).
         response = self.session.request(
             method=method,
-            url=self.host + path,
+            url=f'{self.host}{path}',
             headers=Gateway.HEADERS,
             data=data,
             json=json,
@@ -253,7 +253,7 @@ class Gateway:
 
         # Call the IQ Gateway API endpoint (expecting a stream).
         response = self.session.get(
-            url=self.host + path,
+            url=f'{self.host}{path}',
             headers=Gateway.HEADERS,
             stream=True,
             timeout=Gateway.TIMEOUT

@@ -17,10 +17,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-A module for interacting with the Enphase Cloud API.
+A module for interacting with the Enphase® Cloud API.
 
-This module provides functionalities to interact with the Enphase Cloud API, allowing
-users to acquire tokens to access and manage Enphase solar energy system data locally.
+This module provides functionalities to interact with the Enphase® Cloud API, allowing
+users to acquire tokens to access and manage Enphase® solar energy system data locally.
 """
 
 # Declare what should be offered in the Public API.
