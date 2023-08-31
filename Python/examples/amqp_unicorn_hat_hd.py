@@ -301,7 +301,7 @@ class ScreenWeather:
         # Request the weather.
         response = requests.get(
             url=weather_url,
-            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept':'application/json'},
+            headers={'User-Agent': urllib3.util.SKIP_HEADER, 'Accept': 'application/json'},
             timeout=5
         ).json()
 
