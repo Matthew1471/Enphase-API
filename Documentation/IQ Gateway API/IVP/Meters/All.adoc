@@ -61,8 +61,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`state`
 |String
-|String
-|The state of the meter.
+|`MeterState` (e.g. `disabled`)
+|The state of the meter. In the format `MeterState`.
 
 |`measurementType`
 |String
@@ -71,8 +71,8 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`phaseMode`
 |String
-|String
-|The number of phases the meter can monitor.
+|`PhaseMode` (e.g. `single`)
+|The number of phases the meter hardware can monitor. In the format `PhaseMode`.
 
 |`phaseCount`
 |Number
@@ -81,17 +81,35 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 
 |`meteringStatus`
 |String
-|String
-|Whether the meter is in an error state.
+|`MeteringStatus` (e.g. `normal`)
+|Whether the meter is in an error state. In the format `MeteringStatus`.
 
 |`statusFlags`
-|Array(Unknown)
-|Array of Unknown
-|Status flags.
+|Array(String)
+|Array of String
+|The error status flags (if `meteringStatus` is `check-wiring`). In the format `StatusFlag`.
 
 |===
 
 == Types
+
+=== `MeterState` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`disabled`
+|Disabled
+|Meter is disabled.
+
+|`enabled`
+|Enabled
+|Meter is enabled.
+
+|===
 
 === `MeasurementType` Type
 
@@ -112,6 +130,76 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`total-consumption`
 |Total Consumption
 |Reporting the load only (solar production excluded).
+
+|===
+
+=== `PhaseMode` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`single`
+|Single Phase
+|Device can only monitor one single phase line.
+
+|`split`
+|Split Phase
+|Device can monitor two (split) phase (also known as "Dual phase") lines.
+
+|`three`
+|Three Phases
+|Device can monitor three phase lines.
+
+|===
+
+=== `MeteringStatus` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`normal`
+|Normal
+|Meter is running normally.
+
+|`not-metering`
+|Not Metering
+|Meter is not running.
+
+|`check-wiring`
+|Check Wiring
+|Meter is reporting spurious readings (check `statusFlags`).
+
+|===
+
+=== `StatusFlag` Type
+
+[cols="1,1,2", options="header"]
+|===
+|Value
+|Name
+|Description
+
+|`production-imbalance`
+|Production Imbalance
+|Production imbalance.
+
+|`negative-production`
+|Negative Production
+|The production meter is going backwards (i.e. negative figures).
+
+|`power-on-unused-phase`
+|Power On Unused Phase
+|The meter is reading power on a phase that is configured as not being used.
+
+|`negative-total-consumption`
+|Negative Total Consumption
+|The total consumption (load only, should be excluding the solar production) meter is going backwards (i.e. positive figures).
 
 |===
 

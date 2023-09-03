@@ -12623,11 +12623,25 @@
                         "description": "The type of data this is measuring.",
                         "value_name": "MeasurementType"
                     },
-                    "meteringStatus": "Whether the meter is in an error state.",
+                    "meteringStatus": {
+                        "description": "Whether the meter is in an error state.",
+                        "value_name": "MeteringStatus"
+                    },
                     "phaseCount": "The number of phases the meter is monitoring.",
-                    "phaseMode": "The number of phases the meter can monitor.",
-                    "state": "The state of the meter.",
-                    "statusFlags": "Status flags."
+                    "phaseMode": {
+                        "description": "The number of phases the meter hardware can monitor.",
+                        "value_name": "PhaseMode"
+                    },
+                    "state": {
+                        "description": "The state of the meter.",
+                        "value_name": "MeterState"
+                    },
+                    "statusFlags": {
+                        "description": "The error status flags (if `meteringStatus` is `check-wiring`).",
+                        "type": "Array(String)",
+                        "value": "Array of String",
+                        "value_name": "StatusFlag"
+                    }
                 }
             }
         },
@@ -12647,6 +12661,74 @@
                     "description": "Reporting the load only (solar production excluded).",
                     "name": "Total Consumption",
                     "value": "total-consumption"
+                }
+            ],
+            "MeteringStatus": [
+                {
+                    "description": "Meter is running normally.",
+                    "name": "Normal",
+                    "value": "normal"
+                },
+                {
+                    "description": "Meter is not running.",
+                    "name": "Not Metering",
+                    "value": "not-metering"
+                },
+                {
+                    "description": "Meter is reporting spurious readings (check `statusFlags`).",
+                    "name": "Check Wiring",
+                    "value": "check-wiring"
+                }
+            ],
+            "MeterState": [
+                {
+                    "description": "Meter is disabled.",
+                    "name": "Disabled",
+                    "value": "disabled"
+                },
+                {
+                    "description": "Meter is enabled.",
+                    "name": "Enabled",
+                    "value": "enabled"
+                }
+            ],
+            "PhaseMode": [
+                {
+                    "description": "Device can only monitor one single phase line.",
+                    "name": "Single Phase",
+                    "value": "single"
+                },
+                {
+                    "description": "Device can monitor two (split) phase (also known as \"Dual phase\") lines.",
+                    "name": "Split Phase",
+                    "value": "split"
+                },
+                {
+                    "description": "Device can monitor three phase lines.",
+                    "name": "Three Phases",
+                    "value": "three"
+                }
+            ],
+            "StatusFlag": [
+                {
+                    "description": "Production imbalance.",
+                    "name": "Production Imbalance",
+                    "value": "production-imbalance"
+                },
+                {
+                    "description": "The production meter is going backwards (i.e. negative figures).",
+                    "name": "Negative Production",
+                    "value": "negative-production"
+                },
+                {
+                    "description": "The meter is reading power on a phase that is configured as not being used.",
+                    "name": "Power On Unused Phase",
+                    "value": "power-on-unused-phase"
+                },
+                {
+                    "description": "The total consumption (load only, should be excluding the solar production) meter is going backwards (i.e. positive figures).",
+                    "name": "Negative Total Consumption",
+                    "value": "negative-total-consumption"
                 }
             ]
         }
@@ -12683,11 +12765,25 @@
                         "description": "The type of data this is measuring.",
                         "value_name": "MeasurementType"
                     },
-                    "meteringStatus": "Whether the meter is in an error state.",
+                    "meteringStatus": {
+                        "description": "Whether the meter is in an error state.",
+                        "value_name": "MeteringStatus"
+                    },
                     "phaseCount": "The number of phases the meter is monitoring.",
-                    "phaseMode": "The number of phases the meter can monitor.",
-                    "state": "The state of the meter.",
-                    "statusFlags": "Status flags."
+                    "phaseMode": {
+                        "description": "The number of phases the meter hardware can monitor.",
+                        "value_name": "PhaseMode"
+                    },
+                    "state": {
+                        "description": "The state of the meter.",
+                        "value_name": "MeterState"
+                    },
+                    "statusFlags": {
+                        "description": "The error status flags (if `meteringStatus` is `check-wiring`).",
+                        "type": "Array(String)",
+                        "value": "Array of String",
+                        "value_name": "StatusFlag"
+                    }
                 }
             }
         },
@@ -12707,6 +12803,74 @@
                     "description": "Reporting the load only (solar production excluded).",
                     "name": "Total Consumption",
                     "value": "total-consumption"
+                }
+            ],
+            "MeteringStatus": [
+                {
+                    "description": "Meter is running normally.",
+                    "name": "Normal",
+                    "value": "normal"
+                },
+                {
+                    "description": "Meter is not running.",
+                    "name": "Not Metering",
+                    "value": "not-metering"
+                },
+                {
+                    "description": "Meter is reporting spurious readings (check `statusFlags`).",
+                    "name": "Check Wiring",
+                    "value": "check-wiring"
+                }
+            ],
+            "MeterState": [
+                {
+                    "description": "Meter is disabled.",
+                    "name": "Disabled",
+                    "value": "disabled"
+                },
+                {
+                    "description": "Meter is enabled.",
+                    "name": "Enabled",
+                    "value": "enabled"
+                }
+            ],
+            "PhaseMode": [
+                {
+                    "description": "Device can only monitor one single phase line.",
+                    "name": "Single Phase",
+                    "value": "single"
+                },
+                {
+                    "description": "Device can monitor two (split) phase (also known as \"Dual phase\") lines.",
+                    "name": "Split Phase",
+                    "value": "split"
+                },
+                {
+                    "description": "Device can monitor three phase lines.",
+                    "name": "Three Phases",
+                    "value": "three"
+                }
+            ],
+            "StatusFlag": [
+                {
+                    "description": "Production imbalance.",
+                    "name": "Production Imbalance",
+                    "value": "production-imbalance"
+                },
+                {
+                    "description": "The production meter is going backwards (i.e. negative figures).",
+                    "name": "Negative Production",
+                    "value": "negative-production"
+                },
+                {
+                    "description": "The meter is reading power on a phase that is configured as not being used.",
+                    "name": "Power On Unused Phase",
+                    "value": "power-on-unused-phase"
+                },
+                {
+                    "description": "The total consumption (load only, should be excluding the solar production) meter is going backwards (i.e. positive figures).",
+                    "name": "Negative Total Consumption",
+                    "value": "negative-total-consumption"
                 }
             ]
         }
