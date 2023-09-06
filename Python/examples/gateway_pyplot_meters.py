@@ -89,13 +89,13 @@ def add_result_from_gateway():
     # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
     except requests.exceptions.ConnectionError as exception:
         # Log this error.
-        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting..\n {exception}', file=sys.stderr)
+        print(f'{datetime.datetime.now()} - Problem connecting..\n {exception}', file=sys.stderr)
 
         # No point continuing this function.
         return False
     except requests.exceptions.JSONDecodeError as exception:
         # Log this non-critial often transient error.
-        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
+        print(f'{datetime.datetime.now()} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
 
         # No point continuing this function.
         return False

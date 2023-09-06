@@ -809,14 +809,14 @@ def main():
                     # Sometimes unable to connect
                     except requests.exceptions.ConnectionError as exception:
                         # Log this error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
                     # This happens generally if there are wider issues on the network.
                     except requests.exceptions.ReadTimeout:
                         # Log this non-critial often transient error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather request timed out.', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - The weather request timed out.', file=sys.stderr)
                     except requests.exceptions.JSONDecodeError as exception:
                         # Log this non-critial often transient error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
 
                     # Clear the screen while the next process runs (there can be a delay).
                     if not args.emulate_HAT:
@@ -847,7 +847,7 @@ def main():
             # Sometimes unable to connect (especially if using mDNS and it does not catch our query)
             except requests.exceptions.ConnectionError as exception:
                 # Log this error.
-                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting..\n {exception}', file=sys.stderr)
+                print(f'{datetime.datetime.now()} - Problem connecting..\n {exception}', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(
@@ -863,7 +863,7 @@ def main():
             # This happens generally if there are wider issues on the network.
             except requests.exceptions.ReadTimeout:
                 # Log this non-critial often transient error.
-                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Request timed out..', file=sys.stderr)
+                print(f'{datetime.datetime.now()} - Request timed out..', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(
@@ -878,7 +878,7 @@ def main():
                 )
             except requests.exceptions.JSONDecodeError as exception:
                 # Log this non-critial often transient error.
-                print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
+                print(f'{datetime.datetime.now()} - The Gateway returned bad JSON..\n {exception}', file=sys.stderr)
 
                 # Display and scroll the red error text on screen for 60 seconds.
                 UnicornHATHelper.draw_scrolling_text(

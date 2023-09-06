@@ -741,14 +741,14 @@ def main():
                     # Sometimes unable to connect
                     except requests.exceptions.ConnectionError as exception:
                         # Log this error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - Problem connecting for the weather.\n {exception}', file=sys.stderr)
                     # This happens generally if there are wider issues on the network.
                     except requests.exceptions.ReadTimeout:
                         # Log this non-critial often transient error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather request timed out.', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - The weather request timed out.', file=sys.stderr)
                     except requests.exceptions.JSONDecodeError as exception:
                         # Log this non-critial often transient error.
-                        print(f'{datetime.datetime.now():%d-%m-%Y %H:%M:%S} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
+                        print(f'{datetime.datetime.now()} - The weather returned bad JSON..\n {exception}', file=sys.stderr)
 
                 # AMQP get a meter response.
                 while True:
