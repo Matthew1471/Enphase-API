@@ -505,7 +505,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters/CTReversal.adoc[Specific Meter’s Current Transformer (CT) Reversal]`
 |`/ivp/meters/ctreversal/{EID}`
-|Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings by Gateway (formerly "Envoy") record ID.
+|Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings globally or by a meter identifier.
 
 |`link:IVP/Meters/EID.adoc[Specific Meter’s Settings]`
 |`/ivp/meters/{EID}`

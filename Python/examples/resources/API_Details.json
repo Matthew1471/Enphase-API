@@ -12735,10 +12735,23 @@
     },
     "IVP / Meters / General / Specific Meter’s Current Transformer (CT) Reversal": {
         "description": {
-            "short": "Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings by Gateway (formerly \"Envoy\") record ID."
+            "long": "Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings globally, by meter type (`c` for consumption or `p` for production) or by a meter type and specific line identifier (`cL1`, `cL2`, `cL3`, `pL1`, `pL2` or `pL3`).",
+            "short": "Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings globally or by a meter identifier."
         },
         "documentation": "IVP/Meters/CTReversal.adoc",
         "request": {
+            "examples": [
+                {
+                    "name": "Get All Meters' CT Reversal Settings",
+                    "request_eid": "",
+                    "response_json": "{}"
+                },
+                {
+                    "name": "Get Consumption Meters' Line #1 CT Reversal Settings",
+                    "request_eid": "cL1",
+                    "response_json": "{}"
+                }
+            ],
             "uri": "ivp/meters/ctreversal/{EID}"
         }
     },
