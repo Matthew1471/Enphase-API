@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - Production Only
+= IVP - Meters - Reports - Production Only
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get readings from the production meters (Legacy).
+Get readings from the production meters.
 
 == Introduction
 

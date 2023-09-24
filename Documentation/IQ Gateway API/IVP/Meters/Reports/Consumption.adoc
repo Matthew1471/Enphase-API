@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - Consumption Only
+= IVP - Meters - Reports - Consumption Only
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get readings from the consumption meters (Legacy).
+Get readings from the consumption meters.
 
 == Introduction
 

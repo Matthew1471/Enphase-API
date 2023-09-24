@@ -1,4 +1,4 @@
-= IVP - Meters - Reports (Legacy) - All Meters
+= IVP - Meters - Reports - All Meters
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Get readings from all the meters (Legacy).
+Get readings from all the meters.
 
 == Introduction
 

@@ -13013,9 +13013,9 @@
             }
         }
     },
-    "IVP / Meters / Reports (Legacy) / All Meters": {
+    "IVP / Meters / Reports / All Meters": {
         "description": {
-            "short": "Get readings from all the meters (Legacy)."
+            "short": "Get readings from all the meters."
         },
         "documentation": "IVP/Meters/Reports/All.adoc",
         "request": {
@@ -13081,9 +13081,9 @@
             ]
         }
     },
-    "IVP / Meters / Reports (Legacy) / Consumption Only": {
+    "IVP / Meters / Reports / Consumption Only": {
         "description": {
-            "short": "Get readings from the consumption meters (Legacy)."
+            "short": "Get readings from the consumption meters."
         },
         "documentation": "IVP/Meters/Reports/Consumption.adoc",
         "request": {
@@ -13144,9 +13144,9 @@
             ]
         }
     },
-    "IVP / Meters / Reports (Legacy) / Production Only": {
+    "IVP / Meters / Reports / Production Only": {
         "description": {
-            "short": "Get readings from the production meters (Legacy)."
+            "short": "Get readings from the production meters."
         },
         "documentation": "IVP/Meters/Reports/Production.adoc",
         "request": {

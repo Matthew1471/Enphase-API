@@ -535,7 +535,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-===== IVP - Meters - Reports (Legacy)
+===== IVP - Meters - Reports
 
 [cols="1,1,2", options="header"]
 |===
@@ -545,15 +545,15 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/Meters/Reports/All.adoc[All Meters]`
 |`/ivp/meters/reports/`
-|Get readings from all the meters (Legacy).
+|Get readings from all the meters.
 
 |`link:IVP/Meters/Reports/Consumption.adoc[Consumption Only]`
 |`/ivp/meters/reports/consumption`
-|Get readings from the consumption meters (Legacy).
+|Get readings from the consumption meters.
 
 |`link:IVP/Meters/Reports/Production.adoc[Production Only]`
 |`/ivp/meters/reports/production`
-|Get readings from the production meters (Legacy).
+|Get readings from the production meters.
 
 |===
 
