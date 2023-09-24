@@ -608,14 +608,12 @@ class EndpointDocumentationGenerator:
         return result
 
     @staticmethod
-    def get_example_section(uri, example_item):
+    def get_example_section(example_item):
         """
         Generate the AsciiDoc example section for an API endpoint using the provided URI and
         example data.
 
         Args:
-            uri (str):
-                The URI of the API endpoint.
             example_item (dict):
                 Information about the example, including request and response details.
 
@@ -656,12 +654,8 @@ class EndpointDocumentationGenerator:
         # Add the example_output Request, Response or both.
         for example_type, example_content in example_output.items():
             # List the example request/response details.
-            result += '\n.'
-            result += (example_item['method'] if 'method' in example_item else 'GET')
-            result += f' */{uri}'
-            if 'request_query' in example_item:
-                result += f'?{example_item["request_query"]}'
-            result += f'* {example_type}\n'
+            result += f'\n.{example_item.get("method", "GET")} *{example_item["uri"]}*'
+            result += f' {example_type}\n'
 
             # We can override JSON responses and present raw text instead.
             if (example_type == 'Request' and 'request_form' in example_item):
@@ -956,10 +950,19 @@ class EndpointDocumentationGenerator:
                 # Take each of the examples to learn the schema.
                 for example in endpoint_request['examples']:
 
-                    # An example can over-ride a URL.
-                    endpoint_uri = endpoint_request['uri']
+                    # Build the URI - an individual example can over-ride a URI.
+                    request_uri = f'/{endpoint_request["uri"]}'
+
+                    # Any example EID to over-ride?
                     if 'request_eid' in example:
-                        endpoint_uri = endpoint_uri.replace('{EID}', str(example['request_eid']))
+                        request_uri = request_uri.replace('{EID}', str(example['request_eid']))
+
+                    # Any example query to add?
+                    if 'request_query' in example:
+                        request_uri += f'?{example["request_query"]}'
+
+                    # Store the potentially updated example URI in the example.
+                    example['uri'] = request_uri
 
                     # The user can supply the JSON to use instead of us directly querying for it.
                     if 'response_json' in example:
@@ -976,11 +979,6 @@ class EndpointDocumentationGenerator:
                         # Notify the user we are about to query the API.
                         print(f'Requesting example \'{example["name"]}\' for \'{key}\'.')
 
-                        # Build the URI.
-                        request_uri = f'/{endpoint_uri}'
-                        if 'request_query' in example:
-                            request_uri += f'?{example["request_query"]}'
-
                         # The API supports a mixture of JSON and form payloads.
                         if 'request_form' not in example:
                             # Some API requests contain JSON payloads.
@@ -993,7 +991,7 @@ class EndpointDocumentationGenerator:
                                 # Perform a request on the resource (with a JSON response).
                                 example['response'] = gateway.api_call(
                                     path=request_uri,
-                                    method=example.get('method'),
+                                    method=example.get('method', 'GET'),
                                     json=data
                                 )
                             else:
@@ -1001,7 +999,7 @@ class EndpointDocumentationGenerator:
                                 example['response'] = None
                                 example['response_raw'] = gateway.api_call(
                                     path=request_uri,
-                                    method=example.get('method'),
+                                    method=example.get('method', 'GET'),
                                     json=data,
                                     response_raw=True
                                 )
@@ -1009,7 +1007,7 @@ class EndpointDocumentationGenerator:
                             # This is a legacy form API request.
                             example['response'] = gateway.api_call(
                                 path=request_uri,
-                                method=example.get('method'),
+                                method=example.get('method', 'GET'),
                                 data=example['request_form']
                             )
 
@@ -1175,7 +1173,6 @@ class EndpointDocumentationGenerator:
 
                     # Take the obtained JSON as an example.
                     output += EndpointDocumentationGenerator.get_example_section(
-                        uri=endpoint_uri,
                         example_item=example
                     )
         else:
