@@ -113,7 +113,7 @@ Gateway.trust_gateway('https://192.168.0.100')
 ----
 
 This will download the certificate from the IQ Gateway and create a `configuration/gateway.cer` file (the path can be over-ridden with the optional parameter `cert_file`).
-The next time a request is made the IQ Gateway connection will be validated against this stored certificate (if you have over-ridden the path you will also have to over-ride your `Gateway(` command to include your over-ridden `cert_file`, otherwise the certificate will not be used.
+The next time a request is made the IQ Gateway connection will be validated against this stored certificate (if you have over-ridden the path you will also have to over-ride your `Gateway(` command to include your over-ridden `cert_file`, otherwise the certificate will not be used).
 
 The gateway has its own mechanism for checking the validity of JWT values, however there is also a static `check_token_valid()` function inside the Authentication module that will allow you to check token validity before bothering the IQ Gateway with a request.
 
