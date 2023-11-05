@@ -232,8 +232,8 @@ def main():
 
         # Used to calculate the microinverter polling interval
         # (gateway polls microinverters every 5 minutes).
-        if not most_recent_inverter_data or most_recent_inverter_data < datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate']):
-            most_recent_inverter_data = datetime.datetime.fromtimestamp(inverter_statistic['lastReportDate'])
+        if not most_recent_inverter_data or most_recent_inverter_data < inverter_statistic['lastReportDate']:
+            most_recent_inverter_data = inverter_statistic['lastReportDate']
 
     # This will always be present (even without a production meter).
     status += f'\n{string_names["Lifetime"]} Total Generated {get_human_readable_power(production_statistics_inverters["whLifetime"], True)}'
@@ -276,7 +276,7 @@ def main():
         status += f'\n\n{string_names["Details"]}Data Will Next Be Refreshed At {next_refresh_time.time()}'
     else:
         # Print when the last microinverter reported back to the gateway.
-        status += f'\n\n{string_names["Details"]}The Last Microinverter Reported At {most_recent_inverter_data}'
+        status += f'\n\n{string_names["Details"]}The Last Microinverter Reported At {datetime.datetime.fromtimestamp(most_recent_inverter_data)}'
 
     # Output to the console.
     print(status)
