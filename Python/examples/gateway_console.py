@@ -221,19 +221,24 @@ def main():
 
     # Used to calculate the microinverter automatic polling interval
     # (gateway polls microinverters automatically every 5 minutes).
-    most_recent_inverter_data = None
+    latest_inverter_reported = None
 
-    # Get Inverters status.
-    inverters_statistics = gateway.api_call('/api/v1/production/inverters')
+    # Get Inverter(s) status.
+    inverters = gateway.api_call('/api/v1/production/inverters')
 
     # Get panel by panel status.
-    for inverter_statistic in inverters_statistics:
-        status += f'\n  {string_names["Microinverter"]} {inverter_statistic["lastReportWatts"]} W (Serial: {inverter_statistic["serialNumber"]}, Last Seen: {datetime.datetime.fromtimestamp(inverter_statistic["lastReportDate"])})'
+    for inverter in inverters:
+
+        # We convert the last report date timestamp to a datetime.
+        inverter_last_reported = datetime.datetime.fromtimestamp(inverter["lastReportDate"])
+
+        # Add the status of this microinverter to our status string.
+        status += f'\n  {string_names["Microinverter"]} {inverter["lastReportWatts"]} W (Serial: {inverter["serialNumber"]}, Last Seen: {inverter_last_reported})'
 
         # Used to calculate the microinverter polling interval
         # (gateway polls microinverters every 5 minutes).
-        if not most_recent_inverter_data or most_recent_inverter_data < inverter_statistic['lastReportDate']:
-            most_recent_inverter_data = inverter_statistic['lastReportDate']
+        if not latest_inverter_reported or latest_inverter_reported < inverter_last_reported:
+            latest_inverter_reported = inverter_last_reported
 
     # This will always be present (even without a production meter).
     status += f'\n{string_names["Lifetime"]} Total Generated {get_human_readable_power(production_statistics_inverters["whLifetime"], True)}'
@@ -276,7 +281,7 @@ def main():
         status += f'\n\n{string_names["Details"]}Data Will Next Be Refreshed At {next_refresh_time.time()}'
     else:
         # Print when the last microinverter reported back to the gateway.
-        status += f'\n\n{string_names["Details"]}The Last Microinverter Reported At {datetime.datetime.fromtimestamp(most_recent_inverter_data)}'
+        status += f'\n\n{string_names["Details"]}The Last Microinverter Reported At {latest_inverter_reported}'
 
     # Output to the console.
     print(status)
