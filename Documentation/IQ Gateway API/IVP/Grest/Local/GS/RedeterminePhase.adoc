@@ -1,4 +1,4 @@
-= IVP - Grest - Redetermine Phase
+= IVP - Grid REST (GREST) - Redetermine Phase
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

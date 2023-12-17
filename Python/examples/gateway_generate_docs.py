@@ -1261,6 +1261,11 @@ class IndexDocumentationGenerator:
         for key in sorted(endpoint_metadata, key=str.casefold):
 
             metadata = endpoint_metadata[key]
+
+            # Skip if the endpoint is not meant to be documented.
+            if not 'documentation' in metadata:
+                continue
+
             path = key.split(' / ')
 
             # Add any headers.

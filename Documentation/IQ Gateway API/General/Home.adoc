@@ -62,7 +62,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`is_nonvoy`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Whether the device is not a Gateway (formerly "Envoy")
+|Whether the Gateway (formerly "Envoy") is programmed for configuring unmonitored systems.
 
 |`db_size`
 |Number

@@ -435,7 +435,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - Grest
+==== IVP - Grid REST (GREST)
 
 [cols="1,1,2", options="header"]
 |===

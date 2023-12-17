@@ -631,7 +631,7 @@
                     "db_percent_full": "The percentage by which the internal database is full.",
                     "db_size": "The allocated size of the internal database.",
                     "enpower": "The details about the IQ System Controller (formerly \"Enpower\").",
-                    "is_nonvoy": "Whether the device is not a Gateway (formerly \"Envoy\")",
+                    "is_nonvoy": "Whether the Gateway (formerly \"Envoy\") is programmed for configuring unmonitored systems.",
                     "network": {
                         "description": "Details about the network connectivity.",
                         "value_name": "NetworkSummary"
@@ -2894,7 +2894,7 @@
             "uri": "ivp/firmware_manager/update_single"
         }
     },
-    "IVP / Grest / Profile": {
+    "IVP / Grid REST (GREST) / Profile": {
         "description": {
             "short": "Display Advanced Grid Functionality (AGF) profile."
         },
@@ -12404,7 +12404,7 @@
             }
         }
     },
-    "IVP / Grest / Redetermine Phase": {
+    "IVP / Grid REST (GREST) / Redetermine Phase": {
         "description": {
             "short": "Redetermine phase."
         },
@@ -13237,6 +13237,66 @@
                 }
             }
         }
+    },
+    "IVP / Performance Data Manager (PDM) / Archive": {
+        "uri": "/ivp/pdm/archive"
+    },
+    "IVP / Performance Data Manager (PDM) / Channels": {
+        "uri": "/ivp/pdm/channels"
+    },
+    "IVP / Performance Data Manager (PDM) / Consumption": {
+        "uri": "/ivp/pdm/consumption"
+    },
+    "IVP / Performance Data Manager (PDM) / Database": {
+        "uri": "/ivp/pdm/database"
+    },
+    "IVP / Performance Data Manager (PDM) / Device Data": {
+        "uri": "/ivp/pdm/device_data"
+    },
+    "IVP / Performance Data Manager (PDM) / Device Types": {
+        "uri": "/ivp/pdm/device_types"
+    },
+    "IVP / Performance Data Manager (PDM) / Energy": {
+        "uri": "/ivp/pdm/energy"
+    },
+    "IVP / Performance Data Manager (PDM) / Export": {
+        "uri": "/ivp/pdm/export"
+    },
+    "IVP / Performance Data Manager (PDM) / Export Count": {
+        "uri": "/ivp/pdm/export_count"
+    },
+    "IVP / Performance Data Manager (PDM) / Generation": {
+        "uri": "/ivp/pdm/generation"
+    },
+    "IVP / Performance Data Manager (PDM) / Lifetime": {
+        "uri": "/ivp/pdm/lifetime"
+    },
+    "IVP / Performance Data Manager (PDM) / Maintainence": {
+        "uri": "/ivp/pdm/maintainence"
+    },
+    "IVP / Performance Data Manager (PDM) / Mark": {
+        "uri": "/ivp/pdm/mark"
+    },
+    "IVP / Performance Data Manager (PDM) / Production": {
+        "uri": "/ivp/pdm/production"
+    },
+    "IVP / Performance Data Manager (PDM) / Reading": {
+        "uri": "/ivp/pdm/reading"
+    },
+    "IVP / Performance Data Manager (PDM) / Reset Export": {
+        "uri": "/ivp/pdm/reset_export"
+    },
+    "IVP / Performance Data Manager (PDM) / Stat Name": {
+        "uri": "/ivp/pdm/stat_name"
+    },
+    "IVP / Performance Data Manager (PDM) / Status": {
+        "uri": "/ivp/pdm/status"
+    },
+    "IVP / Performance Data Manager (PDM) / Test": {
+        "uri": "/ivp/pdm/test"
+    },
+    "IVP / Performance Data Manager (PDM) / Unmark": {
+        "uri": "/ivp/pdm/unmark"
     },
     "IVP / Power Electronics Blocks (PEB) / Device Status": {
         "description": {
