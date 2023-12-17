@@ -1464,12 +1464,22 @@
                     "request_query": "simplified=true"
                 }
             ],
+            "query": {
+                "simplified": {
+                    "description": "Used by the installer toolkit, if set to true will remove duplicate profile names.",
+                    "optional": true,
+                    "type": "Boolean"
+                }
+            },
             "uri": "installer/agf/index.json"
         },
         "response": {
             "field_map": {
                 ".": {
+                    "bt_version": "Base Template (BT) version.",
                     "last_package_profile_md5sum": "The MD5 checksum of the last package profile.",
+                    "migration_in_progress": "Whether profile migration script is running.",
+                    "mm_version": "Master Model (MM) version.",
                     "profile_auto_selected": "Whether a profile has been automatically selected.",
                     "profile_groups": "The list of profiles on the device sorted into groups.",
                     "profiles": "The list of profiles on the device.",
@@ -1487,8 +1497,10 @@
                     }
                 },
                 "Profiles": {
+                    "bt_version": "Base Template (BT) version.",
                     "countries": "The countries this profile can be applied to.",
                     "envoy_type": "The region of the Gateway (formerly \"Envoy\") that is able to use this profile.",
+                    "mm_version": "Master Model (MM) version.",
                     "policy": "Details of the criteria to be allowed to use this profile.",
                     "profile_description": "The profile description.",
                     "profile_id": "The profile identification name (including version number).",
@@ -1500,8 +1512,14 @@
                     "uuid": "The unique identifier for the profile."
                 },
                 "Profiles.Policy": {
+                    "attribute_mismatch": "Whether to still try to make a profile, even if an attribute cannot be found in the base template.",
+                    "id_mismatch": "Whether to update \"opaque data\" if the profile is otherwise the same.",
+                    "logical_device_mismatch": "Whether to still try to make a profle, even if the logical device cannot be found in the base template.",
                     "max_envoy_version": "The maximum Gateway (formerly \"Envoy\") version that is able to use this profile.",
-                    "min_envoy_version": "The minimum Gateway (formerly \"Envoy\") version to use this profile."
+                    "min_base_template_version": "The minimum base template version that the IQ Gateway (formerly \"Envoy\") must meet for this profile.",
+                    "min_envoy_version": "The minimum Gateway (formerly \"Envoy\") version to use this profile.",
+                    "min_master_model_version": "The minimum master model version that the IQ Gateway (formerly \"Envoy\") must meet for this profile.",
+                    "model_mismatch": "Whether to still try to make a profile, even though there is a version mismatch."
                 }
             }
         }
@@ -2777,6 +2795,12 @@
                 }
             }
         }
+    },
+    "IVP / Event": {
+        "description": {
+            "short": "Get system events."
+        },
+        "uri": "ivp/event"
     },
     "IVP / Firmware Manager / Config": {
         "description": {
@@ -13451,6 +13475,12 @@
             }
         }
     },
+    "IVP / Power Electronics Blocks (PEB) / Report Frequency": {
+        "description": {
+            "short": "Get module reporting frequency settings."
+        },
+        "uri": "ivp/peb/rptfreq"
+    },
     "IVP / Power Electronics Blocks (PEB) / Report Settings": {
         "description": {
             "long": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten(R) Cloud\").\n\nThe JSON PUT data is sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`. A diagnostic mode may also be enabled, which temporarily sets the `bandwidth` to `high`.",
@@ -13529,13 +13559,29 @@
             ]
         }
     },
-    "IVP / Secondary Control (SC) / Sched": {
+    "IVP / Power Electronics Blocks (PEB) / Reported Temperature": {
         "description": {
-            "short": "Set Encharge charging/discharging status."
+            "long": "Get the current IQ Gateway (formerly \"Envoy\") temperature in Celsius.",
+            "short": "Get Gateway current temperature."
+        },
+        "uri": "ivp/peb/rpttemp"
+    },
+    "IVP / Secondary Control (SC) / Scheduler Settings": {
+        "description": {
+            "short": "Get or override Encharge charging/discharging status."
         },
         "documentation": "IVP/SC/Sched.adoc",
         "request": {
             "uri": "ivp/sc/sched"
+        }
+    },
+    "IVP / Secondary Control (SC) / Status": {
+        "description": {
+            "short": "Get Secondary Control (SC) status."
+        },
+        "documentation": "IVP/SC/Status.adoc",
+        "request": {
+            "uri": "ivp/sc/status"
         }
     },
     "IVP / Smart Switch (SS) / Device Power Export Limits (PEL) Settings": {
@@ -14019,10 +14065,17 @@
             }
         }
     },
+    "IVP / User Interface (UI)": {
+        "description": {
+            "long": "Get, set or clear the User Interface (UI) information such as the LEDs, buttons and Digital Input Output (IO).",
+            "short": "Get, set or clear the User Interface (UI) information."
+        },
+        "uri": "ivp/ui"
+    },
     "IVP / Zigbee / Pairing Status": {
         "description": {
-            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") zigbee pairing status. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
-            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") zigbee pairing status."
+            "long": "Get Enphase(R) Energy System (formerly \"Ensemble\") Zigbee pairing status. The Gateway (formerly \"Envoy\") communicates with both the IQ System Controller (formerly \"Enpower\") before version 3 and the IQ Battery (formerly \"Encharge\") before IQ battery 5P (i.e. IQ Battery 3, 3T, 10 and 10T) using Zigbee.",
+            "short": "Get Enphase(R) Energy System (formerly \"Ensemble\") Zigbee pairing status."
         },
         "documentation": "IVP/ZB/Pairing_Status.adoc",
         "request": {
@@ -14037,8 +14090,8 @@
         "response": {
             "field_map": {
                 ".": {
-                    "serial_nums": "The serial numbers of the paired zigbee devices.",
-                    "Zigbee Network Mode": "The mode the zigbee device is currently in."
+                    "serial_nums": "The serial numbers of the paired Zigbee devices.",
+                    "Zigbee Network Mode": "The mode the Zigbee device is currently in."
                 }
             }
         }
@@ -14090,8 +14143,8 @@
         "response": {
             "field_map": {
                 ".": {
-                    "counters": "The zigbee counters.",
-                    "state": "The zigbee state."
+                    "counters": "The Zigbee counters.",
+                    "state": "The Zigbee state."
                 },
                 "Counters": {
                     "buffer_pool": {
@@ -14119,10 +14172,10 @@
                         "value_name": "Counters.RALRadioCounters"
                     },
                     "zigbee_counters": {
-                        "description": "The zigbee counters.",
+                        "description": "The Zigbee counters.",
                         "value_name": "Counters.InterfaceCounters"
                     },
-                    "zigbee_lib_counters": "The zigbee library counters in string form."
+                    "zigbee_lib_counters": "The Zigbee library counters in string form."
                 },
                 "Counters.BufferPool": {
                     "buffer_pool_alloc_failed": "The buffer pool allocation failed count.",
@@ -14178,7 +14231,7 @@
                     "txReqNoRadioDropCnt": "The transmission request no radio drop count.",
                     "txReqQFullDropCnt": "The transmission request queue full drop count.",
                     "txReqToSubGCnt": "The transmission request to sub-Ghz count.",
-                    "txReqToZbCnt": "The transmission request to zigbee count."
+                    "txReqToZbCnt": "The transmission request to Zigbee count."
                 },
                 "Counters.RALRadioCounters": {
                     "joinIndDropCnt": "The Join indication drop count.",
@@ -14195,11 +14248,11 @@
                     "ieee_15_4 max_pyld_size": "The maximum IEEE 802.15.4 payload size.",
                     "ieee_15_4 num_joined_nodes": "The number of IEEE 802.15.4 joined nodes.",
                     "num_client_devices": "The number of client devices.",
-                    "zb is_device_connected": "Is there a zigbee device connected.",
-                    "zb is_init_done": "Has the zigbee host completed initialisation.",
-                    "zb joined_nodes": "Each of the zigbee joined nodes.",
-                    "zb max_pyld_size": "The maximum zigbee payload size.",
-                    "zb num_joined_nodes": "The number of zigbee joined nodes."
+                    "zb is_device_connected": "Is there a Zigbee device connected.",
+                    "zb is_init_done": "Has the Zigbee host completed initialisation.",
+                    "zb joined_nodes": "Each of the Zigbee joined nodes.",
+                    "zb max_pyld_size": "The maximum Zigbee payload size.",
+                    "zb num_joined_nodes": "The number of Zigbee joined nodes."
                 }
             }
         }

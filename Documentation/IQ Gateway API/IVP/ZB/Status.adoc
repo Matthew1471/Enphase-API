@@ -57,12 +57,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`state`
 |Object
 |`State` object
-|The zigbee state.
+|The Zigbee state.
 
 |`counters`
 |Object
 |`Counters` object
-|The zigbee counters.
+|The Zigbee counters.
 
 |===
 
@@ -78,27 +78,27 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`zb is_device_connected`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Is there a zigbee device connected.
+|Is there a Zigbee device connected.
 
 |`zb is_init_done`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Has the zigbee host completed initialisation.
+|Has the Zigbee host completed initialisation.
 
 |`zb max_pyld_size`
 |Number
 |Number
-|The maximum zigbee payload size.
+|The maximum Zigbee payload size.
 
 |`zb num_joined_nodes`
 |Number
 |Number
-|The number of zigbee joined nodes.
+|The number of Zigbee joined nodes.
 
 |`zb joined_nodes`
 |Array(Unknown)
 |Array of Unknown
-|Each of the zigbee joined nodes.
+|Each of the Zigbee joined nodes.
 
 |`ieee_15_4 is_device_connected`
 |Boolean
@@ -149,7 +149,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`zigbee_counters`
 |Object
 |`Counters.InterfaceCounters` object
-|The zigbee counters.
+|The Zigbee counters.
 
 |`ral_counters`
 |Object
@@ -164,7 +164,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`zigbee_lib_counters`
 |String
 |String
-|The zigbee library counters in string form.
+|The Zigbee library counters in string form.
 
 |`IEEE_15_4_counters`
 |Object
@@ -331,7 +331,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`txReqToZbCnt`
 |Number
 |Number
-|The transmission request to zigbee count.
+|The transmission request to Zigbee count.
 
 |`txReqToSubGCnt`
 |Number

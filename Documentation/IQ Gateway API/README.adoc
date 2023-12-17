@@ -601,9 +601,13 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/SC/Sched.adoc[Sched]`
+|`link:IVP/SC/Sched.adoc[Scheduler Settings]`
 |`/ivp/sc/sched`
-|Set Encharge charging/discharging status.
+|Get or override Encharge charging/discharging status.
+
+|`link:IVP/SC/Status.adoc[Status]`
+|`/ivp/sc/status`
+|Get Secondary Control (SC) status.
 
 |===
 
@@ -723,7 +727,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:IVP/ZB/Pairing_Status.adoc[Pairing Status]`
 |`/ivp/zb/pairing_status`
-|Get Enphase(R) Energy System (formerly "Ensemble") zigbee pairing status.
+|Get Enphase(R) Energy System (formerly "Ensemble") Zigbee pairing status.
 
 |`link:IVP/ZB/Provision.adoc[Provision]`
 |`/ivp/zb/provision`

@@ -1,4 +1,4 @@
-= IVP - Secondary Control (SC) - Sched
+= IVP - Secondary Control (SC) - Scheduler Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -29,7 +29,7 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Set Encharge charging/discharging status.
+Get or override Encharge charging/discharging status.
 
 == Introduction
 

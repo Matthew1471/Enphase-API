@@ -43,6 +43,22 @@ A HTTP `GET` to the `/installer/agf/index.json` endpoint provides the following 
 
 As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
 
+=== Querystring
+
+[cols="1,1,1,2", options="header"]
+|===
+|Name
+|Type
+|Values
+|Description
+
+|`simplified` (Optional)
+|Boolean
+|Boolean (e.g. `0` or `1`)
+|Used by the installer toolkit, if set to true will remove duplicate profile names.
+
+|===
+
 == Response
 
 === Root
@@ -77,17 +93,17 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`mm_version`
 |String
 |String
-|???
+|Master Model (MM) version.
 
 |`bt_version`
 |String
 |String
-|???
+|Base Template (BT) version.
 
 |`migration_in_progress`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether profile migration script is running.
 
 |`profiles`
 |Array(Object)
@@ -173,12 +189,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`mm_version`
 |String
 |String
-|???
+|Master Model (MM) version.
 
 |`bt_version`
 |String
 |String
-|???
+|Base Template (BT) version.
 
 |===
 
@@ -194,12 +210,12 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`min_base_template_version`
 |String
 |String
-|???
+|The minimum base template version that the IQ Gateway (formerly "Envoy") must meet for this profile.
 
 |`min_master_model_version`
 |String
 |String
-|???
+|The minimum master model version that the IQ Gateway (formerly "Envoy") must meet for this profile.
 
 |`min_envoy_version`
 |String
@@ -214,22 +230,22 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`model_mismatch`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether to still try to make a profile, even though there is a version mismatch.
 
 |`logical_device_mismatch`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether to still try to make a profle, even if the logical device cannot be found in the base template.
 
 |`attribute_mismatch`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether to still try to make a profile, even if an attribute cannot be found in the base template.
 
 |`id_mismatch`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|???
+|Whether to update "opaque data" if the profile is otherwise the same.
 
 |===
 
