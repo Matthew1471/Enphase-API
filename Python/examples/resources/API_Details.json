@@ -516,11 +516,25 @@
     },
     "Authentication / Check JSON Web Token (JWT)": {
         "description": {
-            "short": "Checks a JSON Web Token is valid to login to the system and creates a session."
+            "long": "This checks a JSON Web Token (JWT) is valid to login to the system and if it is creates a session (and an associated `sessionId` cookie). The session cookie can then be on a time limited basis provided instead of the JWT to reduce JWT verification overhead on future API requests.",
+            "short": "Checks a JSON Web Token (JWT) is valid to login to the system and creates a session."
         },
+        "details": "This simple endpoint is configured to require and perform authentication.\n\nIt simply invokes the standard system wide authentication check for any of the following criteria:\n\n* Is the request local (specifically coming from the IPv4 address \"127.0.0.1\")?\n* Has there been provided any valid session cookie (`sessionId`) that a request has been made with within the last 10 minutes?\n* Check the `authorization` header for a valid JSON Web Token (JWT) that matches all of the following criteria:\n** That can be cryptographically verified by the locally kept public key.\n** That it contains an `enphaseUser`\n** The JWT's audience (`aud`) is now checked for either of the following:\n*** Tokens for `uncommissioned` systems (and one has not been seen before) then the device will trust any uncommissioned token up until the expiration date and time of that first recorded uncommissioned token. Future uncommissioned tokens that expire later than the expiration time of the first uncommissioned token ever seen will not be permitted and the authentication will fail.\n*** Tokens for commissioned systems include a serial number which is checked to see if that matches the serial number of this device.\n\nThe user sessions are linked to the token's `jti` and a higher `enphaseUser` role can expire early another lower privileged session.\n\nIf any of the above fails the user is met with a `Authorization Required` error. Should it succeed then the user will be diverted to the hidden endpoint `/valid_token` which just returns static text.\n\nAs JWT validation is more intensive it is preferred to use this end-point to create a session and then for all subsequent API requests to just use the `sessionId` cookie to authenticate.",
         "documentation": "Auth/Check_JWT.adoc",
         "request": {
             "auth_required": false,
+            "examples": [
+                {
+                    "name": "Check Authenticated (Success)",
+                    "response_json": "",
+                    "response_raw": "<!DOCTYPE html><h2>Valid token.</h2>"
+                },
+                {
+                    "name": "Check Authenticated (Failure)",
+                    "response_json": "",
+                    "response_raw": "<html>\n<head><title>401 Authorization Required</title></head>\n<body>\n<center><h1>401 Authorization Required</h1></center>\n<hr><center>Redirecting to <a id='link' href=''></a></center>\n<script>\nconst redirect_url = window.location.protocol + '//' + window.location.host + '/home';\nfunction redirect() { window.location.href = redirect_url; }\nwindow.onload = function() {\n    const link = document.getElementById('link');\n    link.href = redirect_url;\n    link.text = redirect_url;\n    setTimeout(redirect, 500);\n}\n</script>\n</body>\n</html>\n"
+                }
+            ],
             "uri": "auth/check_jwt"
         }
     },
@@ -1519,7 +1533,7 @@
                     "min_base_template_version": "The minimum base template version that the IQ Gateway (formerly \"Envoy\") must meet for this profile.",
                     "min_envoy_version": "The minimum Gateway (formerly \"Envoy\") version to use this profile.",
                     "min_master_model_version": "The minimum master model version that the IQ Gateway (formerly \"Envoy\") must meet for this profile.",
-                    "model_mismatch": "Whether to still try to make a profile, even though there is a version mismatch."
+                    "model_mismatch": "Whether to still try to make a profile, even if there is a version mismatch."
                 }
             }
         }

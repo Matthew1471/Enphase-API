@@ -325,7 +325,7 @@ class JSONSchema:
 class DocumentationGenerator:
     """
     A class to generate generic documentation.
-    This class can be used by other documetnation generators.
+    This class can be used by other documentation generators.
     """
 
     @staticmethod
@@ -461,6 +461,33 @@ class EndpointDocumentationGenerator:
             description=long_description,
             file_depth=file_depth
         )
+
+        # Some endpoints require some hardcoded explanatory details to be included.
+        if 'details' in endpoint:
+            result += EndpointDocumentationGenerator.get_details_section(endpoint['details'])
+
+        return result
+
+    @staticmethod
+    def get_details_section(details):
+        """
+        Generate the details section for Enphase-API documentation.
+
+        This function constructs the details section for the Enphase-API documentation.
+        It includes a heading and details about the endpoint.
+
+        Args:
+            details (str): The details to be included in the documentation.
+
+        Returns:
+            str: The AsciiDoc content for the details section.
+        """
+
+        # Heading.
+        result = '\n== Details\n\n'
+
+        # Add details.
+        result += f'{details}\n\n'
 
         return result
 

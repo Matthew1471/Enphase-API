@@ -95,7 +95,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |`link:Auth/Check_JWT.adoc[Check JSON Web Token (JWT)]`
 |`/auth/check_jwt`
-|Checks a JSON Web Token is valid to login to the system and creates a session.
+|Checks a JSON Web Token (JWT) is valid to login to the system and creates a session.
 
 |===
 

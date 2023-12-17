@@ -230,7 +230,7 @@ As of recent Gateway software versions this request requires a valid `sessionid`
 |`model_mismatch`
 |Boolean
 |Boolean (e.g. `true` or `false`)
-|Whether to still try to make a profile, even though there is a version mismatch.
+|Whether to still try to make a profile, even if there is a version mismatch.
 
 |`logical_device_mismatch`
 |Boolean

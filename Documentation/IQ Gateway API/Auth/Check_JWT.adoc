@@ -29,10 +29,74 @@ endif::[]
 :url-repo: {url-org}/Enphase-API
 :url-contributors: {url-repo}/graphs/contributors
 
-Checks a JSON Web Token is valid to login to the system and creates a session.
+Checks a JSON Web Token (JWT) is valid to login to the system and creates a session.
 
 == Introduction
+
+This checks a JSON Web Token (JWT) is valid to login to the system and if it is creates a session (and an associated `sessionId` cookie). The session cookie can then be on a time limited basis provided instead of the JWT to reduce JWT verification overhead on future API requests.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
 More details on the project are available from the link:../../../README.adoc[project's homepage].
+
+== Details
+
+This simple endpoint is configured to require and perform authentication.
+
+It simply invokes the standard system wide authentication check for any of the following criteria:
+
+* Is the request local (specifically coming from the IPv4 address "127.0.0.1")?
+* Has there been provided any valid session cookie (`sessionId`) that a request has been made with within the last 10 minutes?
+* Check the `authorization` header for a valid JSON Web Token (JWT) that matches all of the following criteria:
+** That can be cryptographically verified by the locally kept public key.
+** That it contains an `enphaseUser`
+** The JWT's audience (`aud`) is now checked for either of the following:
+*** Tokens for `uncommissioned` systems (and one has not been seen before) then the device will trust any uncommissioned token up until the expiration date and time of that first recorded uncommissioned token. Future uncommissioned tokens that expire later than the expiration time of the first uncommissioned token ever seen will not be permitted and the authentication will fail.
+*** Tokens for commissioned systems include a serial number which is checked to see if that matches the serial number of this device.
+
+The user sessions are linked to the token's `jti` and a higher `enphaseUser` role can expire early another lower privileged session.
+
+If any of the above fails the user is met with a `Authorization Required` error. Should it succeed then the user will be diverted to the hidden endpoint `/valid_token` which just returns static text.
+
+As JWT validation is more intensive it is preferred to use this end-point to create a session and then for all subsequent API requests to just use the `sessionId` cookie to authenticate.
+
+
+== Request
+
+A HTTP `GET` to the `/auth/check_jwt` endpoint provides the following response data.
+
+
+== Examples
+
+=== Check Authenticated (Success)
+
+.GET */auth/check_jwt* Response
+[listing]
+----
+<!DOCTYPE html><h2>Valid token.</h2>
+----
+
+=== Check Authenticated (Failure)
+
+.GET */auth/check_jwt* Response
+[listing]
+----
+<html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>Redirecting to <a id='link' href=''></a></center>
+<script>
+const redirect_url = window.location.protocol + '//' + window.location.host + '/home';
+function redirect() { window.location.href = redirect_url; }
+window.onload = function() {
+    const link = document.getElementById('link');
+    link.href = redirect_url;
+    link.text = redirect_url;
+    setTimeout(redirect, 500);
+}
+</script>
+</body>
+</html>
+
+----
