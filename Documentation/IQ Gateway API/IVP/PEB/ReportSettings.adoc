@@ -1,4 +1,4 @@
-= IVP - Power Electronics Blocks (PEB) - Report Settings
+= IVP - PCU ("Power Conditioning Unit") Envoy Bridge (PEB) - Report Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

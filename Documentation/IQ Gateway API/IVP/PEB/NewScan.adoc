@@ -1,4 +1,4 @@
-= IVP - Power Electronics Blocks (PEB) - New Scan
+= IVP - PCU ("Power Conditioning Unit") Envoy Bridge (PEB) - New Scan
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 
@@ -33,7 +33,7 @@ Start, stop or get the results of a new scan for devices.
 
 == Introduction
 
-A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for Power Electronics Blocks (PEB).
+A HTTP GET to `/ivp/peb/newscan` can be used to get details about the device scan running on the PCU ("Power Conditioning Unit", also called "microinverters") Envoy Bridge (PEB).
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 

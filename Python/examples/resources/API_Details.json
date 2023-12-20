@@ -13276,67 +13276,7 @@
             }
         }
     },
-    "IVP / Performance Data Manager (PDM) / Archive": {
-        "uri": "/ivp/pdm/archive"
-    },
-    "IVP / Performance Data Manager (PDM) / Channels": {
-        "uri": "/ivp/pdm/channels"
-    },
-    "IVP / Performance Data Manager (PDM) / Consumption": {
-        "uri": "/ivp/pdm/consumption"
-    },
-    "IVP / Performance Data Manager (PDM) / Database": {
-        "uri": "/ivp/pdm/database"
-    },
-    "IVP / Performance Data Manager (PDM) / Device Data": {
-        "uri": "/ivp/pdm/device_data"
-    },
-    "IVP / Performance Data Manager (PDM) / Device Types": {
-        "uri": "/ivp/pdm/device_types"
-    },
-    "IVP / Performance Data Manager (PDM) / Energy": {
-        "uri": "/ivp/pdm/energy"
-    },
-    "IVP / Performance Data Manager (PDM) / Export": {
-        "uri": "/ivp/pdm/export"
-    },
-    "IVP / Performance Data Manager (PDM) / Export Count": {
-        "uri": "/ivp/pdm/export_count"
-    },
-    "IVP / Performance Data Manager (PDM) / Generation": {
-        "uri": "/ivp/pdm/generation"
-    },
-    "IVP / Performance Data Manager (PDM) / Lifetime": {
-        "uri": "/ivp/pdm/lifetime"
-    },
-    "IVP / Performance Data Manager (PDM) / Maintainence": {
-        "uri": "/ivp/pdm/maintainence"
-    },
-    "IVP / Performance Data Manager (PDM) / Mark": {
-        "uri": "/ivp/pdm/mark"
-    },
-    "IVP / Performance Data Manager (PDM) / Production": {
-        "uri": "/ivp/pdm/production"
-    },
-    "IVP / Performance Data Manager (PDM) / Reading": {
-        "uri": "/ivp/pdm/reading"
-    },
-    "IVP / Performance Data Manager (PDM) / Reset Export": {
-        "uri": "/ivp/pdm/reset_export"
-    },
-    "IVP / Performance Data Manager (PDM) / Stat Name": {
-        "uri": "/ivp/pdm/stat_name"
-    },
-    "IVP / Performance Data Manager (PDM) / Status": {
-        "uri": "/ivp/pdm/status"
-    },
-    "IVP / Performance Data Manager (PDM) / Test": {
-        "uri": "/ivp/pdm/test"
-    },
-    "IVP / Performance Data Manager (PDM) / Unmark": {
-        "uri": "/ivp/pdm/unmark"
-    },
-    "IVP / Power Electronics Blocks (PEB) / Device Status": {
+    "IVP / PCU (\"Power Conditioning Unit\") Envoy Bridge (PEB) / Device Status": {
         "description": {
             "short": "Get device status."
         },
@@ -13406,9 +13346,9 @@
             }
         }
     },
-    "IVP / Power Electronics Blocks (PEB) / New Scan": {
+    "IVP / PCU (\"Power Conditioning Unit\") Envoy Bridge (PEB) / New Scan": {
         "description": {
-            "long": "A HTTP GET to `/ivp/peb/newscan` can be used to get details about the scan for Power Electronics Blocks (PEB).",
+            "long": "A HTTP GET to `/ivp/peb/newscan` can be used to get details about the device scan running on the PCU (\"Power Conditioning Unit\", also called \"microinverters\") Envoy Bridge (PEB).",
             "short": "Start, stop or get the results of a new scan for devices."
         },
         "documentation": "IVP/PEB/NewScan.adoc",
@@ -13489,13 +13429,13 @@
             }
         }
     },
-    "IVP / Power Electronics Blocks (PEB) / Report Frequency": {
+    "IVP / PCU (\"Power Conditioning Unit\") Envoy Bridge (PEB) / Report Frequency": {
         "description": {
             "short": "Get module reporting frequency settings."
         },
         "uri": "ivp/peb/rptfreq"
     },
-    "IVP / Power Electronics Blocks (PEB) / Report Settings": {
+    "IVP / PCU (\"Power Conditioning Unit\") Envoy Bridge (PEB) / Report Settings": {
         "description": {
             "long": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten(R) Cloud\").\n\nThe JSON PUT data is sent incorrectly as `application/x-www-form-urlencoded; charset=UTF-8`. A diagnostic mode may also be enabled, which temporarily sets the `bandwidth` to `high`.",
             "short": "Get or set the priority for reporting to Enphase(R) Cloud (formerly \"Enlighten(R) Cloud\")."
@@ -13573,12 +13513,72 @@
             ]
         }
     },
-    "IVP / Power Electronics Blocks (PEB) / Reported Temperature": {
+    "IVP / PCU (\"Power Conditioning Unit\") Envoy Bridge (PEB) / Reported Temperature": {
         "description": {
             "long": "Get the current IQ Gateway (formerly \"Envoy\") temperature in Celsius.",
             "short": "Get Gateway current temperature."
         },
         "uri": "ivp/peb/rpttemp"
+    },
+    "IVP / Performance Data Manager (PDM) / Archive": {
+        "uri": "/ivp/pdm/archive"
+    },
+    "IVP / Performance Data Manager (PDM) / Channels": {
+        "uri": "/ivp/pdm/channels"
+    },
+    "IVP / Performance Data Manager (PDM) / Consumption": {
+        "uri": "/ivp/pdm/consumption"
+    },
+    "IVP / Performance Data Manager (PDM) / Database": {
+        "uri": "/ivp/pdm/database"
+    },
+    "IVP / Performance Data Manager (PDM) / Device Data": {
+        "uri": "/ivp/pdm/device_data"
+    },
+    "IVP / Performance Data Manager (PDM) / Device Types": {
+        "uri": "/ivp/pdm/device_types"
+    },
+    "IVP / Performance Data Manager (PDM) / Energy": {
+        "uri": "/ivp/pdm/energy"
+    },
+    "IVP / Performance Data Manager (PDM) / Export": {
+        "uri": "/ivp/pdm/export"
+    },
+    "IVP / Performance Data Manager (PDM) / Export Count": {
+        "uri": "/ivp/pdm/export_count"
+    },
+    "IVP / Performance Data Manager (PDM) / Generation": {
+        "uri": "/ivp/pdm/generation"
+    },
+    "IVP / Performance Data Manager (PDM) / Lifetime": {
+        "uri": "/ivp/pdm/lifetime"
+    },
+    "IVP / Performance Data Manager (PDM) / Maintainence": {
+        "uri": "/ivp/pdm/maintainence"
+    },
+    "IVP / Performance Data Manager (PDM) / Mark": {
+        "uri": "/ivp/pdm/mark"
+    },
+    "IVP / Performance Data Manager (PDM) / Production": {
+        "uri": "/ivp/pdm/production"
+    },
+    "IVP / Performance Data Manager (PDM) / Reading": {
+        "uri": "/ivp/pdm/reading"
+    },
+    "IVP / Performance Data Manager (PDM) / Reset Export": {
+        "uri": "/ivp/pdm/reset_export"
+    },
+    "IVP / Performance Data Manager (PDM) / Stat Name": {
+        "uri": "/ivp/pdm/stat_name"
+    },
+    "IVP / Performance Data Manager (PDM) / Status": {
+        "uri": "/ivp/pdm/status"
+    },
+    "IVP / Performance Data Manager (PDM) / Test": {
+        "uri": "/ivp/pdm/test"
+    },
+    "IVP / Performance Data Manager (PDM) / Unmark": {
+        "uri": "/ivp/pdm/unmark"
     },
     "IVP / Secondary Control (SC) / Scheduler Settings": {
         "description": {

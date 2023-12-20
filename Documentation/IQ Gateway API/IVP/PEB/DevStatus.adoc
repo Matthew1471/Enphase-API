@@ -1,4 +1,4 @@
-= IVP - Power Electronics Blocks (PEB) - Device Status
+= IVP - PCU ("Power Conditioning Unit") Envoy Bridge (PEB) - Device Status
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

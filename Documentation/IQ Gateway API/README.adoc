@@ -571,7 +571,7 @@ More details on the project are available from the link:../../README.adoc[projec
 
 |===
 
-==== IVP - Power Electronics Blocks (PEB)
+==== IVP - PCU ("Power Conditioning Unit") Envoy Bridge (PEB)
 
 [cols="1,1,2", options="header"]
 |===
