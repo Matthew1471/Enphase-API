@@ -1,0 +1,112 @@
+= Authentication
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+How the system checks a user is authorised for a request and optionally creates sessions.
+
+== Introduction
+
+On any authenticated endpoint, the IQ Gateway checks a request is authorised, typically for an initial user request, that a JSON Web Token (JWT) is valid to login to the system and if it is creates a session (and an associated `sessionId` cookie) which can be used for a limited time for future requests. The session cookie can then be on a time limited basis provided instead of the JWT to reduce JWT verification overhead on future API requests.
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the xref:../../README.adoc[project's homepage].
+
+== Process
+
+The standard system wide authentication check for any of the following criteria:
+
+* Is the request local and coming from within the IQ Gateway itself (specifically coming from the IPv4 address "127.0.0.1")?
+* Has there been provided any valid session cookie (`sessionId`) that a request has been made with within the last 10 minutes and the held user role meets the minimum role required for the endpoint.
+* Check the `authorization` header for a valid JSON Web Token (JWT) that matches all of the following criteria:
+** That can be cryptographically verified by the locally kept public key.
+** That it contains an `enphaseUser` which states the "role" (privilege level) the account has.
+** That the `enphaseUser` role held meets the minimum role required for the endpoint.
+** The JWT's audience (`aud`) is now checked for either of the following:
+*** Tokens for `uncommissioned` systems (and one has not been seen before) then the device will trust any uncommissioned token up until the expiration date and time of that first recorded uncommissioned token. Future uncommissioned tokens that expire later than the expiration time of the first uncommissioned token ever seen will not be permitted and the authentication will fail.
+*** Tokens for commissioned systems include a serial number which is checked to see if that matches the serial number of this device.
+
+The user sessions are linked to the token's `jti` and a higher `enphaseUser` role can expire early another lower privileged session.
+
+If any of the above fails the user is met with a `Authorization Required` error.
+
+As JWT validation is more intensive than session validation, it is preferred to use a simple endpoint such as xref:Auth/Check_JWT.adoc[Auth/Check_JWT] to create a session and then for all subsequent API requests to just use the `sessionId` cookie to authenticate.
+
+== Roles
+
+API endpoints that require authentication check the session (created by supplying a JWT) meets the required minimum authorisation level for that endpoint (each authorisation level includes all of the previous authorisation role):
+
+[cols="1,1,2", options="header"]
+|===
+|Role Name
+|Authorisation Level
+|Description
+
+|`anybody`
+|1
+|Any valid authenticated user.
+
+|`monitor`
+|2
+|A user who can monitor the system.
+
+|`owner`
+|2
+|The owner of the Enphase(R) system.
+
+|`prov`
+|3
+|A user trusted with provisioning responsibilities.
+
+|`support`
+|4
+|Enphase(R) support.
+
+|`sysadmin`
+|5
+|A system administrator.
+
+|`installer`
+|6
+|An Enphase(R) installer.
+
+|`envoy`
+|7
+|The IQ Gateway (formerly "Envoy") itself.
+
+|`enphase`
+|7
+|Enphase(R) themselves (presumably a more senior tier of support).
+
+|`factory`
+|7
+|The Enphase(R) factory.
+
+|===

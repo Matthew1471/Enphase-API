@@ -33,13 +33,13 @@ endif::[]
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../README.adoc[project's homepage].
+More details on the project are available from the xref:../README.adoc[project's homepage].
 
 == API Wrapper
 
 Wrappers for the APIs are currently provided in the following languages:
 
-* link:Wrappers/Python/README.adoc[Python]
+* xref:Wrappers/Python/README.adoc[Python]
 
 == API Documentation
 
@@ -47,7 +47,7 @@ Wrappers for the APIs are currently provided in the following languages:
 
 The following documentation is provided by this project:
 
-* link:IQ%20Gateway%20API/README.adoc[IQ Gateway API]
+* xref:IQ%20Gateway%20API/README.adoc[IQ Gateway API]
 
 Enphase(R) also have a brief document on the local API at link:https://enphase.com/download/accessing-iq-gateway-local-apis-or-local-ui-token-based-authentication[Accessing IQ Gateway local APIs or local UI with token-based authentication] but not all of the API or any of the fields are described.
 

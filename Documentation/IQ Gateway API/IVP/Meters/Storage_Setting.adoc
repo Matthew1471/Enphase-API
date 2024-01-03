@@ -35,13 +35,13 @@ Get or set the storage Current Transformer (CT) clamp status.
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../../../../README.adoc[project's homepage].
+More details on the project are available from the xref:../../../../README.adoc[project's homepage].
 
 == Request
 
 A HTTP `GET` to the `/ivp/meters/storage_setting` endpoint provides the following response data.
 
-As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../../Auth/Check_JWT.adoc[Auth/Check_JWT].
+As of recent Gateway software versions this request requires user authentication and authorisation, see xref:../../Authentication.adoc[Authentication].
 
 == Response
 

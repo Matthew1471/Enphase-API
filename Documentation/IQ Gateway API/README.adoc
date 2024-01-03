@@ -33,8 +33,19 @@ endif::[]
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../../README.adoc[project's homepage].
+More details on the project are available from the xref:../../README.adoc[project's homepage].
 
+== General Documentation
+
+[cols="1,2", options="header"]
+|===
+|Name
+|Description
+
+|`xref:Authentication.adoc[Authentication]`
+|How authentication and authorisation works with the Local API.
+
+|===
 == Endpoints
 
 === Admin
@@ -47,39 +58,39 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Admin/Lib/ACB_Config.adoc[AC Battery (ACB) Configuration]`
+|`xref:Admin/Lib/ACB_Config.adoc[AC Battery (ACB) Configuration]`
 |`/admin/lib/acb_config.json`
 |Get, set or cancel an AC Battery’s (ACB) sleep mode.
 
-|`link:Admin/Lib/Admin_DCC_Display.adoc[Administer Device Conditions and Controls (DCC)]`
+|`xref:Admin/Lib/Admin_DCC_Display.adoc[Administer Device Conditions and Controls (DCC)]`
 |`/admin/lib/admin_dcc_display.json`
 |Send a Device Conditions and Controls (DCC) command, such as to clear a Ground Fault Interrupt (GFI).
 
-|`link:Admin/Lib/Admin_PMU_Display.adoc[Administer Power Meter Unit (PMU)]`
+|`xref:Admin/Lib/Admin_PMU_Display.adoc[Administer Power Meter Unit (PMU)]`
 |`/admin/lib/admin_pmu_display.json`
 |Add, read or remove a Power Meter Unit (PMU).
 
-|`link:Admin/Lib/Date_Time_Display.adoc[Date and Time Settings]`
+|`xref:Admin/Lib/Date_Time_Display.adoc[Date and Time Settings]`
 |`/admin/lib/date_time_display.json`
 |Get or set date, time and timezone.
 
-|`link:Admin/Lib/DBA.adoc[De-Bug Access (DBA)]`
+|`xref:Admin/Lib/DBA.adoc[De-Bug Access (DBA)]`
 |`/admin/lib/dba.json`
 |Get or set the Enphase(R) De-Bug Access (DBA) tunnel state.
 
-|`link:Admin/Lib/Network_Display.adoc[Network Configuration]`
+|`xref:Admin/Lib/Network_Display.adoc[Network Configuration]`
 |`/admin/lib/network_display.json`
 |Get/Set network information and/or perform network diagnostics.
 
-|`link:Admin/Lib/Security_Display.adoc[Security Configuration]`
+|`xref:Admin/Lib/Security_Display.adoc[Security Configuration]`
 |`/admin/lib/security_display.json`
 |Change password (legacy).
 
-|`link:Admin/Lib/Tariff.adoc[Tariff Configuration]`
+|`xref:Admin/Lib/Tariff.adoc[Tariff Configuration]`
 |`/admin/lib/tariff.json`
 |Get or set the tariff settings.
 
-|`link:Admin/Lib/Wireless_Display.adoc[Wireless Configuration]`
+|`xref:Admin/Lib/Wireless_Display.adoc[Wireless Configuration]`
 |`/admin/lib/wireless_display.json`
 |Get or set the wireless settings.
 
@@ -93,9 +104,9 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Auth/Check_JWT.adoc[Check JSON Web Token (JWT)]`
+|`xref:Auth/Check_JWT.adoc[Check JSON Web Token (JWT)]`
 |`/auth/check_jwt`
-|Checks a JSON Web Token (JWT) is valid to login to the system and creates a session.
+|Checks a user is authenticated and authorised.
 
 |===
 
@@ -107,15 +118,15 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Datatab/Admin_DCC_Display_DT.adoc[Administer Device Conditions and Controls (DCC) DataTable]`
+|`xref:Datatab/Admin_DCC_Display_DT.adoc[Administer Device Conditions and Controls (DCC) DataTable]`
 |`/datatab/admin_dcc_display_dt`
 |Used by the JavaScript datatable to return Device Conditions and Controls (DCC) records.
 
-|`link:Datatab/Event_DT.adoc[Events DataTable]`
+|`xref:Datatab/Event_DT.adoc[Events DataTable]`
 |`/datatab/event_dt.rb`
 |Used by the JavaScript datatable to return event log records.
 
-|`link:Datatab/Inventory_DT.adoc[Inventory DataTable]`
+|`xref:Datatab/Inventory_DT.adoc[Inventory DataTable]`
 |`/datatab/inventory_dt`
 |Used by the JavaScript datatable to return inventory records.
 
@@ -129,31 +140,31 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:General/Home.adoc[Home]`
+|`xref:General/Home.adoc[Home]`
 |`/home.json`
 |Obtain a summary of the gateway status.
 
-|`link:General/Info.adoc[Information]`
+|`xref:General/Info.adoc[Information]`
 |`/info.xml`
 |Obtain an unauthenticated summary of the gateway’s software status.
 
-|`link:General/Inv.adoc[Inv]`
+|`xref:General/Inv.adoc[Inv]`
 |`/inv`
 |Get the Electrical SUB-panels (ESUBs) status, also includes the "IQ System Controller" (formerly "Enpower") circuit board.
 
-|`link:General/Inventory.adoc[Inventory]`
+|`xref:General/Inventory.adoc[Inventory]`
 |`/inventory.json`
 |Lists the inventory of `PCU` (Power Conditioning Unit, also called a "microinverter"), `ACB` (AC Battery), `NSRB` (Network System Relay Breaker?, also called an "IQ Relay") and `ESUB` (Electrical SUB-panel, also called an "IQ System Controller" formerly "Enpower") devices.
 
-|`link:General/Production.adoc[Production]`
+|`xref:General/Production.adoc[Production]`
 |`/production.json`
 |Obtain production data.
 
-|`link:General/Prov.adoc[Provision]`
+|`xref:General/Prov.adoc[Provision]`
 |`/prov`
 |Adds or deletes inverters.
 
-|`link:General/Upload.adoc[Upload]`
+|`xref:General/Upload.adoc[Upload]`
 |`/upload`
 |Upload file package.
 
@@ -169,27 +180,27 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Installer/AGF/Details.adoc[Details]`
+|`xref:Installer/AGF/Details.adoc[Details]`
 |`/installer/agf/details.json`
 |Get an Advanced Grid Functionality (AGF) profile.
 
-|`link:Installer/AGF/Index.adoc[Index]`
+|`xref:Installer/AGF/Index.adoc[Index]`
 |`/installer/agf/index.json`
 |List uploaded Advanced Grid Functionality (AGF) profile(s).
 
-|`link:Installer/AGF/Inverters_Phase.adoc[Inverters Phase]`
+|`xref:Installer/AGF/Inverters_Phase.adoc[Inverters Phase]`
 |`/installer/agf/inverters_phase.rb`
 |List each inverter installed by phase.
 
-|`link:Installer/AGF/Inverters_Status.adoc[Inverters Status]`
+|`xref:Installer/AGF/Inverters_Status.adoc[Inverters Status]`
 |`/installer/agf/inverters_status.json` and `/installer/agf/inverters_status`
 |Get the Advanced Grid Functionality (AGF) profile status of each inverter and/or set its associated phase.
 
-|`link:Installer/AGF/Set_Profile.adoc[Set Profile]`
+|`xref:Installer/AGF/Set_Profile.adoc[Set Profile]`
 |`/installer/agf/set_profile.json`
 |Set the Advanced Grid Functionality (AGF) profile.
 
-|`link:Installer/AGF/Upload_Profile_Package.adoc[Upload Profile Package]`
+|`xref:Installer/AGF/Upload_Profile_Package.adoc[Upload Profile Package]`
 |`/installer/agf/upload_profile_package`
 |Upload a new Advanced Grid Functionality (AGF) profile.
 
@@ -203,27 +214,27 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Installer/PCU_Comm_Check.adoc[Power Conditioning Unit (PCU) Communication Check]`
+|`xref:Installer/PCU_Comm_Check.adoc[Power Conditioning Unit (PCU) Communication Check]`
 |`/installer/pcu_comm_check`
 |Check communication with the Power Conditioning Unit(s) (PCU, also called "microinverter(s)").
 
-|`link:Installer/SSH_Revoke_List.adoc[Secure SHell (SSH) Revoke List]`
+|`xref:Installer/SSH_Revoke_List.adoc[Secure SHell (SSH) Revoke List]`
 |`/installer/ssh_revoke_list`
 |Get the list of Secure SHell (SSH) revoked keys.
 
-|`link:Installer/Upgrade_Start.adoc[Upgrade Start]`
+|`xref:Installer/Upgrade_Start.adoc[Upgrade Start]`
 |`/installer/upgrade_start`
 |Start an upgrade of a gateway or Energy Management Unit (EMU).
 
-|`link:Installer/Upgrade_Status.adoc[Upgrade Status]`
+|`xref:Installer/Upgrade_Status.adoc[Upgrade Status]`
 |`/installer/upgrade_status`
 |Get the status of a gateway or Energy Management Unit (EMU) upgrade.
 
-|`link:Installer/Upload.adoc[Upload]`
+|`xref:Installer/Upload.adoc[Upload]`
 |`/installer/upload.json`
 |Upload a file to the gateway or Energy Management Unit (EMU).
 
-|`link:Installer/xapi.adoc[xapi]`
+|`xref:Installer/xapi.adoc[xapi]`
 |`+++<s>+++/installer/xapi+++</s>+++`
 |Legacy API providing `api_version`, `upgrade_init`, `upgrade_status`, `restart_page_process`, `auxup` (start file upload server), `upgrade_start` (start an upgrade), `upgrade_resume` (resume an upgrade), `update_profile_key`, `upload` (upload a file).
 
@@ -243,11 +254,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/ARF/Profile/Multimode/Off_Grid.adoc[Off Grid]`
+|`xref:IVP/ARF/Profile/Multimode/Off_Grid.adoc[Off Grid]`
 |`/ivp/arf/profile/multimode/off_grid`
 |Get or set the profile for the multi-mode inverter when running off-grid.
 
-|`link:IVP/ARF/Profile/Multimode/On_Grid.adoc[On Grid]`
+|`xref:IVP/ARF/Profile/Multimode/On_Grid.adoc[On Grid]`
 |`/ivp/arf/profile/multimode/on_grid`
 |Get or set the profile for the multi-mode inverter when running on-grid.
 
@@ -263,7 +274,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/ADC/RelaxedParams/Add.adoc[Add Relaxed Parameters]`
+|`xref:IVP/ADC/RelaxedParams/Add.adoc[Add Relaxed Parameters]`
 |`/ivp/adc/relaxedparams/add`
 |Overrides M-Series Parameters.
 
@@ -277,11 +288,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Cellular/All.adoc[All Devices]`
+|`xref:IVP/Cellular/All.adoc[All Devices]`
 |`/ivp/cellular`
 |Get all cellular devices information.
 
-|`link:IVP/Cellular/EID.adoc[Specific Device]`
+|`xref:IVP/Cellular/EID.adoc[Specific Device]`
 |`/ivp/cellular/{EID}`
 |Get specific cellular device information.
 
@@ -297,11 +308,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/EH/Devs/All.adoc[All Devices]`
+|`xref:IVP/EH/Devs/All.adoc[All Devices]`
 |`/ivp/eh/devs`
 |Get all devices’ status (including microinverters and meters).
 
-|`link:IVP/EH/Devs/EID.adoc[Specific Device]`
+|`xref:IVP/EH/Devs/EID.adoc[Specific Device]`
 |`/ivp/eh/devs/{EID}`
 |Get specific device’s status (of a microinverter, meter etc).
 
@@ -317,11 +328,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Ensemble/DataRaw/All.adoc[All Devices]`
+|`xref:IVP/Ensemble/DataRaw/All.adoc[All Devices]`
 |`/ivp/ensemble/dataraw/`
 |Get Enphase(R) Energy System (formerly "Ensemble") raw data for all devices.
 
-|`link:IVP/Ensemble/DataRaw/EID.adoc[Specific Device]`
+|`xref:IVP/Ensemble/DataRaw/EID.adoc[Specific Device]`
 |`/ivp/ensemble/dataraw/{EID}`
 |Get Enphase(R) Energy System (formerly "Ensemble") raw data for a specific device.
 
@@ -335,75 +346,75 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Ensemble/Comm_Check.adoc[Communication Check]`
+|`xref:IVP/Ensemble/Comm_Check.adoc[Communication Check]`
 |`/ivp/ensemble/comm_check`
 |IQ System Controller (formerly "Enpower") and IQ Battery (formerly "Encharge Storage") communication check.
 
-|`link:IVP/Ensemble/Decommission.adoc[Decommission]`
+|`xref:IVP/Ensemble/Decommission.adoc[Decommission]`
 |`/ivp/ensemble/decommission`
 |Delete an Enphase(R) Energy System (formerly "Ensemble") CAN device (3rd-Generation).
 
-|`link:IVP/Ensemble/Device_List.adoc[Device List]`
+|`xref:IVP/Ensemble/Device_List.adoc[Device List]`
 |`/ivp/ensemble/device_list`
 |Get Enphase(R) Energy System (formerly "Ensemble") CAN device (3rd-Generation) status.
 
-|`link:IVP/Ensemble/Device_Provision.adoc[Device Provision]`
+|`xref:IVP/Ensemble/Device_Provision.adoc[Device Provision]`
 |`/ivp/ensemble/device_provision`
 |Provision an Enphase(R) Energy System (formerly "Ensemble") CAN device.
 
-|`link:IVP/Ensemble/Device_Status.adoc[Device Status]`
+|`xref:IVP/Ensemble/Device_Status.adoc[Device Status]`
 |`/ivp/ensemble/device_status`
 |Get Enphase(R) Energy System (formerly "Ensemble") device status.
 
-|`link:IVP/Ensemble/Dry_Contacts.adoc[Dry Contacts]`
+|`xref:IVP/Ensemble/Dry_Contacts.adoc[Dry Contacts]`
 |`/ivp/ensemble/dry_contacts`
 |Get or set the IQ System Controller (formerly "Enpower") dry contact status.
 
-|`link:IVP/Ensemble/EC1_Wiring_Test.adoc[EC1 Wiring Test]`
+|`xref:IVP/Ensemble/EC1_Wiring_Test.adoc[EC1 Wiring Test]`
 |`/ivp/ensemble/ec1_wiring_test`
 |Start or get the results of an IQ Battery (formerly "Encharge Storage") wiring test.
 
-|`link:IVP/Ensemble/Errors.adoc[Errors]`
+|`xref:IVP/Ensemble/Errors.adoc[Errors]`
 |`/ivp/ensemble/errors`
 |Get or set the IQ System Controller (formerly "Enpower") error state.
 
-|`link:IVP/Ensemble/Generator.adoc[Generator Status]`
+|`xref:IVP/Ensemble/Generator.adoc[Generator Status]`
 |`/ivp/ensemble/generator`
 |Get or set the IQ System Controller (formerly "Enpower") generator status.
 
-|`link:IVP/Ensemble/Gen_Wiring_Test.adoc[Generator Wiring Test]`
+|`xref:IVP/Ensemble/Gen_Wiring_Test.adoc[Generator Wiring Test]`
 |`/ivp/ensemble/gen_wiring_test`
 |Start or get the results of the generator wiring test.
 
-|`link:IVP/Ensemble/Inventory.adoc[Inventory]`
+|`xref:IVP/Ensemble/Inventory.adoc[Inventory]`
 |`/ivp/ensemble/inventory`
 |Get Energy System (formerly "Ensemble") inventory.
 
-|`link:IVP/Ensemble/Profile_Status.adoc[Profile Status]`
+|`xref:IVP/Ensemble/Profile_Status.adoc[Profile Status]`
 |`/ivp/ensemble/profile_status`
 |Get or set the Enphase(R) Energy System (formerly "Ensemble") Advanced Grid Functionality (AGF) profile status.
 
-|`link:IVP/Ensemble/Relay.adoc[Relay]`
+|`xref:IVP/Ensemble/Relay.adoc[Relay]`
 |`/ivp/ensemble/relay`
 |Get the status of or toggle the grid relay.
 
-|`link:IVP/Ensemble/Reset_Device.adoc[Reset Device]`
+|`xref:IVP/Ensemble/Reset_Device.adoc[Reset Device]`
 |`/ivp/ensemble/reset_device/{SERIAL_NUMBER}`
 |Reset a CAN device for IQ System Controller (formerly "Enpower") manual override.
 
-|`link:IVP/Ensemble/Sleep.adoc[Sleep]`
+|`xref:IVP/Ensemble/Sleep.adoc[Sleep]`
 |`/ivp/ensemble/sleep`
 |Get, set or cancel the IQ Battery (formerly "Encharge Storage") sleep mode.
 
-|`link:IVP/Ensemble/Status.adoc[Status]`
+|`xref:IVP/Ensemble/Status.adoc[Status]`
 |`/ivp/ensemble/status`
 |Get Enphase(R) Energy System (formerly "Ensemble") status.
 
-|`link:IVP/Ensemble/Submod.adoc[Submodules]`
+|`xref:IVP/Ensemble/Submod.adoc[Submodules]`
 |`/ivp/ensemble/submod`
 |Get Enphase(R) Energy System (formerly "Ensemble") submodules.
 
-|`link:IVP/Ensemble/SecCtrl.adoc[Zigbee Security Control Messages]`
+|`xref:IVP/Ensemble/SecCtrl.adoc[Zigbee Security Control Messages]`
 |`/ivp/ensemble/secctrl`
 |Get the Energy System (formerly "Ensemble") status using Zigbee Security Control (SecCtrl) messages.
 
@@ -417,19 +428,19 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/FirmwareManager/Config.adoc[Config]`
+|`xref:IVP/FirmwareManager/Config.adoc[Config]`
 |`/ivp/firmware_manager/config`
 |Get or set Enphase(R) Energy System (formerly "Ensemble") Software (ESS) automatic update settings (and might be a typo but also meter configuration status?).
 
-|`link:IVP/FirmwareManager/State.adoc[State]`
+|`xref:IVP/FirmwareManager/State.adoc[State]`
 |`/ivp/firmware_manager/state`
 |Get Enphase(R) Energy System (formerly "Ensemble") Software (ESS) update state.
 
-|`link:IVP/FirmwareManager/Update_All.adoc[Update All]`
+|`xref:IVP/FirmwareManager/Update_All.adoc[Update All]`
 |`/ivp/firmware_manager/update_all`
 |Update all IQ System Controller (formerly "Enpower") and Enphase(R) Energy System (formerly "Ensemble") Software (ESS) devices.
 
-|`link:IVP/FirmwareManager/Update_Single.adoc[Update Single]`
+|`xref:IVP/FirmwareManager/Update_Single.adoc[Update Single]`
 |`/ivp/firmware_manager/update_single`
 |Update a single Enphase(R) Energy System (formerly "Ensemble") or IQ System Controller (formerly "Enpower") device.
 
@@ -443,11 +454,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Grest/Profile.adoc[Profile]`
+|`xref:IVP/Grest/Profile.adoc[Profile]`
 |`/ivp/grest/profile/G99-1-6%3A2020%20UK/1.2.10`
 |Display Advanced Grid Functionality (AGF) profile.
 
-|`link:IVP/Grest/Local/GS/RedeterminePhase.adoc[Redetermine Phase]`
+|`xref:IVP/Grest/Local/GS/RedeterminePhase.adoc[Redetermine Phase]`
 |`/ivp/grest/local/gs/redeterminephase`
 |Redetermine phase.
 
@@ -461,11 +472,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/LiveData/Status.adoc[Status]`
+|`xref:IVP/LiveData/Status.adoc[Status]`
 |`/ivp/livedata/status`
 |Get live data MQTT streaming status.
 
-|`link:IVP/LiveData/Stream.adoc[Stream]`
+|`xref:IVP/LiveData/Stream.adoc[Stream]`
 |`/ivp/livedata/stream`
 |Enable or disable live data MQTT streaming.
 
@@ -481,11 +492,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/CTS/All.adoc[All Meters]`
+|`xref:IVP/Meters/CTS/All.adoc[All Meters]`
 |`/ivp/meters/cts`
 |Get meters’ Current Transformer (CT) clamp settings.
 
-|`link:IVP/Meters/CTS/EID.adoc[Specific Meter]`
+|`xref:IVP/Meters/CTS/EID.adoc[Specific Meter]`
 |`/ivp/meters/cts/{EID}`
 |Get or update specific meter’s Current Transformer (CT) clamp settings by Gateway (formerly "Envoy") record ID.
 
@@ -499,19 +510,19 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/All.adoc[All Meters’ Settings]`
+|`xref:IVP/Meters/All.adoc[All Meters’ Settings]`
 |`/ivp/meters`
 |Get or set internal meters’ settings.
 
-|`link:IVP/Meters/CTReversal.adoc[Specific Meter’s Current Transformer (CT) Reversal]`
+|`xref:IVP/Meters/CTReversal.adoc[Specific Meter’s Current Transformer (CT) Reversal]`
 |`/ivp/meters/ctreversal/{EID}`
 |Get or set specific meter’s Current Transformer (CT) clamp reverse polarity settings globally or by a meter identifier.
 
-|`link:IVP/Meters/EID.adoc[Specific Meter’s Settings]`
+|`xref:IVP/Meters/EID.adoc[Specific Meter’s Settings]`
 |`/ivp/meters/{EID}`
 |Get or set a specific meter’s settings by Gateway (formerly "Envoy") record ID.
 
-|`link:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
+|`xref:IVP/Meters/Storage_Setting.adoc[Storage Setting]`
 |`/ivp/meters/storage_setting`
 |Get or set the storage Current Transformer (CT) clamp status.
 
@@ -525,11 +536,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/Readings/All.adoc[All Meters]`
+|`xref:IVP/Meters/Readings/All.adoc[All Meters]`
 |`/ivp/meters/readings`
 |Get readings from all the meters.
 
-|`link:IVP/Meters/Readings/EID.adoc[Specific Meter]`
+|`xref:IVP/Meters/Readings/EID.adoc[Specific Meter]`
 |`/ivp/meters/readings/{EID}`
 |Get specific meter’s readings by Gateway (formerly "Envoy") record ID.
 
@@ -543,15 +554,15 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Meters/Reports/All.adoc[All Meters]`
+|`xref:IVP/Meters/Reports/All.adoc[All Meters]`
 |`/ivp/meters/reports/`
 |Get readings from all the meters.
 
-|`link:IVP/Meters/Reports/Consumption.adoc[Consumption Only]`
+|`xref:IVP/Meters/Reports/Consumption.adoc[Consumption Only]`
 |`/ivp/meters/reports/consumption`
 |Get readings from the consumption meters.
 
-|`link:IVP/Meters/Reports/Production.adoc[Production Only]`
+|`xref:IVP/Meters/Reports/Production.adoc[Production Only]`
 |`/ivp/meters/reports/production`
 |Get readings from the production meters.
 
@@ -565,7 +576,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/Mod/EID/Mode/Power.adoc[Power Mode]`
+|`xref:IVP/Mod/EID/Mode/Power.adoc[Power Mode]`
 |`/ivp/mod/{EID}/mode/power`
 |Get or set the power production power state, where the Gateway (formerly "Envoy") record ID is hardcoded as `603980032`.
 
@@ -579,15 +590,15 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/PEB/DevStatus.adoc[Device Status]`
+|`xref:IVP/PEB/DevStatus.adoc[Device Status]`
 |`/ivp/peb/devstatus`
 |Get device status.
 
-|`link:IVP/PEB/NewScan.adoc[New Scan]`
+|`xref:IVP/PEB/NewScan.adoc[New Scan]`
 |`/ivp/peb/newscan`
 |Start, stop or get the results of a new scan for devices.
 
-|`link:IVP/PEB/ReportSettings.adoc[Report Settings]`
+|`xref:IVP/PEB/ReportSettings.adoc[Report Settings]`
 |`/ivp/peb/reportsettings`
 |Get or set the priority for reporting to Enphase(R) Cloud (formerly "Enlighten(R) Cloud").
 
@@ -601,11 +612,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/SC/Sched.adoc[Scheduler Settings]`
+|`xref:IVP/SC/Sched.adoc[Scheduler Settings]`
 |`/ivp/sc/sched`
 |Get or override Encharge charging/discharging status.
 
-|`link:IVP/SC/Status.adoc[Status]`
+|`xref:IVP/SC/Status.adoc[Status]`
 |`/ivp/sc/status`
 |Get Secondary Control (SC) status.
 
@@ -619,59 +630,59 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/SS/dpel.adoc[Device Power Export Limits (PEL) Settings]`
+|`xref:IVP/SS/dpel.adoc[Device Power Export Limits (PEL) Settings]`
 |`+++<s>+++/ivp/ss/dpel+++</s>+++`
 |Get or set Device Power Export Limit (PEL) settings (Legacy, replaced by AGF).
 
-|`link:IVP/SS/DER_Settings.adoc[Distributed Energy Resource (DER) Settings]`
+|`xref:IVP/SS/DER_Settings.adoc[Distributed Energy Resource (DER) Settings]`
 |`/ivp/ss/der_settings`
 |Get or set Distributed Energy Resource (DER) settings.
 
-|`link:IVP/SS/Dry_Contact_Settings.adoc[Dry Contact Settings]`
+|`xref:IVP/SS/Dry_Contact_Settings.adoc[Dry Contact Settings]`
 |`/ivp/ss/dry_contact_settings`
 |Get or set dry contact settings.
 
-|`link:IVP/SS/Gen_Config.adoc[Generator Configuration]`
+|`xref:IVP/SS/Gen_Config.adoc[Generator Configuration]`
 |`/ivp/ss/gen_config`
 |Get or set generator configuration.
 
-|`link:IVP/SS/Gen_Delete.adoc[Generator Delete]`
+|`xref:IVP/SS/Gen_Delete.adoc[Generator Delete]`
 |`/ivp/ss/gen_delete`
 |Delete generator.
 
-|`link:IVP/SS/Generator_Meter_Enable.adoc[Generator Meter Enable]`
+|`xref:IVP/SS/Generator_Meter_Enable.adoc[Generator Meter Enable]`
 |`/ivp/ss/generator_meter_enable`
 |Set generator meter state.
 
-|`link:IVP/SS/Gen_Mode.adoc[Generator Mode]`
+|`xref:IVP/SS/Gen_Mode.adoc[Generator Mode]`
 |`/ivp/ss/gen_mode`
 |Get or set generator’s status for toggle switch.
 
-|`link:IVP/SS/Gen_Profile.adoc[Generator Profile]`
+|`xref:IVP/SS/Gen_Profile.adoc[Generator Profile]`
 |`/ivp/ss/gen_profile`
 |Get or set generator’s profile.
 
-|`link:IVP/SS/Gen_Schedule.adoc[Generator Schedule]`
+|`xref:IVP/SS/Gen_Schedule.adoc[Generator Schedule]`
 |`/ivp/ss/gen_schedule`
 |Get or set generator schedule.
 
-|`link:IVP/SS/ENC_Settings.adoc[IQ Battery (formerly "Encharge") Settings]`
+|`xref:IVP/SS/ENC_Settings.adoc[IQ Battery (formerly "Encharge") Settings]`
 |`/ivp/ss/enc_settings`
 |Update IQ Battery (formerly "Encharge") settings.
 
-|`link:IVP/SS/Load_Control.adoc[Load Control]`
+|`xref:IVP/SS/Load_Control.adoc[Load Control]`
 |`/ivp/ss/load_control`
 |Add load control kits.
 
-|`link:IVP/SS/PCS_Settings.adoc[Power Control System (PCS) Settings]`
+|`xref:IVP/SS/PCS_Settings.adoc[Power Control System (PCS) Settings]`
 |`/ivp/ss/pcs_settings`
 |Get or set Power Control System (PCS) details.
 
-|`link:IVP/SS/PEL_Settings.adoc[Power Export Limits (PEL) Settings]`
+|`xref:IVP/SS/PEL_Settings.adoc[Power Export Limits (PEL) Settings]`
 |`/ivp/ss/pel_settings`
 |Get Power Export Limits (PEL) data.
 
-|`link:IVP/SS/Sys_Phase_Balance.adoc[System Phase Balance]`
+|`xref:IVP/SS/Sys_Phase_Balance.adoc[System Phase Balance]`
 |`/ivp/ss/sys_phase_balance`
 |Send phase information.
 
@@ -685,7 +696,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/SS/Third%20Party/PV.adoc[PV]`
+|`xref:IVP/SS/Third%20Party/PV.adoc[PV]`
 |`+++<s>+++/ivp/ss/third_party/pv+++</s>+++`
 |Get, set or delete third-party PV information.
 
@@ -699,19 +710,19 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/TPM/Capability.adoc[Capability]`
+|`xref:IVP/TPM/Capability.adoc[Capability]`
 |`+++<s>+++/ivp/tpm/capability+++</s>+++`
 |Trip Point Management (TPM) capability.
 
-|`link:IVP/TPM/Parameters.adoc[Parameters]`
+|`xref:IVP/TPM/Parameters.adoc[Parameters]`
 |`+++<s>+++/ivp/tpm/parameters+++</s>+++`
 |Trip Point Management (TPM) parameters.
 
-|`link:IVP/TPM/Select.adoc[Select]`
+|`xref:IVP/TPM/Select.adoc[Select]`
 |`+++<s>+++/ivp/tpm/select+++</s>+++`
 |Trip Point Management (TPM) select.
 
-|`link:IVP/TPM/TPMStatus.adoc[TPM Status]`
+|`xref:IVP/TPM/TPMStatus.adoc[TPM Status]`
 |`+++<s>+++/ivp/tpm/tpmstatus+++</s>+++`
 |Trip Point Management (TPM) status.
 
@@ -725,23 +736,23 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:IVP/ZB/Pairing_Status.adoc[Pairing Status]`
+|`xref:IVP/ZB/Pairing_Status.adoc[Pairing Status]`
 |`/ivp/zb/pairing_status`
 |Get Enphase(R) Energy System (formerly "Ensemble") Zigbee pairing status.
 
-|`link:IVP/ZB/Provision.adoc[Provision]`
+|`xref:IVP/ZB/Provision.adoc[Provision]`
 |`/ivp/zb/provision`
 |Set or delete Enphase(R) Energy System (formerly "Ensemble") devices.
 
-|`link:IVP/ZB/Reset_Device.adoc[Reset Device]`
+|`xref:IVP/ZB/Reset_Device.adoc[Reset Device]`
 |`/ivp/zb/reset_device`
 |Reset device for "IQ System Controller" (formerly "Enpower") manual override.
 
-|`link:IVP/ZB/Set_Phase.adoc[Set Phase]`
+|`xref:IVP/ZB/Set_Phase.adoc[Set Phase]`
 |`/ivp/zb/set_phase`
 |Update IQ Battery (formerly "Encharge Storage") phase.
 
-|`link:IVP/ZB/Status.adoc[Status]`
+|`xref:IVP/ZB/Status.adoc[Status]`
 |`/ivp/zb/status`
 |Get Zigbee status.
 
@@ -755,11 +766,11 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:Stream/Meter.adoc[Meter]`
+|`xref:Stream/Meter.adoc[Meter]`
 |`/stream/meter`
 |Obtain a continuous stream of meter readings.
 
-|`link:Stream/PSD.adoc[Power Spectral Density (PSD)]`
+|`xref:Stream/PSD.adoc[Power Spectral Density (PSD)]`
 |`/stream/psd`
 |Obtain a continuous stream of Power-Spectral-Density analysis of the Power-Line Communication (PLC).
 
@@ -773,7 +784,7 @@ More details on the project are available from the link:../../README.adoc[projec
 |URI
 |Description
 
-|`link:V1/Production/Inverters.adoc[Inverter(s) Production (Version 1 API)]`
+|`xref:V1/Production/Inverters.adoc[Inverter(s) Production (Version 1 API)]`
 |`/api/v1/production/inverters`
 |Obtain the legacy microinverter energy production information.
 
