@@ -37,27 +37,29 @@ A HTTP GET to `/stream/meter` can be used to get a stream of "https://en.wikiped
 
 In version D7.0.88 this would return on a single phase system 21 - 23 results every 21 - 23 seconds, this was due to the Gateway polling every second but buffering the data (with a 16 KB = 16,384 byte buffer). The buffering issue was fixed in newer gateway versions.
 
-However in newer versions such as D7.6.175, Enphase(R) restricted this to only tokens of the "Installer" type, "Owner" tokens would result in an access denied error.
+However in newer versions such as D7.6.175, Enphase(R) restricted this to tokens typically not available to system owners (such as `installer` tokens).
 
 Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
 
-More details on the project are available from the link:../../../README.adoc[project's homepage].
+More details on the project are available from the xref:../../../README.adoc[project's homepage].
 
 == Request
 
 The `/stream/meter` endpoint supports the following:
 
 === Methods
-[cols="1,2", options="header"]
+[cols="1,1,2", options="header"]
 |===
 |Method
+|xref:../Authentication.adoc#roles[Required Authorisation Level]
 |Description
 
 |`GET`
+|>= `prov`
 |Get meter data.
 
 |===
-As of recent Gateway software versions this request requires a valid `sessionid` cookie obtained by link:../Auth/Check_JWT.adoc[Auth/Check_JWT].
+As of recent Gateway software versions this request requires user authentication and authorisation, see xref:../Authentication.adoc[Authentication].
 
 == Response
 
