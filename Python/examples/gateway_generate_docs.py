@@ -406,7 +406,7 @@ class DocumentationGenerator:
         result += 'Enphase-API is an unofficial project providing an API wrapper and the '
         result += 'documentation for Enphase(R)\'s products and services.\n\n'
 
-        result += 'More details on the project are available from the link:'
+        result += 'More details on the project are available from the xref:'
         result += f'{"../" * (file_depth + 1)}README.adoc[project\'s homepage].\n'
 
         return result
@@ -519,16 +519,35 @@ class EndpointDocumentationGenerator:
 
         # List available methods.
         if 'methods' in request_json:
+            # Whether authentication and authorisation are required.
+            auth_required = False
+
+            # Get a reference to the methods.
+            methods = request_json['methods']
+            
+            # Check if anything requires authorisation.
+            for method, value in methods.items():
+                # Does at least one method require authentication?
+                if 'auth_level' in value and value['auth_level'] is not None:
+                    auth_required = True
+                    break
+
             result += f'The `/{request_json["uri"]}` endpoint supports the following:\n'
-            result += EndpointDocumentationGenerator.get_methods_section(request_json['methods'])
+            result += EndpointDocumentationGenerator.get_methods_section(
+                methods=methods,
+                file_depth=file_depth
+            )
         else:
+            # Whether authentication and authorisation are required.
+            auth_required = True
+        
             result += f'A HTTP `GET` to the `/{request_json["uri"]}` endpoint provides the following response data.\n\n'
 
-        # Some IQ Gateway API requests now require authorisation.
-        if 'auth_required' not in request_json or request_json['auth_required'] is not False:
-            result += 'As of recent Gateway software versions this request requires a valid '
-            result += '`sessionid` cookie obtained by link:'
-            result += f'{"../" * file_depth}Auth/Check_JWT.adoc[Auth/Check_JWT].\n'
+        # Some IQ Gateway API requests now require authentication.
+        if auth_required:
+            result += 'As of recent Gateway software versions this request requires user '
+            result += 'authentication and authorisation, see xref:'
+            result += f'{"../" * file_depth}Authentication.adoc[Authentication].\n'
 
         # Get the request querystring table.
         if 'query' in request_json:
@@ -594,13 +613,16 @@ class EndpointDocumentationGenerator:
         return result, used_custom_types
 
     @staticmethod
-    def get_methods_section(methods):
+    def get_methods_section(methods, file_depth=0):
         """
         Generate the AsciiDoc section for the supported methods of an API endpoint.
 
         Args:
             methods (dict):
                 A dictionary of supported methods and their descriptions.
+
+            file_depth (int, optional):
+                How many sub-directories deep the file will be stored in.
 
         Returns:
             str:
@@ -616,18 +638,22 @@ class EndpointDocumentationGenerator:
         result = '\n=== Methods\n'
 
         # Method Table Header.
-        result += '[cols=\"1,2\", options=\"header\"]\n'
+        result += '[cols=\"1,1,2\", options=\"header\"]\n'
         result += '|===\n'
         result += '|Method\n'
+        result += f'|xref:{"../" * file_depth}Authentication.adoc#roles[Required Authorisation Level]\n'
         result += '|Description\n\n'
 
         # Take each method.
-        for method, description in methods.items():
+        for method, value in methods.items():
             # Method Name.
             result += f'|`{method}`\n'
 
+            # Authorisation Level.
+            result += f'|{value["auth_level"]}\n'
+
             # Method Description.
-            result += f'|{description}\n\n'
+            result += f'|{value["description"]}\n\n'   
 
         # End of Table.
         result += '|===\n'
@@ -1254,31 +1280,86 @@ class IndexDocumentationGenerator:
         return result
 
     @staticmethod
-    def create_index(endpoint_metadata):
+    def get_general_section(general_metadata):
         """
-        Generate and create the index documentation for all the endpoints.
-
-        This function takes endpoint metadata and constructs the index documentation,
-        containing information about the API endpoints, their URIs, and descriptions.
+        Generate the AsciiDoc general documentation for the IQ Gateway API documentation.
 
         Args:
-            endpoint_metadata (dict): A dictionary containing metadata for different endpoints.
+            general_metadata (dict): Contains the general documentation metadata.
 
         Returns:
-            None: The index documentation is written to a file specified by the function.
+            str: A string containing the AsciiDoc general documentation index.
+
+        Note:
+            This method generates the general documentation table.
         """
 
-        # Generate a suitable filename to store our documentation in.
-        filename = '../../Documentation/IQ Gateway API/README.adoc'
+        # General Documentation Heading.
+        result = '\n== General Documentation\n\n'
 
-        # Create any required sub-directories.
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        # We store a reference to the previous path.
+        previous_path = None
+        table_open = False
 
-        # Build the output.
-        output = IndexDocumentationGenerator.get_header_section()
+        # Write each of the general documentation items.
+        for key in sorted(general_metadata, key=str.casefold):
+            metadata = general_metadata[key]
 
-        # Heading.
-        output += '\n== Endpoints\n\n'
+            # Skip if the file is not meant to be documented.
+            if not 'documentation' in metadata:
+                continue
+
+            path = key.split(' / ')
+
+            # Add any headers.
+            for count in range(len(path) - 1):
+                if (previous_path is None
+                        or len(previous_path)-1 < count
+                        or previous_path[count] != path[count]):
+
+                    # Finish off any previous table.
+                    if table_open:
+                        result += '|===\n\n'
+                        table_open = False
+
+                    result += f'{"="*(3+count)} {" - ".join(path[:count+1])}\n\n'
+
+            # Add any tables.
+            if previous_path is None or previous_path[:-1] != path[:-1]:
+                result += '[cols="1,2", options="header"]\n'
+                result += '|===\n'
+                result += '|Name\n'
+                result += '|Description\n\n'
+
+                table_open = True
+
+            previous_path = path
+
+            # Add the item.
+            result += f'|`xref:{urllib.parse.quote(metadata["documentation"])}[{path[-1]}]`\n'
+            result += f'|{metadata["description"]}\n\n'
+
+        result += '|==='
+        
+        return result
+    
+    @staticmethod
+    def get_endpoints_section(endpoint_metadata):
+        """
+        Generate the AsciiDoc endpoint documentation for the IQ Gateway API documentation.
+
+        Args:
+            endpoint_metadata (dict): Contains the endpoint documentation metadata.
+
+        Returns:
+            str: A string containing the AsciiDoc endpoint documentation index.
+
+        Note:
+            This method generates the endpoint documentation table.
+        """
+
+        # Endpoints Heading.
+        result = '\n== Endpoints\n\n'
 
         # We store a reference to the previous path.
         previous_path = None
@@ -1303,41 +1384,73 @@ class IndexDocumentationGenerator:
 
                     # Finish off any previous table.
                     if table_open:
-                        output += '|===\n\n'
+                        result += '|===\n\n'
                         table_open = False
 
-                    output += f'{"="*(3+count)} {" - ".join(path[:count+1])}\n\n'
+                    result += f'{"="*(3+count)} {" - ".join(path[:count+1])}\n\n'
 
             # Add any tables.
             if previous_path is None or previous_path[:-1] != path[:-1]:
-                output += '[cols="1,1,2", options="header"]\n'
-                output += '|===\n'
-                output += '|Name\n'
-                output += '|URI\n'
-                output += '|Description\n\n'
+                result += '[cols="1,1,2", options="header"]\n'
+                result += '|===\n'
+                result += '|Name\n'
+                result += '|URI\n'
+                result += '|Description\n\n'
 
                 table_open = True
 
             previous_path = path
 
             # Add the item.
-            output += f'|`link:{urllib.parse.quote(metadata["documentation"])}[{path[-1]}]`\n'
+            result += f'|`xref:{urllib.parse.quote(metadata["documentation"])}[{path[-1]}]`\n'
 
-            output += '|`'
+            result += '|`'
             if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
-                output += '+++<s>+++'
-            output += f'/{metadata["request"]["uri"]}'
+                result += '+++<s>+++'
+            result += f'/{metadata["request"]["uri"]}'
             if 'removed' in metadata['request'] and metadata['request']['removed'] is True:
-                output += '+++</s>+++'
+                result += '+++</s>+++'
 
             if 'uri2' in metadata['request']:
-                output += f'` and `/{metadata["request"]["uri2"]}'
+                result += f'` and `/{metadata["request"]["uri2"]}'
 
-            output += '`\n'
+            result += '`\n'
 
-            output += f'|{metadata["description"]["short"]}\n\n'
+            result += f'|{metadata["description"]["short"]}\n\n'
 
-        output += '|==='
+        result += '|==='
+
+        return result
+
+    @staticmethod
+    def create_index(metadata):
+        """
+        Generate and create the index documentation for all the endpoints.
+
+        This function takes endpoint metadata and constructs the index documentation,
+        containing information about the API endpoints, their URIs, and descriptions.
+
+        Args:
+            metadata (dict): A dictionary containing metadata for different endpoints.
+
+        Returns:
+            None: The index documentation is written to a file specified by the function.
+        """
+
+        # Generate a suitable filename to store our documentation in.
+        filename = '../../Documentation/IQ Gateway API/README.adoc'
+
+        # Create any required sub-directories.
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+        # Build the output.
+        output = IndexDocumentationGenerator.get_header_section()
+
+        # Add the general section.
+        output += IndexDocumentationGenerator.get_general_section(metadata['general'])
+
+        # Add the endpoints section.
+        output += IndexDocumentationGenerator.get_endpoints_section(metadata['endpoints'])
 
         # Write the output to the file.
         with open(filename, mode='w', encoding='utf-8') as text_file:
@@ -1451,15 +1564,15 @@ def main():
 
     # Load endpoints.
     with open('resources/API_Details.json', mode='r', encoding='utf-8') as json_file:
-        endpoint_metadata = json.load(json_file)
+        metadata = json.load(json_file)
 
     # Take each endpoint in the metadata.
-    for key, endpoint in endpoint_metadata.items():
+    for key, endpoint in metadata['endpoints'].items():
         # Process this endpoint.
         EndpointDocumentationGenerator.process_endpoint(gateway=gateway, key=key, endpoint=endpoint)
 
     # Create index page.
-    IndexDocumentationGenerator.create_index(endpoint_metadata)
+    IndexDocumentationGenerator.create_index(metadata)
 
 # Launch the main method if invoked directly.
 if __name__ == '__main__':
