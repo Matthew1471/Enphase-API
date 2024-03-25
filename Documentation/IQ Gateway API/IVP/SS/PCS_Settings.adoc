@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Power Control System (PCS) Settings
+= IVP - Site Settings (SS) - Power Control System (PCS) Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

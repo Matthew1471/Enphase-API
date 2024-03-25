@@ -13685,7 +13685,7 @@
                 "uri": "ivp/sc/status"
             }
         },
-        "IVP / Smart Switch (SS) / Device Power Export Limits (PEL) Settings": {
+        "IVP / Site Settings (SS) / Device Power Export Limits (PEL) Settings": {
             "description": {
                 "short": "Get or set Device Power Export Limit (PEL) settings (Legacy, replaced by AGF)."
             },
@@ -13708,7 +13708,7 @@
                 }
             }
         },
-        "IVP / Smart Switch (SS) / Distributed Energy Resource (DER) Settings": {
+        "IVP / Site Settings (SS) / Distributed Energy Resource (DER) Settings": {
             "description": {
                 "short": "Get or set Distributed Energy Resource (DER) settings."
             },
@@ -13762,7 +13762,7 @@
                 ]
             }
         },
-        "IVP / Smart Switch (SS) / Dry Contact Settings": {
+        "IVP / Site Settings (SS) / Dry Contact Settings": {
             "description": {
                 "short": "Get or set dry contact settings."
             },
@@ -13842,7 +13842,7 @@
                 ]
             }
         },
-        "IVP / Smart Switch (SS) / Generator Configuration": {
+        "IVP / Site Settings (SS) / Generator Configuration": {
             "description": {
                 "long": "Get or set generator configuration. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Get or set generator configuration."
@@ -13868,7 +13868,7 @@
                 "uri": "ivp/ss/gen_config"
             }
         },
-        "IVP / Smart Switch (SS) / Generator Delete": {
+        "IVP / Site Settings (SS) / Generator Delete": {
             "description": {
                 "long": "Delete generator. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Delete generator."
@@ -13884,7 +13884,7 @@
                 "uri": "ivp/ss/gen_delete"
             }
         },
-        "IVP / Smart Switch (SS) / Generator Meter Enable": {
+        "IVP / Site Settings (SS) / Generator Meter Enable": {
             "description": {
                 "long": "Set generator meter state. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Set generator meter state."
@@ -13900,7 +13900,7 @@
                 "uri": "ivp/ss/generator_meter_enable"
             }
         },
-        "IVP / Smart Switch (SS) / Generator Mode": {
+        "IVP / Site Settings (SS) / Generator Mode": {
             "description": {
                 "long": "Get or set generator’s status for toggle switch. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Get or set generator’s status for toggle switch."
@@ -13916,7 +13916,7 @@
                 "uri": "ivp/ss/gen_mode"
             }
         },
-        "IVP / Smart Switch (SS) / Generator Profile": {
+        "IVP / Site Settings (SS) / Generator Profile": {
             "description": {
                 "long": "Get or set generator’s profile. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Get or set generator’s profile."
@@ -13939,7 +13939,7 @@
                 }
             }
         },
-        "IVP / Smart Switch (SS) / Generator Schedule": {
+        "IVP / Site Settings (SS) / Generator Schedule": {
             "description": {
                 "long": "Get or set generator schedule. See https://enphase.com/download/generator-integration-tech-brief for details on generators.",
                 "short": "Get or set generator schedule."
@@ -13965,7 +13965,7 @@
                 "uri": "ivp/ss/gen_schedule"
             }
         },
-        "IVP / Smart Switch (SS) / IQ Battery (formerly \"Encharge\") Settings": {
+        "IVP / Site Settings (SS) / IQ Battery (formerly \"Encharge\") Settings": {
             "description": {
                 "long": "Update IQ Battery (formerly \"Encharge\") settings. This specifically enables/disables power output and sets the country.",
                 "short": "Update IQ Battery (formerly \"Encharge\") settings."
@@ -14012,7 +14012,7 @@
                 }
             }
         },
-        "IVP / Smart Switch (SS) / Load Control": {
+        "IVP / Site Settings (SS) / Load Control": {
             "description": {
                 "short": "Add load control kits."
             },
@@ -14027,7 +14027,7 @@
                 "uri": "ivp/ss/load_control"
             }
         },
-        "IVP / Smart Switch (SS) / Power Control System (PCS) Settings": {
+        "IVP / Site Settings (SS) / Power Control System (PCS) Settings": {
             "description": {
                 "long": "Get or set Power Control System (PCS) details. PCS systems limit current and loading on the busbars and conductors supplied by the power production sources and/or energy storage systems irrespective of self-consumption. The PCS is similar to the Power Export Limit (PEL) however PCS also monitors grid import loads and will ensure a total current (before consumption) is not exceeded from grid, storage or solar production.",
                 "short": "Get or set Power Control System (PCS) details."
@@ -14066,7 +14066,7 @@
                 }
             }
         },
-        "IVP / Smart Switch (SS) / Power Export Limits (PEL) Settings": {
+        "IVP / Site Settings (SS) / Power Export Limits (PEL) Settings": {
             "description": {
                 "short": "Get Power Export Limits (PEL) data."
             },
@@ -14088,7 +14088,7 @@
                 }
             }
         },
-        "IVP / Smart Switch (SS) / System Phase Balance": {
+        "IVP / Site Settings (SS) / System Phase Balance": {
             "description": {
                 "short": "Send phase information."
             },
@@ -14097,7 +14097,7 @@
                 "uri": "ivp/ss/sys_phase_balance"
             }
         },
-        "IVP / Smart Switch (SS) / Third Party (Legacy) / PV": {
+        "IVP / Site Settings (SS) / Third Party (Legacy) / PV": {
             "description": {
                 "short": "Get, set or delete third-party PV information."
             },
@@ -14496,6 +14496,10 @@
         }
     },
     "general": {
+        "Architecture": {
+            "description": "How the system is designed.",
+            "documentation": "Architecture.adoc"
+        },
         "Authentication": {
             "description": "How authentication and authorisation works with the Local API.",
             "documentation": "Authentication.adoc"

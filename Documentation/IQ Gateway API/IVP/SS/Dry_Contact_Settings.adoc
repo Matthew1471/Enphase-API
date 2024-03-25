@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Dry Contact Settings
+= IVP - Site Settings (SS) - Dry Contact Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

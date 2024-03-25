@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Third Party (Legacy) - PV
+= IVP - Site Settings (SS) - Third Party (Legacy) - PV
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

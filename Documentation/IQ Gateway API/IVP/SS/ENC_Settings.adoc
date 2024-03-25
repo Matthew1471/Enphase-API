@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - IQ Battery (formerly "Encharge") Settings
+= IVP - Site Settings (SS) - IQ Battery (formerly "Encharge") Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

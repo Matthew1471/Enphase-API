@@ -1,0 +1,438 @@
+= Architecture
+:toc: preamble
+Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
+
+// Document Settings:
+
+// Set the ID Prefix and ID Separators to be consistent with GitHub so links work irrespective of rendering platform. (https://docs.asciidoctor.org/asciidoc/latest/sections/id-prefix-and-separator/)
+:idprefix:
+:idseparator: -
+
+// Any code blocks will be in JSON by default.
+:source-language: json
+
+ifndef::env-github[:icons: font]
+
+// Set the admonitions to have icons (Github Emojis) if rendered on GitHub (https://blog.mrhaki.com/2016/06/awesome-asciidoctor-using-admonition.html).
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+// Document Variables:
+:release-version: 1.0
+:url-org: https://github.com/Matthew1471
+:url-repo: {url-org}/Enphase-API
+:url-contributors: {url-repo}/graphs/contributors
+
+How the system is designed.
+
+== Introduction
+
+The IQ Gateway is a Debian Linux based platform with a series of packages and services added to it. Knowledge of how the system is structured can help with writing more optimal and less resource intensive requests by targeting the native processes rather than the abstraction layers.
+
+Enphase-API is an unofficial project providing an API wrapper and the documentation for Enphase(R)'s products and services.
+
+More details on the project are available from the xref:../../README.adoc[project's homepage].
+
+== Architecture
+
+The system is structured as follows:
+
+* -> Debian (v7.4, link:https://wiki.debian.org/DebianReleases#Production_Releases[End-of-Life])
+ - -> TCP Port 21: link:https://www.pureftpd.org[Pure FTPd] (v1.0.36 / 22 August 2014)
+ - -> TCP Port 22: OpenSSH
+ - -> TCP + UDP Port 53: link:https://thekelleys.org.uk/dnsmasq/doc.html[dnsmasq] (v2.72, localhost binding only)
+ - -> TCP Port 80 + 443: link:https://openresty.org[OpenResty(R)] (v1.17.8.1 / 4 July 2020, which is NGINX v1.17.8 based, link:https://endoflife.date/nginx[End-of-Life])
+ - -> TCP Port 8080: link:https://mongrel2.org/[Mongrel2] (v1.9.0 / Jan 26 2014)
+ - -> TCP Port 8082: Bin Roller 2 HTTP Server
+ - -> TCP Port 8100: mzb HTTP Server
+ - -> TCP Port 9091: cbus_util HTTP Server
+ - -> TCP Port 9092: manuf HTTP Server
+ - -> TCP Port 9093: lwmon HTTP Server
+ - -> TCP Port 9095: PFA HTTP Server
+ - -> TCP Port 9098: Stream HTTP Server
+ - -> TCP Port 9999 + 9998: xref:local-user-interface-ui-handler[Local User Interface (UI) Handler]
+ - -> TCP Port 9995 + 9994: xref:envoy-integrated-meter-eim-handler[Envoy Integrated Meter (EIM) Handler]
+ - -> TCP Port 9993 + 9992: xref:system-configuration-handler[System Configuration Handler]
+ - -> TCP Port 9991 + 9990: xref:power-conditioning-unit-pcu-envoy-bridge-peb-interface-if-handler[Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF) Handler]
+ - -> TCP Port 9989 + 9988: xref:energy-management-unit-emu-web-handler[Energy Management Unit (EMU) Web Handler]
+ - -> TCP Port 9987 + 9986: xref:grid-rest-grest-handler[Grid REST Handler]
+ - -> TCP Port 9985 + 9984: xref:analog-to-digital-converter-adc-handler[Analog-to-Digital Converter (ADC) Handler]
+ - -> TCP Port 9983 + 9982: xref:event-manager-handler[Event Manager Handler]
+ - -> TCP Port 9981 + 9980: xref:internet-of-things-iot-handler[Internet Of Things (IoT) Handler]
+ - -> TCP Port 9979 + 9978: xref:oem-handler[OEM Handler]
+ - -> TCP Port 9977 + 9976: xref:secondary-control-handler[Secondary Control Handler]
+ - -> TCP Port 9975 + 9974: xref:zigbee-handler[Zigbee Handler]
+ - -> TCP Port 9973 + 9972: xref:encharge-agent-ec-handler[Encharge (EC) Agent Handler]
+ - -> TCP Port 9971 + 9970: xref:performance-data-manager-pdm-handler[Performance Data Manager (PDM) Handler]
+ - -> TCP Port 9969 + 9968: xref:live-data-handler[Live Data Handler]
+ - -> TCP Port 9967 + 9966: xref:firmware-manager-handler[Firmware Manager Handler]
+ - -> TCP Port 9965 + 9964: xref:active-ripple-filter-arf-handler[Active Ripple Filter (ARF) Handler]
+ - -> TCP Port 9963 + 9962: xref:meter-logger-handler[Meter Logger Handler]
+ - -> TCP Port 9957 + 9956: xref:site-settings-handler[Site Settings Handler]
+ 
+There is a xref:firewall[firewall] that then restricts access to most of the above ports.
+ 
+The OpenResty(R) NGINX instance provides xref:Authentication.adoc[authentication and authorization checks], then typically passes the request on to Mongrel2. Mongrel2 can serve some local requests but for most of the requests then passes to either a native process HTTP Server (`proxy`) or using ZeroMQ messages to/from a native process (`handler`).
+
+== OpenResty(R) / NGINX Routes
+
+== Mongrel2 Routes
+
+[cols="1,1,2", options="header"]
+|===
+|Path
+|Destination
+|Description
+
+|`/include`
+|Dir(base='/include/', index_file='index.html', default_ctype='text/plain')
+|The old web interface stylesheets and JavaScript files.
+
+|`/doc`
+|Dir(base='/doc/', index_file='api.html', default_ctype='text/plain')
+|Internal API documentation.
+
+|`/images`
+|Dir(base='/images/', index_file='index.html', default_ctype='image/png')
+|The old web interface images.
+
+|`/backbone`
+|Dir(base='/backbone/', index_file='index.html', default_ctype='text/plain')
+|The modern web interface backbone (fonts, stylesheets, images and JavaScript files).
+
+|`/agf_images`
+|Dir(base='/agf_images/', index_file='index.html', default_ctype='image/png')
+|Advanced Grid Functionality (AGF) Images.
+
+|`/agf_css`
+|Dir(base='/agf_css/', index_file='index.html', default_ctype='text/css')
+|Advanced Grid Functionality (AGF) Cascading Style Sheets (CSS).
+
+|`/agf_js`
+|Dir(base='/agf_js/', index_file='index.html', default_ctype='application/javascript')
+|Advanced Grid Functionality (AGF) JavaScript (JS).
+
+|`/agf_htdocs`
+|Dir(base='/agf_htdocs/', index_file='index.html', default_ctype='text/plain')
+|Advanced Grid Functionality (AGF) HyperText DOCumentS (htdocs).
+
+|`/`
+|xref:local-user-interface-ui-handler[local_ui_handler]
+|Local User Interface (UI).
+
+|`/api`
+|xref:energy-management-unit-emu-web-handler[emuweb_handler]
+|Energy Management Unit (EMU) Web.
+
+|`/ivp`
+|xref:power-conditioning-unit-pcu-envoy-bridge-peb-interface-if-handler[pebif_handler]
+|Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF).
+
+|`/inv/`
+|xref:power-conditioning-unit-pcu-envoy-bridge-peb-interface-if-handler[pebif_handler]
+|Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF).
+
+|`/prov/`
+|xref:power-conditioning-unit-pcu-envoy-bridge-peb-interface-if-handler[pebif_handler]
+|Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF).
+
+|`/manuf/`
+|manuf_proxy
+|
+
+|`/lwmon/`
+|lwmon_proxy
+|
+
+|`/ivp/pfa/` 
+|pfa_proxy
+|
+
+|`/ivp/eh/` 
+|xref:power-conditioning-unit-pcu-envoy-bridge-peb-interface-if-handler[pebif_handler]
+|Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF).
+
+|`/ivp/cbus/` 
+|cbus_util_proxy
+|
+
+|`/ivp/image/` 
+|cbus_util_proxy
+|
+
+|`/ivp/meter` 
+|xref:envoy-integrated-meter-eim-handler[eim_handler]
+|Envoy Integrated Meter (EIM)
+
+|`/ivp/cellular` 
+|xref:system-configuration-handler[systemcfg_handler]
+|System Configuration.
+
+|`/ivp/peb/reportsettings` 
+|xref:system-configuration-handler[systemcfg_handler]
+|System Configuration.
+
+|`/ivp/grest`
+|xref:grid-rest-grest-handler[grest_handler]
+|Grid REST (GREST)
+
+|`/ivp/adc`
+|xref:analog-to-digital-converter-adc-handler[adc_handler]
+|Analog-to-Digital Converter (ADC).
+
+|`/ivp/pdm`
+|xref:performance-data-manager-pdm-handler[pdm_handler]
+|Performance Data Manager (PDM).
+
+|`/ivp/event/`
+|xref:event-manager-handler[event_handler]
+|Event Manager.
+
+|`/ivp/iot/`
+|xref:internet-of-things-iot-handler[iot_handler]
+|Amazon Web Services (AWS) Internet of Things (IoT).
+
+|`/ivp/sc/`
+|xref:secondary-control-handler[scrt_handler]
+|Secondary Control (SC).
+
+|`/ivp/zb/`
+|xref:zigbee-handler[zigbee_handler]
+|Zigbee.
+
+|`/ivp/ensemble/`
+|xref:encharge-ec-agent-handler[ec_agent_handler]
+|Energy System (formerly "Ensemble") including IQ Battery (formerly "Encharge Storage").
+
+|`/ivp/ss/`
+|xref:site-settings-handler[site_set_handler]
+|Advanced Grid Functionality (AGF) Site Settings (SS).
+
+|`/oem/v1/devices`
+|xref:oem-handler[oem_handler]
+|
+
+|`/stream/`
+|stream_proxy
+|
+
+|`/ivp/bin/`
+|br2_proxy
+|Bin-Roller 2.
+
+|`/ivp/zigbee/`
+|mzb_proxy
+|
+
+|`/ivp/livedata/`
+|xref:live-data-handler[livedata_handler]
+|
+
+|`/ivp/firmware_manager/`
+|xref:firmware-manager-handler[firmware_manager_handler]
+|
+
+|`/ivp/arf/`
+|xref:active-ripple-filter-arf-handler[arf_handler]
+|Active Ripple Filter (ARF).
+
+|`/ivp/mlgr/`
+|xref:meter-logger-handler[mlgr_handler]
+|Meter Logger.
+
+|===
+
+== Native Processes
+
+=== Local User Interface (UI) Handler
+
+Running under `ruby /opt/emu/httpd/rhtdocs/include/envoy_m2r_cgi.rb` (configured in `/opt/emu/cfg/envoy-page.yml`) and serves documents out of `/opt/emu/httpd/htdocs` with a few configured redirects:
+
+* `/` -> `/home`
+* `/admin` -> `/admin/home`
+* `/doc` -> `/doc/api.html`
+* `/favicon.ico` -> `:not_found`
+
+The majority of the web service URLs not linked to another native process (e.g. `/production.json`) are serviced from this process.
+
+=== Energy Management Unit (EMU) Web Handler
+
+Running under `/opt/emu/bin/emuweb` (configured in `/opt/emu/cfg/emuweb.json`) this appears to only service the xref:README.adoc#version-1-api-legacy[`/api/` endpoints] and provide energy monitoring functionality.
+
+=== Power Conditioning Unit (PCU) Envoy Bridge (PEB) InterFace (IF) Handler
+
+Running under `/opt/emu/bin/emu` (configured in `/opt/emu/cfg/pebif.json`) this is responsible for most of the xref:README.adoc#ivp[`/ivp/` endpoints] that are not otherwise overriden as well as the xref:README.adoc#inv[`/inv/`] and xref:README.adoc#general[`/prov/`] endpoints.
+
+=== Envoy Integrated Meter (EIM) Handler
+
+Running under `/opt/eim/bin/eim` (configured in `/opt/eim/cfg/eim_conf.json`) this is responsible for the xref:README.adoc#ivp-meters[`/ivp/meters/` endpoints].
+
+=== System Configuration Handler
+
+Running under `/opt/emu/bin/systemcfg_rest` (configured in `/opt/emu/cfg/systemcfg_rest_conf.json`) this is responsible for the xref:README.adoc#ivp-cellular[`/ivp/cellular`] and xref:README.adoc#ivp-peb[`/ivp/peb/reportsettings`] endpoints.
+
+=== Grid REST (grest) Handler
+
+Running under `/opt/agf/bin/gim` (configured in `/opt/agf/cfg/grest_restie_conf.json`) this is responsible for the xref:README.adoc#ivp-grid-rest-grest[`/ivp/grest/` endpoints].
+
+=== Analog-to-Digital Converter (ADC) Handler
+
+Running under `/opt/agf/bin/adc` (configured in `/opt/agf/cfg/adc_restie_conf.json`) this is responsible for the xref:README.adoc#ivp-analog-to-digital-converter-adc[`/ivp/adc/` endpoints].
+
+=== Performance Data Manager (PDM) Handler
+
+Running under `/opt/agf/bin/pdm` (configured in `/opt/agf/cfg/pdm_restie_conf.json`) this is responsible for the xref:README.adoc#ivp-performance-data-manager-pdm[`/ivp/pdm/` endpoints].
+
+=== Event Manager Handler
+
+Running under `/opt/emu/bin/eventmgr` (configured in `/opt/emu/cfg/eventmgr_rest_conf.json`) this is responsible for the xref:README.adoc#ivp-event[`/ivp/event/` endpoint].
+
+=== Internet of Things (IoT) Handler
+
+Running under `/opt/emu/bin/cloudcom` (configured in `/opt/emu/cfg/cloudcom_rest.json`) this is responsible for communicating with the Amazon Web Services (AWS) Internet of Things (IoT) MQTT service and the xref:README.adoc#ivp-iot[`/ivp/iot/` endpoints].
+
+=== Secondary Control Handler
+
+Running under `/opt/agf/bin/scrt` (configured in `/opt/agf/cfg/scrt_restie_conf.json`) this is responsible for the xref:README.adoc#ivp-sc[`/ivp/sc/` endpoints].
+
+=== Zigbee Handler
+
+Running under `/opt/agf/bin/zigbee_agent` (configured in `/opt/agf/cfg/zigbee_restie_conf.json`) this is responsible for the xref:README.adoc#ivp-zigbee[`/ivp/zb/` endpoints].
+
+=== Encharge (EC) Agent Handler
+
+Running under `/opt/agf/bin/ec_agent` (configured in `/opt/agf/cfg/ec_agt_restie.json`) this is responsible for the xref:README.adoc#ivp-energy-system-formerly-ensemble[`/ivp/ensemble/` endpoints].
+
+=== Site Settings Handler
+
+This is the Advanced Grid Functionality (AGF) Site Settings handler, running under `/opt/agf/bin/site_set` (configured in `/opt/agf/cfg/site_set_restie.json`) it is responsible for all of the xref:README.adoc#ivp-site-settings-ss[`/ivp/ss/` endpoints].
+
+=== OEM Handler
+
+While listed as a Mongrel2 route (and configured in `/opt/emu/cfg/oem_restie_conf.json`) and responsible for the xref:README.adoc#oem[`/oem/v1/devices/` endpoint], this was not actually present on my system.
+
+=== Live Data Handler
+
+Running under `/opt/agf/bin/livedata` (configured in `/opt/agf/cfg/livedata_restie.json`) it is responsible for all of the xref:README.adoc#ivp-live-data[`/ivp/livedata/` endpoints].
+
+=== Firmware Manager Handler
+
+Running under `/opt/agf/bin/firmware_manager` (configured in `/opt/agf/cfg/firmware_manager_restie_conf.json`) it is responsible for all of the xref:README.adoc#ivp-firmware-manager[`/ivp/firmware_manager/` endpoints].
+
+=== Active Ripple Filter (ARF) Handler
+
+Running under `/opt/agf/bin/arf` (configured in `/opt/agf/cfg/arf_restie.json`) it is responsible for all of the xref:README.adoc#ivp-active-ripple-filter-arf[`/ivp/arf/` endpoints].
+
+=== Meter Logger Handler
+
+Running under `/opt/agf/bin/mlgr` (configured in `/opt/agf/cfg/mlgr_restie_conf.json`) it is responsible for all of the xref:README.adoc#ivp-mlgr[`/ivp/mlgr/` endpoints].
+
+== Firewall
+
+=== IPv4
+
+The IPv4 firewall (`iptables`) is configured as follows:
+
+[cols="1,1,1,1,1,1,1,1,2", options="header"]
+|===
+|Interfaces
+|Chain
+|Protocol
+|Source
+|Source Port
+|Destination
+|Destination Port
+|Action
+|Description
+
+.10+|All
+.11+|INPUT
+.13+|TCP
+
+|localhost
+.11+|Any
+.16+|Any
+.2+|53
+|ACCEPT
+.2+|Blocks responding to DNS queries from all external sources, but allows localhost.
+
+|Any
+|DROP
+
+|localhost
+.2+|8082
+|ACCEPT
+.8+|Blocks 8082, 8100, 9091 and 9095 from all external sources, but allows localhost.
+
+|Any
+|DROP
+
+|localhost
+.2+|8100
+|ACCEPT
+
+|Any
+|DROP
+
+|localhost
+.2+|9091
+|ACCEPT
+
+|Any
+|DROP
+
+|localhost
+.2+|9095
+|ACCEPT
+
+.4+|Any
+|DROP
+
+.2+|tun0
+
+|22
+.2+|ACCEPT
+.2+|Blocks SSH connections from any interface but tun0, unless the IQ Gateway is in manufacturing mode, or a special environment variable is set.
+
+|OUTPUT
+|22
+|Any
+
+|Any
+|INPUT
+|Any
+|22
+.7+|DROP
+|Only configured if `$EMU_ALLOW_SSH` is not `y` and `$EMU_MFG_ENABLED` is not `yes`.
+
+.6+|ppp0
+.2+|OUTPUT
+|UDP
+2.6+|Any
+.2+|12345
+.2+|Block Power Meter Unit (PMU) scan on ppp0.
+
+|TCP
+
+|FORWARD
+|All
+.4+|Any
+|Block any forwarded traffic to ppp0 for all packets and all protocols.
+
+.3+|OUTPUT
+.3+|Any
+|10.0.0.0/8
+
+.3+|Block traffic to private networks.
+
+|192.168.0.0/16
+
+|172.16.0.0/12
+
+|===

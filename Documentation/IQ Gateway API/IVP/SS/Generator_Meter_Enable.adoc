@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Generator Meter Enable
+= IVP - Site Settings (SS) - Generator Meter Enable
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

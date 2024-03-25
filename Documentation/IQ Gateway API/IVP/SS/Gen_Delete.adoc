@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Generator Delete
+= IVP - Site Settings (SS) - Generator Delete
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

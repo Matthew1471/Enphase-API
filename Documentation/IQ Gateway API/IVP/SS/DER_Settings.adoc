@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Distributed Energy Resource (DER) Settings
+= IVP - Site Settings (SS) - Distributed Energy Resource (DER) Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

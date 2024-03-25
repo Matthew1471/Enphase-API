@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Load Control
+= IVP - Site Settings (SS) - Load Control
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

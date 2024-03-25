@@ -42,6 +42,9 @@ More details on the project are available from the xref:../../README.adoc[projec
 |Name
 |Description
 
+|`xref:Architecture.adoc[Architecture]`
+|How the system is designed.
+
 |`xref:Authentication.adoc[Authentication]`
 |How authentication and authorisation works with the Local API.
 
@@ -622,7 +625,7 @@ More details on the project are available from the xref:../../README.adoc[projec
 
 |===
 
-==== IVP - Smart Switch (SS)
+==== IVP - Site Settings (SS)
 
 [cols="1,1,2", options="header"]
 |===
@@ -688,7 +691,7 @@ More details on the project are available from the xref:../../README.adoc[projec
 
 |===
 
-===== IVP - Smart Switch (SS) - Third Party (Legacy)
+===== IVP - Site Settings (SS) - Third Party (Legacy)
 
 [cols="1,1,2", options="header"]
 |===

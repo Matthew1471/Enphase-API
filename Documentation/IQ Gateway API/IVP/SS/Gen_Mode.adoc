@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Generator Mode
+= IVP - Site Settings (SS) - Generator Mode
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

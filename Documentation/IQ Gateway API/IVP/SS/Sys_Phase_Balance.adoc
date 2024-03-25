@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - System Phase Balance
+= IVP - Site Settings (SS) - System Phase Balance
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

@@ -1,4 +1,4 @@
-= IVP - Smart Switch (SS) - Power Export Limits (PEL) Settings
+= IVP - Site Settings (SS) - Power Export Limits (PEL) Settings
 :toc: preamble
 Matthew1471 <https://github.com/matthew1471[@Matthew1471]>;
 

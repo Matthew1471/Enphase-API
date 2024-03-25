@@ -49,7 +49,7 @@ pip install requests
 
 === Project Structure
 
-The main wrapper lives in the `src\enphase_api` folder and the files in the `examples` directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and considered fairly protection ready, so they can be used as applications in their own right.
+The main wrapper lives in the `src\enphase_api` folder and the files in the `examples` directory are example scripts to show how to use the library. The examples are written to be fairly feature complete and considered fairly production ready, so they can be used as applications in their own right.
 
 For configuration, each example refers to one of the two credentials files in the folder `configuration`; to make the examples work you will need to edit either `credentials_token.json` or `credentials.json` (depending on the file referenced in the example) to include your Enphase(R) credentials.
 
