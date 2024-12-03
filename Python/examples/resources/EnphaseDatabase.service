@@ -11,9 +11,9 @@ Description=Enphase Database
 # Reference to where the user can obtain more information about this service.
 Documentation=https://github.com/Matthew1471/Enphase-API/
 
-# This service will start once the system is ready for data.
-Requires=network-online.target rabbitmq-server.service mariadb.service EnphaseMonitoring.service
-After=network-online.target rabbitmq-server.service mariadb.service EnphaseMonitoring.service
+# This service will start once the system is ready for data (you can add rabbitmq-server.service and mariadb.service to both if on the same machine).
+Requires=network-online.target
+After=network-online.target
 
 # Check that the Python script exists.
 ConditionPathExists=/home/pi/Enphase/amqp_database_meters.py
@@ -34,7 +34,7 @@ Group=pi
 #ExecSearchPath=
 
 # The process to start.
-ExecStart=/usr/bin/python amqp_database_meters.py
+ExecStart=/usr/bin/python3 amqp_database_meters.py
 
 # The credentials file will need to be read based off the working directory.
 WorkingDirectory=/home/pi/Enphase/

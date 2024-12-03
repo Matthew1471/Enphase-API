@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # This file is part of Enphase-API <https://github.com/Matthew1471/Enphase-API>
@@ -140,7 +140,7 @@ def main():
         amqp_channel = amqp_connection.channel()
 
         # Declare a topic exchange if one does not already exist.
-        amqp_channel.exchange_declare(exchange='Enphase', exchange_type='topic')
+        amqp_channel.exchange_declare(exchange='Enphase', exchange_type='topic', durable=True)
 
         # Notify the user.
         print(f'{datetime.datetime.now()} - Collecting meter readings. To exit press CTRL+C', flush=True)
