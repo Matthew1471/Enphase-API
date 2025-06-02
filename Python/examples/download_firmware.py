@@ -30,7 +30,7 @@ import os
 # We obtain the hostname from a URL.
 from urllib.parse import urlparse
 
-# Enpahase package some things in XML still.
+# Enphase package some things in XML still.
 import xml.etree.ElementTree as ET
 
 # Third party library for making HTTP(S) requests;
@@ -85,7 +85,7 @@ def download_upgrade_files():
     tree = ET.parse(local_path + urlparse(cdn_host).hostname + '/' + cdn_uri + 'upgrade_files.xml')
     root = tree.getroot()
 
-    # Extract "imgDir"
+    # Extract "imgDir".
     subfolder = root.attrib.get("imgDir")
 
     # Use a set to store unique filenames.
@@ -114,7 +114,7 @@ def main():
     download_upgrade_files()
 
     # Update the user.
-    print('The firmware was saved successfully.')
+    print('\nThe firmware was saved successfully.')
 
 # Launch the main function if invoked directly.
 if __name__ == '__main__':
