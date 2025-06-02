@@ -56,11 +56,12 @@ credentials = {
 }
 
 def download_file(filename, extensions, subfolder=''):
+    # Take each of the file extensions requested.
     for extension in extensions:
-        # Make the request.
+        # Generate the full URL.
         url = cdn_host + cdn_uri + subfolder + filename + '.' + extension
 
-        # Update user.
+        # Update the user.
         print(f'Downloading: {url}')
 
         # Request the file.
@@ -94,16 +95,16 @@ def download_upgrade_files():
     for entry in root.findall(".//imgInfoEntry"):
         unique_filenames.add(entry.attrib.get("name"))
 
-    # Download unique filenames.
+    # Download the unique filenames.
     for filename in unique_filenames:
         file_name_parts = os.path.splitext(filename)
         download_file(file_name_parts[0], [file_name_parts[1].lstrip('.'), 'sum', 'mf.sig'], subfolder + '/')
 
-    # Mobile package information.
+    # Download the mobile package information.
     download_file('mobile_pkg_info', ['xml'], subfolder + '/')
 
 def main():
-    # Get package version information.
+    # Get the package version information.
     download_file('pkg_versions', ['xml', 'sum', 'mf.sig'])
 
     # Get the upgrade files information.
