@@ -11,7 +11,8 @@
     <Name>Enphase-API</Name>
     <RootNamespace>Enphase-API</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments></CommandLineArguments>
+    <CommandLineArguments>
+    </CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
@@ -27,6 +28,7 @@
     <Compile Include="examples\amqp_database_meters.py" />
     <Compile Include="examples\amqp_unicorn_hat_hd.py" />
     <Compile Include="examples\database_pyplot_meters.py" />
+    <Compile Include="examples\download_firmware.py" />
     <Compile Include="examples\emulate_power_meter_unit.py" />
     <Compile Include="examples\gateway_amqp_meters.py" />
     <Compile Include="examples\gateway_console.py" />
