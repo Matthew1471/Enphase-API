@@ -314,7 +314,7 @@ class Authentication:
     def get_token_from_oauth(code, code_verifier):
         """
         Perform an OAuth 2.0 authorisation code exchange for a token (with PKCE).
-        This method does not require an open session on the authentication serer.
+        This method does not require an open session on the authentication server.
 
         Args:
             code (str): The authorisation code.
