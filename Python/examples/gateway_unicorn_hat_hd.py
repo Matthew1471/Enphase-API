@@ -255,7 +255,7 @@ class ScreenWeather:
             # Set the weather_last_updated date/time.
             self.weather_last_updated = time.time()
 
-            # We convert the weather_code, wind_speed, is_day into a PNG filename.
+            # We convert the weather_code, wind_speed and is_day into a PNG filename.
             self.weather_filename = self.get_weather_filename(
                 weather_code=weather_code,
                 wind_speed=wind_speed,
@@ -280,7 +280,7 @@ class ScreenWeather:
 
         Returns:
             tuple:
-                Tuple containing weather code, wind speed, is_day.
+                Tuple containing weather code, wind speed and is_day.
         """
 
         # Build the weather URL.
@@ -318,7 +318,7 @@ class ScreenWeather:
             wind_speed (float):
                 Wind speed in meters per second.
             is_day (bool):
-                Wheter it's currently day or night.
+                Whether it's currently day or night.
 
         Returns:
             str:
