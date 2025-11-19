@@ -250,17 +250,16 @@ class ScreenWeather:
         # If the weather has not been loaded yet, or it was loaded over 15 minutes ago.
         if not self.weather_last_updated or self.weather_last_updated + 900 < time.time():
             # Get the latest weather.
-            weather_code, wind_speed, sunrise, sunset = self.get_weather_details()
+            weather_code, wind_speed, is_day = self.get_weather_details()
 
             # Set the weather_last_updated date/time.
             self.weather_last_updated = time.time()
 
-            # We convert the weather_code, wind_speed, sunrise and sunset into a PNG filename.
+            # We convert the weather_code, wind_speed, is_day into a PNG filename.
             self.weather_filename = self.get_weather_filename(
                 weather_code=weather_code,
                 wind_speed=wind_speed,
-                sunrise=sunrise,
-                sunset=sunset
+                is_day=is_day
             )
 
         # Draw the weather animation.
@@ -281,20 +280,14 @@ class ScreenWeather:
 
         Returns:
             tuple:
-                Tuple containing weather code, wind speed, sunrise, and sunset.
+                Tuple containing weather code, wind speed, is_day.
         """
-
-        # Get a Y-m-d reference to today's date.
-        today = datetime.datetime.today().strftime('%Y-%m-%d')
 
         # Build the weather URL.
         weather_url = 'https://api.open-meteo.com/v1/forecast?'
         weather_url += f'latitude={self.latitude}'
         weather_url += f'&longitude={self.longitude}'
-        weather_url += '&current_weather=true'
-        weather_url += '&daily=sunrise,sunset'
-        weather_url += f'&start_date={today}'
-        weather_url += f'&end_date={today}'
+        weather_url += '&current=weather_code,windspeed,is_day'
         weather_url += f'&timezone={timezone}'
         weather_url += '&timeformat=unixtime'
 
@@ -305,11 +298,17 @@ class ScreenWeather:
             timeout=5
         ).json()
 
+        weather = response['current']
+
         # Return some specific components from the weather data.
-        return response['current_weather']['weathercode'], response['current_weather']['windspeed'], response['daily']['sunrise'][0], response['daily']['sunset'][0]
+        return (
+            weather['weather_code'],
+            weather['windspeed'],
+            weather['is_day']
+        )
 
     @staticmethod
-    def get_weather_filename(weather_code, wind_speed, sunrise, sunset):
+    def get_weather_filename(weather_code, wind_speed, is_day):
         """
         Generate a filename based on weather conditions.
 
@@ -318,10 +317,8 @@ class ScreenWeather:
                 Numeric code representing weather condition.
             wind_speed (float):
                 Wind speed in meters per second.
-            sunrise (int):
-                Unix timestamp of sunrise.
-            sunset (int):
-                Unix timestamp of sunset.
+            is_day (bool):
+                Wheter it's currently day or night.
 
         Returns:
             str:
@@ -330,13 +327,13 @@ class ScreenWeather:
 
         # Windy.
         if wind_speed >= 20:
-            filename = 'wind' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'wind' if is_day else 'cloudy'
         # Clear sky.
         elif weather_code == 0:
-            filename = 'clear-day' if sunrise <= time.time() <= sunset else 'clear-night'
+            filename = 'clear-day' if is_day else 'clear-night'
         # Mainly clear and Partly cloudy.
         elif 1 <= weather_code <= 2:
-            filename = 'partly-cloudy-day' if sunrise <= time.time() <= sunset else 'partly-cloudy-night'
+            filename = 'partly-cloudy-day' if is_day else 'partly-cloudy-night'
         # Overcast.
         elif weather_code == 3:
             filename = 'cloudy'
@@ -348,19 +345,19 @@ class ScreenWeather:
         # Rain: Slight, moderate and heavy intensity
         # and Freezing Rain: Light and heavy intensity.
         elif 51 <= weather_code <= 67:
-            filename = 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'rain' if is_day else 'cloudy'
         # Snow fall: Slight, moderate, and heavy intensity and Snow grains.
         elif 71 <= weather_code <= 77:
-            filename = 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'snow' if is_day else 'cloudy'
         # Rain showers: Slight, moderate, and violent.
         elif 80 <= weather_code <= 82:
-            filename = 'rain' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'rain' if is_day else 'cloudy'
         # Snow showers slight and heavy.
         elif 85 <= weather_code <= 86:
-            filename = 'snow' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'snow' if is_day else 'cloudy'
         # Thunderstorm: Slight or moderate, Thunderstorm with slight and heavy hail.
         elif 95 <= weather_code <= 99:
-            filename = 'cloudy' if sunrise <= time.time() <= sunset else 'cloudy'
+            filename = 'cloudy' if is_day else 'cloudy'
         # Unknown weather_code.
         else:
             filename = 'error'
